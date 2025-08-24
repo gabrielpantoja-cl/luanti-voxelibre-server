@@ -8,8 +8,9 @@ server/config/ban.txt
 *.log
 debug.txt
 
-# Docker
+# Docker y configuración local
 .env
+.env.local
 
 # Sistema
 .DS_Store
