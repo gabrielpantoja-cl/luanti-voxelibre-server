@@ -37,7 +37,7 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a veg
 ## Key Technologies & Architecture
 
 - **Container Platform**: Docker Compose orchestration (self-contained)
-- **Game Engine**: Luanti/Minetest server (official Docker image `luanti/luanti:latest`)
+- **Game Engine**: Luanti/Minetest server (Docker image `linuxserver/luanti:latest`)
 - **Configuration**: Lua-based mods and `.conf` files
 - **Deployment**: GitHub Actions CI/CD with automated backups (independent pipeline)
 - **Server Port**: 30000/UDP (official server: `luanti.gabrielpantoja.cl:30000`)
