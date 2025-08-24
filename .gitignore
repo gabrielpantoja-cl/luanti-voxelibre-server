@@ -1,0 +1,30 @@
+# Directorios de datos del servidor
+server/worlds/*
+server/backups/*
+server/config/auth.txt
+server/config/ban.txt
+
+# Logs
+*.log
+debug.txt
+
+# Docker
+.env
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Temporales
+*.tmp
+*.swp
+*~
+
+# Secrets (por si acaso)
+secrets/
+*.key
+*.pem
+
+# Mantener directorios pero ignorar contenido
+!server/worlds/.gitkeep
+!server/backups/.gitkeep
