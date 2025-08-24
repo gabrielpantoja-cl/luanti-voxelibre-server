@@ -21,39 +21,58 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT || 22 }}
         script: |
-          # Navegar al directorio del proyecto
-          cd /opt/vegan-wetlands || exit 1
+          echo "🌱 Iniciando despliegue de Vegan Wetlands..."
           
-          # Hacer backup del mundo actual antes de actualizar
-          if [ -d "server/worlds/vegan_wetlands" ]; then
-            echo "🔄 Creando backup del mundo antes de actualizar..."
-            sudo docker-compose exec luanti-server tar -czf /backups/pre-update-$(date +%Y%m%d-%H%M%S).tar.gz -C /var/lib/luanti/.luanti/worlds vegan_wetlands
+          # Crear directorio si no existe (primer despliegue)
+          if [ ! -d "/opt/vegan-wetlands" ]; then
+            echo "📁 Primer despliegue: creando directorio..."
+            sudo mkdir -p /opt/vegan-wetlands
+            sudo chown $USER:$USER /opt/vegan-wetlands
+            cd /opt/vegan-wetlands
+            
+            echo "📥 Clonando repositorio..."
+            git clone https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git .
+            
+            echo "🔧 Configurando VPS..."
+            chmod +x scripts/setup-vps.sh
+            sudo ./scripts/setup-vps.sh
+          else
+            # Despliegue regular - navegar al directorio
+            cd /opt/vegan-wetlands
+            
+            # Hacer backup del mundo actual antes de actualizar
+            if [ -d "server/worlds/vegan_wetlands" ] && sudo docker-compose ps | grep -q "luanti-server.*Up"; then
+              echo "🔄 Creando backup del mundo antes de actualizar..."
+              sudo docker-compose exec luanti-server tar -czf /backups/pre-update-$(date +%Y%m%d-%H%M%S).tar.gz -C /var/lib/luanti/.luanti/worlds vegan_wetlands || true
+            fi
+            
+            echo "📥 Descargando código actualizado..."
+            git fetch origin main
+            git reset --hard origin/main
+            
+            echo "⏹️ Deteniendo servidor actual..."
+            sudo docker-compose down || true
           fi
-          
-          # Pull del código más reciente
-          echo "📥 Descargando código actualizado..."
-          git fetch origin main
-          git reset --hard origin/main
-          
-          # Detener servidor actual
-          echo "⏹️ Deteniendo servidor..."
-          sudo docker-compose down
           
           # Limpiar imágenes antiguas (opcional)
           echo "🧹 Limpiando imágenes Docker antiguas..."
-          sudo docker image prune -f
+          sudo docker image prune -f || true
           
           # Levantar servidor actualizado
-          echo "🚀 Levantando servidor actualizado..."
+          echo "🚀 Levantando servidor..."
           sudo docker-compose up -d
           
           # Verificar que el servidor esté corriendo
           echo "✅ Verificando estado del servidor..."
-          sleep 10
+          sleep 15
           sudo docker-compose ps
           sudo docker-compose logs --tail=20 luanti-server
           
-          echo "🌱 ¡Vegan Wetlands actualizado exitosamente!"
+          # Verificar conectividad UDP
+          echo "🔍 Verificando puerto UDP 30000..."
+          sudo ss -tulpn | grep :30000 || echo "⚠️ Puerto 30000 no detectado"
+          
+          echo "🌱 ¡Vegan Wetlands desplegado exitosamente!"
 
     - name: Notify Discord (optional)
       if: always()
