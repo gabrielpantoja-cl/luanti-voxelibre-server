@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   luanti-server:
-    image: luanti/luanti:latest
+    image: linuxserver/luanti:latest
     container_name: vegan-wetlands-server
     restart: unless-stopped
     ports:
@@ -13,7 +13,9 @@ services:
       - ./server/worlds:/var/lib/luanti/.luanti/worlds
       - ./server/backups:/backups
     environment:
-      - CLI_ARGS=--server --world /var/lib/luanti/.luanti/worlds/vegan_wetlands --config /var/lib/luanti/.luanti/luanti.conf
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santiago
     healthcheck:
       test: ["CMD", "ss", "-tulpn", "|", "grep", ":30000"]
       interval: 30s
