@@ -1,0 +1,65 @@
+name: Deploy Vegan Wetlands Server
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy to VPS
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: ${{ secrets.VPS_PORT || 22 }}
+        script: |
+          # Navegar al directorio del proyecto
+          cd /opt/vegan-wetlands || exit 1
+          
+          # Hacer backup del mundo actual antes de actualizar
+          if [ -d "server/worlds/vegan_wetlands" ]; then
+            echo "🔄 Creando backup del mundo antes de actualizar..."
+            sudo docker-compose exec luanti-server tar -czf /backups/pre-update-$(date +%Y%m%d-%H%M%S).tar.gz -C /var/lib/luanti/.luanti/worlds vegan_wetlands
+          fi
+          
+          # Pull del código más reciente
+          echo "📥 Descargando código actualizado..."
+          git fetch origin main
+          git reset --hard origin/main
+          
+          # Detener servidor actual
+          echo "⏹️ Deteniendo servidor..."
+          sudo docker-compose down
+          
+          # Limpiar imágenes antiguas (opcional)
+          echo "🧹 Limpiando imágenes Docker antiguas..."
+          sudo docker image prune -f
+          
+          # Levantar servidor actualizado
+          echo "🚀 Levantando servidor actualizado..."
+          sudo docker-compose up -d
+          
+          # Verificar que el servidor esté corriendo
+          echo "✅ Verificando estado del servidor..."
+          sleep 10
+          sudo docker-compose ps
+          sudo docker-compose logs --tail=20 luanti-server
+          
+          echo "🌱 ¡Vegan Wetlands actualizado exitosamente!"
+
+    - name: Notify Discord (optional)
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ Despliegue exitoso de Vegan Wetlands"
+        else
+          echo "❌ Error en despliegue de Vegan Wetlands"
+        fi

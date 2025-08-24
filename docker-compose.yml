@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  luanti-server:
+    image: luanti/luanti:latest
+    container_name: vegan-wetlands-server
+    restart: unless-stopped
+    ports:
+      - "30000:30000/udp"
+    volumes:
+      - ./server/config:/var/lib/luanti/.luanti
+      - ./server/mods:/var/lib/luanti/.luanti/mods
+      - ./server/worlds:/var/lib/luanti/.luanti/worlds
+      - ./server/backups:/backups
+    environment:
+      - CLI_ARGS=--server --world /var/lib/luanti/.luanti/worlds/vegan_wetlands --config /var/lib/luanti/.luanti/luanti.conf
+    healthcheck:
+      test: ["CMD", "ss", "-tulpn", "|", "grep", ":30000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - luanti-network
+
+  # Backup service opcional con n8n integration
+  backup-cron:
+    image: alpine:latest
+    container_name: vegan-wetlands-backup
+    restart: unless-stopped
+    volumes:
+      - ./server/worlds:/worlds:ro
+      - ./server/backups:/backups
+      - ./scripts:/scripts:ro
+    environment:
+      - TZ=America/Santiago
+    command: >
+      sh -c "
+        apk add --no-cache dcron tar gzip &&
+        echo '0 */6 * * * /scripts/backup.sh' | crontab - &&
+        crond -f -d 8
+      "
+    depends_on:
+      - luanti-server
+    networks:
+      - luanti-network
+
+networks:
+  luanti-network:
+    driver: bridge
+
+volumes:
+  luanti-config:
+  luanti-mods:
+  luanti-worlds:
+  luanti-backups:
