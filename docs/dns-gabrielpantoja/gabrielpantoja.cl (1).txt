@@ -1,0 +1,67 @@
+;;
+;; Domain:     gabrielpantoja.cl.
+;; Exported:   2025-08-24 18:55:08
+;;
+;; This file is intended for use for informational and archival
+;; purposes ONLY and MUST be edited before use on a production
+;; DNS server.  In particular, you must:
+;;   -- update the SOA record with the correct authoritative name server
+;;   -- update the SOA record with the contact e-mail address information
+;;   -- update the NS record(s) with the authoritative name servers for this domain.
+;;
+;; For further information, please consult the BIND documentation
+;; located on the following website:
+;;
+;; http://www.isc.org/
+;;
+;; And RFC 1035:
+;;
+;; http://www.ietf.org/rfc/rfc1035.txt
+;;
+;; Please note that we do NOT offer technical support for any use
+;; of this zone data, the BIND name server, or any other third-party
+;; DNS software.
+;;
+;; Use at your own risk.
+;; SOA Record
+gabrielpantoja.cl	3600	IN	SOA	matteo.ns.cloudflare.com. dns.cloudflare.com. 2050772830 10000 2400 604800 3600
+
+;; NS Records
+gabrielpantoja.cl.	86400	IN	NS	matteo.ns.cloudflare.com.
+gabrielpantoja.cl.	86400	IN	NS	sara.ns.cloudflare.com.
+
+;; A Records
+gabrielpantoja.cl.	3600	IN	A	76.76.21.21 ; cf_tags=cf-proxied:false
+n8n.gabrielpantoja.cl.	1	IN	A	167.172.251.27 ; n8n.gabrielpantoja.cl subdominio para vps digital ocean cf_tags=cf-proxied:false
+
+;; CAA Records
+gabrielpantoja.cl.	1	IN	CAA	0 issue "comodoca.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issue "digicert.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issuewild "comodoca.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issue "sectigo.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issue "letsencrypt.org"
+gabrielpantoja.cl.	1	IN	CAA	0 issuewild "sectigo.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issue "pki.goog"
+gabrielpantoja.cl.	1	IN	CAA	0 issuewild "letsencrypt.org"
+gabrielpantoja.cl.	1	IN	CAA	0 issuewild "globalsign.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issuewild "digicert.com"
+gabrielpantoja.cl.	1	IN	CAA	0 issuewild "pki.goog"
+gabrielpantoja.cl.	1	IN	CAA	0 issue "globalsign.com"
+
+;; CNAME Records
+blog.gabrielpantoja.cl.	1	IN	CNAME	public.r2.dev. ; cf_tags=cf-proxied:true
+_dmarc.gabrielpantoja.cl.	1	IN	CNAME	_dmarc.gabrielpantoja_cl._d.easydmarc.pro. ; app.easydmarc.com. Eliminado pct=100; peritajes@gabrielpantoja.cl cf_tags=cf-proxied:false
+www.gabrielpantoja.cl.	1	IN	CNAME	gabrielpantoja.cl. ; cf_tags=cf-proxied:false
+
+;; MX Records
+gabrielpantoja.cl.	1	IN	MX	5 alt2.aspmx.l.google.com.
+gabrielpantoja.cl.	1	IN	MX	5 alt1.aspmx.l.google.com.
+gabrielpantoja.cl.	1	IN	MX	1 aspmx.l.google.com.
+gabrielpantoja.cl.	1	IN	MX	10 alt3.aspmx.l.google.com.
+gabrielpantoja.cl.	1	IN	MX	10 alt4.aspmx.l.google.com.
+
+;; TXT Records
+gabrielpantoja.cl.	1	IN	TXT	"v=spf1 include:_spf.google.com ~all"
+gabrielpantoja.cl.	1	IN	TXT	"google-site-verification=00yb9Vo6aThWX76x4Ncnym0miPpcJtkefXAlFqwHrNw"
+google._domainkey.gabrielpantoja.cl.	1	IN	TXT	"v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoMGchJ2aIrnAuUxXoaRhri3Xk8FGdxBuuPrFtUKLMK7z6MUqZdaZcaCJDO73glF/fKP914k2u45JKm16sHgmADJtBwQ96x73T8Rt6x3NvwGL2J18CqZrYLTwtusatts+Takj/fNtQWh4D5pJQsAln57jFoHFmxWovIHCcn+AX6Drwb8fOjaGDY23l0LuO40CO" "PgaWwyC9TERZX2wLlonlwg1oo8710qmbu/edSEikKlN3zBUA+WZvPqWrLxF1qXraYFvRJLehR8fFi0MpeP/wO/1LuJE2c89/fkDAdXygRb1K3IHk3RaqXA+WlxfT9B3zL1nDE00Yu/30q0CSsqqwwIDAQAB"
+_vercel.gabrielpantoja.cl.	3600	IN	TXT	"vc-domain-verify=gabrielpantoja.cl,6403f9cfded5799e6dbf,dc"
