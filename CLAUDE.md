@@ -165,6 +165,80 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 - Automatic health checks every 30 seconds
 - Auto-restart on container failure
 
+## Admin Privilege Management
+
+### Overview
+Modern Luanti servers (5.13+) use SQLite databases for user authentication and privileges instead of traditional text files. The privilege system requires direct database manipulation for administrative access.
+
+### Database Structure
+**Location**: `server/worlds/world/auth.sqlite` (mapped to `/config/.minetest/worlds/world/auth.sqlite` in container)
+
+**Tables**:
+1. **`auth`** - User authentication data
+   ```sql
+   CREATE TABLE `auth` (
+     `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+     `name` TEXT UNIQUE NOT NULL,
+     `password` TEXT NOT NULL,
+     `last_login` INTEGER NOT NULL DEFAULT 0
+   );
+   ```
+
+2. **`user_privileges`** - User privilege assignments
+   ```sql
+   CREATE TABLE `user_privileges` (
+     `id` INTEGER,
+     `privilege` TEXT,
+     PRIMARY KEY (id, privilege),
+     CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES auth (id) ON DELETE CASCADE
+   );
+   ```
+
+### Granting Admin Privileges
+
+**Step 1: Access the container**
+```bash
+docker compose exec luanti-server /bin/bash
+```
+
+**Step 2: Get user ID**
+```bash
+sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT id FROM auth WHERE name='username';"
+```
+
+**Step 3: Check current privileges**
+```bash
+sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT * FROM user_privileges WHERE id=1;"
+```
+
+**Step 4: Grant all administrative privileges**
+```bash
+sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES 
+(1, 'server'), (1, 'privs'), (1, 'ban'), (1, 'kick'), (1, 'teleport'), 
+(1, 'give'), (1, 'settime'), (1, 'worldedit'), (1, 'fly'), (1, 'fast'), 
+(1, 'noclip'), (1, 'debug'), (1, 'password'), (1, 'rollback_check'), 
+(1, 'basic_privs'), (1, 'bring'), (1, 'shutdown'), (1, 'time'), 
+(1, 'mute'), (1, 'unban'), (1, 'creative'), (1, 'home'), (1, 'spawn');"
+```
+
+**Step 5: Restart server**
+```bash
+exit
+docker compose restart luanti-server
+```
+
+### Key Findings
+- **No `auth.txt` support**: Modern Luanti ignores traditional text-based auth files
+- **SQLite only**: All authentication data stored in SQLite databases
+- **Privilege storage**: Privileges stored as individual records, not comma-separated strings
+- **Foreign key relationship**: `user_privileges.id` references `auth.id`
+- **Container paths**: Configuration files mapped to `/config/.minetest/` in linuxserver/luanti container
+
+### Troubleshooting
+- **World selection**: Server defaults to `/config/.minetest/worlds/world/` regardless of `world_name` setting
+- **Configuration mapping**: `luanti.conf` must be mapped to `/config/.minetest/minetest.conf`
+- **Volume persistence**: Ensure world data is properly mapped to prevent loss of privileges on restart
+
 ## Key Constraints
 
 - **No package.json**: This is not a Node.js project
