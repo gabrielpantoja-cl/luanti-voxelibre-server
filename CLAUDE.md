@@ -38,6 +38,7 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a veg
 
 - **Container Platform**: Docker Compose orchestration (self-contained)
 - **Game Engine**: Luanti/Minetest server (Docker image `linuxserver/luanti:latest`)
+- **Base Game**: VoxeLibre (MineClone2) v0.90.1 - Minecraft-like survival sandbox
 - **Configuration**: Lua-based mods and `.conf` files
 - **Deployment**: GitHub Actions CI/CD with automated backups (independent pipeline)
 - **Server Port**: 30000/UDP (official server: `luanti.gabrielpantoja.cl:30000`)
@@ -95,6 +96,7 @@ docker-compose logs backup-cron
 ### File Structure
 - `docker-compose.yml`: Main container orchestration
 - `server/config/luanti.conf`: Server configuration (creative mode, vegan-friendly settings)
+- `server/games/`: VoxeLibre (MineClone2) game files
 - `server/mods/`: Custom Lua mods (animal_sanctuary, vegan_foods, education_blocks)
 - `server/worlds/`: Persistent world data
 - `server/backups/`: Automated backup storage
@@ -269,3 +271,58 @@ GitHub Actions in **this repository** automatically:
 - **This repo (Vegan-Wetlands.git)**: Manages Luanti server lifecycle
 - **VPS repo (vps-do.git)**: Manages general infrastructure (nginx, n8n, etc.)
 - **No conflicts**: Each repository manages its own services independently
+
+## VoxeLibre Game Installation
+
+### Overview
+The server runs **VoxeLibre (formerly MineClone2) v0.90.1**, a Minecraft-like survival sandbox game that provides familiar gameplay mechanics while being completely open-source.
+
+### Installation Process
+VoxeLibre is installed from the official Luanti ContentDB:
+
+**Source**: `https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/`
+
+### Directory Structure
+```
+server/games/
+├── devtest/          # Default Luanti test game (shipped with container)
+├── mineclone2/       # VoxeLibre game files
+│   ├── game.conf     # Game metadata (title = VoxeLibre, version=0.90.1)
+│   ├── mods/         # Core VoxeLibre mods
+│   ├── menu/         # Game menu assets
+│   └── textures/     # Game textures and UI elements
+```
+
+### Docker Volume Mapping
+The games directory is mapped in `docker-compose.yml`:
+```yaml
+volumes:
+  - ./server/games:/config/.minetest/games
+```
+
+### World Configuration
+Each world specifies which game to use in `world.mt`:
+```
+gameid = mineclone2
+```
+
+### Troubleshooting VoxeLibre Installation
+
+**Problem**: `ERROR[Main]: Game [] could not be found`
+**Solution**: 
+1. Ensure VoxeLibre is properly installed in `server/games/mineclone2/`
+2. Verify `game.conf` exists with correct content
+3. Check Docker volume mapping includes games directory
+4. Restart server after installation
+
+**Verification Commands**:
+```bash
+# Check if VoxeLibre is installed
+ls -la server/games/mineclone2/
+
+# Verify game.conf content
+cat server/games/mineclone2/game.conf
+
+# Check container can see the game
+docker-compose exec luanti-server ls -la /config/.minetest/games/
+```
