@@ -44,6 +44,13 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a veg
 - **Server Port**: 30000/UDP (official server: `luanti.gabrielpantoja.cl:30000`)
 - **Repository Strategy**: Centralized Luanti development in this dedicated repository
 
+## VPS Access
+
+```bash
+# SSH access to production server
+ssh gabriel@167.172.251.27
+```
+
 ## Essential Commands
 
 ### Server Management
