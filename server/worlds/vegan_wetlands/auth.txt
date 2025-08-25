@@ -1,0 +1,1 @@
+gabo:*:interact,shout,home,spawn,creative,server,privs,ban,kick,teleport,give,settime,worldedit,fly,fast,noclip,debug,protection_bypass,areas_high_limit,password,rollback_check,basic_privs,bring,delbanlist,shutdown,time,mute,kick,unban:*
