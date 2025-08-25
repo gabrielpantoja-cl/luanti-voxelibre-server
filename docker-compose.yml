@@ -10,6 +10,7 @@ services:
       - ./server/config/luanti.conf:/config/.minetest/minetest.conf
       - ./server/mods:/config/.minetest/mods
       - ./server/worlds:/config/.minetest/worlds
+      - ./server/games:/config/.minetest/games
       - ./server/backups:/backups
     environment:
       - PUID=1000
