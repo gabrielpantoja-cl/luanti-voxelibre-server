@@ -49,9 +49,3 @@ services:
 networks:
   luanti-network:
     driver: bridge
-
-volumes:
-  luanti-config:
-  luanti-mods:
-  luanti-worlds:
-  luanti-backups:
