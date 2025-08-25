@@ -8,7 +8,7 @@ services:
     ports:
       - "30000:30000/udp"
     volumes:
-      - ./server/config:/var/lib/luanti/.luanti
+      - ./server/config/luanti.conf:/var/lib/luanti/.luanti/luanti.conf
       - ./server/mods:/var/lib/luanti/.luanti/mods
       - ./server/worlds:/var/lib/luanti/.luanti/worlds
       - ./server/backups:/backups
