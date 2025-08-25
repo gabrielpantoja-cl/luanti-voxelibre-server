@@ -103,6 +103,7 @@ local mod_family_priorities = {
 		["mcl_flowers"] = 2,
 		["mcl_core"] = 1.9,
 		["mcl_cherry_blossom"] = 1.8,
+		["mcl_doors"] = 6.5,
 		["mcl_fences"] = 1,
 		["mclx_fences"] = 1,
 		["mcl_walls"] = 1,
