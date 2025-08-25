@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   luanti-server:
@@ -8,9 +7,9 @@ services:
     ports:
       - "30000:30000/udp"
     volumes:
-      - ./server/config/luanti.conf:/var/lib/luanti/.luanti/luanti.conf
-      - ./server/mods:/var/lib/luanti/.luanti/mods
-      - ./server/worlds:/var/lib/luanti/.luanti/worlds
+      - ./server/config/luanti.conf:/config/.minetest/minetest.conf
+      - ./server/mods:/config/.minetest/mods
+      - ./server/worlds:/config/.minetest/worlds
       - ./server/backups:/backups
     environment:
       - PUID=1000
