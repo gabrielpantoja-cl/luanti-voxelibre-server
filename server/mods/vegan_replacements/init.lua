@@ -29,21 +29,38 @@ local non_vegan_items = {
     "mcl_mobitems:rabbit_stew"
 }
 
--- Función para eliminar un item completamente
+-- Función para eliminar un item completamente del juego
 local function disable_item(itemname)
     if minetest.registered_items[itemname] then
-        -- Sobrescribe el item para hacerlo no disponible
+        -- MÉTODO MÁS EFECTIVO: Sobrescribir completamente el item
         minetest.override_item(itemname, {
-            groups = {},
+            description = "🚫 Item No Vegano - Eliminado",
+            inventory_image = "blank.png",
+            wield_image = "blank.png",
+            groups = {not_in_creative_inventory = 1, not_in_craft_guide = 1},
             drop = "",
-            on_drop = function() return nil end,
-            on_place = function() return nil end,
-            on_secondary_use = function() return nil end,
-        })
-        
-        -- Elimina de creative inventory
-        minetest.override_item(itemname, {
-            groups = {not_in_creative_inventory = 1}
+            stack_max = 1,
+            on_place = function(itemstack, placer, pointed_thing)
+                if placer and placer:is_player() then
+                    minetest.chat_send_player(placer:get_player_name(), 
+                        minetest.colorize("#FF6B6B", "🌱 Este item no vegano ha sido eliminado del servidor."))
+                end
+                return itemstack
+            end,
+            on_secondary_use = function(itemstack, user, pointed_thing)
+                if user and user:is_player() then
+                    minetest.chat_send_player(user:get_player_name(), 
+                        minetest.colorize("#FF6B6B", "🌱 Este item no vegano ha sido eliminado del servidor."))
+                end
+                return itemstack
+            end,
+            on_use = function(itemstack, user, pointed_thing)
+                if user and user:is_player() then
+                    minetest.chat_send_player(user:get_player_name(), 
+                        minetest.colorize("#FF6B6B", "🌱 Este item no vegano ha sido eliminado del servidor."))
+                end
+                return itemstack
+            end
         })
         
         minetest.log("info", "[Vegan Replacements] Item eliminado: " .. itemname)
@@ -104,6 +121,35 @@ local function replace_entity_drops()
     end
 end
 
+-- Interceptar comando /give para items no veganos
+minetest.register_on_chatcommand(function(name, command, param)
+    if command == "give" or command == "giveme" then
+        local parts = param:split(" ")
+        local item_name = parts[2] or parts[1]
+        
+        for _, non_vegan in ipairs(non_vegan_items) do
+            if item_name == non_vegan then
+                minetest.chat_send_player(name, 
+                    minetest.colorize("#FF6B6B", "🌱 Item no vegano bloqueado: " .. item_name)
+                )
+                
+                -- Dar alternativa vegana
+                if vegan_replacements[item_name] then
+                    local replacement = vegan_replacements[item_name]
+                    local count = parts[3] or parts[2] or "1"
+                    if not tonumber(count) then count = "1" end
+                    
+                    minetest.give_player_by_name(name, replacement .. " " .. count)
+                    minetest.chat_send_player(name,
+                        minetest.colorize("#90EE90", "🥕 Reemplazado con alternativa vegana: " .. replacement)
+                    )
+                end
+                return true -- Bloquea el comando original
+            end
+        end
+    end
+end)
+
 -- Función para interceptar cuando un jugador obtiene un item no vegano
 minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, user, pointed_thing)
     local itemname = itemstack:get_name()
@@ -111,21 +157,23 @@ minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, 
     -- Si el item está en nuestra lista de no veganos
     for _, non_vegan in ipairs(non_vegan_items) do
         if itemname == non_vegan then
-            local player_name = user:get_player_name()
-            minetest.chat_send_player(player_name, 
-                minetest.colorize("#FF6B6B", "🌱 ¡Este servidor es vegano! No puedes consumir productos de origen animal.")
-            )
-            
-            -- Reemplazar con alternativa vegana si existe
-            if vegan_replacements[itemname] then
-                local replacement = vegan_replacements[itemname]
-                local replacement_stack = ItemStack(replacement .. " " .. itemstack:get_count())
-                user:get_inventory():add_item("main", replacement_stack)
-                
-                minetest.chat_send_player(player_name,
-                    minetest.colorize("#90EE90", "🥕 Reemplazado con alternativa vegana: " .. 
-                    minetest.registered_items[replacement].description or replacement)
+            if user and user:is_player() then
+                local player_name = user:get_player_name()
+                minetest.chat_send_player(player_name, 
+                    minetest.colorize("#FF6B6B", "🌱 ¡Este servidor es vegano! No puedes consumir productos de origen animal.")
                 )
+                
+                -- Reemplazar con alternativa vegana si existe
+                if vegan_replacements[itemname] then
+                    local replacement = vegan_replacements[itemname]
+                    local replacement_stack = ItemStack(replacement .. " " .. itemstack:get_count())
+                    user:get_inventory():add_item("main", replacement_stack)
+                    
+                    minetest.chat_send_player(player_name,
+                        minetest.colorize("#90EE90", "🥕 Reemplazado con alternativa vegana: " .. 
+                        (minetest.registered_items[replacement] and minetest.registered_items[replacement].description or replacement))
+                    )
+                end
             end
             
             return itemstack -- Prevenir el consumo
@@ -133,34 +181,28 @@ minetest.register_on_item_eat(function(hp_change, replace_with_item, itemstack, 
     end
 end)
 
--- Interceptar cuando alguien intenta obtener items mediante /give o creative
-minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if formname == "mcl_inventory:creative" or formname:find("creative") then
-        -- Verificar si está intentando obtener items no veganos
-        -- Esta es una verificación básica, se puede expandir
-        for field_name, _ in pairs(fields) do
-            for _, non_vegan in ipairs(non_vegan_items) do
-                if field_name:find(non_vegan) then
-                    minetest.chat_send_player(player:get_player_name(),
-                        minetest.colorize("#FF6B6B", "🌱 Item no vegano no disponible en este servidor.")
-                    )
-                end
-            end
-        end
-    end
-end)
-
 -- Eliminar items no veganos al cargar el mod
 minetest.register_on_mods_loaded(function()
-    -- Eliminar todos los items no veganos
-    for _, itemname in ipairs(non_vegan_items) do
-        disable_item(itemname)
-    end
-    
-    -- Modificar drops de entidades
-    replace_entity_drops()
-    
-    minetest.log("info", "[Vegan Replacements] Mod cargado exitosamente. Items no veganos eliminados.")
+    -- Esperar a que todos los mods se carguen
+    minetest.after(1, function()
+        local eliminated_count = 0
+        
+        -- Eliminar todos los items no veganos
+        for _, itemname in ipairs(non_vegan_items) do
+            if minetest.registered_items[itemname] then
+                disable_item(itemname)
+                eliminated_count = eliminated_count + 1
+            end
+        end
+        
+        -- Modificar drops de entidades
+        replace_entity_drops()
+        
+        minetest.log("info", "[Vegan Replacements] ✅ Mod cargado exitosamente. " .. eliminated_count .. "/" .. #non_vegan_items .. " items no veganos eliminados.")
+        
+        -- Enviar mensaje a todos los jugadores conectados
+        minetest.chat_send_all(minetest.colorize("#90EE90", "🌱 Servidor Vegan Wetlands: " .. eliminated_count .. " items no veganos eliminados."))
+    end)
 end)
 
 -- Comando para administradores para verificar items veganos
