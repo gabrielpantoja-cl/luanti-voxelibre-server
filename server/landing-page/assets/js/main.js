@@ -28,6 +28,26 @@ function copyAddress() {
     }
 }
 
+// ===== COPY SERVER PORT FUNCTIONALITY =====
+function copyPort() {
+    const portInput = document.getElementById('server-port');
+    const copyText = document.getElementById('copy-port-text');
+    const serverPort = portInput.value;
+    
+    // Try modern clipboard API first
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(serverPort).then(function() {
+            showCopySuccess(copyText);
+        }).catch(function(err) {
+            // Fallback to old method
+            fallbackCopy(portInput, copyText);
+        });
+    } else {
+        // Fallback for older browsers
+        fallbackCopy(portInput, copyText);
+    }
+}
+
 function fallbackCopy(input, copyText) {
     input.select();
     input.setSelectionRange(0, 99999); // For mobile devices
@@ -247,25 +267,35 @@ function initializeParallax() {
 
 // ===== COPY FUNCTIONALITY INITIALIZATION =====
 function initializeCopyFunctionality() {
-    // Make copyAddress globally available
+    // Make copy functions globally available
     window.copyAddress = copyAddress;
+    window.copyPort = copyPort;
     
-    // Add keyboard accessibility
-    const copyBtn = document.querySelector('.copy-btn');
-    if (copyBtn) {
-        copyBtn.addEventListener('keydown', function(e) {
+    // Add keyboard accessibility for copy buttons
+    const copyBtns = document.querySelectorAll('.copy-btn');
+    copyBtns.forEach(btn => {
+        btn.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                copyAddress();
+                if (this.onclick) {
+                    this.onclick();
+                }
             }
         });
-    }
+    });
     
-    // Add double-click to copy on input
+    // Add double-click to copy on inputs
     const addressInput = document.getElementById('server-address');
     if (addressInput) {
         addressInput.addEventListener('dblclick', function() {
             copyAddress();
+        });
+    }
+    
+    const portInput = document.getElementById('server-port');
+    if (portInput) {
+        portInput.addEventListener('dblclick', function() {
+            copyPort();
         });
     }
 }
