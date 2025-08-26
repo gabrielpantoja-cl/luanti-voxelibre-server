@@ -16,6 +16,7 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a veg
 - Custom mods (animal_sanctuary, vegan_foods, education_blocks)
 - Server configuration files
 - World data and backups
+- **Landing page development** (HTML/CSS/JS for luanti.gabrielpantoja.cl)
 - Luanti-specific CI/CD pipeline
 - Game logic and mechanics
 
@@ -84,6 +85,21 @@ docker-compose ps
 # Retention: 10 latest backups
 ```
 
+### Landing Page Deployment
+```bash
+# Deploy landing page to VPS
+./scripts/deploy-landing.sh
+
+# Verify landing page deployment
+./scripts/deploy-landing.sh verify
+
+# Create backup before deployment
+./scripts/deploy-landing.sh backup
+
+# Check deployment status
+curl -I https://luanti.gabrielpantoja.cl
+```
+
 ### Development and Testing
 ```bash
 # Check server health
@@ -107,7 +123,8 @@ docker-compose logs backup-cron
 - `server/mods/`: Custom Lua mods (animal_sanctuary, vegan_foods, education_blocks)
 - `server/worlds/`: Persistent world data
 - `server/backups/`: Automated backup storage
-- `scripts/`: Maintenance scripts (start.sh, backup.sh)
+- `server/landing-page/`: Modern landing page (HTML/CSS/JS) for luanti.gabrielpantoja.cl
+- `scripts/`: Maintenance scripts (start.sh, backup.sh, deploy-landing.sh)
 
 ### Custom Mods Structure
 All mods follow Luanti mod structure:
@@ -332,4 +349,204 @@ cat server/games/mineclone2/game.conf
 
 # Check container can see the game
 docker-compose exec luanti-server ls -la /config/.minetest/games/
+```
+
+## 🌱 Landing Page System
+
+The landing page provides a modern, child-friendly web interface for Vegan Wetlands, accessible at `https://luanti.gabrielpantoja.cl`.
+
+### Architecture Overview
+
+**Dual-Purpose Domain**: `luanti.gabrielpantoja.cl`
+- **HTTP/HTTPS**: Serves landing page (nginx on VPS)
+- **UDP Port 30000**: Game server connection (Docker container)
+
+**Repository Separation**:
+- **This repo**: Landing page development (HTML/CSS/JS)
+- **VPS repo (vps-do.git)**: nginx configuration and serving
+
+### Landing Page Features
+
+**Design Principles**:
+- **Child-friendly**: Designed for ages 7+ with vibrant colors and simple navigation
+- **Vegan focus**: Educational content about animal care and plant-based living
+- **Responsive**: Works on desktop, tablet, and mobile devices
+- **Accessible**: Screen reader friendly with proper ARIA labels
+
+**Key Sections**:
+1. **Hero**: Server connection info with copy-to-clipboard functionality
+2. **How to Play**: Step-by-step guide to download Luanti and connect
+3. **Features**: Highlights of vegan gameplay, animal sanctuaries, and educational content
+4. **Footer**: Server details and useful in-game commands
+
+### File Structure
+
+```
+server/landing-page/
+├── index.html                    # Main page
+├── assets/
+│   ├── css/
+│   │   └── style.css            # Modern CSS with animations
+│   ├── js/
+│   │   └── main.js              # Interactive features
+│   └── images/                  # Future: logos, screenshots
+└── README.md                    # Landing page documentation
+```
+
+### Development Workflow
+
+**Local Development**:
+1. Edit files in `server/landing-page/`
+2. Open `index.html` in browser for testing
+3. Test responsiveness on different screen sizes
+
+**Deployment Process**:
+1. **Develop**: Make changes to landing page files
+2. **Deploy**: Run `./scripts/deploy-landing.sh`
+3. **Verify**: Check `https://luanti.gabrielpantoja.cl`
+
+### Technical Implementation
+
+**CSS Features**:
+- CSS Custom Properties (variables) for consistent theming
+- Responsive grid layouts
+- Smooth animations and hover effects
+- Modern gradients and shadows
+- Mobile-first responsive design
+
+**JavaScript Features**:
+- Server address copy-to-clipboard
+- Smooth scrolling navigation
+- Intersection Observer for scroll animations
+- Dynamic floating animal animations
+- Accessibility enhancements
+
+**Performance Optimizations**:
+- Efficient CSS animations using `transform` and `opacity`
+- Lazy loading for future images
+- Minimal JavaScript footprint
+- Cached static assets
+
+### Deployment Script
+
+The `scripts/deploy-landing.sh` script handles:
+
+**Automated Tasks**:
+1. **Pre-deployment**: SSH connectivity check, backup creation
+2. **File Transfer**: rsync deployment with optimizations
+3. **nginx Configuration**: Creates/updates server block for `luanti.gabrielpantoja.cl`
+4. **Docker Integration**: Updates volume mappings in `vps-do.git`
+5. **Service Management**: Reloads nginx, restarts containers
+6. **Verification**: HTTP response testing and file validation
+
+**Script Usage**:
+```bash
+# Full deployment
+./scripts/deploy-landing.sh
+
+# Verification only
+./scripts/deploy-landing.sh verify
+
+# Backup only
+./scripts/deploy-landing.sh backup
+
+# Help
+./scripts/deploy-landing.sh help
+```
+
+### VPS Configuration
+
+**nginx Configuration** (Created by deployment script):
+```nginx
+# /home/gabriel/vps-do/nginx/conf.d/luanti-landing.conf
+server {
+    listen 80;
+    server_name luanti.gabrielpantoja.cl;
+    root /var/www/luanti-landing;
+    index index.html;
+    
+    # Static assets caching
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    # Security headers
+    add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+}
+```
+
+**Docker Volume Mapping**:
+```yaml
+# Added to vps-do/docker-compose.yml
+nginx-proxy:
+  volumes:
+    - ./nginx/www/luanti-landing:/var/www/luanti-landing:ro
+```
+
+### Content Guidelines
+
+**Language**: Spanish (primary server language)
+
+**Key Messages**:
+- "Servidor vegano educativo" (Educational vegan server)
+- "Sin violencia, solo diversión" (No violence, just fun)
+- "Cuida animales en santuarios" (Care for animals in sanctuaries)
+- "Aprende sobre veganismo jugando" (Learn about veganism while playing)
+
+**Call-to-Actions**:
+- Clear server address: `luanti.gabrielpantoja.cl`
+- Download links for Luanti client
+- Simple connection instructions
+- In-game command references
+
+### Future Enhancements
+
+**Phase 2** (Planned):
+- Real-time server status via API
+- Screenshot gallery of player builds
+- Player testimonials section
+- Multi-language support (English)
+
+**Phase 3** (Future):
+- Interactive server map
+- Player statistics dashboard
+- Community blog integration
+- Social media integration
+
+### Troubleshooting
+
+**Common Issues**:
+
+1. **Landing page not loading**:
+   ```bash
+   # Check nginx status
+   ssh gabriel@167.172.251.27 'cd /home/gabriel/vps-do && docker-compose logs nginx-proxy'
+   
+   # Test local file access
+   ssh gabriel@167.172.251.27 'ls -la /home/gabriel/vps-do/nginx/www/luanti-landing/'
+   ```
+
+2. **Game connection still works but landing page doesn't**:
+   - Game runs on UDP port 30000 (independent)
+   - Web runs on HTTP/HTTPS port 80/443 (nginx)
+   - Check nginx configuration in `vps-do.git`
+
+3. **Deployment script fails**:
+   ```bash
+   # Check SSH connectivity
+   ssh gabriel@167.172.251.27 'echo "SSH works"'
+   
+   # Verify VPS directory structure
+   ssh gabriel@167.172.251.27 'ls -la /home/gabriel/vps-do/nginx/www/'
+   ```
+
+**Manual Recovery**:
+```bash
+# Manual deployment if script fails
+rsync -avz server/landing-page/ gabriel@167.172.251.27:/home/gabriel/vps-do/nginx/www/luanti-landing/
+
+# Reload nginx manually
+ssh gabriel@167.172.251.27 'cd /home/gabriel/vps-do && docker-compose exec nginx-proxy nginx -s reload'
 ```

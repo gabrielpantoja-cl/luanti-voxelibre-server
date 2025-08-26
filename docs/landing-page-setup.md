@@ -1,109 +1,103 @@
-# Guía de Configuración de la Landing Page
+# 🌱 Guía de Configuración de la Landing Page - Vegan Wetlands
 
-Este documento detalla el plan para configurar una página de bienvenida (landing page) para el servidor de Luanti en la URL `luanti.gabrielpantoja.cl`, que actualmente redirige al servicio n8n.
+Este documento detalla el plan actualizado para configurar una página de bienvenida (landing page) moderna para el servidor de Luanti. La documentación ha sido corregida para reflejar la arquitectura real del VPS.
 
-## Objetivo
+## 🎯 Objetivo
 
--   **URL Principal (`luanti.gabrielpantoja.cl`):** Debe mostrar una página web estática (la landing page) que sirva como portal de bienvenida para el servidor del juego.
--   **Acceso al Juego:** La misma URL (`luanti.gabrielpantoja.cl`) debe seguir funcionando como la dirección del servidor para conectarse desde el cliente de Luanti/Minetest.
--   **Servicio n8n:** Debe ser accesible a través de un nuevo subdominio: `n8n.gabrielpantoja.cl`.
+-   **URL Principal (`luanti.gabrielpantoja.cl`):** Mostrar una landing page estática moderna y amigable para niños 7+ años
+-   **Acceso al Juego:** La misma URL funciona para conectarse desde el cliente de Luanti (puerto 30000/UDP)
+-   **Servicio n8n:** Accessible en `n8n.gabrielpantoja.cl` (ya configurado)
+-   **Arquitectura:** nginx como reverse proxy (no Traefik)
 
-## Plan de Ejecución
+## 🏗️ Arquitectura Real del VPS
 
-### Paso 1: Configuración de DNS en Cloudflare
+### Estado Actual Verificado
+- **Reverse Proxy:** nginx (container `nginx-proxy` en vps-do.git)
+- **Configuración:** `/home/gabriel/vps-do/nginx/conf.d/`
+- **Problema:** `luanti.gabrielpantoja.cl` actualmente muestra n8n
+- **Solución:** Crear configuración nginx específica para landing page
 
-Antes de tocar la configuración del servidor, es necesario preparar el nuevo subdominio para n8n.
+### Separación de Responsabilidades
+- **Este repo (Vegan-Wetlands.git):** Desarrollo del contenido HTML/CSS/JS
+- **Repo VPS (vps-do.git):** Configuración nginx y despliegue
+- **Sincronización:** Scripts de CI/CD copian archivos entre repos
 
-1.  **Acción:** Acceder al panel de control de Cloudflare para el dominio `gabrielpantoja.cl`.
-2.  **Crear Registro A:** Añadir un nuevo registro de tipo `A` con la siguiente configuración:
-    -   **Tipo:** `A`
-    -   **Nombre:** `n8n` (Cloudflare autocompletará a `n8n.gabrielpantoja.cl`).
-    -   **Contenido (Dirección IPv4):** La misma dirección IP de tu VPS en Digital Ocean.
-    -   **Proxy status:** Habilitado (nube naranja), para que Cloudflare gestione el SSL.
+## 📋 Plan de Implementación Corregido
 
-### Paso 2: Crear el Contenido de la Landing Page
+### Paso 1: Crear Landing Page en Este Repositorio
 
-Crearemos un directorio y un archivo HTML simple para la página de bienvenida.
+1. **Crear estructura de archivos:**
+   ```
+   server/landing-page/
+   ├── index.html          # Página principal
+   ├── assets/
+   │   ├── css/style.css   # Estilos modernos
+   │   ├── js/main.js      # Interactividad
+   │   └── images/         # Logos e íconos
+   └── deploy.sh           # Script de despliegue al VPS
+   ```
 
-1.  **Acción:** Crear un nuevo directorio en `server/landing-page`.
-2.  **Crear Archivo:** Dentro de ese directorio, crear un archivo `index.html` con contenido básico.
+2. **Diseño orientado a niños 7+ años:**
+   - Colores vibrantes y naturales
+   - Tipografía clara y grande
+   - Animaciones sutiles
+   - Responsive design
+   - Botones grandes y fáciles de usar
 
-    ```html
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-g">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bienvenido a Vegan Wetlands</title>
-        <style>
-            body { font-family: sans-serif; background-color: #282a36; color: #f8f8f2; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-            .container { text-align: center; padding: 40px; background-color: #44475a; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-            h1 { color: #50fa7b; }
-            p { font-size: 1.2em; }
-            code { background-color: #282a36; padding: 5px 10px; border-radius: 5px; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Bienvenido a Vegan Wetlands</h1>
-            <p>Nuestro servidor de Luanti ya está en línea.</p>
-            <p>Para unirte, usa la siguiente dirección en el cliente del juego:</p>
-            <p><code>luanti.gabrielpantoja.cl</code></p>
-        </div>
-    </body>
-    </html>
-    ```
+### Paso 2: Configurar nginx en VPS
 
-### Paso 3: Modificar `docker-compose.yml`
+1. **Crear configuración en vps-do.git:**
+   ```nginx
+   # /home/gabriel/vps-do/nginx/conf.d/luanti-landing.conf
+   server {
+       listen 80;
+       server_name luanti.gabrielpantoja.cl;
+       
+       root /var/www/luanti-landing;
+       index index.html;
+       
+       location / {
+           try_files $uri $uri/ =404;
+       }
+       
+       # Cache static assets
+       location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+           expires 1y;
+           add_header Cache-Control "public, immutable";
+       }
+   }
+   ```
 
-Este es el paso principal. Editaremos el `docker-compose.yml` para añadir el servidor de la landing page y redirigir el tráfico correctamente. **Se asumirá que se está usando Traefik como reverse proxy, basándonos en configuraciones comunes. Si es otro, los "labels" cambiarán.**
+2. **Modificar docker-compose.yml en vps-do:**
+   ```yaml
+   nginx-proxy:
+     volumes:
+       - ./nginx/www/luanti-landing:/var/www/luanti-landing:ro
+   ```
 
-1.  **Añadir el servicio de la Landing Page:** Agregaremos un nuevo servicio que use una imagen de `nginx` para servir los archivos HTML.
+### Paso 3: Script de Despliegue
 
-    ```yaml
-    # ... (otros servicios)
+1. **Crear script de sincronización:**
+   ```bash
+   #!/bin/bash
+   # scripts/deploy-landing.sh
+   
+   # Copiar archivos al VPS
+   scp -r server/landing-page/* gabriel@167.172.251.27:/home/gabriel/vps-do/nginx/www/luanti-landing/
+   
+   # Recargar nginx
+   ssh gabriel@167.172.251.27 "cd /home/gabriel/vps-do && docker-compose exec nginx-proxy nginx -s reload"
+   ```
 
-    services:
-      # ... (tu servicio de traefik, n8n, etc.)
+### Paso 4: Actualizar n8n Configuration
 
-      landing-page:
-        image: nginx:alpine
-        container_name: landing-page
-        restart: unless-stopped
-        volumes:
-          - ./server/landing-page:/usr/share/nginx/html:ro
-        labels:
-          - "traefik.enable=true"
-          - "traefik.http.routers.landing-page.rule=Host(`luanti.gabrielpantoja.cl`)"
-          - "traefik.http.routers.landing-page.entrypoints=websecure"
-          - "traefik.http.services.landing-page.loadbalancer.server.port=80"
-          - "traefik.http.routers.landing-page.tls.certresolver=myresolver" # Reemplazar 'myresolver' con el nombre de tu certresolver de Traefik
+1. **En vps-do.git, modificar n8n.conf:**
+   - Cambiar `server_name` de `luanti.gabrielpantoja.cl` a `n8n.gabrielpantoja.cl`
+   - Ya está configurado correctamente según verificación
 
-    # ... (resto de servicios)
-    ```
+### Paso 5: Verificación y Testing
 
-2.  **Actualizar el servicio de n8n:** Modificaremos la regla (`rule`) en los `labels` del servicio `n8n` para que responda al nuevo subdominio.
-
-    ```yaml
-    # En la definición del servicio de n8n:
-    labels:
-      # ... (otras labels de traefik)
-      - "traefik.http.routers.n8n.rule=Host(`n8n.gabrielpantoja.cl`)" # <-- ESTA LÍNEA CAMBIA
-      # ... (resto de labels)
-    ```
-
-### Paso 4: Aplicar los Cambios
-
-Una vez guardados los cambios en `docker-compose.yml`, reiniciaremos la pila de contenedores para que se aplique la nueva configuración.
-
-1.  **Acción:** Ejecutar el siguiente comando en la raíz del proyecto (donde está `docker-compose.yml`).
-    ```bash
-    docker-compose up -d
-    ```
-    Este comando recreará los contenedores que han cambiado (landing-page y n8n) sin afectar a los demás.
-
-### Paso 5: Verificación Final
-
-1.  Abre un navegador y visita `https://luanti.gabrielpantoja.cl`. Deberías ver la nueva landing page.
-2.  Visita `https://n8n.gabrielpantoja.cl`. Deberías ver la página de login de n8n.
-3.  Inicia el cliente de Luanti y conéctate al servidor `luanti.gabrielpantoja.cl`. La conexión debería funcionar como antes.
+1. **Local:** Verificar diseño responsive en diferentes dispositivos
+2. **Staging:** Probar archivos estáticos en servidor de desarrollo
+3. **Production:** Verificar que `luanti.gabrielpantoja.cl` muestre landing page
+4. **Game connectivity:** Confirmar que puerto 30000/UDP sigue funcionando
