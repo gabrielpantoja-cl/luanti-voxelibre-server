@@ -17,7 +17,7 @@ services:
       - PGID=1000
       - TZ=America/Santiago
     healthcheck:
-      test: ["CMD", "ss", "-tulpn", "|", "grep", ":30000"]
+      test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
       interval: 30s
       timeout: 10s
       retries: 3
