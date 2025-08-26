@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vegan Wetlands - Servidor de Luanti educativo y vegano para niños. Santuarios de animales, aventuras sin violencia.">
+    <meta name="keywords" content="Luanti, Minetest, Minecraft, vegan, educativo, niños, animales, santuario">
+    <title>🌱 Vegan Wetlands - Aventuras Veganas</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-emoji">🌱</span>
+                <span class="logo-text">Vegan Wetlands</span>
+            </div>
+            <div class="nav-links">
+                <a href="#inicio" class="nav-link">Inicio</a>
+                <a href="#como-jugar" class="nav-link">¿Cómo Jugar?</a>
+                <a href="#caracteristicas" class="nav-link">Características</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    ¡Bienvenido a <span class="gradient-text">Vegan Wetlands</span>! 🌿
+                </h1>
+                <p class="hero-subtitle">
+                    Un mundo mágico donde cuidamos animales, construimos santuarios y aprendemos sobre la vida vegana
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">0-20</span>
+                        <span class="stat-label">Jugadores Online</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Servidor Activo</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">7+</span>
+                        <span class="stat-label">Edad Recomendada</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="server-card">
+                    <div class="server-header">
+                        <div class="server-status online">
+                            <span class="status-dot"></span>
+                            <span>SERVIDOR ONLINE</span>
+                        </div>
+                    </div>
+                    <div class="server-info">
+                        <h3>Conectarse al Juego</h3>
+                        <div class="server-address">
+                            <input type="text" value="luanti.gabrielpantoja.cl" readonly id="server-address">
+                            <button class="copy-btn" onclick="copyAddress()">
+                                <span id="copy-text">📋 Copiar</span>
+                            </button>
+                        </div>
+                        <p class="server-note">¡Solo copia y pega en tu cliente de Luanti!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Animals Animation -->
+        <div class="floating-animals">
+            <div class="animal" style="--delay: 0s;">🐰</div>
+            <div class="animal" style="--delay: 2s;">🐱</div>
+            <div class="animal" style="--delay: 4s;">🐶</div>
+            <div class="animal" style="--delay: 6s;">🐷</div>
+            <div class="animal" style="--delay: 8s;">🐮</div>
+        </div>
+    </section>
+
+    <!-- How to Play Section -->
+    <section id="como-jugar" class="how-to-play">
+        <div class="container">
+            <h2 class="section-title">🎮 ¿Cómo Empezar a Jugar?</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Descarga Luanti</h3>
+                        <p>Descarga gratis el juego desde <a href="https://www.luanti.org/" target="_blank" rel="noopener">luanti.org</a></p>
+                        <div class="download-links">
+                            <a href="https://www.luanti.org/downloads/" target="_blank" class="download-btn">
+                                🖥️ PC/Mac/Linux
+                            </a>
+                            <a href="https://play.google.com/store/apps/details?id=net.minetest.minetest" target="_blank" class="download-btn">
+                                📱 Android
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Conectarse al Servidor</h3>
+                        <p>Abre Luanti, ve a "Unirse al juego" y añade nuestro servidor:</p>
+                        <code class="server-code">luanti.gabrielpantoja.cl</code>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>¡A Jugar!</h3>
+                        <p>Crea tu personaje y comienza tu aventura vegana. ¡Recibirás un kit de bienvenida!</p>
+                        <div class="starter-kit">
+                            <span class="kit-item">🧽 Cepillo para animales</span>
+                            <span class="kit-item">🥕 Comida vegana</span>
+                            <span class="kit-item">🏠 Kit de refugio</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="caracteristicas" class="features">
+        <div class="container">
+            <h2 class="section-title">🌟 ¿Qué hace especial a Vegan Wetlands?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🐾</div>
+                    <h3>Santuarios de Animales</h3>
+                    <p>Construye refugios seguros para animales rescatados. Cuida ovejas, vacas, cerdos y más.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🌱</div>
+                    <h3>100% Vegano</h3>
+                    <p>Descubre deliciosas recetas veganas como hamburguesas de plantas y leche de avena.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Educativo</h3>
+                    <p>Aprende sobre el cuidado animal, medio ambiente y vida saludable mientras juegas.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Modo Creativo</h3>
+                    <p>Sin violencia ni daño. Solo construcción, exploración y diversión segura.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Comunidad Familiar</h3>
+                    <p>Ambiente seguro y moderado para que niños y familias disfruten juntos.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Mods Únicos</h3>
+                    <p>Características especiales como cepillos para animales y bloques educativos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🌱 Vegan Wetlands</h4>
+                    <p>Un servidor de Luanti educativo y vegano para toda la familia.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>📋 Información del Servidor</h4>
+                    <ul>
+                        <li>Versión: VoxeLibre (MineClone2)</li>
+                        <li>Idioma: Español</li>
+                        <li>Máximo jugadores: 20</li>
+                        <li>Tipo: Creativo, Sin PvP</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>🎮 Comandos Útiles</h4>
+                    <ul>
+                        <li><code>/santuario</code> - Info sobre santuarios</li>
+                        <li><code>/veganismo</code> - Aprende sobre veganismo</li>
+                        <li><code>/spawn</code> - Volver al inicio</li>
+                        <li><code>/home</code> - Ir a tu casa</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Vegan Wetlands. Servidor educativo y sin ánimo de lucro.</p>
+                <p>Luanti es software libre y gratuito. Aprende más en <a href="https://www.luanti.org" target="_blank">luanti.org</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
