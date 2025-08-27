@@ -186,10 +186,27 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 - `/veganismo`: Educational content about veganism
 
 ### Server Management Features
-- New players automatically receive starter kit (brush, vegan food, medkit)
+- New players automatically receive starter kit with vegan foods (tofu, seitan, plant milk)
 - Anti-grief protection with rollback recording
 - Automatic health checks every 30 seconds
 - Auto-restart on container failure
+
+## Third-Party Content Attribution
+
+### 🌱 Vegan Food Mod
+**Source**: [vegan_food mod by Daenvil](https://content.luanti.org/packages/Daenvil/vegan_food/)  
+**Version**: Latest from Luanti ContentDB  
+**License**: 
+- **Code**: GPL v3.0
+- **Textures**: CC BY-SA 4.0
+
+**Credits**:
+- **Developer**: [Daenvil](https://github.com/daenvil)
+- **Original textures**: Tofu and not-fish fillet by Daenvil
+- **Base textures**: Derived from VoxeLibre, based on Pixel Perfection resource pack for Minecraft 1.11 by XSSheep
+- **Special thanks**: [Vegan Minecraft community](https://veganminecraft.com)
+
+**Integration**: Provides professional vegan food items (tofu, seitan, plant milk, syrup) with high-quality textures for the starter kit, replacing placeholder items that lacked proper textures.
 
 ## Admin Privilege Management
 
