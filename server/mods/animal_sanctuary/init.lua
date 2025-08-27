@@ -1,12 +1,12 @@
 -- ================================================
 -- MOD: ANIMAL SANCTUARY - SANTUARIO DE ANIMALES 🌱
--- Para el servidor Vegan Wetlands
+-- Servidor familiar amigable con los animales
 -- ================================================
 
 animal_sanctuary = {}
 
 -- Mensaje de bienvenida del mod
-minetest.log("action", "[Animal Sanctuary] 🌱 Cargando santuarios veganos...")
+minetest.log("action", "[Animal Sanctuary] 🌱 Cargando santuarios amigables...")
 
 -- ==================
 -- BLOQUES DEL SANTUARIO
@@ -21,7 +21,7 @@ minetest.register_node("animal_sanctuary:sanctuary_gate", {
     
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         minetest.chat_send_player(player:get_player_name(), 
-            "🌱 ¡Bienvenid@ al Santuario Animal! Aquí cuidamos y protegemos a nuestros amigos.")
+            "🌱 ¡Bienvenid@ al Santuario Animal! Aquí cuidamos y protegemos a nuestros amigos con amor.")
         -- Efecto de partículas de bienvenida
         minetest.add_particlespawner({
             amount = 10,
@@ -61,7 +61,7 @@ minetest.register_node("animal_sanctuary:animal_feeder", {
     
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         minetest.chat_send_player(player:get_player_name(), 
-            "🥕 Has alimentado a los animales con comida vegana. ¡Están muy contentos!")
+            "🥕 Has alimentado a los animales con comida saludable. ¡Están muy contentos!")
         
         -- Sonido de animales felices (si hay sonidos disponibles)
         minetest.sound_play("animal_sanctuary_happy", {
@@ -105,7 +105,7 @@ minetest.register_node("animal_sanctuary:animal_shelter", {
 })
 
 -- ==================
--- HERRAMIENTAS VEGANAS
+-- HERRAMIENTAS AMIGABLES
 -- ==================
 
 -- Cepillo para cuidar animales (reemplaza armas)
@@ -162,17 +162,17 @@ minetest.register_craftitem("animal_sanctuary:animal_medkit", {
 })
 
 -- ==================
--- COMIDA VEGANA PARA ANIMALES
+-- COMIDA SALUDABLE PARA ANIMALES
 -- ==================
 
 minetest.register_craftitem("animal_sanctuary:vegan_animal_food", {
-    description = "Comida Vegana para Animales 🌾\nNutritiva y deliciosa",
+    description = "Comida Saludable para Animales 🌾\nNutritiva y deliciosa",
     inventory_image = "animal_sanctuary_vegan_food.png",
     stack_max = 64,
     
     on_use = function(itemstack, user, pointed_thing)
         minetest.chat_send_player(user:get_player_name(), 
-            "🌾 Has dado comida vegana nutritiva a los animales.")
+            "🌾 Has dado comida saludable y nutritiva a los animales.")
         itemstack:take_item()
         return itemstack
     end,
@@ -232,7 +232,7 @@ minetest.register_craft({
     }
 })
 
--- Receta para comida vegana
+-- Receta para comida saludable
 minetest.register_craft({
     output = "animal_sanctuary:vegan_animal_food 4",
     recipe = {
@@ -250,13 +250,14 @@ minetest.register_chatcommand("santuario", {
     description = "Información sobre cómo funciona el santuario animal",
     func = function(name, param)
         local info = {
-            "🌱 === SANTUARIO DE ANIMALES VEGANO ===",
+            "🌱 === SANTUARIO DE ANIMALES ===",
             "🐮 Aquí cuidamos y protegemos a todos los animales",
             "🧽 Usa el cepillo para mimar a los animales",
-            "🥕 Alimenta a los animales con comida vegana",
+            "🥕 Alimenta a los animales con comida saludable",
             "🏠 Construye refugios para mantenerlos seguros",
             "🏥 Cura animales heridos con el kit médico",
-            "💚 ¡Juntos creamos un mundo más compasivo!"
+            "💚 ¡Juntos creamos un mundo más respetuoso!",
+            "🔧 (Servidor en desarrollo activo - ¡gracias por tu paciencia!)"
         }
         
         for _, line in ipairs(info) do
@@ -267,20 +268,21 @@ minetest.register_chatcommand("santuario", {
     end,
 })
 
--- Comando de ayuda vegana
-minetest.register_chatcommand("veganismo", {
-    description = "Aprende sobre el veganismo",
+-- Comando de ayuda sobre respeto animal
+minetest.register_chatcommand("animales", {
+    description = "Aprende sobre el respeto hacia los animales",
     func = function(name, param)
-        local vegan_info = {
-            "🌱 === ¿QUÉ ES EL VEGANISMO? ===",
-            "💚 El veganismo es una forma de vida que evita lastimar animales",
-            "🐮 Los animales son nuestros amigos, no comida",
-            "🌾 Podemos estar sanos comiendo solo plantas",
-            "🌍 Ayudamos al planeta siendo veganos",
-            "🤗 ¡En Vegan Wetlands celebramos la compasión!"
+        local animal_info = {
+            "🌱 === RESPETO HACIA LOS ANIMALES ===",
+            "💚 Creemos en tratar a todos los seres vivos con bondad",
+            "🐮 Los animales son nuestros compañeros del planeta",
+            "🌾 Una alimentación basada en plantas es saludable",
+            "🌍 Cuidar a los animales ayuda a cuidar nuestro hogar común",
+            "🤗 ¡Aquí celebramos la compasión y el respeto!",
+            "🔧 (Este servidor está en desarrollo - ¡mejoramos cada día!)"
         }
         
-        for _, line in ipairs(vegan_info) do
+        for _, line in ipairs(animal_info) do
             minetest.chat_send_player(name, line)
         end
         
@@ -296,7 +298,7 @@ minetest.register_chatcommand("veganismo", {
 minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
     if hitter and hitter:is_player() then
         minetest.chat_send_player(hitter:get_player_name(), 
-            "🚫 ¡En Vegan Wetlands no lastimamos a nadie! Usa el cepillo para mimar instead.")
+            "🚫 ¡Este es un servidor sin violencia! Usa el cepillo para mimar en su lugar.")
         return true -- Cancela el daño
     end
     return false
@@ -307,13 +309,15 @@ minetest.register_on_newplayer(function(player)
     local name = player:get_player_name()
     minetest.after(2, function()
         minetest.chat_send_player(name, 
-            "🌱 ¡Bienvenid@ a Vegan Wetlands, " .. name .. "!")
+            "🌱 ¡Bienvenid@ a Wetlands, " .. name .. "!")
         minetest.chat_send_player(name, 
-            "🐮 Aquí cuidamos animales en santuarios veganos.")
+            "🐮 Aquí cuidamos animales con amor y respeto.")
         minetest.chat_send_player(name, 
             "💚 Usa /santuario para aprender cómo funciona.")
         minetest.chat_send_player(name, 
-            "🌾 Usa /veganismo para aprender sobre compasión.")
+            "🌾 Usa /animales para aprender sobre el respeto.")
+        minetest.chat_send_player(name, 
+            "🔧 Estamos en desarrollo activo - ¡disculpa cualquier inconveniente!")
     end)
 end)
 
@@ -331,6 +335,6 @@ minetest.register_on_newplayer(function(player)
     inv:add_item("main", "mcl_farming:beetroot_item 5")
 end)
 
-minetest.log("action", "[Animal Sanctuary] 🌱 ¡Santuarios veganos cargados exitosamente!")
+minetest.log("action", "[Animal Sanctuary] 🌱 ¡Santuarios amigables cargados exitosamente!")
 
-print("🌱 Animal Sanctuary mod cargado - ¡Vegan Wetlands listo!")
+print("🌱 Animal Sanctuary mod cargado - ¡Servidor familiar listo!")
