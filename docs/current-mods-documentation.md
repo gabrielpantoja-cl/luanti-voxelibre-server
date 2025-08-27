@@ -17,10 +17,13 @@ updated: 2025-08-26
 
 | Mod | Estado | Versión | Líneas de Código | Funcionalidad Principal |
 |-----|--------|---------|------------------|------------------------|
-| `animal_sanctuary` | ✅ Activo | v1.0.0 | ~330 líneas | Sistema de cuidado animal vegano |
-| `vegan_foods` | ✅ Activo | v1.0.0 | ~80 líneas | Alimentos veganos craftables |
-| `education_blocks` | ✅ Activo | v1.0.0 | ~100 líneas | Bloques educativos interactivos |
+| `animal_sanctuary` | ✅ **FUNCIONANDO** | v1.0.0 | ~330 líneas | Sistema de cuidado animal vegano |
+| `vegan_foods` | ✅ **FUNCIONANDO** | v1.0.0 | ~80 líneas | Alimentos veganos craftables |
+| `education_blocks` | ✅ **FUNCIONANDO** | v1.0.0 | ~100 líneas | Bloques educativos interactivos |
 | `protector` | ✅ Activo | Externo | N/A | Anti-griefing y protección |
+
+### 🎉 ESTADO ACTUALIZADO - 27 AGOSTO 2025
+**PROBLEMA CRÍTICO RESUELTO**: Los mods ahora cargan correctamente en VoxeLibre usando mapeo directo a `/games/mineclone2/mods/CATEGORIA/`.
 
 ---
 
