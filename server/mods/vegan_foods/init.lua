@@ -39,17 +39,17 @@ minetest.register_craftitem("vegan_foods:vegan_pizza", {
 minetest.register_craft({
     output = "vegan_foods:vegan_burger",
     recipe = {
-        {"farming:bread"},
-        {"default:apple"},
-        {"farming:bread"}
+        {"mcl_farming:bread"},
+        {"mcl_core:apple"},
+        {"mcl_farming:bread"}
     }
 })
 
 minetest.register_craft({
     output = "vegan_foods:oat_milk",
     recipe = {
-        {"farming:wheat", "farming:wheat", "farming:wheat"},
-        {"", "bucket:bucket_water", ""},
+        {"mcl_farming:wheat", "mcl_farming:wheat", "mcl_farming:wheat"},
+        {"", "mcl_buckets:bucket_water", ""},
         {"", "", ""}
     }
 })
