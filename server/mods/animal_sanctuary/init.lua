@@ -17,7 +17,7 @@ minetest.register_node("animal_sanctuary:sanctuary_gate", {
     description = "Puerta del Santuario Animal 🐮",
     tiles = {"default_wood.png^animal_sanctuary_gate_overlay.png"},
     groups = {cracky = 2, oddly_breakable_by_hand = 2},
-    sounds = default.node_sound_wood_defaults(),
+    sounds = mcl_sounds.node_sound_wood_defaults(),
     
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         minetest.chat_send_player(player:get_player_name(), 
@@ -49,7 +49,7 @@ minetest.register_node("animal_sanctuary:animal_feeder", {
     paramtype = "light",
     paramtype2 = "facedir",
     groups = {cracky = 2, oddly_breakable_by_hand = 2},
-    sounds = default.node_sound_wood_defaults(),
+    sounds = mcl_sounds.node_sound_wood_defaults(),
     
     node_box = {
         type = "fixed",
@@ -82,7 +82,7 @@ minetest.register_node("animal_sanctuary:animal_shelter", {
     paramtype = "light",
     paramtype2 = "facedir",
     groups = {cracky = 2, oddly_breakable_by_hand = 2},
-    sounds = default.node_sound_wood_defaults(),
+    sounds = mcl_sounds.node_sound_wood_defaults(),
     
     node_box = {
         type = "fixed",
