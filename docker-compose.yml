@@ -8,7 +8,9 @@ services:
       - "30000:30000/udp"
     volumes:
       - ./server/config/luanti.conf:/config/.minetest/minetest.conf
-      - ./server/mods:/config/.minetest/mods
+      - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods
+      - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary
+      - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks
       - ./server/worlds:/config/.minetest/worlds
       - ./server/games:/config/.minetest/games
       - ./server/backups:/backups
