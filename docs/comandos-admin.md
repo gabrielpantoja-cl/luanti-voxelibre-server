@@ -43,19 +43,44 @@ Este documento contiene todos los comandos disponibles para administradores del 
 - [ ] `/weather rain` - Establece lluvia
 - [ ] `/weather storm` - Establece tormenta
 
-### Teletransporte
+### Teletransporte (VoxeLibre Nativo)
 
-- [ ] `/teleport <jugador> <x> <y> <z>` - Teletransporta jugador a coordenadas
-- [ ] `/tp <jugador> <x> <y> <z>` - Comando corto de teletransporte
-- [ ] `/bring <jugador>` - Trae un jugador hacia ti
+- [x] `/teleport <jugador> <x> <y> <z>` - Teletransporta jugador a coordenadas **[VERIFICADO - NATIVO]**
+- [x] `/tp <jugador> <x> <y> <z>` - Comando corto de teletransporte (alias de /teleport) **[VERIFICADO - NATIVO]**
+- [x] `/bring <jugador>` - Trae un jugador hacia ti (requiere privilegio `bring`) **[VERIFICADO - NATIVO]**
 - [ ] `/goto <jugador>` - Te teletransporta hacia un jugador
 
-### Spawn y Hogar
+### Spawn y Sistema de Respawn
 
-- [ ] `/spawn` - Teletransporta al punto de aparición
-- [ ] `/setspawn` - Establece punto de aparición global
-- [ ] `/sethome` - Establece hogar personal
-- [ ] `/home` - Teletransporta al hogar personal
+- ❌ `/spawn` - **NO DISPONIBLE** - VoxeLibre usa sistema de camas/anchors
+- ❌ `/setspawn` - **NO DISPONIBLE** - Spawn global se configura en luanti.conf
+- ❌ `/sethome` - **NO DISPONIBLE** - VoxeLibre usa camas como sistema de home
+- ❌ `/home` - **NO DISPONIBLE** - VoxeLibre usa camas como sistema de home
+
+### Sistema de Respawn VoxeLibre (Reemplaza Home/Spawn)
+
+- [x] **Dormir en cama** - Establece punto de respawn personal automáticamente **[VERIFICADO]**
+- [x] **Anchor de Respawn** - Punto de respawn alternativo (requiere glowstone) **[VERIFICADO]**
+- [x] **Respawn automático** - Al morir, reapareces en tu cama/anchor **[VERIFICADO]**
+
+## 🏠 Cómo Establecer "Home" en VoxeLibre (Sistema de Camas)
+
+### Para Jugadores:
+1. **Crear una cama**: Combina 3 bloques de lana + 3 tablones de madera
+2. **Colocar la cama**: Coloca la cama donde quieres tu "home"
+3. **Dormir**: Haz clic derecho en la cama durante la noche
+4. **¡Listo!**: Ahora cuando mueras, respawnarás en esa cama
+
+### Para Administradores - Teletransporte Inmediato:
+- `/tp <jugador> <x> <y> <z>` - Teletransportar a coordenadas específicas
+- `/bring <jugador>` - Traer un jugador hacia ti
+- `/teleport gabo 100 64 200` - Ejemplo: ir a coordenadas 100, 64, 200
+
+### Ventajas del Sistema VoxeLibre:
+✅ **Visual**: Puedes ver físicamente dónde está tu "home" (la cama)  
+✅ **Inmersivo**: Más realista que comandos mágicos  
+✅ **Sin comandos**: No necesitas recordar sintaxis de comandos  
+✅ **Automático**: Funciona automáticamente al morir
 
 ## Comandos de Objetos y Construcción
 
@@ -108,26 +133,30 @@ Este documento contiene todos los comandos disponibles para administradores del 
 - `fast` - Movimiento rápido
 - `noclip` - Atravesar bloques
 
-### Privilegios Administrativos
+### Privilegios Administrativos VoxeLibre
 - `server` - Control total del servidor
-- `privs` - Gestionar privilegios de otros
+- `privs` - Gestionar privilegios de otros  
 - `ban` - Banear jugadores
 - `kick` - Expulsar jugadores
-- `teleport` - Teletransporte
+- `teleport` - Usar comandos de teletransporte (/tp, /teleport)
+- `bring` - Traer jugadores hacia ti (/bring)
 - `give` - Dar objetos
 - `settime` - Cambiar hora del día
-- `worldedit` - Usar WorldEdit (si está instalado)
-- `home` - Usar comandos de hogar
-- `spawn` - Usar comandos de spawn
-- `rollback_check` - Ver historial de rollback
+- `weather_manager` - Controlar clima del servidor
+- `maphack` - Ver mapa completo
+- `rollback` - Ver y usar historial de rollback
 - `password` - Cambiar contraseñas de usuarios
+- `announce` - Enviar anuncios del servidor
+- `basic_privs` - Privilegios básicos administrativos
+- `protection_bypass` - Ignorar protecciones
 
 ## Configuración por Defecto del Servidor
 
 ### Privilegios por Defecto para Nuevos Jugadores
 ```
-default_privs = interact,shout,home,spawn,creative
+default_privs = interact,shout,creative,give,fly,fast
 ```
+**Nota**: Los privilegios `home` y `spawn` no existen en VoxeLibre - se reemplazaron con el sistema de camas.
 
 ### Configuración Actual
 - **Modo**: Creativo habilitado por defecto
