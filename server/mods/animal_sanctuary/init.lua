@@ -320,9 +320,15 @@ end)
 -- Dar kit inicial a nuevos jugadores
 minetest.register_on_newplayer(function(player)
     local inv = player:get_inventory()
-    inv:add_item("main", "animal_sanctuary:animal_brush")
-    inv:add_item("main", "animal_sanctuary:vegan_animal_food 10")
-    inv:add_item("main", "animal_sanctuary:animal_medkit")
+    -- Comida vegana del mod vegan_food
+    inv:add_item("main", "vegan_food:tofu 5")
+    inv:add_item("main", "vegan_food:cooked_seitan 3")
+    inv:add_item("main", "vegan_food:milk_bucket 2")
+    -- Herramientas básicas para construcción y exploración
+    inv:add_item("main", "mcl_tools:shovel_wood")
+    inv:add_item("main", "mcl_farming:bread 5")
+    inv:add_item("main", "mcl_farming:carrot_item 10")
+    inv:add_item("main", "mcl_farming:beetroot_item 5")
 end)
 
 minetest.log("action", "[Animal Sanctuary] 🌱 ¡Santuarios veganos cargados exitosamente!")
