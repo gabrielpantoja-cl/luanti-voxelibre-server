@@ -241,54 +241,6 @@ minetest.register_craft({
     }
 })
 
--- ==================
--- COMANDOS DEL CHAT
--- ==================
-
--- Comando para obtener información sobre el santuario
-minetest.register_chatcommand("santuario", {
-    description = "Información sobre cómo funciona el santuario animal",
-    func = function(name, param)
-        local info = {
-            "🌱 === SANTUARIO DE ANIMALES ===",
-            "🐮 Aquí cuidamos y protegemos a todos los animales",
-            "🧽 Usa el cepillo para mimar a los animales",
-            "🥕 Alimenta a los animales con comida saludable",
-            "🏠 Construye refugios para mantenerlos seguros",
-            "🏥 Cura animales heridos con el kit médico",
-            "💚 ¡Juntos creamos un mundo más respetuoso!",
-            "🔧 (Servidor en desarrollo activo - ¡gracias por tu paciencia!)"
-        }
-        
-        for _, line in ipairs(info) do
-            minetest.chat_send_player(name, line)
-        end
-        
-        return true
-    end,
-})
-
--- Comando de ayuda sobre respeto animal
-minetest.register_chatcommand("animales", {
-    description = "Aprende sobre el respeto hacia los animales",
-    func = function(name, param)
-        local animal_info = {
-            "🌱 === RESPETO HACIA LOS ANIMALES ===",
-            "💚 Creemos en tratar a todos los seres vivos con bondad",
-            "🐮 Los animales son nuestros compañeros del planeta",
-            "🌾 Una alimentación basada en plantas es saludable",
-            "🌍 Cuidar a los animales ayuda a cuidar nuestro hogar común",
-            "🤗 ¡Aquí celebramos la compasión y el respeto!",
-            "🔧 (Este servidor está en desarrollo - ¡mejoramos cada día!)"
-        }
-        
-        for _, line in ipairs(animal_info) do
-            minetest.chat_send_player(name, line)
-        end
-        
-        return true
-    end,
-})
 
 -- ==================
 -- EVENTOS Y FUNCIONES
@@ -311,13 +263,9 @@ minetest.register_on_newplayer(function(player)
         minetest.chat_send_player(name, 
             "🌱 ¡Bienvenid@ a Wetlands, " .. name .. "!")
         minetest.chat_send_player(name, 
-            "🐮 Aquí cuidamos animales con amor y respeto.")
+            "💚 Aquí nos cuidamos con amor y respeto.")
         minetest.chat_send_player(name, 
-            "💚 Usa /santuario para aprender cómo funciona.")
-        minetest.chat_send_player(name, 
-            "🌾 Usa /animales para aprender sobre el respeto.")
-        minetest.chat_send_player(name, 
-            "🔧 Estamos en desarrollo activo - ¡disculpa cualquier inconveniente!")
+            "🔧 Estamos en desarrollo activo.")
     end)
 end)
 
