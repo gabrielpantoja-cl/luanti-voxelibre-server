@@ -6,12 +6,12 @@
 -- Cartel educativo sobre veganismo
 minetest.register_node("education_blocks:vegan_sign", {
     description = "Cartel Vegano 📋\nInformación sobre veganismo",
-    tiles = {"default_wood.png^education_vegan_sign.png"},
+    tiles = {"mcl_core_planks_oak.png^education_vegan_sign.png"},
     drawtype = "signlike",
     paramtype = "light",
     paramtype2 = "wallmounted",
     groups = {cracky = 2, oddly_breakable_by_hand = 2, attached_node = 1},
-    sounds = default.node_sound_wood_defaults(),
+    sounds = mcl_sounds.node_sound_wood_defaults(),
     selection_box = {type = "wallmounted"},
     
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
@@ -33,7 +33,7 @@ minetest.register_node("education_blocks:nutrition_block", {
     description = "Bloque Nutricional 🥗\nDatos sobre nutrición vegana",
     tiles = {"education_nutrition_top.png", "education_nutrition_bottom.png", "education_nutrition_side.png"},
     groups = {cracky = 2, oddly_breakable_by_hand = 2},
-    sounds = default.node_sound_stone_defaults(),
+    sounds = mcl_sounds.node_sound_stone_defaults(),
     
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         local nutrition_facts = {
@@ -54,7 +54,7 @@ minetest.register_node("education_blocks:animal_facts", {
     description = "Datos de Animales 🐰\nDatos curiosos sobre animales",
     tiles = {"education_animal_facts.png"},
     groups = {cracky = 2, oddly_breakable_by_hand = 2},
-    sounds = default.node_sound_stone_defaults(),
+    sounds = mcl_sounds.node_sound_stone_defaults(),
     
     on_rightclick = function(pos, node, player, itemstack, pointed_thing)
         local animal_facts = {
