@@ -31,6 +31,8 @@ if not plant_milk_table.groups["food_milk"] then
 	plant_milk_table.groups["food_milk"] = 1
 end
 plant_milk_table.groups[mod.groups.plant_milk] = 1
+plant_milk_table.groups.craftitem = 1
+plant_milk_table._mcl_blast_resistance = 0
 
 core.register_craftitem(mod.craftitems.milk_bucket, plant_milk_table)
 
@@ -57,14 +59,17 @@ core.register_craftitem(mod.craftitems.tofu, {
 	wield_image = "vegan_food_tofu.png",
 	on_place = core.item_eat(8),
 	on_secondary_use = core.item_eat(8),
+	on_use = core.item_eat(8),
 	groups = {
 		food = 2,
 		eatable = 8,
 		food_tofu = 1,
 		food_meat = 1,
+		craftitem = 1,
 	},
 	_mcl_saturation = 12.8,
 	stack_max = 64,
+	_mcl_blast_resistance = 0,
 })
 
 local empty_bucket = ""

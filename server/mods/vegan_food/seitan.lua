@@ -8,6 +8,7 @@ core.register_craftitem(mod.craftitems.raw_seitan, {
 	wield_image = "vegan_food_raw_seitan.png",
 	on_place = core.item_eat(3),
 	on_secondary_use = core.item_eat(3),
+	on_use = core.item_eat(3),
 	groups = {
 		food = 2,
 		eatable = 3,
@@ -16,9 +17,11 @@ core.register_craftitem(mod.craftitems.raw_seitan, {
 		food_seitan_raw = 1,
 		food_meat_raw = 1,
 		compostability = 65,
+		craftitem = 1,
 	},
 	_mcl_saturation = 1.8,
 	stack_max = 64,
+	_mcl_blast_resistance = 0,
 })
 
 local empty_bowl = ""
@@ -58,15 +61,18 @@ core.register_craftitem(mod.craftitems.cooked_seitan, {
 	wield_image = "vegan_food_cooked_seitan.png",
 	on_place = core.item_eat(8),
 	on_secondary_use = core.item_eat(8),
+	on_use = core.item_eat(8),
 	groups = {
 		food = 2,
 		eatable = 8,
 		food_seitan = 1,
 		food_meat = 1,
 		compostability = 65,
+		craftitem = 1,
 	},
 	_mcl_saturation = 12.8,
 	stack_max = 64,
+	_mcl_blast_resistance = 0,
 })
 
 core.register_craft({
