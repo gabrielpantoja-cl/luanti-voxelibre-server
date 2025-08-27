@@ -1,6 +1,7 @@
-# 🤖 Integración con n8n - Vegan Wetlands
+# 🤖 Integración con n8n - Vegan Wetlands - a fututo
 
-Esta guía explica cómo integrar el servidor Vegan Wetlands con n8n para automatización avanzada.
+Esta guía explica cómo se podria integrar el servidor Vegan Wetlands con n8n para automatización avanzada.
+-- REVISAR -- 
 
 ## 🎯 Casos de Uso
 
