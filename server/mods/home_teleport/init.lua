@@ -24,7 +24,11 @@ end
 -- Cargar homes al iniciar
 minetest.register_on_mods_loaded(function()
     load_homes()
-    minetest.log("info", "[Home Teleport] Mod cargado. " .. table.getn(homes or {}) .. " homes cargados.")
+    local home_count = 0
+    for _ in pairs(homes or {}) do
+        home_count = home_count + 1
+    end
+    minetest.log("info", "[Home Teleport] Mod cargado. " .. home_count .. " homes cargados.")
 end)
 
 -- Función para validar posición segura
@@ -118,8 +122,17 @@ minetest.register_chatcommand("spawn", {
             return false, "Jugador no encontrado"
         end
         
-        -- Usar el sistema de spawn de VoxeLibre
-        local spawn_pos = mcl_spawn.get_world_spawn_pos()
+        -- Usar el sistema de spawn de VoxeLibre o fallback
+        local spawn_pos = nil
+        
+        if mcl_spawn and mcl_spawn.get_world_spawn_pos then
+            spawn_pos = mcl_spawn.get_world_spawn_pos()
+        end
+        
+        -- Fallback a configuración del servidor
+        if not spawn_pos then
+            spawn_pos = minetest.setting_get_pos("static_spawnpoint") or {x = 0, y = 15, z = 0}
+        end
         
         if spawn_pos then
             player:set_pos(spawn_pos)
