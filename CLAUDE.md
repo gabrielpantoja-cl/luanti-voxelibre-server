@@ -52,6 +52,18 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a com
 ssh gabriel@<VPS_IP>
 ```
 
+## 🚨 CONFIGURACIÓN NUCLEAR CRÍTICA
+
+**⚠️ IMPORTANTE:** El servidor requiere una **configuración nuclear** que modifica archivos **FUERA del repositorio** para funcionar correctamente sin monstruos. Ver `docs/NUCLEAR_CONFIG_OVERRIDE.md` para detalles completos.
+
+### Aplicar Configuración Nuclear (Si es Necesario):
+```bash
+# Usar script automatizado
+./scripts/apply-nuclear-config.sh
+
+# O aplicar manualmente - Ver docs/NUCLEAR_CONFIG_OVERRIDE.md
+```
+
 ## Essential Commands
 
 ### Server Management
