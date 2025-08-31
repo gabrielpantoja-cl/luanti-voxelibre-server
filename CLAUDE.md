@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a vegan, educational, and creative environment for children 7+ years old. The server features custom mods that promote animal care, vegan education, and non-violent gameplay through animal sanctuaries.
+Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a compassionate, educational, and creative environment for children 7+ years old. The server features custom mods that promote animal care, compassionate education, and non-violent gameplay through animal sanctuaries.
 
 **IMPORTANT**: This repository (`https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`) contains **ALL** Luanti-specific code, configuration, and deployment logic. It is completely independent from the VPS administrative repository (`vps-do.git`).
 
@@ -13,7 +13,7 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a veg
 ### 🎮 This Repository (Vegan-Wetlands.git)
 **Responsibility**: Complete Luanti server implementation
 - Docker Compose configuration for Luanti
-- Custom mods (animal_sanctuary, vegan_foods, education_blocks)
+- Custom mods (animal_sanctuary, vegan_food, education_blocks)
 - Server configuration files
 - World data and backups
 - **Landing page development** (HTML/CSS/JS for luanti.gabrielpantoja.cl)
@@ -118,9 +118,9 @@ docker-compose logs backup-cron
 
 ### File Structure
 - `docker-compose.yml`: Main container orchestration
-- `server/config/luanti.conf`: Server configuration (creative mode, vegan-friendly settings)
+- `server/config/luanti.conf`: Server configuration (creative mode, compassionate-friendly settings)
 - `server/games/`: VoxeLibre (MineClone2) game files
-- `server/mods/`: Custom Lua mods (animal_sanctuary, vegan_foods, education_blocks)
+- `server/mods/`: Custom Lua mods (animal_sanctuary, vegan_food, education_blocks)
 - `server/worlds/`: Persistent world data
 - `server/backups/`: Automated backup storage
 - `server/landing-page/`: Modern landing page (HTML/CSS/JS) for luanti.gabrielpantoja.cl
@@ -136,8 +136,8 @@ All mods follow Luanti mod structure:
 
 **Key Mods:**
 1. **animal_sanctuary**: Replaces violent mechanics with animal care (brushes instead of weapons, feeding systems, shelters)
-2. **vegan_foods**: Plant-based food items (burgers, oat milk, vegan cheese)
-3. **education_blocks**: Interactive educational content about veganism
+2. **vegan_food**: Plant-based food items (burgers, oat milk, plant-based cheese)
+3. **education_blocks**: Interactive educational content about compassion and sustainability
 
 ### Server Configuration
 - **Mode**: Creative (no damage, no PvP, no TNT)
@@ -183,17 +183,17 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 
 ### In-Game Commands
 - `/santuario`: Information about animal sanctuary features
-- `/veganismo`: Educational content about veganism
+- `/filosofia`: Educational content about the game's philosophy
 
 ### Server Management Features
-- New players automatically receive starter kit with vegan foods (tofu, seitan, plant milk)
+- New players automatically receive starter kit with plant-based foods (tofu, seitan, plant milk)
 - Anti-grief protection with rollback recording
 - Automatic health checks every 30 seconds
 - Auto-restart on container failure
 
 ## Third-Party Content Attribution
 
-### 🌱 Vegan Food Mod
+### 🌱 Plant-Based Food Mod
 **Source**: [vegan_food mod by Daenvil](https://content.luanti.org/packages/Daenvil/vegan_food/)  
 **Version**: Latest from Luanti ContentDB  
 **License**: 
@@ -204,9 +204,9 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 - **Developer**: [Daenvil](https://github.com/daenvil)
 - **Original textures**: Tofu and not-fish fillet by Daenvil
 - **Base textures**: Derived from VoxeLibre, based on Pixel Perfection resource pack for Minecraft 1.11 by XSSheep
-- **Special thanks**: [Vegan Minecraft community](https://veganminecraft.com)
+- **Special thanks**: [Mindful Minecraft community](https://veganminecraft.com)
 
-**Integration**: Provides professional vegan food items (tofu, seitan, plant milk, syrup) with high-quality textures for the starter kit, replacing placeholder items that lacked proper textures.
+**Integration**: Provides professional plant-based food items (tofu, seitan, plant milk, syrup) with high-quality textures for the starter kit, replacing placeholder items that lacked proper textures.
 
 ## Admin Privilege Management
 
@@ -386,14 +386,14 @@ The landing page provides a modern, child-friendly web interface for Vegan Wetla
 
 **Design Principles**:
 - **Child-friendly**: Designed for ages 7+ with vibrant colors and simple navigation
-- **Vegan focus**: Educational content about animal care and plant-based living
+- **Compassion focus**: Educational content about animal care and plant-based living
 - **Responsive**: Works on desktop, tablet, and mobile devices
 - **Accessible**: Screen reader friendly with proper ARIA labels
 
 **Key Sections**:
 1. **Hero**: Server connection info with copy-to-clipboard functionality
 2. **How to Play**: Step-by-step guide to download Luanti and connect
-3. **Features**: Highlights of vegan gameplay, animal sanctuaries, and educational content
+3. **Features**: Highlights of compassionate gameplay, animal sanctuaries, and educational content
 4. **Footer**: Server details and useful in-game commands
 
 ### File Structure
@@ -507,10 +507,10 @@ nginx-proxy:
 **Language**: Spanish (primary server language)
 
 **Key Messages**:
-- "Servidor vegano educativo" (Educational vegan server)
+- "Servidor educativo y compasivo" (Educational and compassionate server)
 - "Sin violencia, solo diversión" (No violence, just fun)
 - "Cuida animales en santuarios" (Care for animals in sanctuaries)
-- "Aprende sobre veganismo jugando" (Learn about veganism while playing)
+- "Aprende sobre alimentación consciente jugando" (Learn about mindful eating while playing)
 
 **Call-to-Actions**:
 - Clear server address: `luanti.gabrielpantoja.cl`
