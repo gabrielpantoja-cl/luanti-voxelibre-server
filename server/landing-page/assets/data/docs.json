@@ -55,15 +55,15 @@
       "sections": [
         {
           "level": 1,
-          "title": "💚 Guía del Servidor Vegan Wetlands",
+          "title": "💚 Guía del Servidor Wetlands",
           "id": "gua-del-servidor-vegan-wetlands",
-          "content": "¡Bienvenid@ a Vegan Wetlands! Un universo de bloques donde la creatividad, la compasión y el respeto por los animales son los protagonistas. Este no es un servidor común; es un espacio seguro y educativo diseñado para que jugadores de todas las edades, especialmente niños y niñas a partir de 7 años, puedan construir, explorar y aprender en un entorno 100% vegano y pacífico.\n\n---"
+          "content": "¡Bienvenid@ a Vegan Wetlands! Un universo de bloques donde la creatividad, la compasión y el respeto por los animales son los protagonistas. Este no es un servidor común; es un espacio seguro y educativo diseñado para que jugadores de todas las edades, especialmente niños y niñas a partir de 7 años, puedan construir, explorar y aprender en un entorno 100% compasivo y pacífico.\n\n---"
         },
         {
           "level": 2,
           "title": "📜 Filosofía del Servidor",
           "id": "filosofa-del-servidor",
-          "content": "Nuestra misión se basa en tres pilares fundamentales:\n\n1.  **100% Vegano y Pacífico:** Aquí no hay violencia. Los animales no son un recurso, son nuestros amigos. Fomentamos el cuidado, la protección y el respeto por todas las formas de vida. No existen las armas ni las mecánicas de daño a entidades vivas.\n2.  **Educativo:** Creemos que se puede aprender mientras se juega. A través de nuestros mods personalizados, enseñamos sobre veganismo, compasión animal, nutrición y hasta conceptos básicos de programación, todo de una forma divertida e integrada en el juego.\n3.  **Cooperativo y Creativo:** El objetivo es construir y crear juntos. Fomentamos la colaboración entre jugadores para desarrollar proyectos, compartir conocimiento y construir un mundo mejor, bloque a bloque.\n\n---"
+          "content": "Nuestra misión se basa en tres pilares fundamentales:\n\n1.  **100% Compasivo y Pacífico:** Aquí no hay violencia. Los animales no son un recurso, son nuestros amigos. Fomentamos el cuidado, la protección y el respeto por todas las formas de vida. No existen las armas ni las mecánicas de daño a entidades vivas.\n2.  **Educativo:** Creemos que se puede aprender mientras se juega. A través de nuestros mods personalizados, enseñamos sobre alimentación consciente, compasión animal, nutrición y hasta conceptos básicos de programación, todo de una forma divertida e integrada en el juego.\n3.  **Cooperativo y Creativo:** El objetivo es construir y crear juntos. Fomentamos la colaboración entre jugadores para desarrollar proyectos, compartir conocimiento y construir un mundo mejor, bloque a bloque.\n\n---"
         },
         {
           "level": 2,
@@ -81,19 +81,19 @@
           "level": 3,
           "title": "🐾 El Santuario de Animales",
           "id": "el-santuario-de-animales",
-          "content": "Es el corazón de nuestro servidor. En lugar de granjas, construimos santuarios.\n\n*   **Cepillo para Animales:** ¡Olvídate de las espadas! Tu herramienta principal es un cepillo. Acércate a un animal y úsalo para mimarlo. Verás cómo te lo agradece con corazones y sonidos de felicidad.\n*   **Comida Vegana para Animales:** Aliméntalos con comida especial 100% vegetal.\n*   **Refugios y Comederos:** Construye refugios para protegerlos y comederos para que nunca les falte alimento."
+          "content": "Es el corazón de nuestro servidor. En lugar de granjas, construimos santuarios.\n\n*   **Cepillo para Animales:** ¡Olvídate de las espadas! Tu herramienta principal es un cepillo. Acércate a un animal y úsalo para mimarlo. Verás cómo te lo agradece con corazones y sonidos de felicidad.\n*   **Comida a base de plantas para Animales:** Aliméntalos con comida especial 100% vegetal.\n*   **Refugios y Comederos:** Construye refugios para protegerlos y comederos para que nunca les falte alimento."
         },
         {
           "level": 3,
-          "title": "🍎 Comida Vegana",
+          "title": "🍎 Comida Creativa",
           "id": "comida-vegana",
-          "content": "¡Toda la comida es 100% vegetal y deliciosa! Olvídate de cazar. Aquí usamos la agricultura para crear platos nutritivos.\n\n*   **Recetas Especiales:** Podrás craftear hamburguesas veganas, leche de avena, queso vegano y hasta pizzas.\n*   **Agricultura:** Usa el mod de `farming` para obtener los ingredientes base como trigo, frutas y verduras."
+          "content": "¡Toda la comida es 100% vegetal y deliciosa! Olvídate de cazar. Aquí usamos la agricultura para crear platos nutritivos.\n\n*   **Recetas Especiales:** Podrás craftear hamburguesas a base de plantas, leche de avena, queso a base de plantas y hasta pizzas.\n*   **Agricultura:** Usa el mod de `farming` para obtener los ingredientes base como trigo, frutas y verduras."
         },
         {
           "level": 3,
           "title": "📚 Bloques Educativos",
           "id": "bloques-educativos",
-          "content": "Repartidos por el mundo encontrarás bloques interactivos que, al hacer clic derecho sobre ellos, te darán información valiosa:\n\n*   **Carteles Veganos:** Datos interesantes sobre veganismo y respeto animal.\n*   **Bloques de Nutrición:** Información sobre cómo una dieta vegana es saludable y completa.\n*   **Datos de Animales:** Hechos sorprendentes sobre la inteligencia y vida social de los animales.\n\n---"
+          "content": "Repartidos por el mundo encontrarás bloques interactivos que, al hacer clic derecho sobre ellos, te darán información valiosa:\n\n*   **Carteles Educativos:** Datos interesantes sobre respeto animal y alimentación consciente.\n*   **Bloques de Nutrición:** Información sobre cómo una dieta a base de plantas es saludable y completa.\n*   **Datos de Animales:** Hechos sorprendentes sobre la inteligencia y vida social de los animales.\n\n---"
         },
         {
           "level": 2,
@@ -105,7 +105,7 @@
           "level": 2,
           "title": "💬 Comandos Útiles para Jugadores",
           "id": "comandos-tiles-para-jugadores",
-          "content": "Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos comandos educativos para ti:\n\n*   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.\n*   `/veganismo`: Te da datos interesantes sobre la filosofía vegana.\n\n¡Esperamos que disfrutes de tu estancia en Vegan Wetlands! Si tienes alguna duda, pregunta a los demás jugadores. ¡La cooperación es clave!"
+          "content": "Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos comandos educativos para ti:\n\n*   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.\n*   `/filosofia`: Te da datos interesantes sobre la filosofía del juego.\n\n¡Esperamos que disfrutes de tu estancia en Vegan Wetlands! Si tienes alguna duda, pregunta a los demás jugadores. ¡La cooperación es clave!"
         }
       ],
       "lastModified": "2025-08-31T04:11:48.980Z",
@@ -184,7 +184,7 @@
           "level": 3,
           "title": "4.1. Problema: Monstruos aparecen en el servidor",
           "id": "41-problema-monstruos-aparecen-en-el-servidor",
-          "content": "*   **Contexto Histórico:** En el pasado, VoxeLibre a veces ignoraba las configuraciones `peaceful_mode` o `mobs_spawn = false` en `luanti.conf`.\n*   **Síntoma:** Aparecen Creepers, Zombies, etc., contradiciendo la filosofía del servidor.\n*   **Solución Inmediata (Comandos en el juego):**\n    1.  **Forzar el día:** `/time 6000` (reduce el spawn de monstruos).\n    2.  **Eliminar entidades existentes:** `/clearobjects` (esto elimina mobs hostiles que ya hayan aparecido).\n*   **Solución Permanente (Configuración):**\n    La configuración correcta en `luanti.conf` para deshabilitar monstruos en VoxeLibre es una combinación de varias claves. Asegúrate de que las siguientes estén presentes y activadas:\n    ```ini\n    # Configuración Anti-Monstruos para VoxeLibre\n    only_peaceful_mobs = true\n    mobs_spawn = false\n    mcl_mob_cap_hostile = 0\n    mcl_mob_cap_monster = 0\n    mcl_spawn_monsters = false\n    enable_damage = false\n    ```\n    Si el problema persiste, puede ser necesario crear un mod simple que elimine activamente las entidades hostiles como un seguro adicional."
+          "content": "*   **Contexto Histórico:** En el pasado, VoxeLibre a veces ignoraba las configuraciones `peaceful_mode` o `mobs_spawn = false` en `luanti.conf`.\n*   **Síntoma:** Aparecen Creepers, Zombies, etc., contradiciendo la filosofía del servidor.\n*   **Solución Inmediata (Comandos en el juego):**\n    1.  **Forzar el día:** `/time 6000` (reduce el spawn de monstruos).\n    2.  **Eliminar entidades existentes:** `/clearobjects` (esto elimina mobs hostiles que ya hayan aparecido).\n*   **Solución Permanente (Configuración):**\n    La configuración correcta en `luanti.conf` para deshabilitar monstruos en VoxeLibre es una combinación de varias claves. Asegúrate de que las siguientes estén presente y activadas:\n    ```ini\n    # Configuración Anti-Monstruos para VoxeLibre\n    only_peaceful_mobs = true\n    mobs_spawn = false\n    mcl_mob_cap_hostile = 0\n    mcl_mob_cap_monster = 0\n    mcl_spawn_monsters = false\n    enable_damage = false\n    ```\n    Si el problema persiste, puede ser necesario crear un mod simple que elimine activamente las entidades hostiles como un seguro adicional."
         }
       ],
       "lastModified": "2025-08-31T04:12:15.441Z",
@@ -209,7 +209,7 @@
           "level": 2,
           "title": "1. Filosofía de Desarrollo",
           "id": "1-filosofa-de-desarrollo",
-          "content": "Todo mod desarrollado para este servidor debe adherirse a tres principios básicos:\n\n1.  **Vegano y Pacífico:** El código no debe incluir mecánicas de violencia, caza o explotación animal. El foco es el cuidado, la protección y la cooperación.\n2.  **Educativo:** Cada mod debe tener un componente de aprendizaje, ya sea sobre veganismo, compasión, sostenibilidad o habilidades técnicas como la programación.\n3.  **Rendimiento y Calidad:** El código debe ser limpio, eficiente y estar bien documentado para asegurar la estabilidad del servidor y facilitar futuras colaboraciones.\n\n---"
+          "content": "Todo mod desarrollado para este servidor debe adherirse a tres principios básicos:\n\n1.  **Compasivo y Pacífico:** El código no debe incluir mecánicas de violencia, caza o explotación animal. El foco es el cuidado, la protección y la cooperación.\n2.  **Educativo:** Cada mod debe tener un componente de aprendizaje, ya sea sobre compasión, sostenibilidad o habilidades técnicas como la programación.\n3.  **Rendimiento y Calidad:** El código debe ser limpio, eficiente y estar bien documentado para asegurar la estabilidad del servidor y facilitar futuras colaboraciones.\n\n---"
         },
         {
           "level": 2,
@@ -239,19 +239,19 @@
           "level": 3,
           "title": "🐾 `animal_sanctuary`",
           "id": "animal_sanctuary",
-          "content": "*   **Categoría:** `ENTITIES`\n*   **Funcionalidad:** Reemplaza las mecánicas de violencia por herramientas de cuidado (cepillos, kits médicos). Introduce el concepto de santuario.\n*   **Comandos:** `/santuario`, `/veganismo`."
+          "content": "*   **Categoría:** `ENTITIES`\n*   **Funcionalidad:** Reemplaza las mecánicas de violencia por herramientas de cuidado (cepillos, kits médicos). Introduce el concepto de santuario.\n*   **Comandos:** `/santuario`, `/filosofia`."
         },
         {
           "level": 3,
           "title": "🍎 `vegan_foods`",
           "id": "vegan_foods",
-          "content": "*   **Categoría:** `ITEMS`\n*   **Funcionalidad:** Añade recetas para craftear comida vegana nutritiva usando ingredientes del mod de agricultura de VoxeLibre.\n*   **Dependencias:** `mcl_core`, `mcl_farming`."
+          "content": "*   **Categoría:** `ITEMS`\n*   **Funcionalidad:** Añade recetas para craftear comida a base de plantas nutritiva usando ingredientes del mod de agricultura de VoxeLibre.\n*   **Dependencias:** `mcl_core`, `mcl_farming`."
         },
         {
           "level": 3,
           "title": "📚 `education_blocks`",
           "id": "education_blocks",
-          "content": "*   **Categoría:** `HELP`\n*   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre veganismo, nutrición y respeto animal al ser usados.\n\n---"
+          "content": "*   **Categoría:** `HELP`\n*   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre alimentación consciente, nutrición y respeto animal al ser usados.\n\n---"
         },
         {
           "level": 2,
@@ -269,7 +269,7 @@
           "level": 3,
           "title": "Prioridad Media:",
           "id": "prioridad-media",
-          "content": "*   **`climate_science`:** Mods que enseñen sobre el cambio climático y el impacto positivo del veganismo.\n*   **`sustainable_farming`:** Introducir conceptos de permacultura, compostaje y agricultura sostenible.\n*   **`community_projects`:** Mecánicas que incentiven la construcción de grandes proyectos en equipo.\n\n---"
+          "content": "*   **`climate_science`:** Mods que enseñen sobre el cambio climático y el impacto positivo de una alimentación consciente.\n*   **`sustainable_farming`:** Introducir conceptos de permacultura, compostaje y agricultura sostenible.\n*   **`community_projects`:** Mecánicas que incentiven la construcción de grandes proyectos en equipo.\n\n---"
         },
         {
           "level": 2,
