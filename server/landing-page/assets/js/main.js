@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCopyFunctionality();
     initializeScrollAnimations();
     initializeNavigation();
+    initializeDocumentation();
 });
 
 // ===== COPY SERVER ADDRESS FUNCTIONALITY =====
@@ -508,11 +509,374 @@ window.addEventListener('error', function(e) {
     // Could send error reports to monitoring service
 });
 
+// ===== DOCUMENTATION SYSTEM =====
+let docsData = null;
+let currentDoc = null;
+
+async function initializeDocumentation() {
+    try {
+        // Load documentation data
+        const response = await fetch('assets/data/docs.json');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        docsData = await response.json();
+        console.log('📚 Documentation loaded:', docsData.meta);
+        
+        // Render navigation
+        renderDocsNavigation();
+        
+        // Show welcome screen with stats
+        showDocsWelcome();
+        
+        // Initialize scroll-to-top button
+        initializeDocsScrollToTop();
+        
+    } catch (error) {
+        console.error('❌ Error loading documentation:', error);
+        showDocsError(error.message);
+    }
+}
+
+function renderDocsNavigation() {
+    const navContainer = document.getElementById('docs-nav');
+    if (!navContainer || !docsData) return;
+
+    // Create navigation tabs
+    const navHTML = `
+        <div class="docs-nav-tabs">
+            ${docsData.navigation.map(doc => `
+                <button 
+                    class="docs-nav-tab" 
+                    data-doc-id="${doc.id}"
+                    onclick="loadDocumentation('${doc.id}')"
+                    title="${doc.description}"
+                >
+                    <span class="tab-icon">${doc.icon}</span>
+                    <span class="tab-title">${doc.title}</span>
+                    <span class="tab-audience">${getAudienceLabel(doc.audience)}</span>
+                </button>
+            `).join('')}
+        </div>
+        
+        <div class="docs-nav-breadcrumb" id="docs-breadcrumb" style="display: none;">
+            <button onclick="showDocsWelcome()" class="breadcrumb-home">
+                🏠 Inicio
+            </button>
+            <span class="breadcrumb-separator">›</span>
+            <span class="breadcrumb-current" id="breadcrumb-current"></span>
+        </div>
+    `;
+    
+    navContainer.innerHTML = navHTML;
+}
+
+function getAudienceLabel(audience) {
+    const labels = {
+        'jugadores': 'Para Jugadores',
+        'admins': 'Para Admins',
+        'developers': 'Para Devs',
+        'devops': 'Para DevOps'
+    };
+    return labels[audience] || audience;
+}
+
+function showDocsWelcome() {
+    const contentContainer = document.getElementById('docs-content');
+    const breadcrumb = document.getElementById('docs-breadcrumb');
+    
+    if (breadcrumb) breadcrumb.style.display = 'none';
+    
+    // Clear active tabs
+    document.querySelectorAll('.docs-nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    const statsHTML = docsData ? `
+        <div class="docs-stats-grid">
+            <div class="docs-stat">
+                <span class="stat-number">${docsData.meta.totalDocs}</span>
+                <span class="stat-label">Guías Disponibles</span>
+            </div>
+            <div class="docs-stat">
+                <span class="stat-number">${docsData.meta.totalSections}</span>
+                <span class="stat-label">Secciones Totales</span>
+            </div>
+            <div class="docs-stat">
+                <span class="stat-number">${Math.round(Object.values(docsData.docs).reduce((sum, doc) => sum + doc.wordCount, 0) / 1000)}K</span>
+                <span class="stat-label">Palabras de Contenido</span>
+            </div>
+        </div>
+    ` : '';
+    
+    contentContainer.innerHTML = `
+        <div class="docs-welcome">
+            <div class="docs-welcome-icon">📖</div>
+            <h3>¡Bienvenid@ al Centro de Documentación!</h3>
+            <p>Selecciona una guía del menú superior para comenzar a explorar toda la información sobre Wetlands.</p>
+            ${statsHTML}
+            
+            <div class="docs-quick-links">
+                <h4>🚀 Enlaces Rápidos:</h4>
+                <div class="quick-links-grid">
+                    ${docsData ? docsData.navigation.map(doc => `
+                        <button class="quick-link-card" onclick="loadDocumentation('${doc.id}')">
+                            <span class="quick-link-icon">${doc.icon}</span>
+                            <span class="quick-link-title">${doc.title.replace(/^🛠️\s*|^🌱\s*|^💻\s*|^🚀\s*/, '')}</span>
+                            <span class="quick-link-desc">${doc.description}</span>
+                        </button>
+                    `).join('') : ''}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    currentDoc = null;
+    hideDocsBackToTop();
+}
+
+function loadDocumentation(docId) {
+    if (!docsData || !docsData.docs[docId]) {
+        console.error('Documentation not found:', docId);
+        return;
+    }
+    
+    const doc = docsData.docs[docId];
+    currentDoc = doc;
+    
+    // Update navigation state
+    document.querySelectorAll('.docs-nav-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.docId === docId);
+    });
+    
+    // Show breadcrumb
+    const breadcrumb = document.getElementById('docs-breadcrumb');
+    const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+    if (breadcrumb && breadcrumbCurrent) {
+        breadcrumb.style.display = 'flex';
+        breadcrumbCurrent.textContent = doc.title;
+    }
+    
+    // Render documentation content
+    renderDocumentation(doc);
+    
+    // Scroll to top of documentation section
+    const docsSection = document.getElementById('documentacion');
+    if (docsSection) {
+        const headerHeight = document.querySelector('.header').offsetHeight;
+        window.scrollTo({
+            top: docsSection.offsetTop - headerHeight - 20,
+            behavior: 'smooth'
+        });
+    }
+    
+    showDocsBackToTop();
+}
+
+function renderDocumentation(doc) {
+    const contentContainer = document.getElementById('docs-content');
+    
+    const sectionsHTML = doc.sections.map((section, index) => {
+        const isMainHeading = section.level === 1;
+        const headingTag = `h${Math.min(section.level + 1, 6)}`;
+        
+        return `
+            <div class="docs-section ${isMainHeading ? 'docs-main-section' : ''}" data-section-index="${index}">
+                <${headingTag} class="docs-heading docs-heading-${section.level}" id="${section.id}">
+                    ${section.title}
+                </${headingTag}>
+                <div class="docs-content-text">
+                    ${renderMarkdownContent(section.content)}
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    contentContainer.innerHTML = `
+        <div class="docs-document">
+            <div class="docs-header">
+                <div class="docs-title">
+                    <span class="docs-icon">${doc.icon}</span>
+                    <h2>${doc.title}</h2>
+                </div>
+                <div class="docs-meta">
+                    <span class="docs-audience">${getAudienceLabel(doc.audience)}</span>
+                    <span class="docs-word-count">${doc.wordCount} palabras</span>
+                    <span class="docs-sections">${doc.sections.length} secciones</span>
+                </div>
+            </div>
+            
+            <!-- Table of Contents -->
+            <div class="docs-toc">
+                <h3>📋 Tabla de Contenidos</h3>
+                <ul class="docs-toc-list">
+                    ${doc.sections.filter(s => s.level <= 3).map(section => `
+                        <li class="docs-toc-item docs-toc-level-${section.level}">
+                            <a href="#${section.id}" onclick="scrollToSection('${section.id}')" class="docs-toc-link">
+                                ${section.title}
+                            </a>
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+            
+            <!-- Documentation Content -->
+            <div class="docs-body">
+                ${sectionsHTML}
+            </div>
+            
+            <!-- Navigation Footer -->
+            <div class="docs-footer-nav">
+                <button onclick="showDocsWelcome()" class="docs-nav-btn docs-nav-home">
+                    🏠 Volver al Inicio
+                </button>
+                ${getDocNavigationButtons(doc)}
+            </div>
+        </div>
+    `;
+}
+
+function getDocNavigationButtons(currentDoc) {
+    if (!docsData) return '';
+    
+    const docs = docsData.navigation;
+    const currentIndex = docs.findIndex(doc => doc.id === currentDoc.id);
+    
+    let buttons = '';
+    
+    // Previous button
+    if (currentIndex > 0) {
+        const prevDoc = docs[currentIndex - 1];
+        buttons += `
+            <button onclick="loadDocumentation('${prevDoc.id}')" class="docs-nav-btn docs-nav-prev">
+                ← ${prevDoc.icon} ${prevDoc.title.replace(/^🛠️\s*|^🌱\s*|^💻\s*|^🚀\s*/, '')}
+            </button>
+        `;
+    }
+    
+    // Next button
+    if (currentIndex < docs.length - 1) {
+        const nextDoc = docs[currentIndex + 1];
+        buttons += `
+            <button onclick="loadDocumentation('${nextDoc.id}')" class="docs-nav-btn docs-nav-next">
+                ${nextDoc.icon} ${nextDoc.title.replace(/^🛠️\s*|^🌱\s*|^💻\s*|^🚀\s*/, '')} →
+            </button>
+        `;
+    }
+    
+    return buttons;
+}
+
+function renderMarkdownContent(content) {
+    // Basic Markdown rendering
+    return content
+        // Code blocks
+        .replace(/```(.*?)\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>')
+        // Inline code
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        // Bold
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Italic
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        // Links
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+        // Line breaks
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        // Wrap in paragraph
+        .replace(/^(.*)$/gm, '<p>$1</p>')
+        // Lists (basic support)
+        .replace(/^\*\s+(.*)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        // Clean up empty paragraphs
+        .replace(/<p><\/p>/g, '');
+}
+
+function scrollToSection(sectionId) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        const headerHeight = document.querySelector('.header').offsetHeight;
+        const docsNavHeight = document.querySelector('.docs-nav')?.offsetHeight || 0;
+        const offset = headerHeight + docsNavHeight + 20;
+        
+        window.scrollTo({
+            top: element.offsetTop - offset,
+            behavior: 'smooth'
+        });
+    }
+}
+
+function initializeDocsScrollToTop() {
+    const backToTopBtn = document.getElementById('docs-back-to-top');
+    if (!backToTopBtn) return;
+    
+    backToTopBtn.addEventListener('click', () => {
+        const docsSection = document.getElementById('documentacion');
+        if (docsSection) {
+            const headerHeight = document.querySelector('.header').offsetHeight;
+            window.scrollTo({
+                top: docsSection.offsetTop - headerHeight - 20,
+                behavior: 'smooth'
+            });
+        }
+    });
+    
+    // Show/hide button based on scroll
+    window.addEventListener('scroll', () => {
+        if (currentDoc) {
+            const shouldShow = window.scrollY > 500;
+            backToTopBtn.style.display = shouldShow ? 'block' : 'none';
+        }
+    });
+}
+
+function showDocsBackToTop() {
+    const btn = document.getElementById('docs-back-to-top');
+    if (btn) btn.style.display = 'block';
+}
+
+function hideDocsBackToTop() {
+    const btn = document.getElementById('docs-back-to-top');
+    if (btn) btn.style.display = 'none';
+}
+
+function showDocsError(errorMessage) {
+    const navContainer = document.getElementById('docs-nav');
+    const contentContainer = document.getElementById('docs-content');
+    
+    navContainer.innerHTML = `
+        <div class="docs-error">
+            <span class="error-icon">⚠️</span>
+            <span>Error cargando la documentación</span>
+        </div>
+    `;
+    
+    contentContainer.innerHTML = `
+        <div class="docs-error-content">
+            <div class="docs-error-icon">📚❌</div>
+            <h3>Oops! No se pudo cargar la documentación</h3>
+            <p class="error-message">${errorMessage}</p>
+            <p>Por favor intenta recargar la página o contacta al administrador.</p>
+            <button onclick="window.location.reload()" class="docs-retry-btn">
+                🔄 Reintentar
+            </button>
+        </div>
+    `;
+}
+
+// Make functions globally available
+window.loadDocumentation = loadDocumentation;
+window.showDocsWelcome = showDocsWelcome;
+window.scrollToSection = scrollToSection;
+
 // ===== EXPORT FUNCTIONS FOR TESTING =====
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         copyAddress,
         checkServerStatus,
-        simulateServerCheck
+        simulateServerCheck,
+        initializeDocumentation,
+        loadDocumentation
     };
 }
