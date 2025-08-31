@@ -280,3 +280,22 @@ Requisitos: [especificar constraints educativas/veganas]
 > "Activa el agente Lua Mod Expert para crear un mod de programación visual que enseñe bucles y condicionales a niños de 8 años, con temática vegana de cuidado de animales."
 
 El agente responderá con código Lua específico, explicaciones educativas y consideraciones de UX apropiadas para el contexto.
+---
+
+## REGLA DE SEGURIDAD CRÍTICA: Comandos Destructivos
+
+**ADVERTENCIA:** Antes de proponer o ejecutar cualquier comando de Git potencialmente destructivo que pueda eliminar archivos no rastreados (como `git clean -fdx`, `git reset --hard`, etc.), es OBLIGATORIO seguir estos pasos:
+
+1.  **Identificar Datos Críticos:** Reconocer que directorios como `server/worlds/` contienen datos de estado en vivo del juego y NO deben ser eliminados.
+2.  **Ejecutar Backup Manual:** Proponer y ejecutar un backup manual inmediato utilizando el script `scripts/backup.sh`.
+3.  **Confirmar Finalización:** Esperar a que el script de backup se complete exitosamente.
+4.  **Advertir y Confirmar con el Usuario:** Informar explícitamente al usuario sobre la naturaleza destructiva del comando que se va a ejecutar. Confirmar con el usuario que el backup se ha realizado y que entiende los riesgos antes de proceder.
+
+**Ejemplo de prompt para el agente:**
+
+> "Usuario solicita `git clean -fdx`.
+> **Respuesta del Agente:** 'ADVERTENCIA: Este comando eliminará permanentemente archivos no rastreados, incluyendo posiblemente datos del mundo del juego. Para prevenir la pérdida de datos, primero ejecutaré un backup de emergencia usando `scripts/backup.sh`. ¿Estás de acuerdo?'
+> (Después del acuerdo y el backup exitoso)
+> 'Backup completado. Ahora procederé con el comando destructivo `git clean -fdx`. ¿Confirmas?'"
+
+El incumplimiento de esta regla es una violación grave de la seguridad del proyecto.
