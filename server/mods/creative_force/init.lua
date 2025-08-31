@@ -1,6 +1,6 @@
--- Creative Force Mod - Forces creative mode for all players
--- Author: Vegan Wetlands Team
--- Description: Ensures all players have creative privileges and removes hostile mobs
+-- AGGRESSIVE Creative Force Mod - COMPLETELY DISABLES hostile mobs and FORCES creative mode
+-- Author: Vegan Wetlands Team  
+-- Description: NUCLEAR OPTION - Ensures 100% creative mode and ZERO hostile entities
 
 -- List of creative privileges to grant
 local creative_privileges = {
@@ -24,6 +24,11 @@ local function grant_creative_privileges(player_name)
         end
     end
 end
+
+-- COMPLETELY DISABLE ALL DAMAGE
+minetest.register_on_player_hpchange(function(player, hp_change, reason)
+    return 0  -- NO DAMAGE EVER
+end, true)
 
 -- Hook into player join event
 minetest.register_on_joinplayer(function(player)
@@ -124,11 +129,11 @@ minetest.register_on_mods_loaded(function()
     end
 end)
 
--- Remove existing hostile entities periodically
+-- NUCLEAR OPTION: Remove ALL hostile entities EVERY SECOND
 local timer = 0
 minetest.register_globalstep(function(dtime)
     timer = timer + dtime
-    if timer >= 30 then -- Check every 30 seconds
+    if timer >= 1 then -- Check EVERY SECOND - AGGRESSIVE
         timer = 0
         
         local hostile_entities = {
@@ -138,13 +143,18 @@ minetest.register_globalstep(function(dtime)
             "mobs_mc:spider",
             "mobs_mc:cave_spider",
             "mobs_mc:witch",
-            "mobs_mc:enderman"
+            "mobs_mc:enderman",
+            "mobs_mc:slime_big",
+            "mobs_mc:slime_small",
+            "mobs_mc:slime_tiny",
+            "mcl_bows:arrow_entity"  -- ALSO REMOVE ARROWS!
         }
         
         local removed_count = 0
-        for _, obj in ipairs(minetest.get_objects_inside_radius({x=0, y=0, z=0}, 32000)) do
+        -- Search ENTIRE world for hostile entities
+        for _, obj in ipairs(minetest.get_objects_inside_radius({x=0, y=0, z=0}, 65536)) do
             local entity = obj:get_luaentity()
-            if entity then
+            if entity and entity.name then
                 for _, hostile_name in ipairs(hostile_entities) do
                     if entity.name == hostile_name then
                         obj:remove()
@@ -156,7 +166,16 @@ minetest.register_globalstep(function(dtime)
         end
         
         if removed_count > 0 then
-            minetest.log("info", "[creative_force] Removed " .. removed_count .. " hostile entities")
+            minetest.log("info", "[creative_force] REMOVED " .. removed_count .. " hostile entities/arrows")
+        end
+    end
+end)
+
+-- FORCE HEAL ALL PLAYERS TO FULL HP EVERY SECOND
+minetest.register_globalstep(function(dtime)
+    for _, player in ipairs(minetest.get_connected_players()) do
+        if player and player:is_player() then
+            player:set_hp(20) -- Force full health
         end
     end
 end)
