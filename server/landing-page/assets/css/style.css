@@ -1,57 +1,51 @@
-/* ===== VARIABLES CSS ===== */
+/* ===== VARIABLES CSS PIXELADAS ===== */
 :root {
-  /* Colores principales */
-  --primary-green: #4ade80;
-  --primary-green-dark: #22c55e;
-  --primary-green-light: #86efac;
+  /* Colores del juego - inspirados en Minecraft/VoxeLibre */
+  --minecraft-green: #7cb342;
+  --minecraft-dark-green: #4a7c59;
+  --minecraft-grass: #91bd59;
+  --minecraft-stone: #7f7f7f;
+  --minecraft-wood: #9c7853;
+  --minecraft-dirt: #8b4513;
   
-  /* Colores secundarios */
-  --blue-sky: #38bdf8;
-  --blue-ocean: #0ea5e9;
-  --yellow-sun: #fbbf24;
-  --orange-sunset: #f97316;
-  --purple-magic: #a855f7;
+  /* Colores de interface */
+  --pixel-black: #000000;
+  --pixel-white: #ffffff;
+  --pixel-gray: #555555;
+  --pixel-light-gray: #aaaaaa;
+  --pixel-red: #ff5555;
+  --pixel-blue: #5555ff;
+  --pixel-yellow: #ffff55;
   
-  /* Colores neutros */
-  --white: #ffffff;
-  --gray-50: #f9fafb;
-  --gray-100: #f3f4f6;
-  --gray-200: #e5e7eb;
-  --gray-700: #374151;
-  --gray-800: #1f2937;
-  --gray-900: #111827;
+  /* Colores de estado del servidor */
+  --online-green: #55ff55;
+  --offline-red: #ff5555;
+  --warning-yellow: #ffaa00;
   
-  /* Gradientes */
-  --gradient-primary: linear-gradient(135deg, var(--primary-green) 0%, var(--blue-sky) 100%);
-  --gradient-secondary: linear-gradient(135deg, var(--yellow-sun) 0%, var(--orange-sunset) 100%);
-  --gradient-magic: linear-gradient(135deg, var(--purple-magic) 0%, var(--primary-green) 100%);
+  /* Tipografía pixelada */
+  --pixel-font: 'Courier New', 'Monaco', 'Menlo', monospace;
+  --font-family: 'Fredoka', var(--pixel-font), sans-serif;
+  --font-size-pixel-xl: clamp(1.5rem, 4vw, 2.5rem);
+  --font-size-pixel-lg: clamp(1.2rem, 3vw, 1.8rem);
+  --font-size-pixel-md: clamp(1rem, 2vw, 1.2rem);
+  --font-size-pixel-sm: 0.9rem;
   
-  /* Tipografía */
-  --font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-size-xl: clamp(2.5rem, 5vw, 4rem);
-  --font-size-lg: clamp(1.5rem, 3vw, 2rem);
-  --font-size-md: clamp(1.125rem, 2vw, 1.25rem);
-  --font-size-sm: 1rem;
+  /* Espaciado en bloques */
+  --block-size: 16px;
+  --space-pixel-xs: calc(var(--block-size) * 0.5);
+  --space-pixel-sm: var(--block-size);
+  --space-pixel-md: calc(var(--block-size) * 1.5);
+  --space-pixel-lg: calc(var(--block-size) * 2);
+  --space-pixel-xl: calc(var(--block-size) * 3);
   
-  /* Espaciado */
-  --space-xs: 0.5rem;
-  --space-sm: 1rem;
-  --space-md: 1.5rem;
-  --space-lg: 2rem;
-  --space-xl: 3rem;
-  --space-2xl: 4rem;
+  /* Sombras pixeladas */
+  --pixel-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+  --pixel-shadow-large: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  --pixel-inset-shadow: inset 2px 2px 0 rgba(255, 255, 255, 0.3), inset -2px -2px 0 rgba(0, 0, 0, 0.3);
   
-  /* Sombras */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  
-  /* Bordes */
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
+  /* Bordes pixelados */
+  --pixel-border: 2px solid var(--pixel-black);
+  --pixel-border-light: 1px solid var(--pixel-gray);
 }
 
 /* ===== RESET Y BASE ===== */
@@ -69,9 +63,15 @@ html {
 body {
   font-family: var(--font-family);
   line-height: 1.6;
-  color: var(--gray-800);
-  background: linear-gradient(180deg, #f0f9ff 0%, #ecfdf5 50%, #fef3c7 100%);
+  color: var(--pixel-black);
+  background: var(--minecraft-grass);
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 16px, rgba(0,0,0,0.1) 16px, rgba(0,0,0,0.1) 17px),
+    repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(0,0,0,0.1) 16px, rgba(0,0,0,0.1) 17px);
   min-height: 100vh;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 /* ===== HEADER ===== */
@@ -1281,6 +1281,204 @@ body {
   50% {
     opacity: 0.5;
   }
+}
+
+/* ===== HERO SECTION PIXELADA ===== */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-pixel-lg);
+  overflow: hidden;
+}
+
+.hero-game-screenshot {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-image {
+  width: 100%;
+  height: auto;
+  border: 4px solid var(--pixel-black);
+  box-shadow: var(--pixel-shadow-large);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  border-radius: 0;
+}
+
+.game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-pixel-lg);
+}
+
+.pixel-border {
+  background: var(--pixel-black);
+  color: var(--pixel-white);
+  padding: var(--space-pixel-md);
+  border: 2px solid var(--pixel-white);
+  width: 100%;
+  font-family: var(--pixel-font);
+  position: relative;
+}
+
+.pixel-border::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--pixel-white);
+  z-index: -1;
+}
+
+.pixel-title {
+  font-size: var(--font-size-pixel-xl);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: var(--space-pixel-sm);
+  text-shadow: var(--pixel-shadow);
+  letter-spacing: 2px;
+}
+
+.pixel-subtitle {
+  font-size: var(--font-size-pixel-md);
+  text-align: center;
+  margin-bottom: var(--space-pixel-lg);
+  opacity: 0.9;
+}
+
+.server-connect-box {
+  background: var(--minecraft-stone);
+  border: 2px solid var(--pixel-white);
+  padding: var(--space-pixel-md);
+  margin-top: var(--space-pixel-md);
+}
+
+.server-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-pixel-xs);
+  margin-bottom: var(--space-pixel-md);
+  font-weight: bold;
+  font-size: var(--font-size-pixel-md);
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+  animation: pixelBlink 2s infinite;
+}
+
+.status-indicator.online {
+  background: var(--online-green);
+  box-shadow: 0 0 0 1px var(--pixel-black);
+}
+
+@keyframes pixelBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+.server-address-display {
+  margin-bottom: var(--space-pixel-md);
+}
+
+.address-line, .port-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-pixel-xs);
+  margin-bottom: var(--space-pixel-xs);
+  flex-wrap: wrap;
+}
+
+.label {
+  font-weight: bold;
+  min-width: 80px;
+  color: var(--pixel-yellow);
+}
+
+.address, .port {
+  background: var(--pixel-black);
+  color: var(--online-green);
+  padding: 4px 8px;
+  border: 1px solid var(--pixel-white);
+  font-family: var(--pixel-font);
+  font-weight: bold;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.pixel-btn {
+  background: var(--minecraft-wood);
+  color: var(--pixel-white);
+  border: 2px solid var(--pixel-black);
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: var(--pixel-font);
+  font-weight: bold;
+  transition: none;
+  text-transform: uppercase;
+  font-size: var(--font-size-pixel-sm);
+}
+
+.pixel-btn:hover {
+  background: var(--minecraft-dirt);
+  transform: translate(1px, 1px);
+}
+
+.pixel-btn:active {
+  background: var(--minecraft-dark-green);
+  transform: translate(2px, 2px);
+}
+
+.player-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: var(--space-pixel-sm);
+}
+
+.stat-pixel {
+  text-align: center;
+  background: var(--minecraft-dark-green);
+  border: 2px solid var(--pixel-white);
+  padding: var(--space-pixel-xs);
+  min-width: 60px;
+}
+
+.stat-value {
+  display: block;
+  font-weight: bold;
+  font-size: var(--font-size-pixel-md);
+  color: var(--pixel-yellow);
+  text-shadow: 1px 1px 0 var(--pixel-black);
+}
+
+.stat-name {
+  font-size: var(--font-size-pixel-sm);
+  color: var(--pixel-white);
+  text-transform: uppercase;
 }
 
 /* ===== RESPONSIVE ===== */

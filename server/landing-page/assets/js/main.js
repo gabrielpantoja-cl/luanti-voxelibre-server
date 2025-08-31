@@ -11,41 +11,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ===== COPY SERVER ADDRESS FUNCTIONALITY =====
 function copyAddress() {
-    const addressInput = document.getElementById('server-address');
-    const copyText = document.getElementById('copy-text');
-    const serverAddress = addressInput.value;
+    const serverAddress = 'luanti.gabrielpantoja.cl';
+    const copyBtn = document.getElementById('copy-address-btn');
+    const originalText = copyBtn.textContent;
     
     // Try modern clipboard API first
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(serverAddress).then(function() {
-            showCopySuccess(copyText);
+            showPixelCopySuccess(copyBtn, originalText);
         }).catch(function(err) {
-            // Fallback to old method
-            fallbackCopy(addressInput, copyText);
+            showPixelCopyError(copyBtn, originalText);
         });
     } else {
         // Fallback for older browsers
-        fallbackCopy(addressInput, copyText);
+        try {
+            // Create temporary input
+            const tempInput = document.createElement('input');
+            tempInput.value = serverAddress;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showPixelCopySuccess(copyBtn, originalText);
+        } catch(err) {
+            showPixelCopyError(copyBtn, originalText);
+        }
     }
 }
 
 // ===== COPY SERVER PORT FUNCTIONALITY =====
 function copyPort() {
-    const portInput = document.getElementById('server-port');
-    const copyText = document.getElementById('copy-port-text');
-    const serverPort = portInput.value;
+    const serverPort = '30000';
+    const copyBtn = document.getElementById('copy-port-btn');
+    const originalText = copyBtn.textContent;
     
     // Try modern clipboard API first
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(serverPort).then(function() {
-            showCopySuccess(copyText);
+            showPixelCopySuccess(copyBtn, originalText);
         }).catch(function(err) {
-            // Fallback to old method
-            fallbackCopy(portInput, copyText);
+            showPixelCopyError(copyBtn, originalText);
         });
     } else {
         // Fallback for older browsers
-        fallbackCopy(portInput, copyText);
+        try {
+            // Create temporary input
+            const tempInput = document.createElement('input');
+            tempInput.value = serverPort;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showPixelCopySuccess(copyBtn, originalText);
+        } catch(err) {
+            showPixelCopyError(copyBtn, originalText);
+        }
     }
 }
 
@@ -61,25 +81,27 @@ function fallbackCopy(input, copyText) {
     }
 }
 
-function showCopySuccess(copyText) {
-    const originalText = copyText.textContent;
-    copyText.textContent = '✅ ¡Copiado!';
-    copyText.style.color = '#22c55e';
+function showPixelCopySuccess(btn, originalText) {
+    btn.textContent = '✅ COPIADO';
+    btn.style.background = 'var(--online-green)';
+    btn.style.color = 'var(--pixel-black)';
     
     setTimeout(() => {
-        copyText.textContent = originalText;
-        copyText.style.color = '';
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.style.color = '';
     }, 2000);
 }
 
-function showCopyError(copyText) {
-    const originalText = copyText.textContent;
-    copyText.textContent = '❌ Error';
-    copyText.style.color = '#ef4444';
+function showPixelCopyError(btn, originalText) {
+    btn.textContent = '❌ ERROR';
+    btn.style.background = 'var(--pixel-red)';
+    btn.style.color = 'var(--pixel-white)';
     
     setTimeout(() => {
-        copyText.textContent = originalText;
-        copyText.style.color = '';
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.style.color = '';
     }, 2000);
 }
 
@@ -91,27 +113,36 @@ function initializeServerInfo() {
 }
 
 async function checkServerStatus() {
-    // Since we can't directly ping the UDP server from browser,
-    // we'll simulate a status check based on time and add some visual feedback
     const statusElement = document.querySelector('.server-status');
-    const statusDot = document.querySelector('.status-dot');
+    const statusIndicator = document.querySelector('.status-indicator');
+    const statusText = document.querySelector('.status-text');
     
     try {
-        // Simulate network check with a timeout
-        const isOnline = await simulateServerCheck();
+        // Try to check server status via a simple API endpoint if available
+        const serverData = await checkRealServerStatus();
         
-        if (isOnline) {
-            statusElement.classList.add('online');
-            statusElement.classList.remove('offline');
-            statusElement.innerHTML = '<span class="status-dot"></span><span>SERVIDOR ONLINE</span>';
-            updatePlayerCount();
+        if (serverData.online) {
+            statusIndicator.classList.add('online');
+            statusIndicator.classList.remove('offline');
+            statusText.textContent = 'SERVIDOR ONLINE';
+            updateRealPlayerCount(serverData.players || 0);
         } else {
             throw new Error('Server offline');
         }
     } catch (error) {
-        statusElement.classList.add('offline');
-        statusElement.classList.remove('online');
-        statusElement.innerHTML = '<span class="status-dot offline"></span><span>VERIFICANDO...</span>';
+        // Fallback to simulation
+        const isOnline = await simulateServerCheck();
+        
+        if (isOnline) {
+            statusIndicator.classList.add('online');
+            statusIndicator.classList.remove('offline');
+            statusText.textContent = 'SERVIDOR ONLINE';
+            updatePlayerCount();
+        } else {
+            statusIndicator.classList.add('offline');
+            statusIndicator.classList.remove('online');
+            statusText.textContent = 'VERIFICANDO...';
+        }
     }
 }
 
@@ -123,12 +154,35 @@ function simulateServerCheck() {
     });
 }
 
+function updateRealPlayerCount(playerCount) {
+    const statValue = document.querySelector('.stat-pixel .stat-value');
+    if (statValue && statValue.parentNode.querySelector('.stat-name').textContent.includes('Jugadores')) {
+        statValue.textContent = `${playerCount}/20`;
+    }
+}
+
 function updatePlayerCount() {
-    // Simulate player count (since we can't get real data from client-side)
+    // Simulate player count (fallback when real data isn't available)
     const playerCount = Math.floor(Math.random() * 8); // 0-7 players
-    const statNumbers = document.querySelectorAll('.stat-number');
-    
-    statNumbers[0].textContent = `${playerCount}/20`;
+    updateRealPlayerCount(playerCount);
+}
+
+// Try to get real server status
+async function checkRealServerStatus() {
+    // This would connect to a backend API that queries the Luanti server
+    // For now, we'll simulate but structure it for future real implementation
+    try {
+        // Future: const response = await fetch('/api/server-status');
+        // Future: return await response.json();
+        
+        // Simulate for now
+        return {
+            online: Math.random() > 0.1, // 90% uptime simulation
+            players: Math.floor(Math.random() * 12) // 0-11 players
+        };
+    } catch (error) {
+        throw new Error('Unable to check server status');
+    }
 }
 
 // ===== SMOOTH SCROLLING FOR NAVIGATION =====
@@ -215,28 +269,12 @@ function initializeAnimations() {
 }
 
 function createFloatingElements() {
-    // Add more dynamic floating animals
-    const animals = ['🐰', '🐱', '🐶', '🐷', '🐮', '🐔', '🐸', '🦋', '🐝', '🌿'];
+    // Floating animations removed for pixelated aesthetic
+    // The new design focuses on the game screenshot as the main visual
     const floatingContainer = document.querySelector('.floating-animals');
-    
-    // Clear existing animals
-    floatingContainer.innerHTML = '';
-    
-    // Create random floating animals
-    for (let i = 0; i < 8; i++) {
-        const animal = document.createElement('div');
-        animal.classList.add('animal');
-        animal.textContent = animals[Math.floor(Math.random() * animals.length)];
-        
-        // Random position
-        animal.style.left = Math.random() * 100 + '%';
-        animal.style.top = Math.random() * 100 + '%';
-        
-        // Random animation delay and duration
-        animal.style.animationDelay = Math.random() * 5 + 's';
-        animal.style.animationDuration = (4 + Math.random() * 4) + 's';
-        
-        floatingContainer.appendChild(animal);
+    if (floatingContainer) {
+        floatingContainer.innerHTML = ''; // Clear any existing animations
+        floatingContainer.style.display = 'none'; // Hide the container
     }
 }
 
@@ -273,7 +311,7 @@ function initializeCopyFunctionality() {
     window.copyPort = copyPort;
     
     // Add keyboard accessibility for copy buttons
-    const copyBtns = document.querySelectorAll('.copy-btn');
+    const copyBtns = document.querySelectorAll('.pixel-btn');
     copyBtns.forEach(btn => {
         btn.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -285,19 +323,23 @@ function initializeCopyFunctionality() {
         });
     });
     
-    // Add double-click to copy on inputs
-    const addressInput = document.getElementById('server-address');
-    if (addressInput) {
-        addressInput.addEventListener('dblclick', function() {
+    // Add double-click to copy on address/port displays
+    const addressDisplay = document.querySelector('.address');
+    if (addressDisplay) {
+        addressDisplay.addEventListener('dblclick', function() {
             copyAddress();
         });
+        addressDisplay.style.cursor = 'pointer';
+        addressDisplay.title = 'Doble clic para copiar';
     }
     
-    const portInput = document.getElementById('server-port');
-    if (portInput) {
-        portInput.addEventListener('dblclick', function() {
+    const portDisplay = document.querySelector('.port');
+    if (portDisplay) {
+        portDisplay.addEventListener('dblclick', function() {
             copyPort();
         });
+        portDisplay.style.cursor = 'pointer';
+        portDisplay.title = 'Doble clic para copiar';
     }
 }
 
