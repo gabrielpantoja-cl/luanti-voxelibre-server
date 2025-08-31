@@ -8,8 +8,8 @@ Esta guía contiene toda la información técnica necesaria para desarrollar, mo
 
 Todo mod desarrollado para este servidor debe adherirse a tres principios básicos:
 
-1.  **Vegano y Pacífico:** El código no debe incluir mecánicas de violencia, caza o explotación animal. El foco es el cuidado, la protección y la cooperación.
-2.  **Educativo:** Cada mod debe tener un componente de aprendizaje, ya sea sobre veganismo, compasión, sostenibilidad o habilidades técnicas como la programación.
+1.  **Compasivo y Pacífico:** El código no debe incluir mecánicas de violencia, caza o explotación animal. El foco es el cuidado, la protección y la cooperación.
+2.  **Educativo:** Cada mod debe tener un componente de aprendizaje, ya sea sobre compasión, sostenibilidad o habilidades técnicas como la programación.
 3.  **Rendimiento y Calidad:** El código debe ser limpio, eficiente y estar bien documentado para asegurar la estabilidad del servidor y facilitar futuras colaboraciones.
 
 ---
@@ -61,16 +61,16 @@ Dentro del código de tus mods, **nunca** debes usar las dependencias del juego 
 ### 🐾 `animal_sanctuary`
 *   **Categoría:** `ENTITIES`
 *   **Funcionalidad:** Reemplaza las mecánicas de violencia por herramientas de cuidado (cepillos, kits médicos). Introduce el concepto de santuario.
-*   **Comandos:** `/santuario`, `/veganismo`.
+*   **Comandos:** `/santuario`, `/filosofia`.
 
 ### 🍎 `vegan_foods`
 *   **Categoría:** `ITEMS`
-*   **Funcionalidad:** Añade recetas para craftear comida vegana nutritiva usando ingredientes del mod de agricultura de VoxeLibre.
+*   **Funcionalidad:** Añade recetas para craftear comida a base de plantas nutritiva usando ingredientes del mod de agricultura de VoxeLibre.
 *   **Dependencias:** `mcl_core`, `mcl_farming`.
 
 ### 📚 `education_blocks`
 *   **Categoría:** `HELP`
-*   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre veganismo, nutrición y respeto animal al ser usados.
+*   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre alimentación consciente, nutrición y respeto animal al ser usados.
 
 ---
 
@@ -85,7 +85,7 @@ Buscamos contribuciones en las siguientes áreas. ¡Elige una y empieza a progra
 4.  **`robot_companion`:** Un robot programable que sigue al jugador y puede ser controlado con los `coding_blocks` para realizar tareas de agricultura o construcción.
 
 ### Prioridad Media:
-*   **`climate_science`:** Mods que enseñen sobre el cambio climático y el impacto positivo del veganismo.
+*   **`climate_science`:** Mods que enseñen sobre el cambio climático y el impacto positivo de una alimentación consciente.
 *   **`sustainable_farming`:** Introducir conceptos de permacultura, compostaje y agricultura sostenible.
 *   **`community_projects`:** Mecánicas que incentiven la construcción de grandes proyectos en equipo.
 

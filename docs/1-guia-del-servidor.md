@@ -1,6 +1,6 @@
 # 💚 Guía del Servidor Vegan Wetlands
 
-¡Bienvenid@ a Vegan Wetlands! Un universo de bloques donde la creatividad, la compasión y el respeto por los animales son los protagonistas. Este no es un servidor común; es un espacio seguro y educativo diseñado para que jugadores de todas las edades, especialmente niños y niñas a partir de 7 años, puedan construir, explorar y aprender en un entorno 100% vegano y pacífico.
+¡Bienvenid@ a Vegan Wetlands! Un universo de bloques donde la creatividad, la compasión y el respeto por los animales son los protagonistas. Este no es un servidor común; es un espacio seguro y educativo diseñado para que jugadores de todas las edades, especialmente niños y niñas a partir de 7 años, puedan construir, explorar y aprender en un entorno 100% compasivo y pacífico.
 
 ---
 
@@ -8,8 +8,8 @@
 
 Nuestra misión se basa en tres pilares fundamentales:
 
-1.  **100% Vegano y Pacífico:** Aquí no hay violencia. Los animales no son un recurso, son nuestros amigos. Fomentamos el cuidado, la protección y el respeto por todas las formas de vida. No existen las armas ni las mecánicas de daño a entidades vivas.
-2.  **Educativo:** Creemos que se puede aprender mientras se juega. A través de nuestros mods personalizados, enseñamos sobre veganismo, compasión animal, nutrición y hasta conceptos básicos de programación, todo de una forma divertida e integrada en el juego.
+1.  **100% Compasivo y Pacífico:** Aquí no hay violencia. Los animales no son un recurso, son nuestros amigos. Fomentamos el cuidado, la protección y el respeto por todas las formas de vida. No existen las armas ni las mecánicas de daño a entidades vivas.
+2.  **Educativo:** Creemos que se puede aprender mientras se juega. A través de nuestros mods personalizados, enseñamos sobre alimentación consciente, compasión animal, nutrición y hasta conceptos básicos de programación, todo de una forma divertida e integrada en el juego.
 3.  **Cooperativo y Creativo:** El objetivo es construir y crear juntos. Fomentamos la colaboración entre jugadores para desarrollar proyectos, compartir conocimiento y construir un mundo mejor, bloque a bloque.
 
 ---
@@ -33,22 +33,22 @@ Para hacer nuestra filosofía realidad, hemos creado mods y mecánicas especiale
 Es el corazón de nuestro servidor. En lugar de granjas, construimos santuarios.
 
 *   **Cepillo para Animales:** ¡Olvídate de las espadas! Tu herramienta principal es un cepillo. Acércate a un animal y úsalo para mimarlo. Verás cómo te lo agradece con corazones y sonidos de felicidad.
-*   **Comida Vegana para Animales:** Aliméntalos con comida especial 100% vegetal.
+*   **Comida a base de plantas para Animales:** Aliméntalos con comida especial 100% vegetal.
 *   **Refugios y Comederos:** Construye refugios para protegerlos y comederos para que nunca les falte alimento.
 
-### 🍎 Comida Vegana
+### 🍎 Comida Creativa
 
 ¡Toda la comida es 100% vegetal y deliciosa! Olvídate de cazar. Aquí usamos la agricultura para crear platos nutritivos.
 
-*   **Recetas Especiales:** Podrás craftear hamburguesas veganas, leche de avena, queso vegano y hasta pizzas.
+*   **Recetas Especiales:** Podrás craftear hamburguesas a base de plantas, leche de avena, queso a base de plantas y hasta pizzas.
 *   **Agricultura:** Usa el mod de `farming` para obtener los ingredientes base como trigo, frutas y verduras.
 
 ### 📚 Bloques Educativos
 
 Repartidos por el mundo encontrarás bloques interactivos que, al hacer clic derecho sobre ellos, te darán información valiosa:
 
-*   **Carteles Veganos:** Datos interesantes sobre veganismo y respeto animal.
-*   **Bloques de Nutrición:** Información sobre cómo una dieta vegana es saludable y completa.
+*   **Carteles Educativos:** Datos interesantes sobre respeto animal y alimentación consciente.
+*   **Bloques de Nutrición:** Información sobre cómo una dieta a base de plantas es saludable y completa.
 *   **Datos de Animales:** Hechos sorprendentes sobre la inteligencia y vida social de los animales.
 
 ---
@@ -70,6 +70,6 @@ En Vegan Wetlands, no necesitas comandos complicados como `/sethome` para establ
 Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos comandos educativos para ti:
 
 *   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.
-*   `/veganismo`: Te da datos interesantes sobre la filosofía vegana.
+*   `/filosofia`: Te da datos interesantes sobre la filosofía del juego.
 
 ¡Esperamos que disfrutes de tu estancia en Vegan Wetlands! Si tienes alguna duda, pregunta a los demás jugadores. ¡La cooperación es clave!
