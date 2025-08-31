@@ -11,6 +11,10 @@ services:
       - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods
       - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary
       - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks
+      # Mods de transporte sostenible
+      - ./server/mods/motorboat:/config/.minetest/games/mineclone2/mods/VEHICLES/motorboat
+      - ./server/mods/biofuel:/config/.minetest/games/mineclone2/mods/ITEMS/biofuel
+      - ./server/mods/mobkit:/config/.minetest/games/mineclone2/mods/CORE/mobkit
       - ./server/worlds:/config/.minetest/worlds
       - ./server/games:/config/.minetest/games
       - ./server/backups:/backups
