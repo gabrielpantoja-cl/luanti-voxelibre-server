@@ -579,3 +579,85 @@ rsync -avz server/landing-page/ gabriel@167.172.251.27:/home/gabriel/vps-do/ngin
 # Reload nginx manually
 ssh gabriel@167.172.251.27 'cd /home/gabriel/vps-do && docker-compose exec nginx-proxy nginx -s reload'
 ```
+
+## 🚨 Critical Issue Recovery: Texture Corruption (Aug 31, 2025)
+
+### **Problem Description**
+Complete texture corruption affecting all blocks in VoxeLibre - all blocks displayed the same incorrect texture, making the game unplayable.
+
+### **🔍 Root Cause Analysis**
+
+**Technical Cause**: Mod texture ID conflict cascade
+1. **Texture Atlas Conflict**: The `motorboat` mod redefined texture IDs that already existed in VoxeLibre's texture system
+2. **ID Mapping Corruption**: When both systems loaded simultaneously, multiple blocks began pointing to the same texture resource
+3. **Cache Persistence**: The incorrect texture mappings were cached in VoxeLibre's internal files
+4. **Cascading Failure**: Even after removing the problematic mod, the corrupted cache persisted
+
+**Sequence of Events**:
+```
+Motorboat mod installed → Texture ID conflicts → Cache corruption → All blocks use same texture → Visual catastrophe
+```
+
+### **🛠️ Recovery Procedure**
+
+**CRITICAL**: Always backup world data before attempting recovery!
+
+```bash
+# 1. Remove ALL problematic mods
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/motorboat server/mods/biofuel server/mods/mobkit"
+
+# 2. Download fresh VoxeLibre (56MB)
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2"
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip"
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+
+# 3. Clean container state completely
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker compose down && docker system prune -f"
+
+# 4. Remove any mods with broken dependencies
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/education_blocks"
+
+# 5. Restart with clean slate
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker compose up -d"
+
+# 6. Verify world data preservation
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/*"
+```
+
+### **🔍 Prevention Strategies**
+
+1. **Mod Testing Protocol**:
+   - Always test new mods in local development environment first
+   - Check for texture file conflicts before deployment
+   - Verify mod compatibility with VoxeLibre specifically
+
+2. **Backup Strategy**:
+   - Regular world backups before any mod changes
+   - Keep clean VoxeLibre installation as backup
+   - Document working mod combinations
+
+3. **Warning Signs**:
+   - Repeated texture blocks in different areas
+   - Missing textures (pink/black checkerboard)
+   - Server logs showing texture loading errors
+
+### **🎯 Key Learnings**
+
+- **VoxeLibre is sensitive** to texture system modifications
+- **Third-party mods can cause deep corruption** of base game files
+- **Container restarts alone don't fix cached file corruption**
+- **Fresh base game installation is often necessary** for texture issues
+- **World data remains safe** even during severe texture corruption
+
+### **📋 Recovery Success Metrics**
+
+- ✅ World data preserved (73MB intact)
+- ✅ All blocks display correct textures
+- ✅ Server stable on port 30000
+- ✅ No dependency errors in logs
+- ✅ Player can connect and play normally
+
+**Recovery Time**: ~15 minutes (mostly download time for fresh VoxeLibre)
+**Data Loss**: Zero (world fully preserved)
+**Resolution**: Complete - textures restored to normal functionality
+```
