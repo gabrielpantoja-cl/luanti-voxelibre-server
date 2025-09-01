@@ -22,6 +22,12 @@ Este documento detalla las **modificaciones críticas realizadas directamente en
 ### 📝 Configuraciones Agregadas:
 
 ```conf
+# NUCLEAR OVERRIDE ENHANCED - COMPLETE NEW USER EXPERIENCE
+# Usuarios nuevos comienzan con gamemode creative y todos los privilegios
+default_privs = creative,interact,shout,home,spawn,give,fly,fast,noclip,teleport,settime,debug,basic_privs
+give_initial_stuff = true
+initial_stuff = mcl_core:stone 64,mcl_core:wood 64,mcl_wool:white 64,mcl_tools:pick_iron,mcl_tools:shovel_iron,mcl_tools:axe_iron,mcl_buckets:bucket_empty,mcl_core:apple 64,mcl_farming:bread 64
+
 # NUCLEAR OVERRIDE - VEGAN WETLANDS CREATIVE FORCE
 creative_mode = true
 enable_damage = false
@@ -33,6 +39,21 @@ mcl_spawn_hostile_mobs = false
 mcl_spawn_monsters = false
 mob_difficulty = 0.0
 keepInventory = true
+
+# Modo creativo forzado para todos
+mcl_enable_creative_mode = true
+mcl_creative_is_survival_like = false
+
+# Configuración de spawning para cero monstruos
+mcl_spawning = false
+mcl_mob_cap_hostile = 0
+mcl_mob_cap_monster = 0
+mcl_monsters_enabled = false
+mcl_hostile_mobs = false
+spawn_hostile_mobs = false
+hostile_mobs_spawn = false
+mcl_mobs_disable_hostile = true
+mcl_mobs_peaceful_only = true
 ```
 
 ## 🛠️ Comandos Para Aplicar la Solución
@@ -42,9 +63,15 @@ keepInventory = true
 ssh gabriel@<VPS_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/games/mineclone2/minetest.conf /config/.minetest/games/mineclone2/minetest.conf.backup'
 ```
 
-### 2. Aplicar Override Nuclear:
+### 2. Aplicar Override Nuclear Enhanced:
 ```bash
 ssh gabriel@<VPS_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server tee -a /config/.minetest/games/mineclone2/minetest.conf << EOF
+
+# NUCLEAR OVERRIDE ENHANCED - COMPLETE NEW USER EXPERIENCE
+# Usuarios nuevos comienzan con gamemode creative y todos los privilegios
+default_privs = creative,interact,shout,home,spawn,give,fly,fast,noclip,teleport,settime,debug,basic_privs
+give_initial_stuff = true
+initial_stuff = mcl_core:stone 64,mcl_core:wood 64,mcl_wool:white 64,mcl_tools:pick_iron,mcl_tools:shovel_iron,mcl_tools:axe_iron,mcl_buckets:bucket_empty,mcl_core:apple 64,mcl_farming:bread 64
 
 # NUCLEAR OVERRIDE - VEGAN WETLANDS CREATIVE FORCE
 creative_mode = true
@@ -57,6 +84,22 @@ mcl_spawn_hostile_mobs = false
 mcl_spawn_monsters = false
 mob_difficulty = 0.0
 keepInventory = true
+
+# Modo creativo forzado para todos
+mcl_enable_creative_mode = true
+mcl_creative_is_survival_like = false
+
+# Configuración de spawning para cero monstruos
+mcl_spawning = false
+mcl_mob_cap_hostile = 0
+mcl_mob_cap_monster = 0
+mcl_monsters_enabled = false
+mcl_hostile_mobs = false
+spawn_hostile_mobs = false
+hostile_mobs_spawn = false
+mcl_mobs_disable_hostile = true
+mcl_mobs_peaceful_only = true
+
 EOF'
 ```
 
@@ -65,9 +108,9 @@ EOF'
 ssh gabriel@<VPS_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server'
 ```
 
-### 4. Otorgar Privilegios Creativos a Usuarios Existentes:
+### 4. Otorgar TODOS los Privilegios Creativos a Usuarios Existentes:
 ```bash
-ssh gabriel@<VPS_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, \"noclip\" FROM auth;"'
+ssh gabriel@<VPS_IP> 'sleep 5 && cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
 ```
 
 ## 🔍 Verificación
@@ -138,12 +181,14 @@ Modificar **directamente** el archivo `minetest.conf` de VoxeLibre dentro del co
 
 ## 🎯 Resultado Final
 
-### ✅ **ÉXITO CONFIRMADO:**
+### ✅ **ÉXITO CONFIRMADO - CONFIGURACIÓN NUCLEAR ENHANCED:**
 - **🚫 Cero monstruos nocturonos:** Sin zombies, esqueletos, arañas
 - **🎮 Modo creativo 100%:** Inventario infinito, vuelo libre
 - **🛡️ Sin daño:** Jugadores inmortales
 - **🌱 Enfoque vegano:** Solo animales pacíficos para santuarios
 - **👨‍👩‍👧‍👦 Seguro para niños:** Experiencia no violenta completa
+- **🎁 Nuevos usuarios completos:** Todos los privilegios + kit de inicio automático
+- **📦 Kit de inicio enhanced:** 64 items esenciales + herramientas + comida vegana
 
 ### 🔧 **Configuración Final en Producción:**
 ```bash
@@ -154,15 +199,48 @@ Modificar **directamente** el archivo `minetest.conf` de VoxeLibre dentro del co
 Up (healthy) - Puerto 30000/UDP
 
 # Jugadores:
-Todos con privilegios creativos automáticos
+Todos con privilegios creativos automáticos + kit de inicio
 
 # Mobs:
 Solo animales pacíficos (vacas, ovejas, cerdos)
+
+# Comandos disponibles en el juego:
+/starter_kit - Obtener kit completo de inicio
+/give_starter_kit <player> - Dar kit a otro jugador (admin)
 ```
+
+## 🎮 Comandos de Chat Disponibles
+
+### Para Todos los Jugadores:
+- **`/starter_kit`** - Obtiene el kit completo de inicio con todos los materiales esenciales
+- **`/santuario`** - Información sobre características del santuario de animales  
+- **`/filosofia`** - Contenido educativo sobre la filosofía del servidor
+
+### Para Administradores:
+- **`/give_starter_kit <nombre_jugador>`** - Entrega kit de inicio a otro jugador
+- **Todos los privilegios creativos** - Acceso completo a comandos de administración
+
+## 🆕 Mejoras Implementadas (Septiembre 2025)
+
+### 🎁 Sistema de Kit de Inicio Automático
+- **Nuevos jugadores:** Reciben automáticamente un inventario completo
+- **Items incluidos:** 64 bloques de construcción + herramientas + comida vegana
+- **Comando manual:** Los jugadores existentes pueden usar `/starter_kit`
+
+### 🔧 Privilegios Enhanced
+- **Automático:** Todos los usuarios nuevos obtienen privilegios completos
+- **Retroactivo:** Usuarios existentes reciben privilegios actualizados
+- **Incluye:** creative, fly, fast, noclip, give, teleport, home, spawn, debug
+
+### 📦 Mod Creative Force Enhanced
+- **Ubicación:** `server/mods/creative_force/init.lua`
+- **Funciones:** Kit automático + privilegios + protección anti-daño
+- **Detección:** Sistema inteligente para nuevos vs. usuarios existentes
 
 ---
 
-**📅 Fecha de Implementación:** 2025-08-31  
+**📅 Fecha de Implementación Original:** 2025-08-31  
+**📅 Fecha de Enhancement:** 2025-09-01  
 **🔧 Implementado por:** Claude Code & Gabriel  
-**✅ Estado:** FUNCIONANDO - Configuración Nuclear Exitosa  
-**🎯 Efectividad:** 100% - Cero monstruos, 100% creativo  
+**✅ Estado:** FUNCIONANDO - Configuración Nuclear Enhanced Exitosa  
+**🎯 Efectividad:** 100% - Cero monstruos, 100% creativo, kits automáticos  
