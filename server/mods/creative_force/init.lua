@@ -2,7 +2,7 @@
 -- Author: Vegan Wetlands Team  
 -- Description: NUCLEAR OPTION - Ensures 100% creative mode and ZERO hostile entities
 
--- List of creative privileges to grant
+-- List of creative privileges to grant - COMPLETE SET
 local creative_privileges = {
     "creative",
     "give", 
@@ -10,7 +10,13 @@ local creative_privileges = {
     "fast",
     "noclip",
     "interact",
-    "shout"
+    "shout",
+    "home",
+    "spawn",
+    "teleport",
+    "settime",
+    "debug",
+    "basic_privs"
 }
 
 -- Function to grant all creative privileges to a player
@@ -25,10 +31,91 @@ local function grant_creative_privileges(player_name)
     end
 end
 
+-- Function to give ALL items to a new player
+local function give_all_items_to_player(player)
+    local inv = player:get_inventory()
+    if not inv then
+        return
+    end
+    
+    -- Clear existing inventory first
+    inv:set_size("main", 36)
+    inv:set_list("main", {})
+    
+    -- Essential VoxeLibre items for creative building and vegan gameplay
+    local essential_items = {
+        -- Building blocks
+        "mcl_core:stone", "mcl_core:cobble", "mcl_core:dirt", "mcl_core:grass_path",
+        "mcl_core:sand", "mcl_core:gravel", "mcl_core:clay", "mcl_core:brick_block",
+        "mcl_core:sandstone", "mcl_core:redsandstone", "mcl_core:glass",
+        
+        -- Wood materials
+        "mcl_core:wood", "mcl_core:junglewood", "mcl_core:pinewood", "mcl_core:acaciawood",
+        "mcl_core:darkwood", "mcl_core:sprucewood", "mcl_core:birchwood",
+        
+        -- Wool and decoration
+        "mcl_wool:white", "mcl_wool:red", "mcl_wool:green", "mcl_wool:blue",
+        "mcl_wool:yellow", "mcl_wool:orange", "mcl_wool:purple", "mcl_wool:pink",
+        
+        -- Plant-based foods (vegan-friendly)
+        "mcl_core:apple", "mcl_farming:bread", "mcl_farming:carrot", "mcl_farming:potato",
+        "mcl_farming:beetroot", "mcl_farming:pumpkin_pie", "mcl_core:sugar",
+        
+        -- Tools for building (no weapons)
+        "mcl_tools:pick_iron", "mcl_tools:shovel_iron", "mcl_tools:axe_iron",
+        "mcl_buckets:bucket_empty", "mcl_buckets:bucket_water", "mcl_buckets:bucket_lava",
+        
+        -- Redstone and automation
+        "mesecons:redstone", "mesecons_torch:redstoneblock", "mesecons_button:button_stone",
+        "mesecons_pressureplates:pressure_plate_stone_off", "mesecons_pistons:piston_normal_off",
+        
+        -- Rails and minecarts (no violence)
+        "mcl_minecarts:rail", "mcl_minecarts:golden_rail", "mcl_minecarts:activator_rail",
+        "mcl_minecarts:minecart", "mcl_minecarts:chest_minecart",
+        
+        -- Seeds and farming
+        "mcl_farming:wheat_seeds", "mcl_farming:carrot_item_seed", "mcl_farming:potato_item_seed",
+        "mcl_farming:beetroot_seeds", "mcl_farming:pumpkin_seeds", "mcl_farming:melon_seeds",
+        
+        -- Animal care items (compassionate)
+        "mcl_core:bone", "mcl_dye:bone_meal", "mcl_farming:hay_block",
+        
+        -- Creative essentials
+        "mcl_core:barrier", "mcl_commands:command_block"
+    }
+    
+    -- Add vegan food mod items if available
+    if minetest.get_modpath("vegan_food") then
+        table.insert(essential_items, "vegan_food:tofu")
+        table.insert(essential_items, "vegan_food:soy_milk")
+        table.insert(essential_items, "vegan_food:plant_milk")
+        table.insert(essential_items, "vegan_food:seitan")
+    end
+    
+    -- Fill inventory with essential items
+    local slot = 1
+    for _, item_name in ipairs(essential_items) do
+        if slot <= 36 then
+            -- Check if item exists before adding
+            if minetest.registered_items[item_name] then
+                inv:set_stack("main", slot, ItemStack(item_name .. " 64"))
+                slot = slot + 1
+            end
+        else
+            break -- Inventory full
+        end
+    end
+    
+    minetest.log("info", "[creative_force] Filled inventory with " .. (slot - 1) .. " essential vegan/creative items for player " .. player:get_player_name())
+end
+
 -- COMPLETELY DISABLE ALL DAMAGE
 minetest.register_on_player_hpchange(function(player, hp_change, reason)
     return 0  -- NO DAMAGE EVER
 end, true)
+
+-- Track players who have already received their starter kit
+local players_with_kit = {}
 
 -- Hook into player join event
 minetest.register_on_joinplayer(function(player)
@@ -37,6 +124,20 @@ minetest.register_on_joinplayer(function(player)
     
     -- Grant creative privileges immediately
     grant_creative_privileges(player_name)
+    
+    -- Check if this is a new player (first time joining)
+    local is_new_player = not players_with_kit[player_name]
+    
+    -- Give full starter kit to new players
+    if is_new_player then
+        minetest.after(1.5, function()
+            if player and player:is_player() then
+                give_all_items_to_player(player)
+                players_with_kit[player_name] = true
+                minetest.chat_send_player(player_name, "🎁 ¡Kit de inicio completo! Tienes todos los materiales esenciales para construir y crear sin límites.")
+            end
+        end)
+    end
     
     -- Also set creative inventory mode for VoxeLibre
     if mcl_player and mcl_player.set_player_formspec then
@@ -180,4 +281,44 @@ minetest.register_globalstep(function(dtime)
     end
 end)
 
-minetest.log("info", "[creative_force] Creative Force mod loaded - forcing creative mode for child-friendly vegan server")
+-- Chat command to manually give starter kit
+minetest.register_chatcommand("starter_kit", {
+    description = "Gives you the complete starter kit with all essential items",
+    func = function(name, param)
+        local player = minetest.get_player_by_name(name)
+        if not player then
+            return false, "You must be online to use this command."
+        end
+        
+        give_all_items_to_player(player)
+        players_with_kit[name] = true
+        
+        return true, "🎁 ¡Kit de inicio completo entregado! Tienes todos los materiales esenciales."
+    end,
+})
+
+-- Chat command to give starter kit to another player (for admins)
+minetest.register_chatcommand("give_starter_kit", {
+    params = "<player>",
+    description = "Give starter kit to another player (admin only)",
+    privs = {give = true},
+    func = function(name, param)
+        if param == "" then
+            return false, "Uso: /give_starter_kit <nombre_jugador>"
+        end
+        
+        local target_player = minetest.get_player_by_name(param)
+        if not target_player then
+            return false, "Jugador '" .. param .. "' no encontrado o no está online."
+        end
+        
+        give_all_items_to_player(target_player)
+        players_with_kit[param] = true
+        
+        minetest.chat_send_player(param, "🎁 ¡Un administrador te ha dado el kit de inicio completo!")
+        
+        return true, "Kit de inicio entregado a " .. param
+    end,
+})
+
+minetest.log("info", "[creative_force] Creative Force mod loaded - forcing creative mode for child-friendly vegan server with COMPLETE starter kits")
