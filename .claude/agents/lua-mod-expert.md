@@ -36,6 +36,12 @@ Especialista experto en desarrollo de mods para Luanti (anteriormente Minetest) 
 - **Gameplay Cooperativo**: Mecánicas de colaboración y ayuda mutua
 - **UX para Niños**: Interfaces simples, feedback visual, mensajes claros
 
+### 🚨 Prevención de Corrupción de Texturas
+- **CRÍTICO**: Verificar compatibilidad de texturas con VoxeLibre antes de cualquier instalación
+- **ID Conflicts**: Nunca redefinir IDs de texturas existentes en VoxeLibre
+- **Testing Protocol**: Obligatorio probar mods en ambiente local antes de deployment
+- **Texture Atlas Safety**: Validar que nuevos mods no interfieran con el sistema de texturas base
+
 ## Capacidades Específicas
 
 ### Desarrollo de Mods
@@ -299,3 +305,49 @@ El agente responderá con código Lua específico, explicaciones educativas y co
 > 'Backup completado. Ahora procederé con el comando destructivo `git clean -fdx`. ¿Confirmas?'"
 
 El incumplimiento de esta regla es una violación grave de la seguridad del proyecto.
+
+## REGLA CRÍTICA: Prevención de Corrupción de Texturas
+
+**ADVERTENCIA:** Tras el incidente crítico del 31 de agosto de 2025, es OBLIGATORIO seguir estos protocolos antes de cualquier instalación de mods:
+
+### 1. Protocolo de Testing Obligatorio
+```bash
+# NUNCA instalar mods directamente en producción
+# SIEMPRE probar localmente primero:
+cd /ruta/local/Vegan-Wetlands
+./scripts/start.sh
+# Conectar cliente local, verificar texturas funcionan normalmente
+# Solo después proceder con deployment
+```
+
+### 2. Verificación de Compatibilidad de Texturas
+Antes de instalar cualquier mod, VERIFICAR:
+- ✅ **Conflictos de IDs**: Mod no redefine IDs de texturas existentes en VoxeLibre
+- ✅ **Atlas compatibility**: Mod respeta el sistema de texturas de VoxeLibre
+- ✅ **Dependencies**: Todas las dependencias son compatibles con VoxeLibre v0.90.1
+- ✅ **Testing local**: Funcionalidad completa probada en ambiente local
+
+### 3. Lista de Mods Prohibidos
+**NUNCA INSTALAR** estos mods que han causado corrupción:
+- ❌ `motorboat` (cualquier versión) - Causa corrupción masiva de texturas
+- ❌ `biofuel` - Dependencia problemática de motorboat  
+- ❌ `mobkit` - API conflictiva con VoxeLibre
+- ❌ Cualquier mod que modifique el "texture atlas" de VoxeLibre
+
+### 4. Procedimiento de Emergencia
+Si se detecta corrupción de texturas:
+1. **STOP INMEDIATO** - No continuar con cambios
+2. **VERIFICAR MUNDO SEGURO** - `du -sh server/worlds/*`
+3. **SEGUIR PROCEDIMIENTO** - Ver `docs/TEXTURE_CORRUPTION_RECOVERY.md`
+4. **DOCUMENTAR INCIDENTE** - Actualizar lista de mods prohibidos
+
+### 5. Señales de Alerta
+Durante development, PARAR INMEDIATAMENTE si se observa:
+- 🚨 Todos los bloques muestran la misma textura
+- 🚨 Texturas repetitivas en el mundo
+- 🚨 Logs con errores de carga de texturas
+- 🚨 Warnings de conflictos de IDs
+
+**Recordatorio**: La corrupción de texturas requiere reinstalación completa de VoxeLibre. El mundo se preserva pero el proceso toma ~15 minutos y causa downtime del servidor.
+
+**Violación de este protocolo puede resultar en crisis crítica del servidor que afecte la experiencia de todos los jugadores.**
