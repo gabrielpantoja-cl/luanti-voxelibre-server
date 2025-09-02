@@ -289,6 +289,12 @@ docker compose restart luanti-server
 - **Foreign key relationship**: `user_privileges.id` references `auth.id`
 - **Container paths**: Configuration files mapped to `/config/.minetest/` in linuxserver/luanti container
 
+### Listing All Registered Users
+To get a clean list of all registered usernames, run the following command from the project root on the VPS:
+```bash
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
+```
+
 ### Troubleshooting
 - **World selection**: Server defaults to `/config/.minetest/worlds/world/` regardless of `world_name` setting
 - **Configuration mapping**: `luanti.conf` must be mapped to `/config/.minetest/minetest.conf`
