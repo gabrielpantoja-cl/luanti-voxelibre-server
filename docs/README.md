@@ -12,6 +12,7 @@ Documentación técnica completa del servidor Luanti educativo y compasivo para 
 
 ### 🚨 Procedimientos de Emergencia
 - **[Recuperación de Corrupción de Texturas](TEXTURE_CORRUPTION_RECOVERY.md)** - Solución para el incidente crítico del 31 de agosto, 2025
+- **[Sistema de Backups - Guía Completa](BACKUP_SYSTEM_GUIDE.md)** - Documentación completa de backups, troubleshooting y recuperación
 
 ### ⚛️ Configuraciones Críticas  
 - **[Nuclear Config Override](NUCLEAR_CONFIG_OVERRIDE.md)** - Configuraciones avanzadas anti-spawning de monstruos
@@ -40,14 +41,15 @@ Documentación técnica completa del servidor Luanti educativo y compasivo para 
 
 ### Por Audiencia
 - **👨‍💻 Desarrolladores**: Guías 3 y 4, CLAUDE.md
-- **👨‍💼 Administradores**: Guías 1 y 2, Nuclear Config
-- **🚨 Emergencias**: Texture Recovery, Nuclear Config
+- **👨‍💼 Administradores**: Guías 1 y 2, Nuclear Config, Backup System Guide
+- **🚨 Emergencias**: Texture Recovery, Backup System Guide, Nuclear Config
 
 ### Por Tipo de Tarea
 - **Desarrollo de mods**: Guía 3 + lua-mod-expert agent
 - **Deploy y CI/CD**: Guía 4 + vegan-wetlands-orchestrator agent  
 - **Problemas del servidor**: Guía 2 + documentación de emergencia
 - **Configuración inicial**: Guía 1 + CLAUDE.md
+- **Backups y recuperación**: Backup System Guide + Guía 2 (sección 2)
 
 ## 📞 Soporte y Contacto
 
@@ -64,6 +66,6 @@ Documentación técnica completa del servidor Luanti educativo y compasivo para 
 
 ---
 
-**Última actualización**: 31 de Agosto, 2025  
+**Última actualización**: 2 de Septiembre, 2025  
 **Mantenido por**: Equipo Vegan Wetlands  
-**Versión**: 1.1 (Post-incidente texturas)
+**Versión**: 1.2 (Sistema de Backups Completamente Funcional)

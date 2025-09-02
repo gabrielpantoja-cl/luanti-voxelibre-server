@@ -64,13 +64,17 @@ La forma más sencilla para tareas comunes sigue siendo a través de comandos en
 
 ## 2. Sistema de Backups y Recuperación
 
-El servidor cuenta con un **sistema de backups automatizado** robusto.
+El servidor cuenta con un **sistema de backups automatizado** robusto y completamente funcional.
 
+*   **Estado Actual:** ✅ **COMPLETAMENTE FUNCIONAL** (Actualizado Sept 2025)
 *   **Frecuencia:** Se crea un backup completo del mundo **cada 6 horas**.
 *   **Ubicación:** Los archivos `.tar.gz` se guardan en `server/backups/`.
 *   **Retención:** Se conservan los 10 backups más recientes.
+*   **Tamaño Típico:** ~43MB por backup comprimido.
 
-### 2.1. Verificar el Estado de los Backups
+> 📖 **Documentación Completa:** Para información detallada, troubleshooting avanzado y procedimientos de emergencia, consulta [`docs/BACKUP_SYSTEM_GUIDE.md`](BACKUP_SYSTEM_GUIDE.md).
+
+### 2.1. Verificar el Estado de los Backups (Verificación Rápida)
 
 Conéctate al VPS, navega a la carpeta del proyecto y ejecuta:
 ```bash
@@ -78,13 +82,49 @@ ls -lh server/backups/
 ```
 Deberías ver una lista de backups, con el más reciente teniendo menos de 6 horas de antigüedad.
 
-### 2.2. Procedimiento de Restauración
+**Verificación de Contenedores:**
+```bash
+docker ps | grep vegan-wetlands
+```
+Ambos contenedores (`vegan-wetlands-server` y `vegan-wetlands-backup`) deben aparecer como "Up".
 
-1.  **Detén el servidor:** `docker-compose down`
-2.  **Respalda el mundo dañado:** `mv server/worlds/vegan_wetlands server/worlds/vegan_wetlands_DAÑADO`
-3.  **Crea una carpeta nueva:** `mkdir server/worlds/vegan_wetlands`
-4.  **Descomprime el backup:** `tar -xzf server/backups/NOMBRE_DEL_BACKUP.tar.gz -C server/worlds/vegan_wetlands/`
-5.  **Reinicia el servidor:** `docker-compose up -d`
+### 2.2. Backup Manual de Emergencia
+
+Si necesitas crear un backup inmediato:
+```bash
+docker exec -t vegan-wetlands-backup sh /scripts/backup.sh
+```
+
+### 2.3. Procedimiento de Restauración (Básico)
+
+1.  **Detén el servidor:** `docker stop vegan-wetlands-server vegan-wetlands-backup`
+2.  **Respalda el mundo actual:** `mv server/worlds server/worlds_DAÑADO_$(date +%Y%m%d)`
+3.  **Crea carpeta limpia:** `mkdir -p server/worlds`
+4.  **Restaurar backup más reciente:** 
+    ```bash
+    LATEST_BACKUP=$(ls -t server/backups/vegan_wetlands_backup_*.tar.gz | head -1)
+    tar -xzf "$LATEST_BACKUP" -C server/worlds/
+    ```
+5.  **Reinicia servicios:** `docker start vegan-wetlands-server && docker start vegan-wetlands-backup`
+
+### 2.4. Troubleshooting de Backups
+
+**Problema Común: Backups no se crean automáticamente**
+
+```bash
+# Verificar logs del contenedor backup
+docker logs vegan-wetlands-backup --tail 20
+
+# Test manual para verificar funcionamiento
+docker exec -t vegan-wetlands-backup sh /scripts/backup.sh
+```
+
+**Si el contenedor backup falla constantemente:**
+1. El servidor Luanti SIEMPRE está seguro (el mundo persiste)
+2. Los backups manuales siguen funcionando
+3. Consulta la documentación completa en `docs/BACKUP_SYSTEM_GUIDE.md`
+
+> ⚠️ **Nota Importante**: El sistema de backups fue completamente reparado en Septiembre 2025. Si experimentas problemas similares a "exit status 127" o contenedores reiniciándose, consulta el historial de soluciones en la documentación especializada.
 
 ---
 
