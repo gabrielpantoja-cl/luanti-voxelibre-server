@@ -7,6 +7,8 @@
   --minecraft-stone: #7f7f7f;
   --minecraft-wood: #9c7853;
   --minecraft-dirt: #8b4513;
+  --minecraft-sky: #87ceeb;
+  --minecraft-leaves: #228b22;
   
   /* Colores de interface */
   --pixel-black: #000000;
@@ -46,6 +48,47 @@
   /* Bordes pixelados */
   --pixel-border: 2px solid var(--pixel-black);
   --pixel-border-light: 1px solid var(--pixel-gray);
+  
+  /* Variables adicionales para compatibilidad */
+  --primary-green: var(--minecraft-green);
+  --primary-green-dark: var(--minecraft-dark-green);
+  --primary-green-light: var(--minecraft-grass);
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+  --white: #ffffff;
+  --yellow-sun: #fbbf24;
+  
+  /* Gradientes */
+  --gradient-primary: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+  --gradient-secondary: linear-gradient(135deg, var(--minecraft-wood) 0%, var(--minecraft-dirt) 100%);
+  
+  /* Espaciado estándar */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  
+  /* Tamaños de fuente */
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 2rem;
+  
+  /* Radio de bordes */
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  
+  /* Sombras */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* ===== RESET Y BASE ===== */
@@ -112,7 +155,7 @@ body {
 
 .nav-links {
   display: flex;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 
 .nav-link {
@@ -554,6 +597,227 @@ body {
 .feature-card p {
   color: var(--gray-700);
   line-height: 1.7;
+}
+
+/* ===== GALLERY SECTION ===== */
+.gallery {
+  background: linear-gradient(135deg, var(--minecraft-grass) 0%, var(--minecraft-dark-green) 100%);
+  padding: var(--space-2xl) var(--space-md);
+  position: relative;
+}
+
+.gallery::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 16px, rgba(0,0,0,0.05) 16px, rgba(0,0,0,0.05) 17px),
+    repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(0,0,0,0.05) 16px, rgba(0,0,0,0.05) 17px);
+  pointer-events: none;
+}
+
+.gallery .section-title {
+  color: var(--pixel-white);
+  text-shadow: var(--pixel-shadow);
+  position: relative;
+  z-index: 1;
+}
+
+.gallery-intro {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto var(--space-xl) auto;
+  font-size: var(--font-size-md);
+  color: var(--pixel-white);
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  position: relative;
+  z-index: 1;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-lg);
+  position: relative;
+  z-index: 1;
+}
+
+.gallery-item {
+  position: relative;
+  aspect-ratio: 16/9;
+  border: 4px solid var(--pixel-black);
+  box-shadow: var(--pixel-shadow-large);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.gallery-item:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.8) 0%,
+    transparent 60%
+  );
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-md);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+  opacity: 1;
+}
+
+.gallery-info h4 {
+  color: var(--pixel-white);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-xs);
+  font-family: var(--pixel-font);
+  text-shadow: var(--pixel-shadow);
+}
+
+.gallery-info p {
+  color: var(--pixel-white);
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+  font-family: var(--pixel-font);
+}
+
+/* Gallery Placeholders */
+.gallery-placeholder {
+  background: var(--minecraft-stone);
+  border: 4px solid var(--pixel-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-content {
+  text-align: center;
+  padding: var(--space-md);
+  color: var(--pixel-white);
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-md);
+  opacity: 0.7;
+}
+
+.placeholder-content h4 {
+  font-family: var(--pixel-font);
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-sm);
+  color: var(--pixel-yellow);
+  text-shadow: var(--pixel-shadow);
+}
+
+.placeholder-content p {
+  font-family: var(--pixel-font);
+  font-size: var(--font-size-sm);
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+/* Gallery Modal */
+.gallery-modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(5px);
+}
+
+.gallery-modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80%;
+  border: 4px solid var(--pixel-white);
+  box-shadow: var(--pixel-shadow-large);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.gallery-modal-content {
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.gallery-close {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: var(--pixel-white);
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  cursor: pointer;
+  font-family: var(--pixel-font);
+  text-shadow: var(--pixel-shadow);
+}
+
+.gallery-close:hover,
+.gallery-close:focus {
+  color: var(--pixel-red);
+  text-decoration: none;
+}
+
+.gallery-caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: var(--pixel-white);
+  padding: var(--space-md) 0;
+  font-family: var(--pixel-font);
+  font-size: var(--font-size-md);
+  font-weight: bold;
+  text-shadow: var(--pixel-shadow);
 }
 
 /* ===== FOOTER ===== */
@@ -1516,6 +1780,63 @@ body {
   
   .starter-kit {
     justify-content: center;
+  }
+  
+  /* Hero section responsive improvements */
+  .pixel-title {
+    font-size: clamp(1.2rem, 5vw, 2rem);
+  }
+  
+  .pixel-subtitle {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+  }
+  
+  .player-stats {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--space-xs);
+  }
+  
+  .stat-pixel {
+    flex: 1;
+    min-width: 50px;
+  }
+  
+  .address-line, .port-line {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-xs);
+  }
+  
+  .label {
+    min-width: auto;
+    text-align: center;
+  }
+  
+  /* Gallery responsive */
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+  
+  .gallery-item {
+    aspect-ratio: 16/10; /* Slightly taller for mobile */
+  }
+  
+  .gallery-modal-content {
+    max-width: 95%;
+    max-height: 70%;
+  }
+  
+  .gallery-close {
+    top: 10px;
+    right: 15px;
+    font-size: 30px;
+  }
+  
+  .gallery-intro {
+    font-size: 0.9rem;
+    margin-bottom: var(--space-md);
   }
 }
 

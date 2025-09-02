@@ -69,17 +69,7 @@ function copyPort() {
     }
 }
 
-function fallbackCopy(input, copyText) {
-    input.select();
-    input.setSelectionRange(0, 99999); // For mobile devices
-    
-    try {
-        document.execCommand('copy');
-        showCopySuccess(copyText);
-    } catch (err) {
-        showCopyError(copyText);
-    }
-}
+// Legacy fallback copy function removed - now using modern implementation
 
 function showPixelCopySuccess(btn, originalText) {
     btn.textContent = '✅ COPIADO';
@@ -113,7 +103,6 @@ function initializeServerInfo() {
 }
 
 async function checkServerStatus() {
-    const statusElement = document.querySelector('.server-status');
     const statusIndicator = document.querySelector('.status-indicator');
     const statusText = document.querySelector('.status-text');
     
@@ -125,7 +114,7 @@ async function checkServerStatus() {
             statusIndicator.classList.add('online');
             statusIndicator.classList.remove('offline');
             statusText.textContent = 'SERVIDOR ONLINE';
-            updateRealPlayerCount(serverData.players || 0);
+            // Player count now hardcoded - no dynamic updates needed
         } else {
             throw new Error('Server offline');
         }
@@ -137,7 +126,7 @@ async function checkServerStatus() {
             statusIndicator.classList.add('online');
             statusIndicator.classList.remove('offline');
             statusText.textContent = 'SERVIDOR ONLINE';
-            updatePlayerCount();
+            // Player count now hardcoded - no fallback needed
         } else {
             statusIndicator.classList.add('offline');
             statusIndicator.classList.remove('online');
@@ -154,18 +143,7 @@ function simulateServerCheck() {
     });
 }
 
-function updateRealPlayerCount(playerCount) {
-    const statValue = document.querySelector('.stat-pixel .stat-value');
-    if (statValue && statValue.parentNode.querySelector('.stat-name').textContent.includes('Jugadores')) {
-        statValue.textContent = `${playerCount}/20`;
-    }
-}
-
-function updatePlayerCount() {
-    // Simulate player count (fallback when real data isn't available)
-    const playerCount = Math.floor(Math.random() * 8); // 0-7 players
-    updateRealPlayerCount(playerCount);
-}
+// Player count functions removed - now hardcoded to 3/20 in HTML
 
 // Try to get real server status
 async function checkRealServerStatus() {
@@ -499,13 +477,15 @@ function improveAccessibility() {
 function optimizePerformance() {
     // Lazy load images when they come into view
     if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver(function(entries, observer) {
+        const imageObserver = new IntersectionObserver(function(entries) {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        imageObserver.unobserve(img);
+                    }
                 }
             });
         });
@@ -907,10 +887,46 @@ function showDocsError(errorMessage) {
     `;
 }
 
+// ===== GALLERY FUNCTIONALITY =====
+function openGalleryModal(imageSrc, caption) {
+    const modal = document.getElementById('gallery-modal');
+    const modalImage = document.getElementById('gallery-modal-image');
+    const modalCaption = document.getElementById('gallery-modal-caption');
+    
+    if (modal && modalImage && modalCaption) {
+        modal.style.display = 'block';
+        modalImage.src = imageSrc;
+        modalCaption.textContent = caption;
+        
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeGalleryModal() {
+    const modal = document.getElementById('gallery-modal');
+    
+    if (modal) {
+        modal.style.display = 'none';
+        
+        // Restore body scroll
+        document.body.style.overflow = '';
+    }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeGalleryModal();
+    }
+});
+
 // Make functions globally available
 window.loadDocumentation = loadDocumentation;
 window.showDocsWelcome = showDocsWelcome;
 window.scrollToSection = scrollToSection;
+window.openGalleryModal = openGalleryModal;
+window.closeGalleryModal = closeGalleryModal;
 
 // ===== EXPORT FUNCTIONS FOR TESTING =====
 if (typeof module !== 'undefined' && module.exports) {
