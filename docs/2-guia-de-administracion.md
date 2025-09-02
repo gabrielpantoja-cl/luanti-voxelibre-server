@@ -6,20 +6,47 @@ Este documento es el manual de operaciones para los administradores de Vegan Wet
 
 ## 1. Gestión de Jugadores
 
-La gestión de jugadores se realiza principalmente a través de comandos en el juego, pero también es posible acceder a la base de datos de jugadores directamente en caso de emergencia.
+La gestión de jugadores se realiza a través de una base de datos **SQLite**, no de archivos de texto. Esto es debido a una configuración especial del servidor documentada en `NUCLEAR_CONFIG_OVERRIDE.md`.
+
+**Ubicación de la base de datos:** `/config/.minetest/worlds/world/auth.sqlite` (dentro del contenedor).
 
 ### 1.1. Listar Todos los Jugadores Registrados
 
-Para obtener una lista completa de todos los usuarios que alguna vez se han registrado, ejecuta el siguiente comando en la terminal del VPS, desde la carpeta raíz del proyecto:
+Para obtener una lista completa de todos los usuarios registrados, ejecuta el siguiente comando en la terminal del VPS, desde la carpeta raíz del proyecto (`/home/gabriel/Vegan-Wetlands`):
 
 ```bash
-docker-compose exec luanti-server sh -c 'cat /config/.minetest/worlds/vegan_wetlands/auth.txt | cut -d: -f1'
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
 ```
-Esto te dará una lista limpia de nombres de usuario.
+Esto consultará la base de datos y devolverá una lista limpia de nombres de usuario.
 
-### 1.2. Gestión de Privilegios
+### 1.2. Gestión de Privilegios (Línea de Comandos)
 
-La forma más segura de gestionar los privilegios es mediante comandos en el juego.
+Aunque se pueden usar comandos en el juego como `/grant`, la gestión avanzada o de emergencia se debe hacer directamente en la base de datos.
+
+#### Obtener el ID de un jugador:
+```bash
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT id, name FROM auth WHERE name LIKE '%nombre_del_jugador%';"
+```
+
+#### Otorgar un privilegio a un jugador (usando su ID):
+```bash
+# Reemplaza 'ID_JUGADOR' y 'privilegio'
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES (ID_JUGADOR, 'privilegio');"
+```
+**Ejemplo (dar `fly` al jugador con ID 14):**
+```bash
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES (14, 'fly');"
+```
+
+#### Revocar un privilegio:
+```bash
+# Reemplaza 'ID_JUGADOR' y 'privilegio'
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "DELETE FROM user_privileges WHERE id = ID_JUGADOR AND privilege = 'privilegio';"
+```
+
+### 1.3. Gestión de Privilegios (En el juego)
+
+La forma más sencilla para tareas comunes sigue siendo a través de comandos en el chat del juego.
 
 *   **Otorgar privilegio:** `/grant <jugador> <privilegio>`
 *   **Revocar privilegio:** `/revoke <jugador> <privilegio>`
@@ -32,15 +59,6 @@ La forma más segura de gestionar los privilegios es mediante comandos en el jue
 *   `noclip`: Permite atravesar paredes.
 *   `teleport`: Permite usar el comando `/teleport`.
 *   `server`: Acceso a todos los comandos de administrador.
-
-### 1.3. Edición Manual de `auth.txt` (Emergencia)
-
-Si un administrador pierde sus privilegios o no puede acceder al juego, se pueden editar manualmente. **ADVERTENCIA:** Un error aquí puede dañar el archivo de jugadores.
-
-1.  **Detén el servidor:** `docker-compose down`
-2.  **Edita el archivo:** `server/worlds/vegan_wetlands/auth.txt`
-3.  **Modifica la línea del jugador:** El formato es `nombre:hash:priv1,priv2`.
-4.  **Reinicia el servidor:** `docker-compose up -d`
 
 ---
 
