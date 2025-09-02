@@ -28,6 +28,7 @@
                 <a href="#inicio" class="nav-link">Inicio</a>
                 <a href="#como-jugar" class="nav-link">¿Cómo Jugar?</a>
                 <a href="#caracteristicas" class="nav-link">Características</a>
+                <a href="#galeria" class="nav-link">📸 Galería</a>
                 <a href="#documentacion" class="nav-link">📚 Guías</a>
             </div>
         </nav>
@@ -40,7 +41,7 @@
             <div class="game-overlay">
                 <div class="pixel-border">
                     <h1 class="pixel-title">
-                        🌱 WETLANDS CHILE 🌱
+                        🌱 WETLANDS VALDIVIA 🌱
                     </h1>
                     <p class="pixel-subtitle">
                         Servidor Familiar • Sin Violencia • Santuarios de Animales
@@ -68,7 +69,7 @@
                         </div>
                         <div class="player-stats">
                             <div class="stat-pixel">
-                                <span class="stat-value">0-20</span>
+                                <span class="stat-value">3/20</span>
                                 <span class="stat-name">Jugadores</span>
                             </div>
                             <div class="stat-pixel">
@@ -178,6 +179,82 @@
                     <h3>Mods Únicos</h3>
                     <p>Características especiales en desarrollo como cepillos para animales y bloques educativos.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="galeria" class="gallery">
+        <div class="container">
+            <h2 class="section-title">📸 Galería del Servidor</h2>
+            <p class="gallery-intro">
+                Explora capturas del mundo de Wetlands y conoce algunos de los lugares más hermosos construidos por nuestra comunidad.
+            </p>
+            
+            <div class="gallery-grid" id="gallery-grid">
+                <div class="gallery-item" onclick="openGalleryModal('assets/images/Captura de pantalla de 2025-08-31 02-48-20.png', 'Aventura en el mundo de Wetlands')">
+                    <img src="assets/images/Captura de pantalla de 2025-08-31 02-48-20.png" 
+                         alt="Aventura en el mundo de Wetlands" 
+                         class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h4>🏞️ Aventura Épica</h4>
+                            <p>Explora mundos llenos de vida y diversión</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="gallery-item" onclick="openGalleryModal('assets/images/pepe-gabo.jpeg', 'Comunidad Wetlands')">
+                    <img src="assets/images/pepe-gabo.jpeg" 
+                         alt="Comunidad Wetlands" 
+                         class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h4>👥 Nuestra Comunidad</h4>
+                            <p>Jugadores unidos por la diversión y el aprendizaje</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Placeholders for future screenshots -->
+                <div class="gallery-item gallery-placeholder">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🏠</div>
+                        <h4>Santuarios de Animales</h4>
+                        <p>Próximamente: Fotos de increíbles refugios construidos por jugadores</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item gallery-placeholder">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🌱</div>
+                        <h4>Granjas Veganas</h4>
+                        <p>Próximamente: Cultivos sostenibles y granjas creativas</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item gallery-placeholder">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🏗️</div>
+                        <h4>Construcciones Épicas</h4>
+                        <p>Próximamente: Las mejores creaciones de nuestra comunidad</p>
+                    </div>
+                </div>
+                
+                <div class="gallery-item gallery-placeholder">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🎉</div>
+                        <h4>Eventos Especiales</h4>
+                        <p>Próximamente: Celebraciones y actividades comunitarias</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gallery Modal -->
+            <div id="gallery-modal" class="gallery-modal" onclick="closeGalleryModal()">
+                <span class="gallery-close">&times;</span>
+                <img class="gallery-modal-content" id="gallery-modal-image">
+                <div id="gallery-modal-caption" class="gallery-caption"></div>
             </div>
         </div>
     </section>
