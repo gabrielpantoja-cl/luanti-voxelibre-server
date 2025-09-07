@@ -69,7 +69,14 @@ En Vegan Wetlands, no necesitas comandos complicados como `/sethome` para establ
 
 Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos comandos educativos para ti:
 
+### Comandos Educativos
 *   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.
 *   `/filosofia`: Te da datos interesantes sobre la filosofía del juego.
+
+### Comandos de Relajación
+*   `/sit`: Te permite sentarte cómodamente donde estés parado.
+*   `/lay`: Te permite acostarte y relajarte en el pasto o praderas con flores.
+
+Estos comandos son perfectos para tomar un momento "chill" durante tus aventuras. Puedes acostarte en hermosas praderas florales para contemplar la naturaleza y descansar del trabajo en el santuario.
 
 ¡Esperamos que disfrutes de tu estancia en Vegan Wetlands! Si tienes alguna duda, pregunta a los demás jugadores. ¡La cooperación es clave!
