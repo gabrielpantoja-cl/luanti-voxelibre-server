@@ -1,6 +1,4 @@
 -- Home Teleport Mod
--- Comandos /home, /sethome, /spawn para Vegan Wetlands
--- Integrado con VoxeLibre mcl_spawn
 
 local S = minetest.get_translator("home_teleport")
 
