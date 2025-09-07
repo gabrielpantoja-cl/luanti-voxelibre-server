@@ -196,6 +196,8 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 ### In-Game Commands
 - `/santuario`: Information about animal sanctuary features
 - `/filosofia`: Educational content about the game's philosophy
+- `/sit`: Sit down comfortably at current position
+- `/lay`: Lie down and relax in grass or flower meadows (perfect for chill moments)
 
 ### Server Management Features
 - New players automatically receive starter kit with plant-based foods (tofu, seitan, plant milk)
