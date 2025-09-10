@@ -1,6 +1,6 @@
 # Usuarios Registrados - Servidor Vegan Wetlands
 
-## Estado Actual (05-09-2025)
+## Estado Actual (10-09-2025)
 
 ### Usuarios Activos
 Total de usuarios registrados: **3 usuarios**
@@ -46,5 +46,5 @@ docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth
 Para otorgar privilegios administrativos a otros usuarios, consultar la sección "Admin Privilege Management" en `CLAUDE.md`.
 
 ---
-*Última actualización: 05 de septiembre de 2025*  
+*Última actualización: 10 de septiembre de 2025*  
 *Servidor: luanti.gabrielpantoja.cl:30000*
