@@ -1,49 +1,198 @@
 # GEMINI.md
 
-Este documento detalla el proceso de investigación y descubrimiento realizado por el asistente Gemini para resolver la discrepancia en la gestión de usuarios del servidor Vegan Wetlands.
+Este archivo proporciona orientación específica a Google Gemini cuando trabaja con código en este repositorio.
 
-## Misión: Encontrar Todos los Usuarios Registrados
+## Información del Proyecto
 
-El objetivo era encontrar un método para listar a todos los usuarios registrados en el servidor, ya que el usuario "pepelomo" no aparecía en las consultas iniciales.
+Vegan Wetlands es un **servidor de juego Luanti (anteriormente Minetest)** diseñado como un entorno compasivo, educativo y creativo para niños de 7+ años. El servidor cuenta con mods personalizados que promueven el cuidado animal, la educación compasiva y el juego no violento a través de santuarios de animales.
 
-### 1. Investigación Inicial (Método Documentado)
+**IMPORTANTE**: Este repositorio (`https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`) contiene **TODO** el código específico de Luanti, configuración y lógica de despliegue. Es completamente independiente del repositorio administrativo VPS (`vps-do.git`).
 
-- **Consulta:** Se solicitó un método para ver los usuarios desde el juego.
-- **Acción:** Se revisó la documentación existente, específicamente `docs/2-guia-de-administracion.md`.
-- **Hallazgo:** El documento indicaba que la lista de usuarios se obtenía del archivo `auth.txt` con el siguiente comando:
-  ```bash
-  docker-compose exec luanti-server sh -c 'cat /config/.minetest/worlds/vegan_wetlands/auth.txt | cut -d: -f1'
-  ```
-- **Resultado:** Al ejecutar este comando (después de corregir la ruta del proyecto en el VPS), solo se encontró al usuario `gabo`.
+## 🚨 REGLAS CRÍTICAS DE SEGURIDAD DE TEXTURAS
 
-### 2. La Pista del Usuario Faltante
+### **⚠️ NUNCA HAGAS ESTO - CAUSA CORRUPCIÓN TOTAL:**
 
-- **Conflicto:** El usuario insistió en que existían más jugadores, como `pepelomo`. Esto contradecía el contenido de `auth.txt`.
-- **Hipótesis 1: Mundo Equivocado.** Se pensó que los usuarios podrían estar en otro directorio de mundo.
-- **Acción:** Se listaron los mundos en el servidor (`/config/.minetest/worlds/`).
-- **Hallazgo:** Se encontró un segundo directorio llamado `world`, además de `vegan_wetlands`.
-- **Acción Fallida:** Se intentó leer `auth.txt` del directorio `world`, pero el archivo no existía.
+1. **🚫 NUNCA modifiques `docker-compose.yml` para mapear mods**
+   ```yaml
+   # ❌ ESTO CORROMPE TEXTURAS:
+   volumes:
+     - ./server/mods/nuevo_mod:/config/.minetest/games/mineclone2/mods/MISC/nuevo_mod
+   ```
+   
+2. **🚫 NUNCA instales mods con dependencias de texturas**
+   - `motorboat`, `biofuel`, `mobkit` causan corrupción completa
+   - VoxeLibre tiene un sistema de texturas frágil
+   - Los conflictos de ID de textura son cascada y persistentes
 
-### 3. El Punto de Inflexión: `NUCLEAR_CONFIG_OVERRIDE.md`
+3. **🚫 NUNCA hagas cambios sin backup del mundo**
 
-- **Hipótesis 2: Backend de Autenticación Diferente.** Si no era `auth.txt`, debía ser otro sistema. Se revisó `luanti.conf`, pero no se encontró ninguna configuración que anulara el backend por defecto (`files`).
-- **Descubrimiento Clave:** Se encontró un documento llamado `docs/NUCLEAR_CONFIG_OVERRIDE.md`. Este documento, que detalla modificaciones críticas hechas directamente en el servidor, fue la clave.
-- **Revelación:** Dentro de este archivo, un comando para otorgar privilegios masivos contenía la siguiente pista:
-  ```bash
-  ... sqlite3 /config/.minetest/worlds/world/auth.sqlite ...
-  ```
-- **Conclusión:** El servidor no usaba `auth.txt`. La autenticación se gestionaba a través de una base de datos **SQLite (`auth.sqlite`)** ubicada en el directorio `world`.
+### **✅ PROTOCOLO DE EMERGENCIA PARA CORRUPCIÓN DE TEXTURAS**
 
-### 4. La Solución Final
+**Síntomas de Corrupción:**
+- Todos los bloques muestran la misma textura incorrecta
+- Texturas faltantes (tablero rosa/negro)
+- Errores de carga de texturas en logs
+- Jugadores reportan fallas visuales
 
-- **Acción Correcta:** Se construyó un nuevo comando para consultar la base de datos SQLite:
-  ```bash
-  ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'"
-  ```
-- **Éxito:** Este comando devolvió la lista completa y correcta de todos los usuarios registrados, incluyendo a `pepelomo`.
+**PASOS DE RECUPERACIÓN INMEDIATA:**
 
-## Conclusión del Proceso
+```bash
+# PASO 1: BACKUP DE EMERGENCIA DEL MUNDO (¡CRÍTICO!)
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
-La documentación inicial estaba desactualizada. La fuente de la verdad sobre la infraestructura del servidor no estaba en la guía de administración principal, sino en un documento de anulación de configuración (`NUCLEAR_CONFIG_OVERRIDE.md`) que reflejaba los cambios manuales realizados en producción.
+# PASO 2: REVERTIR CAMBIOS PROBLEMÁTICOS
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && git reset --hard HEAD~1"
 
-Este proceso de descubrimiento ha sido documentado para asegurar que el conocimiento sobre el sistema de autenticación `auth.sqlite` quede registrado y la documentación principal sea corregida.
+# PASO 3: LIMPIAR ESTADO DEL CONTENEDOR
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose down && docker system prune -f"
+
+# PASO 4: REMOVER VOXELIBRE CORROMPIDO
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
+
+# PASO 5: DESCARGAR VOXELIBRE FRESCO (56MB)
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+
+# PASO 6: REINICIAR CON ESTADO LIMPIO
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose up -d"
+
+# PASO 7: VERIFICAR RECUPERACIÓN
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && sleep 10 && docker-compose ps && du -sh server/worlds/world"
+```
+
+## Acceso al Servidor
+
+```bash
+# Acceso SSH al servidor de producción
+ssh gabriel@<VPS_IP>
+```
+
+## Comandos Esenciales
+
+### Gestión del Servidor
+```bash
+# Iniciar el servidor (recomendado)
+./scripts/start.sh
+
+# O iniciar manualmente
+docker-compose up -d
+
+# Ver logs del servidor
+docker-compose logs -f luanti-server
+
+# Reiniciar servidor
+docker-compose restart luanti-server
+
+# Detener servidor
+docker-compose down
+
+# Monitorear estado del servidor
+docker-compose ps
+```
+
+### Operaciones de Backup
+```bash
+# Backup manual
+./scripts/backup.sh
+
+# Los backups automáticos corren cada 6 horas vía contenedor cron
+# Ubicación: server/backups/
+# Retención: 10 backups más recientes
+```
+
+## Arquitectura del Repositorio
+
+### 🎮 Este Repositorio (Vegan-Wetlands.git)
+**Responsabilidad**: Implementación completa del servidor Luanti
+- Configuración Docker Compose para Luanti
+- Mods personalizados (animal_sanctuary, vegan_food, education_blocks)
+- Archivos de configuración del servidor
+- Datos del mundo y backups
+- **Desarrollo de página de inicio** (HTML/CSS/JS para luanti.gabrielpantoja.cl)
+- Pipeline CI/CD específico de Luanti
+- Lógica y mecánicas del juego
+
+### 🏗️ Repositorio Administrativo VPS (vps-do.git)
+**Responsabilidad**: Infraestructura general VPS
+- Proxy inverso nginx
+- Automatización n8n
+- Gestión de contenedores Portainer
+- Coordinación de servicios generales VPS
+- **NO contiene archivos específicos de Luanti**
+
+## Configuración del Servidor
+
+- **Modo**: Creativo (sin daño, sin PvP, sin TNT)
+- **Idioma**: Español (es)
+- **Jugadores Máximos**: 20
+- **Privilegios Predeterminados**: `interact,shout,home,spawn,creative`
+- **Generación de Mundo**: v7 con cuevas, mazmorras, biomas
+- **Punto de Spawn**: 0,15,0 (estático)
+
+## Sistema de Autenticación Moderno
+
+### Base de Datos SQLite (Luanti 5.13+)
+**Ubicación**: `server/worlds/world/auth.sqlite`
+
+**Comandos Útiles**:
+```bash
+# Listar todos los usuarios registrados
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
+
+# Ver privilegios de un usuario
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT * FROM user_privileges WHERE id=1;'
+
+# Obtener ID de usuario
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT id FROM auth WHERE name="usuario";'
+```
+
+## Comandos del Juego
+
+### Comandos En-Juego Disponibles
+- `/santuario`: Información sobre características del santuario de animales
+- `/filosofia`: Contenido educativo sobre la filosofía del juego
+- `/sit`: Sentarse cómodamente en la posición actual
+- `/lay`: Acostarse y relajarse en prados de césped o flores
+
+### Comandos Administrativos Básicos de VoxeLibre
+- `/tp <jugador>`: Teletransportarse a un jugador (requiere privilegios)
+- Usar **camas** para establecer punto de respawn automáticamente
+- **Sistema de camas**: Dormir en una cama establece automáticamente tu punto de respawn
+
+## Métricas de Recuperación Exitosa (Última: 9 Sep 2025)
+- ✅ Datos del mundo preservados (174MB intactos)
+- ✅ Todos los bloques muestran texturas correctas
+- ✅ Servidor estable en puerto 30000
+- ✅ Sin errores de dependencias en logs
+- ✅ Jugadores pueden conectarse normalmente
+- **Tiempo de Recuperación**: ~3 minutos
+- **Pérdida de Datos**: Cero (mundo completamente preservado)
+
+## Contenido de Terceros
+
+### 🌱 Mod de Comida Vegana
+**Fuente**: [Mod vegan_food por Daenvil](https://content.luanti.org/packages/Daenvil/vegan_food/)
+**Licencia**: GPL v3.0 (código) / CC BY-SA 4.0 (texturas)
+**Integración**: Proporciona comidas a base de plantas profesionales para el kit inicial
+
+## Restricciones del Proyecto
+
+- **Sin package.json**: No es un proyecto Node.js
+- **Sin sistema de compilación tradicional**: Usa Docker Compose y Lua
+- **Sin pruebas unitarias**: Testing manual mediante juego
+- **Configuración vía archivos .conf**: No JSON/YAML
+- **Scripting basado en Lua**: Toda la lógica de mods en Lua
+
+---
+
+## Proceso de Descubrimiento Histórico: Sistema de Autenticación
+
+### Contexto
+Este documento anteriormente detallaba el proceso de investigación realizado por Gemini para resolver la discrepancia en la gestión de usuarios del servidor.
+
+### Descubrimiento Clave
+- **Problema**: Los usuarios no aparecían en `auth.txt`
+- **Solución**: El servidor usa **base de datos SQLite** (`auth.sqlite`) en lugar de archivos de texto
+- **Fuente**: Documentación en `docs/NUCLEAR_CONFIG_OVERRIDE.md`
+- **Resultado**: Sistema de autenticación moderno con SQLite correctamente identificado
+
+Este conocimiento histórico ha sido integrado en la documentación principal arriba.

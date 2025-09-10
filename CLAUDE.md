@@ -588,49 +588,68 @@ rsync -avz server/landing-page/ gabriel@<VPS_IP>:/home/gabriel/vps-do/nginx/www/
 ssh gabriel@<VPS_IP> 'cd /home/gabriel/vps-do && docker-compose exec nginx-proxy nginx -s reload'
 ```
 
-## 🚨 Critical Issue Recovery: Texture Corruption (Aug 31, 2025)
+## 🚨 CRITICAL: Texture Corruption Prevention & Recovery Protocol
 
-### **Problem Description**
-Complete texture corruption affecting all blocks in VoxeLibre - all blocks displayed the same incorrect texture, making the game unplayable.
+### **⚠️ GOLDEN RULES - NEVER BREAK THESE:**
 
-### **🔍 Root Cause Analysis**
+1. **🚫 NEVER modify `docker-compose.yml` volume mappings for mods**
+   - VoxeLibre has a fragile texture system
+   - Adding mod mappings can cause texture ID conflicts
+   - Keep mods in separate containers or use proper mod loading
 
-**Technical Cause**: Mod texture ID conflict cascade
-1. **Texture Atlas Conflict**: The `motorboat` mod redefined texture IDs that already existed in VoxeLibre's texture system
-2. **ID Mapping Corruption**: When both systems loaded simultaneously, multiple blocks began pointing to the same texture resource
-3. **Cache Persistence**: The incorrect texture mappings were cached in VoxeLibre's internal files
-4. **Cascading Failure**: Even after removing the problematic mod, the corrupted cache persisted
+2. **🚫 NEVER install mods with texture dependencies**
+   - Mods like `motorboat`, `biofuel`, `mobkit` cause texture corruption
+   - Always test mods in local environment first
+   - Check for texture file conflicts before deployment
 
-**Sequence of Events**:
-```
-Motorboat mod installed → Texture ID conflicts → Cache corruption → All blocks use same texture → Visual catastrophe
-```
+3. **✅ ALWAYS backup world data before any mod changes**
+   ```bash
+   ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d_%H%M%S)"
+   ```
 
-### **🛠️ Recovery Procedure**
+### **🛠️ Emergency Texture Recovery Protocol (Sep 9, 2025)**
 
-**CRITICAL**: Always backup world data before attempting recovery!
+**Signs of Texture Corruption:**
+- All blocks show the same incorrect texture
+- Missing textures (pink/black checkerboard)
+- Server logs showing texture loading errors
+- Players report visual glitches
+
+**IMMEDIATE RECOVERY STEPS:**
 
 ```bash
-# 1. Remove ALL problematic mods
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/motorboat server/mods/biofuel server/mods/mobkit"
+# STEP 1: EMERGENCY WORLD BACKUP (CRITICAL!)
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
-# 2. Download fresh VoxeLibre (56MB)
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2"
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip"
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+# STEP 2: REVERT ANY RECENT docker-compose CHANGES
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && git reset --hard HEAD~1"
 
-# 3. Clean container state completely
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker compose down && docker system prune -f"
+# STEP 3: CLEAN CONTAINER STATE COMPLETELY
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose down && docker system prune -f"
 
-# 4. Remove any mods with broken dependencies
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/education_blocks"
+# STEP 4: REMOVE CORRUPTED VOXELIBRE
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
 
-# 5. Restart with clean slate
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker compose up -d"
+# STEP 5: DOWNLOAD FRESH VOXELIBRE (56MB)
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
 
-# 6. Verify world data preservation
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/*"
+# STEP 6: RESTART WITH CLEAN STATE
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose up -d"
+
+# STEP 7: VERIFY RECOVERY
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && sleep 10 && docker-compose ps && du -sh server/worlds/world"
 ```
+
+### **📊 Recovery Success Metrics:**
+- ✅ World data preserved (174MB intact)
+- ✅ All blocks display correct textures
+- ✅ Server stable on port 30000
+- ✅ No dependency errors in logs
+- ✅ Players can connect normally
+
+**Recovery Time**: ~3 minutes (mostly download time)
+**Data Loss**: Zero (world fully preserved)
+**Last Successful Recovery**: Sep 9, 2025
 
 ### **🔍 Prevention Strategies**
 
