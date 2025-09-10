@@ -73,6 +73,9 @@ Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos coman
 *   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.
 *   `/filosofia`: Te da datos interesantes sobre la filosofía del juego.
 
+### Comandos de Navegación
+*   `/back_to_spawn`: Te teletransporta directamente a tu punto de spawn personal (tu cama) o al spawn del mundo si no tienes cama establecida.
+
 ### Comandos de Relajación
 *   `/sit`: Te permite sentarte cómodamente donde estés parado.
 *   `/lay`: Te permite acostarte y relajarte en el pasto o praderas con flores.
