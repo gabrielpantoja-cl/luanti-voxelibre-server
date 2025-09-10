@@ -72,6 +72,14 @@ Dentro del código de tus mods, **nunca** debes usar las dependencias del juego 
 *   **Categoría:** `HELP`
 *   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre alimentación consciente, nutrición y respeto animal al ser usados.
 
+### 🏠 `back_to_spawn` (mcl_back_to_spawn)
+*   **Categoría:** Mod externo de terceros, instalado en `/server/mods/`
+*   **Autor:** Alex5002
+*   **Funcionalidad:** Teletransportación a puntos de spawn personales usando el sistema de camas de VoxeLibre.
+*   **Dependencias:** `mcl_spawn` (incluido en VoxeLibre)
+*   **Comandos:** `/back_to_spawn` - Teletransporta al jugador a su spawn personal (cama) o al spawn mundial.
+*   **Integración:** Se integra perfectamente con el sistema de camas de VoxeLibre. Los jugadores duermen en camas para establecer su spawn personal.
+
 ---
 
 ## 4. Plan de Desarrollo Futuro (Roadmap)
