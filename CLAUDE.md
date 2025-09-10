@@ -150,6 +150,7 @@ All mods follow Luanti mod structure:
 1. **animal_sanctuary**: Replaces violent mechanics with animal care (brushes instead of weapons, feeding systems, shelters)
 2. **vegan_food**: Plant-based food items (burgers, oat milk, plant-based cheese)
 3. **education_blocks**: Interactive educational content about compassion and sustainability
+4. **back_to_spawn** (mcl_back_to_spawn): Teleportation to personal spawn points via bed sleeping mechanics
 
 ### Server Configuration
 - **Mode**: Creative (no damage, no PvP, no TNT)
@@ -198,6 +199,7 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 - `/filosofia`: Educational content about the game's philosophy
 - `/sit`: Sit down comfortably at current position
 - `/lay`: Lie down and relax in grass or flower meadows (perfect for chill moments)
+- `/back_to_spawn`: Teleports player to their personal spawn point (bed or world spawn)
 
 ### Server Management Features
 - New players automatically receive starter kit with plant-based foods (tofu, seitan, plant milk)
@@ -221,6 +223,23 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 - **Special thanks**: [Mindful Minecraft community](https://veganminecraft.com)
 
 **Integration**: Provides professional plant-based food items (tofu, seitan, plant milk, syrup) with high-quality textures for the starter kit, replacing placeholder items that lacked proper textures.
+
+### 🏠 Back to Spawn Mod
+**Source**: [mcl_back_to_spawn by Alex5002](https://content.luanti.org/packages/Alex5002/mcl_back_to_spawn/)  
+**Version**: Latest from Luanti ContentDB  
+**License**: GPL v3.0
+
+**Credits**:
+- **Developer**: Alex5002
+- **Compatibility**: VoxeLibre (MineClone2) specific
+
+**Integration**: Works with VoxeLibre's integrated bed spawning system (`mcl_spawn` mod). Players can set their spawn point by sleeping in beds, and use `/back_to_spawn` to teleport to their personal spawn point. Falls back to world spawn if no bed spawn is set.
+
+**Key Features**:
+- Personal spawn teleportation via `/back_to_spawn` command
+- Integration with VoxeLibre bed spawning mechanics
+- Admin functionality to teleport other players (requires `server` and `tp` privileges)
+- Multilingual support with locale files
 
 ## Admin Privilege Management
 
