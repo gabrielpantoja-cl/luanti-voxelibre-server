@@ -1,15 +1,16 @@
 # Usuarios Registrados - Servidor Vegan Wetlands
 
-## Estado Actual (10-09-2025)
+## Estado Actual (12-09-2025)
 
 ### Usuarios Activos
-Total de usuarios registrados: **3 usuarios**
+Total de usuarios registrados: **4 usuarios**
 
 | Usuario | Identificación | Rol | Notas |
 |---------|----------------|-----|-------|
 | `gabo` | Admin Principal | Administrador | Usuario principal del servidor |
 | `pepelomo` | Luciano | Jugador | Usuario registrado |
 | `veight` | Karu | Jugador | Usuario registrado |
+| `gaelsin` | Gael (Sobrino) | Jugador | Sobrino del administrador |
 
 ### Historial de Limpieza
 
@@ -46,5 +47,5 @@ docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth
 Para otorgar privilegios administrativos a otros usuarios, consultar la sección "Admin Privilege Management" en `CLAUDE.md`.
 
 ---
-*Última actualización: 10 de septiembre de 2025*  
+*Última actualización: 12 de septiembre de 2025*  
 *Servidor: luanti.gabrielpantoja.cl:30000*
