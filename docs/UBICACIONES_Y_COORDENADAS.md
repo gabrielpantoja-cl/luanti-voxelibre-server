@@ -20,14 +20,6 @@
 - **Comando de teleportación**: `/teleport gabo 0 15 0`  
 - **Comando alternativo**: `/back_to_spawn` (si no tienes cama personal)
 
-### 🏗️ **ZONA DE CONSTRUCCIÓN SECUNDARIA**
-- **Coordenadas**: `32, 80, -80` (teleportación aérea)  
-- **Coordenadas de superficie**: `32, ~10-20, -80`  
-- **Chunk del mundo**: (2, -8) a (2, -3)  
-- **Descripción**: Segunda área con alta actividad de construcción  
-- **Comando de teleportación**: `/teleport gabo 32 80 -80`  
-- **Estado**: 🔍 **PENDIENTE DE EXPLORAR**
-
 ### 🏘️ **SEGUNDA CIUDAD - ALDEA** ⭐⭐
 - **Coordenadas**: `57, 33, -3082` (teleportación aérea)  
 - **Coordenadas exactas**: `57.1, 32.5, -3081.7`  
