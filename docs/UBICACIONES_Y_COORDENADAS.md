@@ -1,7 +1,7 @@
 # 🗺️ UBICACIONES Y COORDENADAS DEL MUNDO VEGAN WETLANDS
 
 **Fecha de creación**: 10 de Septiembre, 2025  
-**Última actualización**: 10 de Septiembre, 2025  
+**Última actualización**: 12 de Septiembre, 2025  
 **Estado del mundo**: Activo y estable  
 
 ## 📍 UBICACIONES PRINCIPALES CONFIRMADAS
@@ -28,6 +28,14 @@
 - **Comando de teleportación**: `/teleport gabo 32 80 -80`  
 - **Estado**: 🔍 **PENDIENTE DE EXPLORAR**
 
+### 🏘️ **SEGUNDA CIUDAD - ALDEA** ⭐⭐
+- **Coordenadas**: `57, 33, -3082` (teleportación aérea)  
+- **Coordenadas exactas**: `57.1, 32.5, -3081.7`  
+- **Descripción**: Segunda ciudad más importante del servidor - Aldea desarrollada  
+- **Comando de teleportación**: `/teleport gabo 57 33 -3082`  
+- **Estado**: ✅ **CONFIRMADO ACTIVO** (Sept 12, 2025)  
+- **Importancia**: Segunda ciudad más importante del mundo
+
 ## 🛠️ COMANDOS DE NAVEGACIÓN ESENCIALES
 
 ### **Teleportación Directa**
@@ -40,6 +48,9 @@
 
 # Zona Secundaria (por explorar)
 /teleport gabo 32 80 -80
+
+# Segunda Ciudad - Aldea (CONFIRMADA)
+/teleport gabo 57 33 -3082
 
 # Teleportación a coordenadas específicas
 /teleport gabo <x> <y> <z>
@@ -130,6 +141,11 @@ Si necesitas acceso completo de administrador:
 ```
 
 ## 📝 REGISTRO DE CAMBIOS
+
+### **12 de Septiembre, 2025**
+- ✅ **CONFIRMADO**: Segunda Ciudad - Aldea en coordenadas (57, 33, -3082)
+- ✅ Registrada como segunda ciudad más importante del servidor
+- ✅ Comando de teleportación agregado al sistema de navegación
 
 ### **10 de Septiembre, 2025**
 - ✅ **CONFIRMADO**: Ciudad principal en coordenadas (-48, 80, 0)
