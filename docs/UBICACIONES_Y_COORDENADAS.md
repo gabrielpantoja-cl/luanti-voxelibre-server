@@ -21,12 +21,20 @@
 - **Comando alternativo**: `/back_to_spawn` (si no tienes cama personal)
 
 ### 🏘️ **SEGUNDA CIUDAD - ALDEA** ⭐⭐
-- **Coordenadas**: `57, 33, -3082` (teleportación aérea)  
-- **Coordenadas exactas**: `57.1, 32.5, -3081.7`  
-- **Descripción**: Segunda ciudad más importante del servidor - Aldea desarrollada  
-- **Comando de teleportación**: `/teleport gabo 57 33 -3082`  
-- **Estado**: ✅ **CONFIRMADO ACTIVO** (Sept 12, 2025)  
+- **Coordenadas**: `57, 33, -3082` (teleportación aérea)
+- **Coordenadas exactas**: `57.1, 32.5, -3081.7`
+- **Descripción**: Segunda ciudad más importante del servidor - Aldea desarrollada
+- **Comando de teleportación**: `/teleport gabo 57 33 -3082`
+- **Estado**: ✅ **CONFIRMADO ACTIVO** (Sept 12, 2025)
 - **Importancia**: Segunda ciudad más importante del mundo
+
+### 🏘️ **TERCERA ALDEA** ⭐⭐⭐
+- **Coordenadas**: `888, 13, 90` (teleportación aérea)
+- **Coordenadas exactas**: `888.1, 12.5, 89.8`
+- **Descripción**: Tercera aldea del servidor
+- **Comando de teleportación**: `/teleport gabo 888 13 90`
+- **Estado**: ✅ **CONFIRMADO ACTIVO** (Sept 13, 2025)
+- **Importancia**: Tercera ubicación importante del mundo
 
 ## 🛠️ COMANDOS DE NAVEGACIÓN ESENCIALES
 
@@ -43,6 +51,9 @@
 
 # Segunda Ciudad - Aldea (CONFIRMADA)
 /teleport gabo 57 33 -3082
+
+# Tercera Aldea (CONFIRMADA)
+/teleport gabo 888 13 90
 
 # Teleportación a coordenadas específicas
 /teleport gabo <x> <y> <z>
