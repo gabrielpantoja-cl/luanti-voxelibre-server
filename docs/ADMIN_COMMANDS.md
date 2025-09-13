@@ -131,6 +131,203 @@ Los jugadores deben dormir en una cama para establecer su spawn personal.
 /lay
 ```
 
+## 🏗️ Comandos de WorldEdit
+
+**Requiere**: privilegio `worldedit`
+
+### Obtener Herramientas
+```
+/giveme worldedit:wand
+```
+**Hacha de WorldEdit**: Click izquierdo = pos1, Click derecho = pos2
+
+### Selección de Área
+
+#### Seleccionar Manualmente
+```
+//pos1
+//pos2
+```
+Selecciona tu posición actual como esquina 1 o 2.
+
+#### Expandir/Contraer Selección
+```
+//expand <cantidad> <dirección>
+//contract <cantidad> <dirección>
+```
+**Direcciones**: `up`, `down`, `north`, `south`, `east`, `west`, `front`, `back`
+
+**Ejemplos**:
+- `//expand 10 up` - Expande 10 bloques hacia arriba
+- `//contract 5 down` - Contrae 5 bloques hacia abajo
+
+#### Seleccionar Todo un Chunk
+```
+//chunk
+```
+
+### Operaciones Básicas
+
+#### Llenar Área
+```
+//set <bloque>
+```
+**Ejemplos**:
+- `//set mcl_core:stone` - Llenar con piedra
+- `//set air` - Vaciar área (crear hueco)
+- `//set mcl_core:water_source` - Llenar con agua
+
+#### Reemplazar Bloques
+```
+//replace <bloque_viejo> <bloque_nuevo>
+```
+**Ejemplos**:
+- `//replace mcl_core:dirt mcl_core:grass_block`
+- `//replace air mcl_core:stone` - Llenar solo espacios vacíos
+
+### Formas Geométricas
+
+#### Esfera
+```
+//sphere <bloque> <radio> [hueca]
+```
+**Ejemplos**:
+- `//sphere mcl_core:stone 5` - Esfera sólida de piedra, radio 5
+- `//sphere mcl_core:glass 10 true` - Esfera hueca de vidrio, radio 10
+
+#### Cilindro
+```
+//cylinder <bloque> <radio> <altura> [hueco]
+```
+**Ejemplos**:
+- `//cylinder mcl_core:stone 3 10` - Cilindro sólido
+- `//cylinder mcl_core:cobblestone 5 8 true` - Cilindro hueco
+
+#### Pirámide
+```
+//pyramid <bloque> <altura>
+```
+
+### Copiar y Pegar
+
+#### Copiar Selección
+```
+//copy
+```
+Copia la selección actual.
+
+#### Cortar Selección
+```
+//cut
+```
+Copia y borra la selección original.
+
+#### Pegar
+```
+//paste
+```
+Pega en tu posición actual.
+
+### Movimiento y Rotación
+
+#### Mover Selección
+```
+//move <distancia> <dirección> [dejar_copia]
+```
+**Ejemplos**:
+- `//move 10 up` - Mover 10 bloques hacia arriba
+- `//move 5 north true` - Mover y dejar copia original
+
+#### Apilar (Duplicar)
+```
+//stack <cantidad> <dirección>
+```
+**Ejemplo**: `//stack 5 east` - Crear 5 copias hacia el este
+
+### Generación de Terreno
+
+#### Generar Terreno Natural
+```
+//generate <expresión> <tamaño_bloque>
+```
+**Ejemplo**: `//generate stone 16` - Generar terreno de piedra
+
+### Deshacer y Rehacer
+
+#### Deshacer Última Acción
+```
+//undo [pasos]
+```
+**Ejemplos**:
+- `//undo` - Deshacer último cambio
+- `//undo 3` - Deshacer últimos 3 cambios
+
+#### Rehacer
+```
+//redo [pasos]
+```
+
+### Utilidades
+
+#### Ver Tamaño de Selección
+```
+//size
+```
+
+#### Limpiar Historial
+```
+//clearhistory
+```
+
+#### Información de Bloque
+```
+//inspect
+```
+Obtén información del bloque que tocas.
+
+### Comandos Avanzados
+
+#### Drenar Líquidos
+```
+//drain <radio>
+```
+Elimina agua y lava en el radio especificado.
+
+#### Rellenar Huecos
+```
+//fillr <bloque> <radio>
+```
+Rellena espacios vacíos con el bloque especificado.
+
+#### Fijar Área (Proteger)
+```
+//fixedpos set1 <x> <y> <z>
+//fixedpos set2 <x> <y> <z>
+```
+
+### Bloques Comunes de VoxeLibre
+
+```
+mcl_core:stone          - Piedra
+mcl_core:dirt           - Tierra
+mcl_core:grass_block    - Bloque de hierba
+mcl_core:cobblestone    - Adoquín
+mcl_core:wood           - Madera
+mcl_core:leaves         - Hojas
+mcl_core:glass          - Vidrio
+mcl_core:water_source   - Agua
+mcl_core:lava_source    - Lava
+air                     - Aire (vacío)
+```
+
+### ⚠️ Consejos de WorldEdit
+
+1. **Siempre haz backup** antes de operaciones grandes
+2. **Usa `//undo`** si algo sale mal
+3. **Selecciones grandes** pueden causar lag - úsalas con cuidado
+4. **Prueba primero** en áreas pequeñas
+5. **El comando `//size`** te ayuda a verificar el tamaño antes de ejecutar
+
 ## 🔍 Comandos de Depuración (Admin)
 
 ### Encontrar y Teletransportarse a Bioma
