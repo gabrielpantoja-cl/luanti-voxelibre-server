@@ -35,7 +35,7 @@ Este documento detalla las mejoras significativas realizadas en la landing page 
 
 #### HTML (`index.html`)
 - Nueva sección `<section id="galeria" class="gallery">`
-- Grid responsivo con 6 elementos (2 reales + 4 placeholders)
+- Grid responsivo con 6 elementos (3 reales + 3 placeholders)
 - Modal interactivo para visualización ampliada de imágenes
 - Navegación actualizada con enlace a "📸 Galería"
 
@@ -55,11 +55,11 @@ Este documento detalla las mejoras significativas realizadas en la landing page 
 **Contenido actual**:
 1. **Captura real del juego**: Screenshot existente con overlay "🏞️ Aventura Épica"
 2. **Comunidad**: Imagen personal con overlay "👥 Nuestra Comunidad"
-3. **4 Placeholders temáticos**:
+3. **Aventura con Animales**: Nueva captura de gameplay del 13 de Septiembre con cerdos y paisajes hermosos
+4. **3 Placeholders temáticos**:
    - 🏠 Santuarios de Animales
    - 🌱 Granjas Veganas
    - 🏗️ Construcciones Épicas
-   - 🎉 Eventos Especiales
 
 ### ✅ 4. Diseño Hermoseado y Minimalista
 
@@ -141,6 +141,7 @@ Este documento detalla las mejoras significativas realizadas en la landing page 
 ### Archivos de Imágenes Utilizados
 1. **`server/landing-page/assets/images/Captura de pantalla de 2025-08-31 02-48-20.png`** - Screenshot del juego
 2. **`server/landing-page/assets/images/pepe-gabo.jpeg`** - Imagen de comunidad
+3. **`server/landing-page/assets/images/wetlands-gameplay-2025-09-13.png`** - Nueva captura con animales (13 Sep 2025)
 
 ## 🚀 Impacto de las Mejoras
 
@@ -176,9 +177,22 @@ xdg-open index.html
 
 ## 🎯 Próximas Mejoras Sugeridas
 
+### ✅ 8. Galería Expandida (Actualización del 13 de Septiembre)
+
+**Nueva adición**:
+- **Tercera imagen real**: Screenshot de gameplay con animales (`wetlands-gameplay-2025-09-13.png`)
+- **Descripción**: "🐷 Aventura con Animales - Interactúa con cerdos y otros animales en paisajes hermosos"
+- **Integración**: Modal funcional con overlay informativo
+- **Deploy**: Actualizado en producción en http://luanti.gabrielpantoja.cl
+
+**Estado actualizado de la galería**:
+- ✅ **3 imágenes reales** mostrando diferentes aspectos del juego
+- ✅ **3 placeholders restantes** para futuras capturas
+- ✅ **50% de contenido real** vs placeholders
+
 ### Fase 2 (Futuro)
 1. **API real de estado del servidor** - Reemplazar simulación con datos reales
-2. **Más capturas de pantalla** - Llenar placeholders de galería
+2. **Completar galería** - Agregar 3 capturas restantes (santuarios, granjas, construcciones)
 3. **Sistema de comentarios** - Testimoniales de jugadores
 4. **Integración con redes sociales** - Compartir capturas
 
@@ -197,7 +211,8 @@ xdg-open index.html
 
 ---
 
-**Fecha de finalización**: Septiembre 2025  
-**Desarrollador**: Claude Code con supervisión humana  
-**Estado**: ✅ Completado - Listo para deployment  
-**Documentación actualizada**: `docs/landing-page-improvements-sep-2025.md`
+**Fecha de finalización**: Septiembre 2025
+**Última actualización**: 13 de Septiembre 2025 (Galería expandida)
+**Desarrollador**: Claude Code con supervisión humana
+**Estado**: ✅ Desplegado en producción - http://luanti.gabrielpantoja.cl
+**Documentación actualizada**: `docs/landing-page.md`
