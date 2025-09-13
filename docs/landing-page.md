@@ -175,6 +175,71 @@ python3 -m http.server 8080
 xdg-open index.html
 ```
 
+## 🚀 **GUÍA PASO A PASO: Cómo Actualizar la Página Web**
+
+### **Método Actual (Recomendado)**
+
+**Paso 1: Hacer cambios locales**
+```bash
+# Editar archivos en tu máquina local
+cd /home/gabriel/Documentos/Vegan-Wetlands/server/landing-page/
+# Modificar index.html, CSS, JS o agregar imágenes
+```
+
+**Paso 2: Commit y push al repositorio**
+```bash
+cd /home/gabriel/Documentos/Vegan-Wetlands/
+git add server/landing-page/
+git commit -m "Actualizar landing page: [descripción de cambios]"
+git push origin main
+```
+
+**Paso 3: Actualizar en el VPS**
+```bash
+# SSH al VPS y hacer pull
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && git pull origin main"
+```
+
+**Paso 4: Reiniciar nginx (si es necesario)**
+```bash
+# Solo si hay cambios estructurales importantes
+ssh gabriel@<VPS_IP> "cd /home/gabriel/vps-do && docker-compose restart nginx"
+```
+
+**Paso 5: Verificar deployment**
+```bash
+curl -I http://luanti.gabrielpantoja.cl
+# O abrir en navegador para verificar cambios
+```
+
+### **Arquitectura del Deployment**
+
+**Mapeo directo**: La landing page está mapeada directamente desde el repositorio:
+```yaml
+# En vps-do/docker-compose.yml
+volumes:
+  - /home/gabriel/Vegan-Wetlands/server/landing-page:/var/www/luanti-landing:ro
+```
+
+**Esto significa**:
+- ✅ **No hay copy manual de archivos**
+- ✅ **Los cambios se reflejan inmediatamente después del git pull**
+- ✅ **El volumen Docker está sincronizado en tiempo real**
+- ⚠️ **Importante**: Hacer git pull en el VPS es suficiente para desplegar
+
+### **Troubleshooting Común**
+
+**Si los cambios no se ven**:
+1. Verificar que el git pull funcionó en el VPS
+2. Comprobar permisos de archivos (`ls -la`)
+3. Limpiar caché del navegador (Ctrl+F5)
+4. Reiniciar nginx si persiste el problema
+
+**Si hay errores 404**:
+1. Verificar que los archivos existen en el VPS
+2. Comprobar la configuración nginx en `/home/gabriel/vps-do/nginx/conf.d/luanti-landing.conf`
+3. Ver logs: `docker-compose logs nginx`
+
 ## 🎯 Próximas Mejoras Sugeridas
 
 ### ✅ 8. Galería Expandida (Actualización del 13 de Septiembre)
