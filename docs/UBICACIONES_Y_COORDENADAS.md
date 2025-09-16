@@ -1,7 +1,7 @@
 # 🗺️ UBICACIONES Y COORDENADAS DEL MUNDO VEGAN WETLANDS
 
 **Fecha de creación**: 10 de Septiembre, 2025  
-**Última actualización**: 13 de Septiembre, 2025  
+**Última actualización**: 16 de Septiembre, 2025  
 **Estado del mundo**: Activo y estable  
 
 ## 📍 UBICACIONES PRINCIPALES CONFIRMADAS
@@ -36,6 +36,15 @@
 - **Estado**: ✅ **CONFIRMADO ACTIVO** (Sept 13, 2025)
 - **Importancia**: Tercera ubicación importante del mundo
 
+### ❄️ **REFUGIO EN LA NIEVE** ⭐⭐⭐⭐
+- **Coordenadas**: `38, 99, 1695` (teleportación aérea)
+- **Coordenadas exactas**: `38.4, 98.5, 1695.2`
+- **Descripción**: Aldea en bioma frío del norte lejano - Refugio de nieve
+- **Comando de teleportación**: `/teleport gabo 38 99 1695`
+- **Estado**: ✅ **CONFIRMADO ACTIVO** (Sept 16, 2025)
+- **Bioma**: Tundra Nevada / Taiga Nevada
+- **Características especiales**: Nieve natural, hielo, aldea en clima frío
+
 ## 🛠️ COMANDOS DE NAVEGACIÓN ESENCIALES
 
 ### **Teleportación Directa**
@@ -54,6 +63,9 @@
 
 # Tercera Aldea (CONFIRMADA)
 /teleport gabo 888 13 90
+
+# Refugio en la Nieve (CONFIRMADA)
+/teleport gabo 38 99 1695
 
 # Teleportación a coordenadas específicas
 /teleport gabo <x> <y> <z>
@@ -144,6 +156,12 @@ Si necesitas acceso completo de administrador:
 ```
 
 ## 📝 REGISTRO DE CAMBIOS
+
+### **16 de Septiembre, 2025**
+- ✅ **CONFIRMADO**: Refugio en la Nieve en coordenadas (38, 99, 1695)
+- ✅ Registrada como cuarta ubicación importante del servidor - Primera aldea en bioma frío
+- ✅ Comando de teleportación agregado al sistema de navegación
+- ❄️ Bioma de nieve confirmado: Tundra Nevada / Taiga Nevada
 
 ### **13 de Septiembre, 2025**
 - ✅ **CONFIRMADO**: Tercera Aldea en coordenadas (888, 13, 90)
