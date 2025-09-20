@@ -1,4 +1,4 @@
-# 🌱 Vegan Wetlands - Servidor Educativo de Luanti
+# 🌱 Wetlands - Servidor Educativo de Luanti
 
 > **Un mundo virtual compasivo, educativo y sin violencia para niños y familias**
 
@@ -6,9 +6,9 @@
 
 ---
 
-## 🎮 ¿Qué es Vegan Wetlands?
+## 🎮 ¿Qué es Wetlands?
 
-**Vegan Wetlands** es un servidor de juego único basado en **Luanti** (anteriormente conocido como Minetest) que combina diversión, aprendizaje y valores éticos. Nuestro mundo virtual está diseñado para enseñar a niños y familias sobre:
+**Wetlands** es un servidor de juego único basado en **Luanti** (anteriormente conocido como Minetest) que combina diversión, aprendizaje y valores éticos. Nuestro mundo virtual está diseñado para enseñar a niños y familias sobre:
 
 - 🐮 **Compasión animal** y cuidado ético de los animales
 - 🌱 **Alimentación consciente** como estilo de vida saludable y sostenible  
@@ -57,7 +57,7 @@ Al ingresar recibirás automáticamente:
 
 ---
 
-## 🏛️ ¿Qué puedes hacer en Vegan Wetlands?
+## 🏛️ ¿Qué puedes hacer en Wetlands?
 
 ### 🐾 Santuario de Animales
 - **Cuida animales** usando el cepillo en lugar de lastimarlos
@@ -140,7 +140,7 @@ Al ingresar recibirás automáticamente:
 
 ## 🏆 Testimonios
 
-> *"Mi hijo de 9 años ha desarrollado más empatía hacia los animales desde que juega en Vegan Wetlands. Es increíble ver cómo un videojuego puede enseñar valores tan importantes."*  
+> *"Mi hijo de 9 años ha desarrollado más empatía hacia los animales desde que juega en Wetlands. Es increíble ver cómo un videojuego puede enseñar valores tan importantes."*  
 > **- Madre de familia, Santiago**
 
 > *"Como educadora, valoro mucho que exista un servidor que combina entretenimiento con aprendizaje ético. Mis estudiantes están fascinados."*  
@@ -158,7 +158,7 @@ Al ingresar recibirás automáticamente:
 
 - **Lenguaje**: Lua (fácil de aprender)
 - **Contribuciones**: Mods educativos, mejoras de UX, traducciones
-- **Repositorio**: [GitHub - Vegan Wetlands](https://github.com/gabrielpantoja-cl/Vegan-Wetlands)
+- **Repositorio**: [GitHub - Wetlands](https://github.com/gabrielpantoja-cl/Vegan-Wetlands)
 - **Documentación técnica**: Ver `CLAUDE.md` en la raíz del proyecto
 
 ### 🎨 Para Creadores de Contenido
@@ -214,7 +214,7 @@ Usa los comandos del juego para reportar o crea un issue en nuestro [GitHub](htt
 
 ## 💚 ¡Únete a la Revolución Compasiva!
 
-**Vegan Wetlands** no es solo un juego: es una comunidad, una herramienta educativa y un espacio seguro donde niños y familias pueden aprender, crear y divertirse mientras desarrollan valores de compasión hacia todos los seres vivos.
+**Wetlands** no es solo un juego: es una comunidad, una herramienta educativa y un espacio seguro donde niños y familias pueden aprender, crear y divertirse mientras desarrollan valores de compasión hacia todos los seres vivos.
 
 ### 🎮 Conecta Ahora:
 **Servidor**: `luanti.gabrielpantoja.cl:30000`
@@ -223,5 +223,5 @@ Usa los comandos del juego para reportar o crea un issue en nuestro [GitHub](htt
 
 ---
 
-*Proyecto de código abierto desarrollado con amor por la comunidad Vegan Wetlands*  
+*Proyecto de código abierto desarrollado con amor por la comunidad Wetlands*  
 *¿Quieres contribuir? ¡Visita nuestro [repositorio](https://github.com/gabrielpantoja-cl/Vegan-Wetlands)!*
