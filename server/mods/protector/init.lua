@@ -1,5 +1,8 @@
 
--- default support (for use with MineClone2 and other [games]
+-- default support (for use with MineClone2/VoxeLibre and other games)
+
+-- detect VoxeLibre/MineClone2
+local is_voxelibre = core.get_modpath("mcl_core") ~= nil
 
 if not core.global_exists("default") then
 
@@ -11,10 +14,20 @@ if not core.global_exists("default") then
 	}
 end
 
-if core.get_modpath("mcl_sounds") then
+-- VoxeLibre/MineClone2 specific sound integration
+if is_voxelibre and core.get_modpath("mcl_sounds") then
 	default.node_sound_stone_defaults = mcl_sounds.node_sound_stone_defaults
 	default.node_sound_wood_defaults = mcl_sounds.node_sound_wood_defaults
 	default.node_sound_metal_defaults = mcl_sounds.node_sound_metal_defaults
+end
+
+-- VoxeLibre formspec integration
+if is_voxelibre and core.get_modpath("mcl_formspec") then
+	if mcl_formspec and mcl_formspec.get_itemslot_bg then
+		default.gui_bg = mcl_formspec.get_itemslot_bg(1, 1)
+		default.gui_bg_img = ""
+		default.gui_slots = mcl_formspec.get_itemslot_bg(1, 1)
+	end
 end
 
 -- modpath, formspec helper and translator
@@ -545,7 +558,10 @@ local player_pos = {}
 
 local stone_tex = "default_stone.png"
 
-if core.get_modpath("nc_terrain") then
+-- VoxeLibre/MineClone2 support
+if core.get_modpath("mcl_core") then
+	stone_tex = "mcl_core_stone.png"
+elseif core.get_modpath("nc_terrain") then
 	stone_tex = "nc_terrain_stone.png"
 end
 
@@ -562,7 +578,7 @@ local def = {
 	drawtype = "nodebox",
 	node_box = {type = "fixed", fixed = {{-0.499 ,-0.499, -0.499, 0.499, 0.499, 0.499}}},
 	sounds = default.node_sound_stone_defaults(),
-	groups = {dig_immediate = 2, unbreakable = 1},
+	groups = is_voxelibre and {dig_immediate = 2, unbreakable = 1, creative_breakable = 1, building_block = 1} or {dig_immediate = 2, unbreakable = 1},
 	is_ground_content = false,
 	paramtype = "light",
 	light_source = 4,
@@ -912,5 +928,9 @@ core.register_chatcommand("protector_del_member", {
 })
 
 
-print ("[MOD] Protector Redo loaded")
+if is_voxelibre then
+	print ("[MOD] Protector Redo loaded with VoxeLibre/MineClone2 support")
+else
+	print ("[MOD] Protector Redo loaded with Minetest default game support")
+end
 
