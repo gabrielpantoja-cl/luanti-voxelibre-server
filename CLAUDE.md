@@ -329,6 +329,119 @@ docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth
 - **Configuration via .conf files**: Not JSON/YAML config files
 - **Lua-based scripting**: All mod logic written in Lua
 
+## 🛠️ VoxeLibre Mod System & Troubleshooting
+
+### ⚠️ CRITICAL: Mod Directory Structure
+
+VoxeLibre uses a specific mod loading system that differs from vanilla Luanti:
+
+```
+/config/.minetest/
+├── mods/                    # 🎯 PRIMARY LOCATION (High Priority)
+│   ├── server_rules/        # ✅ Custom server mods go here
+│   ├── education_blocks/    # ✅ Load automatically if enabled
+│   └── vegan_food/          # ✅ Personal mods
+├── games/mineclone2/mods/   # 🏠 VoxeLibre base mods (Low Priority)
+└── worlds/world/world.mt    # 📋 World-specific mod configuration
+```
+
+### 🚨 Common Mod Issues & Solutions
+
+#### Issue 1: Commands Not Working
+**Symptoms**: `/reglas`, `/filosofia`, `/santuario` show "invalid command"
+
+**Root Cause**: VoxeLibre mod loading conflicts or dependency issues
+
+**✅ Solution Process** (Sep 21, 2025):
+```bash
+# Step 1: Check for mod conflicts
+docker compose exec luanti-server ls -la /config/.minetest/mods/ | grep education
+
+# Step 2: Remove .disabled files causing conflicts
+docker compose exec luanti-server rm -rf /config/.minetest/mods/*.disabled
+
+# Step 3: Fix VoxeLibre dependencies in mod.conf
+# Change from:
+depends = mcl_sounds, default, farming
+# To:
+depends =
+optional_depends = mcl_core, mcl_farming
+
+# Step 4: Update item names in init.lua for VoxeLibre compatibility
+# default:book → mcl_books:book
+# default:stick → mcl_core:stick
+# farming:wheat → mcl_farming:wheat_item
+
+# Step 5: Restart server
+docker compose restart luanti-server
+```
+
+#### Issue 2: Mod Dependency Errors
+**Symptoms**: `ModError: mod "name" is missing: default farming`
+
+**Cause**: Mods using Minetest vanilla APIs that don't exist in VoxeLibre
+
+**VoxeLibre Item Equivalents**:
+| Minetest Vanilla | VoxeLibre | Usage |
+|------------------|-----------|-------|
+| `default:book` | `mcl_books:book` | Books, recipes |
+| `default:stick` | `mcl_core:stick` | Crafting component |
+| `default:apple` | `mcl_core:apple` | Food items |
+| `farming:wheat` | `mcl_farming:wheat_item` | Agriculture |
+| `default:stone` | `mcl_core:stone` | Building blocks |
+| `mcl_sounds` | ❌ **Remove** | Not available |
+
+#### Issue 3: Automatic Rules Not Showing
+**Symptoms**: Players don't see rules when joining
+
+**Causes & Solutions**:
+1. **Mod not loading**: Check `docker compose logs luanti-server | grep server_rules`
+2. **Syntax errors**: Verify Lua syntax in `init.lua`
+3. **Missing mod.conf**: Ensure proper mod configuration
+
+### 📋 Mod Documentation
+
+Detailed documentation available in `docs/mods/`:
+- `docs/VOXELIBRE_MOD_SYSTEM.md` - Complete technical guide
+- `docs/mods/SERVER_RULES_MOD.md` - Rules system documentation
+- `docs/mods/EDUCATION_BLOCKS_MOD.md` - Educational content documentation
+
+### 🧪 Mod Testing Protocol
+
+**Before deploying new mods**:
+1. **Test locally** with VoxeLibre compatibility
+2. **Check dependencies** - avoid vanilla Minetest APIs
+3. **Verify item names** - use `mcl_*` prefixes
+4. **Test commands** - ensure they register properly
+
+**Post-deployment verification**:
+```bash
+# Check server startup
+docker compose logs --tail=20 luanti-server
+
+# Test commands in-game
+/reglas      # Should show server rules
+/filosofia   # Should show server philosophy
+/santuario   # Should show animal sanctuary info
+```
+
+### 🔄 Emergency Mod Recovery
+
+If mods break the server:
+```bash
+# 1. Check logs for specific errors
+docker compose logs luanti-server | grep -i error
+
+# 2. Disable problematic mods temporarily
+mv server/mods/problematic_mod server/mods/problematic_mod.disabled
+
+# 3. Restart server
+docker compose restart luanti-server
+
+# 4. Fix mod issues according to VoxeLibre compatibility guide
+# 5. Re-enable mod and test
+```
+
 ## CI/CD Pipeline
 
 **This repository has its own independent CI/CD pipeline** that deploys directly to the VPS without interfering with other services.
