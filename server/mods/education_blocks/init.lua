@@ -83,26 +83,26 @@ core.register_craft({
     output = "education_blocks:sign",
     recipe = {
         {"group:wood", "group:wood", "group:wood"},
-        {"group:wood", "default:book", "group:wood"},
-        {"", "default:stick", ""}
+        {"group:wood", "mcl_books:book", "group:wood"},
+        {"", "mcl_core:stick", ""}
     }
 })
 
 core.register_craft({
     output = "education_blocks:nutrition_block",
     recipe = {
-        {"group:stone", "default:apple", "group:stone"},
-        {"farming:wheat", "default:book", "farming:wheat"},
-        {"group:stone", "default:apple", "group:stone"}
+        {"mcl_core:stone", "mcl_core:apple", "mcl_core:stone"},
+        {"mcl_farming:wheat_item", "mcl_books:book", "mcl_farming:wheat_item"},
+        {"mcl_core:stone", "mcl_core:apple", "mcl_core:stone"}
     }
 })
 
 core.register_craft({
     output = "education_blocks:animal_facts",
     recipe = {
-        {"group:stone", "group:stone", "group:stone"},
-        {"group:stone", "default:book", "group:stone"},
-        {"group:stone", "group:stone", "group:stone"}
+        {"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"},
+        {"mcl_core:stone", "mcl_books:book", "mcl_core:stone"},
+        {"mcl_core:stone", "mcl_core:stone", "mcl_core:stone"}
     }
 })
 
