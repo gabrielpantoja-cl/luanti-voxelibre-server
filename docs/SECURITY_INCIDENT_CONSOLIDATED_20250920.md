@@ -66,12 +66,128 @@ default_privs = interact,shout,creative,give,fly,fast,noclip,home
 4. **Documentación Completa**: Evidencia preservada
 5. **Backup de Seguridad**: Estado del mundo preservado
 
-### 🔧 **Configuración de Bloqueo Activo**:
+### 🔧 **Métodos de Bloqueo Implementados**:
+
+#### **MÉTODO 1: deny_access en luanti.conf** ⭐ PRINCIPAL
 ```bash
+# Ubicación: server/config/luanti.conf
+# Línea añadida: deny_access.<BROMA_IP>
+
+# Verificar bloqueo:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && grep '<BROMA_IP>' server/config/luanti.conf"
+# Resultado: deny_access.<BROMA_IP>
+```
+
+#### **MÉTODO 2: ipban.txt** ⭐ BACKUP
+```bash
+# Ubicación: /config/.minetest/worlds/world/ipban.txt
+
 # Verificar bloqueo:
 ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
+# Resultado: <BROMA_IP>
+```
 
-# Resultado esperado: <BROMA_IP>
+---
+
+## 🔄 PROCEDIMIENTO DE REVERSIÓN (En caso de falso positivo)
+
+### ⚠️ **IMPORTANTE**: Solo ejecutar si se confirma que el bloqueo fue erróneo
+
+#### **PASO 1: Backup de Seguridad Antes de Revertir**
+```bash
+# Crear backup de configuración actual:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.before_unblock_$(date +%Y%m%d_%H%M%S)"
+
+# Backup de ipban.txt:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
+```
+
+#### **PASO 2: Remover de luanti.conf** (MÉTODO PRINCIPAL)
+```bash
+# Editar archivo de configuración para remover deny_access:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && sed -i '/deny_access.<BROMA_IP>/d' server/config/luanti.conf"
+
+# Verificar que fue removido:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && grep '<BROMA_IP>' server/config/luanti.conf || echo 'IP removida exitosamente de luanti.conf'"
+```
+
+#### **PASO 3: Remover de ipban.txt** (MÉTODO BACKUP)
+```bash
+# Remover IP del archivo ipban.txt:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '<BROMA_IP>' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
+
+# Verificar que fue removido:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server grep '<BROMA_IP>' /config/.minetest/worlds/world/ipban.txt || echo 'IP removida exitosamente de ipban.txt'"
+```
+
+#### **PASO 4: Aplicar Cambios**
+```bash
+# Reiniciar servidor para aplicar cambios:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+
+# Verificar que servidor está activo:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose ps luanti-server"
+```
+
+#### **PASO 5: Verificar Desbloqueo**
+```bash
+# Desde la IP previamente bloqueada, intentar conectar con cliente Luanti
+# La conexión debe ser exitosa
+
+# Verificar logs del servidor:
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=20 luanti-server | grep '<BROMA_IP>'"
+```
+
+#### **PASO 6: Documentar Reversión**
+```bash
+# Actualizar documentación indicando:
+# - Fecha y hora de la reversión
+# - Razón del falso positivo
+# - Usuario que autorizó la reversión
+# - Evidencia de que era legítimo
+
+echo "REVERSIÓN EJECUTADA: $(date) - IP <BROMA_IP> desbloqueada - Autorizado por: [ADMIN_NAME] - Razón: [FALSO_POSITIVO_REASON]" >> docs/IP_UNBLOCK_LOG.md
+```
+
+### 🚨 **Script de Emergency Unblock**
+```bash
+#!/bin/bash
+# emergency_unblock.sh
+# USO: ./emergency_unblock.sh <BROMA_IP> "razón del desbloqueo"
+
+IP_TO_UNBLOCK="$1"
+REASON="$2"
+
+if [ -z "$IP_TO_UNBLOCK" ] || [ -z "$REASON" ]; then
+    echo "Uso: $0 <IP_TO_UNBLOCK> \"razón\""
+    exit 1
+fi
+
+echo "🔄 DESBLOQUEANDO IP: $IP_TO_UNBLOCK"
+echo "📝 RAZÓN: $REASON"
+
+# Backup antes de cambios
+echo "📦 Creando backup..."
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.unblock_$(date +%Y%m%d_%H%M%S)"
+
+# Remover de luanti.conf
+echo "🔧 Removiendo de luanti.conf..."
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && sed -i '/deny_access.$IP_TO_UNBLOCK/d' server/config/luanti.conf"
+
+# Remover de ipban.txt
+echo "🔧 Removiendo de ipban.txt..."
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
+
+# Reiniciar servidor
+echo "🔄 Reiniciando servidor..."
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+
+# Documentar
+echo "📝 Documentando reversión..."
+echo "REVERSIÓN: $(date) - IP $IP_TO_UNBLOCK desbloqueada - Razón: $REASON" >> docs/IP_UNBLOCK_LOG.md
+
+echo "✅ IP $IP_TO_UNBLOCK DESBLOQUEADA EXITOSAMENTE"
+echo "⚠️  RECUERDA: Monitorear actividad de esta IP las próximas 24 horas"
 ```
 
 ---
