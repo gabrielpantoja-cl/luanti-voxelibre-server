@@ -1,11 +1,11 @@
--- Mod de reglas del servidor Vegan Wetlands
+-- Mod de reglas del servidor Wetlands
 -- Comando /reglas para mostrar las reglas completas
 
 minetest.register_chatcommand("reglas", {
     description = "Muestra las reglas del servidor",
     func = function(name, param)
         local reglas = {
-            "🌱 REGLAS DE VEGAN WETLANDS 🌱",
+            "🌱 REGLAS DE WETLANDS 🌱",
             "",
             "📝 REGLAS BÁSICAS (OBLIGATORIAS):",
             "",
@@ -75,7 +75,7 @@ minetest.register_on_newplayer(function(player)
     local name = player:get_player_name()
 
     minetest.after(3, function()
-        minetest.chat_send_player(name, "🌱 ¡Bienvenid@ a Vegan Wetlands!")
+        minetest.chat_send_player(name, "🌱 ¡Bienvenid@ a Wetlands!")
         minetest.chat_send_player(name, "📝 Usa /reglas para ver las reglas del servidor")
         minetest.chat_send_player(name, "🎮 Usa /filosofia para conocer nuestra misión")
         minetest.chat_send_player(name, "🏠 Usa /santuario para info sobre cuidado animal")
