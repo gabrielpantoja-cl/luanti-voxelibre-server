@@ -1,9 +1,9 @@
 # 🚫 MANUAL DE BLOQUEO DE IP - SERVIDOR VEGAN WETLANDS
 
 **Fecha de creación**: 20 de Septiembre, 2025
-**Última actualización**: 20 de Septiembre, 2025
+**Última actualización**: 21 de Septiembre, 2025
 **Servidor**: luanti.gabrielpantoja.cl:30000
-**Versión**: 1.0
+**Versión**: 1.1
 
 ---
 
@@ -67,7 +67,86 @@ Host VPS: /home/gabriel/Vegan-Wetlands/server/worlds/world/ipban.txt
 
 ---
 
-### 2. 🟡 **MÉTODO AVANZADO: Firewall iptables (Nivel Sistema)**
+### 2. 🟢 **MÉTODO ALTERNATIVO: Luanti deny_access en luanti.conf (Nivel Configuración)**
+
+**Ventajas:**
+- ✅ Configuración persistente en archivo de configuración
+- ✅ No requiere acceso al contenedor en tiempo de ejecución
+- ✅ Permite comentarios descriptivos
+- ✅ Fácil de versionar con Git
+- ✅ Aplicado automáticamente al reiniciar servidor
+
+**Desventajas:**
+- ⚠️ Requiere reinicio del servidor para aplicar cambios
+- ⚠️ Formato específico que debe respetarse estrictamente
+
+#### **Procedimiento Paso a Paso:**
+
+```bash
+# PASO 1: Conectar al VPS
+ssh gabriel@<VPS_IP>
+
+# PASO 2: Navegar al directorio del proyecto
+cd /home/gabriel/Vegan-Wetlands
+
+# PASO 3: Crear backup de configuración
+cp server/config/luanti.conf server/config/luanti.conf.backup
+
+# PASO 4: Añadir línea de bloqueo al archivo de configuración
+echo "deny_access.IP_A_BLOQUEAR = Descripción del bloqueo" >> server/config/luanti.conf
+
+# PASO 5: Verificar formato correcto
+tail -5 server/config/luanti.conf
+
+# PASO 6: Reiniciar servidor para aplicar cambios
+docker-compose restart luanti-server
+```
+
+#### **Ejemplo Práctico:**
+```bash
+# Bloquear IP <BROMA_IP> usando luanti.conf
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && echo 'deny_access.<BROMA_IP> = IP bloqueada por actividad maliciosa' >> server/config/luanti.conf"
+
+# Reiniciar servidor
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+```
+
+#### **⚠️ PROBLEMA COMÚN: Formato Mal Formateado**
+
+**Síntoma detectado el 21/09/2025:**
+```bash
+# INCORRECTO (línea mal formateada):
+admin_privs = server,privs,ban,kick,teleport,give,settime,worldedit,fly,fast,noclip,debug,password,rollback_checkdeny_access.<BROMA_IP>
+
+# CORRECTO (líneas separadas):
+admin_privs = server,privs,ban,kick,teleport,give,settime,worldedit,fly,fast,noclip,debug,password,rollback_check
+deny_access.<BROMA_IP> = IP bloqueada por actividad maliciosa
+```
+
+**Solución aplicada:**
+```bash
+# Arreglar formato mal formateado
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && sed -i 's/rollback_checkdeny_access.<BROMA_IP>/rollback_check\ndeny_access.<BROMA_IP> = IP bloqueada por actividad maliciosa/' server/config/luanti.conf"
+
+# Reiniciar servidor
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+```
+
+#### **Ubicación del Archivo:**
+```
+Host VPS: /home/gabriel/Vegan-Wetlands/server/config/luanti.conf
+Contenedor: /config/.minetest/minetest.conf
+```
+
+#### **Verificación del Formato:**
+```bash
+# Verificar que el formato es correcto
+ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && cat server/config/luanti.conf | grep -A1 -B1 'deny_access'"
+```
+
+---
+
+### 3. 🟡 **MÉTODO AVANZADO: Firewall iptables (Nivel Sistema)**
 
 **Ventajas:**
 - ✅ Bloqueo completo de toda comunicación
@@ -289,9 +368,19 @@ Para cada IP bloqueada, documentar en `docs/`:
 
 ### **IPs Actualmente Bloqueadas:**
 
-| IP | Fecha Bloqueo | Usuario | Razón | Estado |
-|---|---|---|---|---|
-| <BROMA_IP> | 2025-09-20 | HAKER, gdfgd, etc. | Evasión de bans, griefing | 🔴 ACTIVO |
+| IP | Fecha Bloqueo | Usuario | Razón | Método | Estado |
+|---|---|---|---|---|---|
+| <BROMA_IP> | 2025-09-20 | HAKER, gdfgd, etc. | Evasión de bans, griefing | luanti.conf | 🔴 ACTIVO |
+
+### **Historial de Incidentes:**
+
+#### **21/09/2025 - Problema de Formato Solucionado**
+- **Problema**: Configuración mal formateada en `luanti.conf` causaba que el bloqueo no funcionara
+- **Síntoma**: `admin_privs` y `deny_access` en la misma línea
+- **Solución**: Separación de líneas usando `sed` + reinicio del servidor
+- **Verificación**: IP correctamente bloqueada y servidor funcionando
+- **Tiempo de resolución**: ~5 minutos
+- **Estado**: ✅ RESUELTO
 
 ---
 
@@ -443,8 +532,9 @@ find "$BACKUP_DIR" -name "*.rules" -mtime +30 -delete
 
 **DOCUMENTO TÉCNICO OFICIAL**
 **Servidor**: Vegan Wetlands (luanti.gabrielpantoja.cl:30000)
-**Versión**: 1.0
+**Versión**: 1.1
 **Generado**: 2025-09-20
+**Actualizado**: 2025-09-21
 **Próxima revisión**: 2025-10-20
 
 ---
