@@ -156,6 +156,8 @@ core.register_craft({
 
 ## 🔧 Historial de Problemas y Soluciones
 
+Ver también: [Operations/Troubleshooting](../operations/troubleshooting.md) para problemas generales del servidor.
+
 ### Problema: Dependencias Incorrectas (Sep 2025)
 **Síntomas**:
 ```
