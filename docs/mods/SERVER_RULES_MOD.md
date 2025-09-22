@@ -188,6 +188,8 @@ Editar las funciones `register_on_joinplayer` y `register_on_newplayer`
 
 ## 🚨 Troubleshooting
 
+Ver también: [Operations/Troubleshooting](../operations/troubleshooting.md) para problemas generales del servidor.
+
 ### Problema: Comandos no funcionan
 **Síntomas**: `/reglas` muestra "comando inválido"
 **Solución**:
