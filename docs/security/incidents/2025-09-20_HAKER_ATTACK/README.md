@@ -1,105 +1,80 @@
 # 🚨 INCIDENTE DE SEGURIDAD - ATAQUE HAKER 20 SEPTIEMBRE 2025
 
-**Primer Incidente de Seguridad Crítico del Servidor Vegan Wetlands**
+Este directorio contiene toda la documentación relacionada con el incidente de seguridad ocurrido el 20 de septiembre de 2025, donde un atacante desde la IP `200.83.160.80` utilizó múltiples identidades para evadir medidas de contención.
 
----
+## 📁 Estructura de Archivos
 
-## 📋 RESUMEN DEL INCIDENTE
+### **📄 Documento Principal** (RECOMENDADO)
+- **`INCIDENTE_COMPLETO_2025-09-20_HAKER_ATTACK.md`** - **DOCUMENTO ÚNICO CONSOLIDADO**
+  - Contiene TODA la información de los 3 documentos anteriores
+  - Evidencias y timeline completo al principio
+  - Análisis de la respuesta administrativa
+  - 762 líneas de documentación exhaustiva
+  - Sin duplicación de información
 
-- **Fecha**: 20 de Septiembre, 2025
-- **Duración**: 5 horas, 11 minutos (19:23:53 - 22:35:47 UTC)
-- **IP Atacante**: `200.83.160.80`
-- **Severidad**: 🔴 **ALTA - Ataque Coordinado con Evasión Múltiple**
-- **Estado**: ✅ **RESUELTO CON MEDIDAS PERMANENTES**
+### **📁 Documentos Legacy** (`legacy/`)
+Los siguientes documentos han sido movidos a `legacy/` y **NO se recomienda usar**:
+- `COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md` (Reemplazado)
+- `FORENSIC_TECHNICAL_ANALYSIS.md` (Reemplazado)
+- `ORIGINAL_CONSOLIDATED_REPORT.md` (Reemplazado)
 
----
+**Razón**: Información duplicada y fragmentada. El documento consolidado contiene todo el contenido relevante.
 
-## 📁 DOCUMENTOS DEL INCIDENTE
-
-### **📄 Documento Principal**:
-- **[COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md](./COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md)**
-  - 🎯 **DOCUMENTO DEFINITIVO Y COMPLETO**
-  - Análisis forense consolidado
-  - Cronología detallada completa
-  - Plan de remediación
-  - **LEER PRIMERO**
-
-### **📄 Documentos de Referencia**:
-- **[ORIGINAL_CONSOLIDATED_REPORT.md](./ORIGINAL_CONSOLIDATED_REPORT.md)**
-  - Reporte inicial consolidado
-  - Primera evaluación del incidente
-  - Medidas de contención iniciales
-
-- **[FORENSIC_TECHNICAL_ANALYSIS.md](./FORENSIC_TECHNICAL_ANALYSIS.md)**
-  - Análisis técnico forense profundo
-  - Evidencia de base de datos SQLite
-  - Patrones de comportamiento del atacante
-
----
-
-## 🎯 DATOS CLAVE DEL INCIDENTE
+## 🎯 Datos Críticos del Incidente
 
 ### **Atacante Identificado**:
+- **IP Origen**: `200.83.160.80`
+- **Duración Total**: 5 horas, 11 minutos (19:23:53 - 22:35:47 UTC)
+- **Cuentas Utilizadas**: 6+ identidades confirmadas
+- **Método Principal**: Explotación de privilegios automáticos + Evasión múltiple
+
+### **Timeline Crítico**:
+```bash
+19:23:53 - HAKER: Primera conexión
+19:28:00 - HAKER: Ejecuta /kick a usuarios legítimos
+19:29:39 - gabo: Expulsa a HAKER
+19:30:54 - gdfgd: Primera evasión exitosa
+19:31:35 - gdfgddddd: Segunda evasión
+19:32:00 - Servidor detenido preventivamente
+22:35:37 - gaelsin: Evasión post-bloqueo (FALLA DE SEGURIDAD)
+22:35:47 - Gapi: Segunda evasión post-bloqueo
 ```
-IP: 200.83.160.80
-Cuentas: HAKER, HAKEr, gdfgd, gdfgddddd, gaelsin, Gapi, veight
-Método: Explotación de privilegios automáticos + /kick maliciosos
-```
 
-### **Vulnerabilidad Explotada**:
-```conf
-# Configuración vulnerable:
-default_privs = interact,shout,creative,give,fly,fast,noclip,home,kick,ban
-```
+## 📊 Evaluación de la Respuesta Administrativa
 
-### **Descubrimiento Crítico**:
-- ❌ **NO hubo crashes del servidor**
-- ✅ **Los atacantes usaron `/kick` para expulsar usuarios legítimos**
-- ⚠️ **El bloqueo IP inicial falló - atacantes regresaron a las 22:35**
+### **Calificación General: 7/10 - BUENA RESPUESTA**
 
----
+**✅ Fortalezas del Admin `gabo`**:
+- Detección temprana (6 minutos)
+- Respuesta inmediata con `/kick`
+- Decisión crítica de detener servidor
+- Medidas post-incidente (cambio contraseña)
 
-## 🛡️ MEDIDAS IMPLEMENTADAS
+**⚠️ Áreas de Mejora**:
+- Falta de bloqueo IP inmediato
+- No verificó efectividad de medidas
+- No identificó configuración vulnerable
 
-### **✅ Contención Exitosa**:
-- Cambio de contraseña administrativa
-- Backup de emergencia preservado
-- Documentación forense completa
+## 📋 Estado Actual
 
-### **⚠️ Pendientes de Implementación**:
-- Corrección de `default_privs`
-- Revocación masiva de privilegios excesivos
-- Bloqueo IP efectivo verificado
-- Sistema de monitoreo automatizado
+- ✅ **Documentación**: Consolidada en documento único
+- ✅ **Evidencia Forense**: Backup de auth.sqlite preservado
+- ✅ **Análisis Completo**: Respuesta administrativa evaluada
+- ⚠️ **Medidas Pendientes**: Corrección de privilegios y configuración
+- 🔴 **Riesgo Activo**: IP atacante puede seguir intentando conexiones
 
----
+## 🔗 Documentos Relacionados
 
-## 📊 IMPACTO Y LECCIONES
+- **Estado de Usuarios**: `docs/admin/estado-usuarios-actual.md`
+- **Manual de Administración**: `docs/admin/manual-administracion.md`
+- **Configuración Nuclear**: `docs/NUCLEAR_CONFIG_OVERRIDE.md`
 
-### **Impacto**:
-- Usuarios legítimos kickeados múltiples veces
-- 5+ horas de inestabilidad del servicio
-- Compromiso de 6+ cuentas con privilegios administrativos
+## 📖 Cómo Usar Esta Documentación
 
-### **Lecciones Críticas**:
-1. **Privilegios por defecto = Superficie de ataque masiva**
-2. **Verificación de medidas de seguridad es esencial**
-3. **Atacantes pueden usar métodos no destructivos pero disruptivos**
-4. **Monitoreo en tiempo real previene escalamiento**
+1. **📄 Lee SOLO** `INCIDENTE_COMPLETO_2025-09-20_HAKER_ATTACK.md`
+2. **🚫 IGNORA** los archivos en `legacy/` (información duplicada)
+3. **⚠️ IMPLEMENTA** las medidas urgentes listadas en el documento principal
 
 ---
 
-## 🔴 ACCIÓN INMEDIATA REQUERIDA
-
-Ver **[COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md](./COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md)** sección "ACCIÓN INMEDIATA REQUERIDA" para:
-
-1. ⚠️ **Corrección urgente de default_privs**
-2. ⚠️ **Revocación masiva de privilegios**
-3. ⚠️ **Verificación de bloqueo IP efectivo**
-4. ⚠️ **Eliminación de usuario sospechoso 'veight'**
-
----
-
-**Clasificación**: 🔒 **CONFIDENCIAL - Solo administradores autorizados**
-**Última Actualización**: 2025-09-22
-**Próxima Revisión**: 2025-10-22
+*Última actualización: 22 de septiembre de 2025 - Consolidación completa*
