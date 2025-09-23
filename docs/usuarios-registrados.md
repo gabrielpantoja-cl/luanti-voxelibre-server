@@ -1,25 +1,35 @@
 # Usuarios Registrados - Servidor Vegan Wetlands
 
-## Estado Actual (20-09-2025)
+## Estado Actual (22-09-2025)
 
 ### Usuarios Activos
-Total de usuarios registrados: **13 usuarios**
+Total de usuarios registrados: **5 usuarios**
 
-| Usuario | Identificación | Rol | IP Registrada | Estado |
-|---------|----------------|-----|---------------|--------|
-| `gabo` | Admin Principal | Administrador | 181.226.213.123 | ✅ Activo |
-| `pepelomo` | Luciano | Jugador | - | ✅ Activo |
-| `veight` | Karu | Jugador | - | ✅ Activo |
-| `gaelsin` | Gael (Sobrino) | Jugador | 200.83.160.80 | ⚠️ Misma IP atacante |
-| `gael` | Gael | Jugador | - | ✅ Activo |
-| `Gapi` | Gapi | Jugador | - | ✅ Activo |
-| `gabotest` | Cuenta de Prueba | Test | - | 🔄 Pendiente limpieza |
-| `gabotest2` | Cuenta de Prueba | Test | - | 🔄 Pendiente limpieza |
-| `HAKER` | **ATACANTE** | **BLOQUEADO** | **200.83.160.80** | 🚨 **BLOQUEADO** |
-| `gdfgd` | **ATACANTE** | **BLOQUEADO** | **200.83.160.80** | 🚨 **BLOQUEADO** |
-| `gdfgddddd` | **ATACANTE** | **BLOQUEADO** | **200.83.160.80** | 🚨 **BLOQUEADO** |
-| `gdfiiiigddddd` | **ATACANTE** | **BLOQUEADO** | **200.83.160.80** | 🚨 **BLOQUEADO** |
-| `fgkfkydkcdgi` | **ATACANTE** | **BLOQUEADO** | **200.83.160.80** | 🚨 **BLOQUEADO** |
+| Usuario | Identificación | Rol | Privilegios | Estado |
+|---------|----------------|-----|-------------|--------|
+| `gabo` | Admin Principal | Administrador | **COMPLETOS** (33 privilegios) | ✅ Activo |
+| `pepelomo` | Luciano | Moderador | **ADMIN** (29 privilegios) | ✅ Activo |
+| `veight` | Karu | Jugador | **LIMITADOS** (17 privilegios) | ✅ Activo |
+| `gaelsin` | Gael (Sobrino) | Jugador | **BÁSICOS** (8 privilegios) | ⚠️ Supervisado |
+| `Gapi` | Gapi | Jugador | **BÁSICOS** (8 privilegios) | ✅ Activo |
+
+### Detalle de Privilegios por Usuario
+
+**🔑 gabo** (Admin Principal - 33 privilegios):
+`advancements, announce, ban, basic_privs, bring, creative, debug, fast, fly, give, help_reveal, home, hunger, interact, kick, maphack, mute, noclip, password, privs, protection_bypass, rollback, rollback_check, server, settime, shout, shutdown, spawn, teleport, time, unban, weather_manager, worldedit`
+
+**👮 pepelomo** (Moderador - 29 privilegios):
+`advancements, announce, ban, basic_privs, bring, creative, debug, fast, fly, give, help_reveal, home, hunger, interact, kick, maphack, noclip, password, privs, protection_bypass, rollback, server, settime, shout, spawn, teleport, weather_manager`
+
+**🎮 veight** (Jugador Limitado - 17 privilegios):
+`advancements, basic_privs, bring, creative, debug, fast, fly, give, help_reveal, home, hunger, interact, noclip, settime, shout, spawn, teleport`
+*Nota: Se removieron privilegios peligrosos (server, ban, kick, privs, password, rollback, protection_bypass, maphack, announce, weather_manager)*
+
+**👤 gaelsin** (Supervisado - 8 privilegios):
+`advancements, basic_privs, fast, fly, help_reveal, hunger, interact, shout`
+
+**👤 Gapi** (Jugador Básico - 8 privilegios):
+`advancements, basic_privs, fast, fly, help_reveal, hunger, interact, shout`
 
 ## 🚨 INCIDENTE DE SEGURIDAD (20-09-2025)
 
@@ -100,7 +110,27 @@ Para otorgar privilegios administrativos a otros usuarios, consultar la sección
 - **Registros maliciosos**: 5 usuarios (todos desde IP 200.83.160.80)
 - **Casos especiales**: 1 usuario (gaelsin - requiere investigación)
 
+## 🔧 Acciones Realizadas (22-09-2025)
+
+### Limpieza de Seguridad Completada
+- ✅ **Usuarios maliciosos eliminados**: 8 cuentas atacantes removidas de la base de datos
+- ✅ **Privilegios de veight restringidos**: Removidos 10 privilegios administrativos peligrosos
+- ✅ **Total de usuarios activos**: Reducido de 13 a 5 usuarios legítimos
+- ✅ **Servidor reiniciado**: Cambios de privilegios aplicados
+
+### Privilegios Removidos de veight
+Privilegios administrativos peligrosos eliminados:
+- `server` - Control total del servidor
+- `ban` / `kick` - Expulsión de jugadores
+- `privs` - Gestión de privilegios de otros usuarios
+- `password` - Cambio de contraseñas
+- `rollback` / `protection_bypass` - Bypass de protecciones
+- `maphack` - Visión completa del mapa
+- `announce` - Mensajes de servidor
+- `weather_manager` - Control del clima
+- `mute` - Silenciar jugadores
+
 ---
-*Última actualización: 20 de septiembre de 2025*
+*Última actualización: 22 de septiembre de 2025*
 *Servidor: luanti.gabrielpantoja.cl:30000*
-*Estado: 🔴 DETENIDO POR SEGURIDAD - Ver documentos de incidente*
+*Estado: ✅ ACTIVO - Seguridad reforzada*
