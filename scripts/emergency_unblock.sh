@@ -35,7 +35,7 @@ TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.unblock_$TIMESTAMP"
 
 # Backup ipban.txt (si existe)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$TIMESTAMP 2>/dev/null || echo 'ipban.txt no existe'"
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'if [ -f /config/.minetest/worlds/world/ipban.txt ]; then cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$TIMESTAMP; echo \"ipban.txt backed up\"; else echo \"ipban.txt no existe\"; fi'"
 
 echo "✅ Backups creados con timestamp: $TIMESTAMP"
 
@@ -101,12 +101,16 @@ UNBLOCK_LOG="docs/IP_UNBLOCK_LOG.md"
 ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && [ ! -f $UNBLOCK_LOG ] && echo '# Log de IPs Desbloqueadas' > $UNBLOCK_LOG"
 
 # Añadir entrada al log
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo '## $(date)' >> $UNBLOCK_LOG"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo '- **IP**: $IP_TO_UNBLOCK' >> $UNBLOCK_LOG"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo '- **Razón**: $REASON' >> $UNBLOCK_LOG"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo '- **Método**: deny_access + ipban.txt' >> $UNBLOCK_LOG"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo '- **Backup timestamp**: $TIMESTAMP' >> $UNBLOCK_LOG"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo '' >> $UNBLOCK_LOG"
+ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cat >> $UNBLOCK_LOG << 'EOF'
+## $(date '+%Y-%m-%d %H:%M:%S')
+- **IP**: $IP_TO_UNBLOCK
+- **Razón**: $REASON
+- **Método**: deny_access + ipban.txt
+- **Backup timestamp**: $TIMESTAMP
+- **Estado luanti.conf**: $VERIFY_LUANTI
+- **Estado ipban.txt**: $VERIFY_IPBAN
+
+EOF"
 
 echo "✅ Documentación actualizada en $UNBLOCK_LOG"
 
