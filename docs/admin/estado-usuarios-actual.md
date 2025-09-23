@@ -10,8 +10,8 @@ Total de usuarios registrados: **5 usuarios**
 | `gabo` | Admin Principal | Administrador | **COMPLETOS** (33 privilegios) | ✅ Activo |
 | `pepelomo` | Luciano | Moderador | **ADMIN** (29 privilegios) | ✅ Activo |
 | `veight` | Karu | Jugador | **LIMITADOS** (17 privilegios) | ✅ Activo |
-| `gaelsin` | Gael (Sobrino) | Jugador | **BÁSICOS** (8 privilegios) | ⚠️ Supervisado |
-| `Gapi` | Gapi | Jugador | **BÁSICOS** (8 privilegios) | ✅ Activo |
+| `gaelsin` | Gael (Sobrino) | Jugador | **GAMING** (15 privilegios) | ✅ Activo - Identidad Confirmada |
+| `Gapi` | Gapi (Sobrino) | Jugador | **GAMING** (15 privilegios) | ✅ Activo - Identidad Confirmada |
 
 ### Detalle de Privilegios por Usuario
 
@@ -25,11 +25,13 @@ Total de usuarios registrados: **5 usuarios**
 `advancements, basic_privs, bring, creative, debug, fast, fly, give, help_reveal, home, hunger, interact, noclip, settime, shout, spawn, teleport`
 *Nota: Se removieron privilegios peligrosos (server, ban, kick, privs, password, rollback, protection_bypass, maphack, announce, weather_manager)*
 
-**👤 gaelsin** (Supervisado - 8 privilegios):
-`advancements, basic_privs, fast, fly, help_reveal, hunger, interact, shout`
+**👤 gaelsin** (Sobrino Confirmado - 15 privilegios):
+`advancements, basic_privs, creative, debug, fast, fly, give, help_reveal, home, hunger, interact, noclip, shout, spawn, teleport`
+*Nota: Privilegios de juego restaurados tras confirmación de identidad familiar*
 
-**👤 Gapi** (Jugador Básico - 8 privilegios):
-`advancements, basic_privs, fast, fly, help_reveal, hunger, interact, shout`
+**👤 Gapi** (Sobrino Confirmado - 15 privilegios):
+`advancements, basic_privs, creative, debug, fast, fly, give, help_reveal, home, hunger, interact, noclip, shout, spawn, teleport`
+*Nota: Privilegios de juego restaurados tras confirmación de identidad familiar*
 
 ## 🚨 INCIDENTE DE SEGURIDAD (20-09-2025)
 
