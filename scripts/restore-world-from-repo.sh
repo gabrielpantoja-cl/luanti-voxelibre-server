@@ -7,7 +7,7 @@
 set -e
 
 # Configuración
-REPO_DIR="/home/gabriel/Vegan-Wetlands"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORLD_BACKUP_DIR="$REPO_DIR/world-snapshots"
 VPS_HOST="gabriel@167.172.251.27"
 VPS_WORLD_PATH="/home/gabriel/Vegan-Wetlands/server/worlds"

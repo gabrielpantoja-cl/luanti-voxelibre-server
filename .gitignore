@@ -28,4 +28,5 @@ secrets/
 
 # Mantener directorios pero ignorar contenido
 !server/worlds/.gitkeep
-!server/backups/.gitkeep
+!server/backups/.gitkeepworld-snapshots/*.tar.gz
+server/worlds/world/
