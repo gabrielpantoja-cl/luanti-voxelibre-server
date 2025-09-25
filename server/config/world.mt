@@ -1,0 +1,10 @@
+enable_damage = true
+creative_mode = false
+mod_storage_backend = sqlite3
+auth_backend = sqlite3
+player_backend = sqlite3
+backend = sqlite3
+gameid = mineclone2
+world_name = world
+load_mod_mcl_back_to_spawn = true
+load_mod_server_rules = true
