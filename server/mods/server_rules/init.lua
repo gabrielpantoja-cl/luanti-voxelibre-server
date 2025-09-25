@@ -1,5 +1,9 @@
--- Mod de reglas del servidor Wetlands
--- Comando /reglas para mostrar las reglas completas
+-- Mod de reglas del servidor Wetlands v2.0
+-- Sistema completo de reglas, bienvenida y filosofía compasiva
+-- Compatible con VoxeLibre siguiendo patrón de back_to_spawn
+
+-- Declarar traductor para futuro soporte multiidioma
+local S = minetest.get_translator('server_rules')
 
 minetest.register_chatcommand("reglas", {
     description = "Muestra las reglas del servidor",
@@ -7,38 +11,46 @@ minetest.register_chatcommand("reglas", {
         local reglas = {
             "🌱 REGLAS DE WETLANDS 🌱",
             "",
+            "🏠 SERVIDOR EDUCATIVO Y COMPASIVO",
+            "Diseñado especialmente para niños 7+ años",
+            "Mundo pacífico sin violencia, solo diversión",
+            "",
             "📝 REGLAS BÁSICAS (OBLIGATORIAS):",
             "",
             "1. 🚫 NO MOLESTAR A OTROS JUGADORES",
             "   - No destruir construcciones ajenas",
             "   - No seguir o acosar a otros jugadores",
-            "   - Respeta el espacio personal",
+            "   - Respeta el espacio personal de cada uno",
             "",
             "2. 👤 USA UN NOMBRE APROPIADO",
-            "   - Nada de nombres random como 'player123'",
+            "   - Nada de nombres random como 'player123' o 'guest456'",
             "   - Elige un nombre que te represente",
-            "   - Sin palabras ofensivas",
+            "   - Sin palabras ofensivas o inapropiadas",
             "",
-            "3. 🤝 NO ECHAR A OTROS SIN RAZÓN",
+            "3. 🤝 NO ECHAR A OTROS JUGADORES SIN RAZÓN",
             "   - Este es un espacio para todos",
-            "   - Reporta problemas a moderadores",
+            "   - Reporta problemas a los moderadores",
             "   - Sé amable y tolerante",
             "",
             "4. 💬 CHAT RESPETUOSO",
-            "   - Lenguaje apropiado (niños 7+)",
+            "   - Usa lenguaje apropiado (niños 7+)",
             "   - No spam ni mensajes repetitivos",
-            "   - Ayuda a crear ambiente positivo",
+            "   - Ayuda a crear un ambiente positivo",
             "",
             "5. 🌱 ESPÍRITU COMPASIVO",
             "   - Cuida a los animales del servidor",
-            "   - Comparte y ayuda a otros",
+            "   - Comparte y ayuda a otros jugadores",
             "   - Disfruta construyendo juntos",
             "",
             "⚠️ CONSECUENCIAS:",
             "1ra vez: Advertencia",
-            "2da vez: Silencio temporal",
-            "3ra vez: Expulsión temporal",
+            "2da vez: Silencio temporal (mute)",
+            "3ra vez: Expulsión temporal (kick)",
             "4ta vez: Baneo permanente",
+            "",
+            "📞 REPORTAR PROBLEMAS:",
+            "- Usa el chat para llamar a moderadores",
+            "- Comando: /msg admin [tu reporte]",
             "",
             "¡Diviértanse y sean compasivos! 🎮💚"
         }
@@ -75,26 +87,31 @@ minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
 
     minetest.after(3, function()
-        -- Mensaje de bienvenida personalizado
-        minetest.chat_send_player(name, "🌱 ¡Bienvenid@ a Wetlands, " .. name .. "!")
+        -- Mensaje de bienvenida mejorado
+        minetest.chat_send_player(name, "🌈 ════════════════════════════════════ 🌈")
+        minetest.chat_send_player(name, "🌱 ¡Bienvenid@ a Wetlands, " .. name .. "! 🌱")
+        minetest.chat_send_player(name, "🏠 Servidor Educativo y Compasivo (7+ años)")
+        minetest.chat_send_player(name, "🕊️ Modo Pacífico: Solo diversión, sin violencia")
+        minetest.chat_send_player(name, "🌈 ════════════════════════════════════ 🌈")
         minetest.chat_send_player(name, "")
 
         -- Reglas básicas automáticas
-        minetest.chat_send_player(name, "📋 REGLAS BÁSICAS:")
-        minetest.chat_send_player(name, "1) 🚫 No molestar a otros jugadores")
-        minetest.chat_send_player(name, "2) 👤 Usa un nombre apropiado")
-        minetest.chat_send_player(name, "3) 🤝 Respeta a todos")
-        minetest.chat_send_player(name, "4) 💬 Chat limpio (niños 7+)")
-        minetest.chat_send_player(name, "5) 🌱 Sé compasivo con los animales")
+        minetest.chat_send_player(name, "📋 REGLAS BÁSICAS IMPORTANTES:")
+        minetest.chat_send_player(name, "1) 🚫 No molestes a otros jugadores")
+        minetest.chat_send_player(name, "2) 👤 Usa un nombre apropiado y respetuoso")
+        minetest.chat_send_player(name, "3) 🤝 Respeta a todos por igual")
+        minetest.chat_send_player(name, "4) 💬 Chat limpio (ambiente familiar)")
+        minetest.chat_send_player(name, "5) 🌱 Cuida y respeta a los animales")
         minetest.chat_send_player(name, "")
 
         -- Comandos útiles
-        minetest.chat_send_player(name, "⚡ COMANDOS ÚTILES:")
+        minetest.chat_send_player(name, "⚡ COMANDOS PRINCIPALES:")
         minetest.chat_send_player(name, "• /reglas - Ver reglas completas")
-        minetest.chat_send_player(name, "• /filosofia - Conocer nuestra misión")
-        minetest.chat_send_player(name, "• /santuario - Info sobre cuidado animal")
+        minetest.chat_send_player(name, "• /filosofia - Conocer nuestra filosofía")
+        minetest.chat_send_player(name, "• /santuario - Aprende sobre santuarios")
+        minetest.chat_send_player(name, "• /back_to_spawn - Volver a tu spawn")
         minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🎮 ¡Disfruta construyendo en nuestro mundo compasivo!")
+        minetest.chat_send_player(name, "🎮 ¡Construye, explora y aprende con compasión! 💚")
     end)
 end)
 
@@ -104,16 +121,23 @@ minetest.register_on_newplayer(function(player)
 
     minetest.after(8, function()
         minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🌟 ¡Eres nuevo en Wetlands! 🌟")
-        minetest.chat_send_player(name, "Este es un servidor educativo y compasivo.")
-        minetest.chat_send_player(name, "Aquí aprendemos sobre respeto hacia los animales")
-        minetest.chat_send_player(name, "y disfrutamos construyendo sin violencia.")
+        minetest.chat_send_player(name, "🎆 ¡Jugador Nuevo Detectado! 🎆")
+        minetest.chat_send_player(name, "🌱 Bienvenido a tu primer día en Wetlands")
         minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🎯 Consejos para comenzar:")
-        minetest.chat_send_player(name, "• Explora y observa los animales con respeto")
-        minetest.chat_send_player(name, "• Construye refugios bonitos para ellos")
-        minetest.chat_send_player(name, "• Prueba alimentos veganos como tofu y seitan")
-        minetest.chat_send_player(name, "• Haz amigos y construyan juntos")
+        minetest.chat_send_player(name, "🎯 QUÉ HACE ESPECIAL A NUESTRO SERVIDOR:")
+        minetest.chat_send_player(name, "• 🕊️ Mundo pacífico: Sin monstruos ni violencia")
+        minetest.chat_send_player(name, "• 🌱 Educación compasiva sobre animales")
+        minetest.chat_send_player(name, "• 🌈 Comunidad amigable para familias")
+        minetest.chat_send_player(name, "• 🏠 Santuarios virtuales para animales")
+        minetest.chat_send_player(name, "")
+        minetest.chat_send_player(name, "🚀 TU AVENTURA COMIENZA:")
+        minetest.chat_send_player(name, "1. 👾 Explora y observa a los animales felices")
+        minetest.chat_send_player(name, "2. 🏠 Construye refugios cómodos para ellos")
+        minetest.chat_send_player(name, "3. 🌾 Planta cultivos y crea jardines bonitos")
+        minetest.chat_send_player(name, "4. 🥗 Prueba alimentos a base de plantas deliciosos")
+        minetest.chat_send_player(name, "5. 🤝 Haz amigos y construyan proyectos juntos")
+        minetest.chat_send_player(name, "")
+        minetest.chat_send_player(name, "💚 ¡Disfruta tu aventura compasiva!")
     end)
 end)
 
@@ -155,12 +179,65 @@ minetest.register_chatcommand("santuario", {
     end
 })
 
--- Recordatorio periódico de reglas (cada 15 minutos)
+-- Comando /filosofia para mostrar la filosofía del servidor
+minetest.register_chatcommand("filosofia", {
+    description = "Muestra la filosofía y misión de Wetlands",
+    func = function(name, param)
+        local filosofia = {
+            "🌱 FILOSOFÍA DE WETLANDS 🌱",
+            "",
+            "🎯 NUESTRA MISIÓN:",
+            "Crear un espacio virtual donde niños y familias",
+            "aprendan sobre compasión hacia los animales",
+            "mientras se divierten construyendo y explorando.",
+            "",
+            "💚 VALORES FUNDAMENTALES:",
+            "• Respeto hacia todos los seres vivos",
+            "• Educación a través del juego",
+            "• Construcción de comunidad compasiva",
+            "• Alimentación consciente y saludable",
+            "• Creatividad sin límites",
+            "",
+            "🏡 SANTUARIOS VIRTUALES:",
+            "Los animales en nuestro mundo viven libres",
+            "y felices, sin ser usados para nada.",
+            "Son nuestros compañeros de aventuras.",
+            "",
+            "🌾 ALIMENTACIÓN COMPASIVA:",
+            "Descubre deliciosos alimentos vegetales:",
+            "tofu, seitan, leche de avena, frutas frescas.",
+            "¡Nutritivos y respetuosos con los animales!",
+            "",
+            "👨‍👩‍👧‍👦 COMUNIDAD FAMILIAR:",
+            "Un lugar seguro donde padres e hijos",
+            "pueden jugar juntos aprendiendo valores",
+            "de respeto y cuidado hacia la naturaleza.",
+            "",
+            "🌈 Construyamos un mundo mejor, bloque a bloque"
+        }
+
+        for _, linea in ipairs(filosofia) do
+            minetest.chat_send_player(name, linea)
+        end
+
+        return true
+    end
+})
+
+-- Recordatorio periódico más educativo (cada 20 minutos)
 local timer = 0
 minetest.register_globalstep(function(dtime)
     timer = timer + dtime
-    if timer >= 900 then -- 15 minutos = 900 segundos
+    if timer >= 1200 then -- 20 minutos = 1200 segundos
         timer = 0
-        minetest.chat_send_all("🌱 Recordatorio: Usa /reglas para ver las reglas del servidor. ¡Mantengamos un ambiente compasivo!")
+        local mensajes_rotativos = {
+            "🌱 Recordatorio: Usa /reglas para las reglas completas",
+            "🐾 ¿Sabías que puedes usar /santuario para aprender sobre animales?",
+            "💚 Descubre nuestra filosofía con /filosofia",
+            "🏠 Construye refugios bonitos para los animales",
+            "🌾 Prueba deliciosos alimentos a base de plantas"
+        }
+        local mensaje = mensajes_rotativos[math.random(1, #mensajes_rotativos)]
+        minetest.chat_send_all(mensaje)
     end
 end)
