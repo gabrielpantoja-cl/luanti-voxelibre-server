@@ -2,7 +2,7 @@
 
 **Un servidor de Luanti (Minetest) donde la compasión, la creatividad y la educación florecen.**
 
-> ### **[Visita nuestra galería de fotos ➔](http://luanti.gabrielpantoja.cl/galeria)**
+> ### **[Visita nuestra galería de fotos ➔](https://luanti.gabrielpantoja.cl/galeria.html)**
 
 ---
 
