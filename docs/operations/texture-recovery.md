@@ -1,4 +1,4 @@
-# 🚨 Recuperación de Corrupción de Texturas - Vegan Wetlands
+# 🚨 Recuperación de Corrupción de Texturas - Santuario Compasivo
 
 **Fecha del Incidente**: 31 de Agosto, 2025  
 **Severidad**: Crítica (servidor completamente injugable)  

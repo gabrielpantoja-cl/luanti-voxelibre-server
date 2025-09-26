@@ -1,4 +1,4 @@
-# 📚 Documentación Vegan Wetlands
+# 📚 Documentación Santuario Compasivo
 
 Documentación técnica completa del servidor Luanti educativo y compasivo para niños 7+ años.
 
@@ -137,7 +137,7 @@ ssh gabriel@<VPS_HOST_IP>
 - **Mundo**: VoxeLibre (MineClone2) v0.90.1
 
 ### Desarrollo Activo
-- **Mods personalizados**: 3 (education_blocks, server_rules, vegan_food integrado)
+- **Mods personalizados**: 3 (education_blocks, server_rules, comida_compasiva integrado)
 - **Configuraciones críticas**: Sistema nuclear anti-monstruos
 - **Landing page**: Moderna, responsiva, child-friendly
 - **CI/CD**: Automatizado con GitHub Actions
@@ -177,6 +177,6 @@ ssh gabriel@<VPS_HOST_IP>
 ---
 
 **📅 Última actualización**: 21 de Septiembre, 2025
-**👥 Mantenido por**: Equipo Vegan Wetlands
+**👥 Mantenido por**: Equipo del Santuario Compasivo
 **📊 Versión**: 2.0 (Documentación Reorganizada y Optimizada)
 **🔗 Repositorio**: https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git

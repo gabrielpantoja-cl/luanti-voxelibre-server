@@ -1,6 +1,6 @@
 # 🔧 Solución de Problemas
 
-Guía completa para diagnosticar y resolver problemas comunes del servidor Vegan Wetlands.
+Guía completa para diagnosticar y resolver problemas comunes del servidor Santuario Compasivo.
 
 ## 🚨 Problemas Críticos
 
