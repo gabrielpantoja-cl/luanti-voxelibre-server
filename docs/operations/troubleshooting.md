@@ -154,8 +154,8 @@ journalctl -f | grep luanti
 ## 🚨 Procedimientos de Emergencia
 
 ### Pérdida Total de Conectividad
-1. Verificar VPS está funcionando: `ping <VPS_IP>`
-2. SSH al servidor: `ssh gabriel@<VPS_IP>`
+1. Verificar VPS está funcionando: `ping <VPS_HOST_IP>`
+2. SSH al servidor: `ssh gabriel@<VPS_HOST_IP>`
 3. Verificar Docker: `docker-compose ps`
 4. Revisar logs: `docker-compose logs luanti-server`
 5. Reiniciar servicios: `docker-compose restart`

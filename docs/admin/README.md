@@ -12,7 +12,7 @@ Guías para administradores del servidor Vegan Wetlands sobre gestión de usuari
 ## ⚠️ Acceso Requerido
 
 Para ejecutar comandos administrativos necesitas:
-- Acceso SSH al VPS: `ssh gabriel@<VPS_IP>`
+- Acceso SSH al VPS: `ssh gabriel@<VPS_HOST_IP>`
 - Privilegios de administrador en el servidor Luanti
 - Conocimiento de la base de datos SQLite del servidor
 

@@ -74,7 +74,7 @@ Documentación histórica y archivos reorganizados
 - **Repo principal**: https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git
 - **Referencia técnica**: [CLAUDE.md](../CLAUDE.md) (archivo principal para Claude Code)
 - **Tecnologías**: Docker Compose + Luanti + VoxeLibre
-- **VPS**: DigitalOcean (<VPS_IP>)
+- **VPS**: DigitalOcean (<VPS_HOST_IP>)
 
 ### Filosofía del Proyecto
 🌱 **Compasión**: Sin violencia hacia animales ni jugadores
@@ -119,7 +119,7 @@ docker-compose logs -f luanti-server
 docker-compose restart luanti-server
 
 # Acceso SSH al VPS
-ssh gabriel@<VPS_IP>
+ssh gabriel@<VPS_HOST_IP>
 ```
 
 ## 📊 Métricas del Proyecto
