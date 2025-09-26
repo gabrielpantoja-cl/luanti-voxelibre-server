@@ -117,7 +117,7 @@
           "id": "comandos-movimiento",
           "title": "🚀 Comandos de Movimiento",
           "level": 1,
-          "content": "¡Estos comandos te ayudan a moverte como un superhéroe!\n\n- **`/back_to_spawn`**: Regresar al inicio del mundo (súper útil si te pierdes)\n- **`/home`**: Ir directo a tu casa (si ya tienes una configurada)\n- **`/sethome`**: Marcar tu casa como \"hogar\" para ir rápido\n- **`/sit`**: Sentarte cómodamente donde estés\n- **`/lay`**: Recostarte en el pasto o flores (súper relajante)"
+          "content": "¡Estos comandos te ayudan a moverte como un superhéroe!\n\n- **`/back_to_spawn`**: Regresar al inicio del mundo (súper útil si te pierdes)\n- **`/sit`**: Sentarte cómodamente donde estés\n- **`/lay`**: Recostarte en el pasto o flores (súper relajante)"
         },
         {
           "id": "comandos-informacion",
