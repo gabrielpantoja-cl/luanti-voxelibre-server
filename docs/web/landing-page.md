@@ -2,7 +2,7 @@
 
 ## Resumen de Mejoras Implementadas
 
-Este documento detalla las mejoras significativas realizadas en la landing page oficial del servidor Luanti Vegan Wetlands (`https://luanti.gabrielpantoja.cl`) durante septiembre de 2025.
+Este documento detalla las mejoras significativas realizadas en la landing page oficial del servidor Luanti Santuario Compasivo (`https://luanti.gabrielpantoja.cl`) durante septiembre de 2025.
 
 ## 📋 Tareas Completadas
 
@@ -58,7 +58,7 @@ Este documento detalla las mejoras significativas realizadas en la landing page 
 3. **Aventura con Animales**: Nueva captura de gameplay del 13 de Septiembre con cerdos y paisajes hermosos
 4. **3 Placeholders temáticos**:
    - 🏠 Santuarios de Animales
-   - 🌱 Granjas Veganas
+   - 🌱 Granjas Compasivas
    - 🏗️ Construcciones Épicas
 
 ### ✅ 4. Diseño Hermoseado y Minimalista

@@ -1,6 +1,6 @@
 # 🔌 API Documentation
 
-Documentación para futuras implementaciones de APIs del servidor Vegan Wetlands.
+Documentación para futuras implementaciones de APIs del servidor Santuario Compasivo.
 
 ## 🚧 Estado Actual
 

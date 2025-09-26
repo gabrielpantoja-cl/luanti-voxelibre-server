@@ -1,4 +1,4 @@
-# 🌱 Sistema de Backups - Vegan Wetlands
+# 🌱 Sistema de Backups - Santuario Compasivo
 
 ## Guía Completa de Backup y Recuperación
 
@@ -262,7 +262,7 @@ docker run -d --name vegan-wetlands-backup \
 # Script: monitor-backups.sh
 # Uso: Ejecutar desde el directorio del proyecto
 
-echo "🌱 === MONITOR DE BACKUPS - VEGAN WETLANDS ==="
+echo "🌱 === MONITOR DE BACKUPS - SANTUARIO COMPASIVO ==="
 echo "Fecha: $(date)"
 
 # Verificar último backup

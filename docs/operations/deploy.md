@@ -1,6 +1,6 @@
 # 🚀 Guía de Despliegue e Infraestructura
 
-Este documento es la guía técnica para la infraestructura del servidor Vegan Wetlands. Cubre el despliegue, la configuración de Docker, el pipeline de CI/CD con GitHub Actions y la gestión del VPS.
+Este documento es la guía técnica para la infraestructura del servidor Santuario Compasivo. Cubre el despliegue, la configuración de Docker, el pipeline de CI/CD con GitHub Actions y la gestión del VPS.
 
 ---
 

@@ -1,4 +1,4 @@
-# 🌟 Primeros Pasos en Vegan Wetlands
+# 🌟 Primeros Pasos en Santuario Compasivo
 
 Tutorial completo para nuevos jugadores sobre cómo comenzar en nuestro servidor compasivo.
 
@@ -204,6 +204,6 @@ Busca y usa bloques especiales:
 
 ## 🌟 ¡Disfruta tu Aventura!
 
-Recuerda que Vegan Wetlands es más que un juego - es una comunidad de aprendizaje donde practicamos la compasión, el respeto y la creatividad. Cada interacción es una oportunidad de hacer el mundo un poco mejor.
+Recuerda que Santuario Compasivo es más que un juego - es una comunidad de aprendizaje donde practicamos la compasión, el respeto y la creatividad. Cada interacción es una oportunidad de hacer el mundo un poco mejor.
 
 **¡Bienvenido a nuestra familia compasiva!** 🌱💚
