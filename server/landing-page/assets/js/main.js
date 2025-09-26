@@ -537,14 +537,14 @@ let currentDoc = null;
 
 async function initializeDocumentation() {
     try {
-        // Load documentation data
-        const response = await fetch('assets/data/docs.json');
+        // Load child-friendly documentation data
+        const response = await fetch('assets/data/docs-kids.json');
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         docsData = await response.json();
-        console.log('📚 Documentation loaded:', docsData.meta);
+        console.log('🌟 Documentación para niños cargada:', docsData.meta);
         
         // Render navigation
         renderDocsNavigation();
