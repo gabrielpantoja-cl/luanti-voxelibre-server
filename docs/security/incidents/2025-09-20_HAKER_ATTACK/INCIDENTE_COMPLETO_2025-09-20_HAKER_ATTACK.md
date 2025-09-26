@@ -652,7 +652,7 @@ debug_log_level = action
 ### **Comando de Reinicio Seguro**:
 ```bash
 # Secuencia completa de reinicio seguro:
-ssh gabriel@167.172.251.27 'cd /home/gabriel/Vegan-Wetlands && \
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && \
 cp server/config/luanti.conf server/config/luanti.conf.backup.$(date +%Y%m%d_%H%M%S) && \
 sed -i "s/default_privs = .*/default_privs = interact,shout,creative,home/" server/config/luanti.conf && \
 echo "200.83.160.80" > server/worlds/world/ipban.txt && \
@@ -691,7 +691,7 @@ Tiempo de Respuesta: < 30 segundos
 ```
 Trigger: Múltiples conexiones evasivas o patrones de HAKER
 Acción: Detención preventiva del servidor + análisis forense
-Responsable: gabriel@167.172.251.27
+Responsable: gabriel@<VPS_HOST_IP>
 Tiempo de Respuesta: < 10 minutos
 ```
 

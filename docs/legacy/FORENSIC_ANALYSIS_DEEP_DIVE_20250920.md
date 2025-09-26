@@ -226,7 +226,7 @@ Estado: IP 200.83.160.80 BLOQUEADA PERMANENTEMENTE
 ### **✅ Cambio de Credenciales Administrativas**:
 ```bash
 # Nueva contraseña para usuario gabo:
-Password: VeganSafe2025!
+Password: [REDACTADO POR SEGURIDAD]
 Hash: 50944d884166b05bbaf42c8eeaf63958fe8bf95e
 Estado: IMPLEMENTADO Y VERIFICADO
 ```

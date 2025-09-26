@@ -74,7 +74,7 @@ default_privs = interact,shout,creative,give,fly,fast,noclip,home
 # Línea añadida: deny_access.200.83.160.80
 
 # Verificar bloqueo:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && grep '200.83.160.80' server/config/luanti.conf"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && grep '200.83.160.80' server/config/luanti.conf"
 # Resultado: deny_access.200.83.160.80
 ```
 
@@ -83,7 +83,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && grep '200.83.160.
 # Ubicación: /config/.minetest/worlds/world/ipban.txt
 
 # Verificar bloqueo:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
 # Resultado: 200.83.160.80
 ```
 
@@ -96,37 +96,37 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose ex
 #### **PASO 1: Backup de Seguridad Antes de Revertir**
 ```bash
 # Crear backup de configuración actual:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.before_unblock_$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.before_unblock_$(date +%Y%m%d_%H%M%S)"
 
 # Backup de ipban.txt:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
 ```
 
 #### **PASO 2: Remover de luanti.conf** (MÉTODO PRINCIPAL)
 ```bash
 # Editar archivo de configuración para remover deny_access:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && sed -i '/deny_access.200.83.160.80/d' server/config/luanti.conf"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && sed -i '/deny_access.200.83.160.80/d' server/config/luanti.conf"
 
 # Verificar que fue removido:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && grep '200.83.160.80' server/config/luanti.conf || echo 'IP removida exitosamente de luanti.conf'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && grep '200.83.160.80' server/config/luanti.conf || echo 'IP removida exitosamente de luanti.conf'"
 ```
 
 #### **PASO 3: Remover de ipban.txt** (MÉTODO BACKUP)
 ```bash
 # Remover IP del archivo ipban.txt:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '200.83.160.80' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '200.83.160.80' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
 
 # Verificar que fue removido:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server grep '200.83.160.80' /config/.minetest/worlds/world/ipban.txt || echo 'IP removida exitosamente de ipban.txt'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server grep '200.83.160.80' /config/.minetest/worlds/world/ipban.txt || echo 'IP removida exitosamente de ipban.txt'"
 ```
 
 #### **PASO 4: Aplicar Cambios**
 ```bash
 # Reiniciar servidor para aplicar cambios:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 
 # Verificar que servidor está activo:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose ps luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose ps luanti-server"
 ```
 
 #### **PASO 5: Verificar Desbloqueo**
@@ -135,7 +135,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose ps
 # La conexión debe ser exitosa
 
 # Verificar logs del servidor:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=20 luanti-server | grep '200.83.160.80'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=20 luanti-server | grep '200.83.160.80'"
 ```
 
 #### **PASO 6: Documentar Reversión**
@@ -168,19 +168,19 @@ echo "📝 RAZÓN: $REASON"
 
 # Backup antes de cambios
 echo "📦 Creando backup..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.unblock_$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cp server/config/luanti.conf server/config/luanti.conf.backup.unblock_$(date +%Y%m%d_%H%M%S)"
 
 # Remover de luanti.conf
 echo "🔧 Removiendo de luanti.conf..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && sed -i '/deny_access.$IP_TO_UNBLOCK/d' server/config/luanti.conf"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && sed -i '/deny_access.$IP_TO_UNBLOCK/d' server/config/luanti.conf"
 
 # Remover de ipban.txt
 echo "🔧 Removiendo de ipban.txt..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
 
 # Reiniciar servidor
 echo "🔄 Reiniciando servidor..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 
 # Documentar
 echo "📝 Documentando reversión..."
@@ -209,7 +209,7 @@ default_privs = interact,shout,creative,home
 #### 2. **Revocar Privilegios Administrativos Excesivos**:
 ```bash
 # Conectar al VPS y acceder a la base de datos:
-ssh gabriel@167.172.251.27
+ssh gabriel@<VPS_HOST_IP>
 cd /home/gabriel/Vegan-Wetlands
 docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite
 
@@ -255,7 +255,7 @@ docker-compose logs -f luanti-server | grep -E "(200\.83\.160\.80|HAKER|kick|ban
 ### **Al Reiniciar**:
 ```bash
 # Comando de reinicio seguro:
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose up -d"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose up -d"
 
 # Verificar servidor activo:
 ss -tulpn | grep :30000
@@ -276,7 +276,7 @@ docker-compose logs -f luanti-server
 
 ### **Administradores**:
 - **Admin Principal**: gabo (contraseña actualizada: `VeganSafe2025!`)
-- **Contacto Técnico VPS**: gabriel@167.172.251.27
+- **Contacto Técnico VPS**: gabriel@<VPS_HOST_IP>
 
 ### **En Caso de Nueva Actividad Maliciosa**:
 ```

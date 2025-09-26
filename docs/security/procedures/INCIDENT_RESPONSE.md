@@ -284,7 +284,7 @@ done
 - **Acciones**: Alertas, logging, contención básica
 
 #### **Nivel 2 - Administrador Técnico**:
-- **Responsable**: gabriel@167.172.251.27
+- **Responsable**: gabriel@<VPS_HOST_IP>
 - **Tiempo**: < 10 minutos
 - **Acciones**: Análisis técnico, contención avanzada
 
@@ -300,7 +300,7 @@ done
 
 ### **Contactos de Emergencia**:
 ```
-VPS Técnico: gabriel@167.172.251.27
+VPS Técnico: gabriel@<VPS_HOST_IP>
 Admin Principal: gabo (usuario in-game)
 Backup Admin: [POR_DEFINIR]
 ```

@@ -60,12 +60,12 @@ mcl_mobs_peaceful_only = true
 
 ### 1. Hacer Backup del Archivo Original:
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/games/mineclone2/minetest.conf /config/.minetest/games/mineclone2/minetest.conf.backup'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/games/mineclone2/minetest.conf /config/.minetest/games/mineclone2/minetest.conf.backup'
 ```
 
 ### 2. Aplicar Override Nuclear Enhanced:
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server tee -a /config/.minetest/games/mineclone2/minetest.conf << EOF
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server tee -a /config/.minetest/games/mineclone2/minetest.conf << EOF
 
 # NUCLEAR OVERRIDE ENHANCED - COMPLETE NEW USER EXPERIENCE
 # Usuarios nuevos comienzan con gamemode creative y todos los privilegios
@@ -105,24 +105,24 @@ EOF'
 
 ### 3. Reiniciar Servidor:
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server'
 ```
 
 ### 4. Otorgar TODOS los Privilegios Creativos a Usuarios Existentes:
 ```bash
-ssh gabriel@167.172.251.27 'sleep 5 && cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
+ssh gabriel@<VPS_HOST_IP> 'sleep 5 && cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
 ```
 
 ## 🔍 Verificación
 
 ### Verificar Estado del Servidor:
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/Vegan-Wetlands && docker-compose ps'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose ps'
 ```
 
 ### Verificar Ausencia de Mobs Hostiles:
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=50 luanti-server | grep -E "(zombie|skeleton|spider|creeper|died|damage)"'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=50 luanti-server | grep -E "(zombie|skeleton|spider|creeper|died|damage)"'
 ```
 
 **✅ ÉXITO:** No debería aparecer actividad de mobs hostiles en logs recientes.

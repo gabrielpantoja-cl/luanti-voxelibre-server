@@ -141,7 +141,7 @@ backup-cron:
 
 ```bash
 # Conectar al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<VPS_HOST_IP>
 
 # Navegar al proyecto
 cd /home/gabriel/Vegan-Wetlands

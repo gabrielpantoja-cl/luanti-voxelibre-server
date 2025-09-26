@@ -99,7 +99,7 @@ Si te pierdes nuevamente, usa este comando en el servidor para encontrar áreas 
 
 ```bash
 # Conectarse al servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/map.sqlite \"SELECT x, z, COUNT(*) as block_count FROM blocks GROUP BY x, z HAVING block_count > 1 ORDER BY block_count DESC LIMIT 20;\""
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/map.sqlite \"SELECT x, z, COUNT(*) as block_count FROM blocks GROUP BY x, z HAVING block_count > 1 ORDER BY block_count DESC LIMIT 20;\""
 ```
 
 **Interpretar resultados:**

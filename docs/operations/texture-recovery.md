@@ -41,54 +41,54 @@ Mapeo cruzado → Cache corrupto → Texturas uniformes → Crisis visual
 ### ⚠️ IMPORTANTE: Backup Primero
 ```bash
 # Verificar que los datos del mundo estén seguros
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/*"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/*"
 ```
 
 ### Paso 1: Eliminación de Mods Problemáticos
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/motorboat server/mods/biofuel server/mods/mobkit server/mods/mobkit.zip"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/motorboat server/mods/biofuel server/mods/mobkit server/mods/mobkit.zip"
 ```
 
 ### Paso 2: Descarga de VoxeLibre Fresco
 ```bash
 # Eliminar VoxeLibre corrupto
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2"
 
 # Descargar versión limpia (56MB)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip"
 
 # Extraer e instalar
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
 ```
 
 ### Paso 3: Limpieza Completa del Sistema
 ```bash
 # Parar contenedores y limpiar estado
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker compose down && docker system prune -f"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker compose down && docker system prune -f"
 ```
 
 ### Paso 4: Eliminación de Mods con Dependencias Rotas
 ```bash
 # Remover mods que impiden el inicio
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/education_blocks"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/mods/education_blocks"
 ```
 
 ### Paso 5: Reinicio con Estado Limpio
 ```bash
 # Iniciar servidor con configuración limpia
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker compose up -d"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker compose up -d"
 ```
 
 ### Paso 6: Verificación de Recuperación
 ```bash
 # Verificar servidor corriendo
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && sleep 20 && docker compose ps"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && sleep 20 && docker compose ps"
 
 # Verificar logs de inicio exitoso
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker compose logs luanti-server --since 30s | grep -E 'World at|Server for gameid|listening'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker compose logs luanti-server --since 30s | grep -E 'World at|Server for gameid|listening'"
 
 # Confirmar preservación del mundo
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/*"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/*"
 ```
 
 ## ✅ Métricas de Éxito de la Recuperación

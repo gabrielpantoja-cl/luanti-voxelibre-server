@@ -62,9 +62,9 @@ Para que el workflow funcione, el repositorio de GitHub necesita los siguientes 
 
 | Secret | Valor de Ejemplo | Descripción |
 |---|---|---|
-| `VPS_HOST` | `167.172.251.27` | La IP de tu VPS. |
+| `VPS_HOST` | `<VPS_HOST_IP>` | La IP de tu VPS. |
 | `VPS_USER` | `gabriel` | El usuario con el que se conectará por SSH. |
-| `VPS_SSH_KEY`| (El contenido de `~/.ssh/id_rsa`) | La clave SSH privada para acceder al VPS sin contraseña. |
+| `VPS_SSH_KEY`| (Tu clave SSH privada) | La clave SSH privada para acceder al VPS sin contraseña. |
 
 ### 3.2. ¿Qué Hace el Workflow?
 

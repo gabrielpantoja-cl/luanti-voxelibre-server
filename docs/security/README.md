@@ -84,7 +84,7 @@ Ver: [COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md](./incidents/2025-09-20_HAKER
 - **Responsabilidad**: Decisiones administrativas y cambios de privilegios
 
 ### **🔧 Administrador Técnico**:
-- **Usuario**: gabriel@167.172.251.27
+- **Usuario**: gabriel@<VPS_HOST_IP>
 - **Responsabilidad**: Gestión VPS y análisis forense
 
 ### **📋 Escalación de Emergencia**:

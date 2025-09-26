@@ -61,7 +61,7 @@ git push origin main
 ### 3️⃣ Pull desde VPS
 ```bash
 # Conectar al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<VPS_HOST_IP>
 
 # Navegar al directorio del proyecto
 cd /home/gabriel/Vegan-Wetlands
@@ -154,7 +154,7 @@ Como `world.mt` se modifica en el VPS y no se sincroniza automáticamente, mante
 
 ```bash
 # Hacer backup desde VPS al repo local
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt" > server/config/world.mt
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt" > server/config/world.mt
 
 # Commitear backup
 git add server/config/world.mt
@@ -262,13 +262,13 @@ git commit -m "🛠️ Deploy mod $MOD_NAME"
 git push origin main
 
 # 2. Deploy en VPS
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && git pull origin main"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && git pull origin main"
 
 # 3. Habilitar mod
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
 
 # 4. Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 
 echo "✅ Deployment completed for $MOD_NAME"
 ```

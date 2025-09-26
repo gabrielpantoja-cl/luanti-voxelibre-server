@@ -32,7 +32,7 @@ Este manual documenta los métodos y procedimientos para **bloquear direcciones 
 
 ```bash
 # PASO 1: Conectar al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<VPS_HOST_IP>
 
 # PASO 2: Navegar al directorio del proyecto
 cd /home/gabriel/Vegan-Wetlands
@@ -53,10 +53,10 @@ docker-compose restart luanti-server
 #### **Ejemplo Práctico:**
 ```bash
 # Bloquear IP 200.83.160.80 (HAKER)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'echo \"200.83.160.80\" >> /config/.minetest/worlds/world/ipban.txt'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'echo \"200.83.160.80\" >> /config/.minetest/worlds/world/ipban.txt'"
 
 # Verificar bloqueo
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
 ```
 
 #### **Ubicación del Archivo:**
@@ -84,7 +84,7 @@ Host VPS: /home/gabriel/Vegan-Wetlands/server/worlds/world/ipban.txt
 
 ```bash
 # PASO 1: Conectar al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<VPS_HOST_IP>
 
 # PASO 2: Navegar al directorio del proyecto
 cd /home/gabriel/Vegan-Wetlands
@@ -105,10 +105,10 @@ docker-compose restart luanti-server
 #### **Ejemplo Práctico:**
 ```bash
 # Bloquear IP 200.83.160.80 usando luanti.conf
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && echo 'deny_access.200.83.160.80 = IP bloqueada por actividad maliciosa' >> server/config/luanti.conf"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && echo 'deny_access.200.83.160.80 = IP bloqueada por actividad maliciosa' >> server/config/luanti.conf"
 
 # Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 ```
 
 #### **⚠️ PROBLEMA COMÚN: Formato Mal Formateado**
@@ -126,10 +126,10 @@ deny_access.200.83.160.80 = IP bloqueada por actividad maliciosa
 **Solución aplicada:**
 ```bash
 # Arreglar formato mal formateado
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && sed -i 's/rollback_checkdeny_access.200.83.160.80/rollback_check\ndeny_access.200.83.160.80 = IP bloqueada por actividad maliciosa/' server/config/luanti.conf"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && sed -i 's/rollback_checkdeny_access.200.83.160.80/rollback_check\ndeny_access.200.83.160.80 = IP bloqueada por actividad maliciosa/' server/config/luanti.conf"
 
 # Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 ```
 
 #### **Ubicación del Archivo:**
@@ -141,7 +141,7 @@ Contenedor: /config/.minetest/minetest.conf
 #### **Verificación del Formato:**
 ```bash
 # Verificar que el formato es correcto
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cat server/config/luanti.conf | grep -A1 -B1 'deny_access'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cat server/config/luanti.conf | grep -A1 -B1 'deny_access'"
 ```
 
 ---
@@ -229,10 +229,10 @@ networks:
 
 ```bash
 # Ver lista completa de IPs bloqueadas
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt"
 
 # Contar número de IPs bloqueadas
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server wc -l /config/.minetest/worlds/world/ipban.txt"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server wc -l /config/.minetest/worlds/world/ipban.txt"
 ```
 
 ### **Añadir Múltiples IPs:**
@@ -258,7 +258,7 @@ docker-compose exec -T luanti-server sh -c "grep -v '$IP_TO_REMOVE' /config/.min
 
 ```bash
 # Crear backup de lista de IPs bloqueadas
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
 ```
 
 ---
@@ -309,13 +309,13 @@ fi
 echo "🚨 BLOQUEANDO IP MALICIOSA: $IP_MALICIOSA"
 
 # PASO 1: Bloqueo inmediato en Luanti
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'echo \"$IP_MALICIOSA\" >> /config/.minetest/worlds/world/ipban.txt'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c 'echo \"$IP_MALICIOSA\" >> /config/.minetest/worlds/world/ipban.txt'"
 
 # PASO 2: Reinicio rápido del servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 
 # PASO 3: Verificación
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt | tail -5"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/ipban.txt | tail -5"
 
 echo "✅ IP $IP_MALICIOSA BLOQUEADA EXITOSAMENTE"
 ```
@@ -336,13 +336,13 @@ fi
 echo "🔄 DESBLOQUEANDO IP: $IP_A_DESBLOQUEAR"
 
 # Crear backup antes de modificar
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$(date +%Y%m%d_%H%M%S)"
 
 # Remover IP del archivo
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_A_DESBLOQUEAR' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_A_DESBLOQUEAR' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt\""
 
 # Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
 
 echo "✅ IP $IP_A_DESBLOQUEAR DESBLOQUEADA"
 ```

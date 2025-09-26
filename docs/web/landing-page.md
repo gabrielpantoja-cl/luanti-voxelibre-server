@@ -197,13 +197,13 @@ git push origin main
 **Paso 3: Actualizar en el VPS**
 ```bash
 # SSH al VPS y hacer pull
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && git pull origin main"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && git pull origin main"
 ```
 
 **Paso 4: Reiniciar nginx (si es necesario)**
 ```bash
 # Solo si hay cambios estructurales importantes
-ssh gabriel@167.172.251.27 "cd /home/gabriel/vps-do && docker-compose restart nginx"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/vps-do && docker-compose restart nginx"
 ```
 
 **Paso 5: Verificar deployment**

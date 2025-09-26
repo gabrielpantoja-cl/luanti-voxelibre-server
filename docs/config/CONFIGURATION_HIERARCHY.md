@@ -93,7 +93,7 @@ cat server/config/luanti.conf | grep creative
 # Output: creative_mode = false  <-- ¡AQUÍ ESTÁ EL CONFLICTO!
 
 # Paso 3: Ver resultado en el servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose logs luanti-server | grep creative"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose logs luanti-server | grep creative"
 ```
 
 **✅ SOLUCIÓN**:
@@ -146,13 +146,13 @@ echo "load_mod_nombre_del_mod = true" >> server/worlds/world/world.mt
 ### Verificar Estado Actual del Servidor
 ```bash
 # Conectar al VPS y ver configuración activa
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
 
 # Ver qué mods están cargados
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && cat server/worlds/world/world.mt | grep load_mod"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cat server/worlds/world/world.mt | grep load_mod"
 
 # Ver logs del servidor para errores de configuración
-ssh gabriel@167.172.251.27 "cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=50 luanti-server | grep -i error"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=50 luanti-server | grep -i error"
 ```
 
 ### Aplicar Cambios de Configuración
