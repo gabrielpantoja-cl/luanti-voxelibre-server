@@ -26,9 +26,10 @@
             </div>
             <div class="nav-links">
                 <a href="#inicio" class="nav-link">Inicio</a>
+                <a href="#galeria" class="nav-link">📸 Últimas Novedades</a>
+                <a href="galeria.html" class="nav-link">🖼️ Ver Toda la Galería</a>
                 <a href="#como-jugar" class="nav-link">¿Cómo Jugar?</a>
                 <a href="#caracteristicas" class="nav-link">Características</a>
-                <a href="#galeria" class="nav-link">📸 Galería</a>
                 <a href="#documentacion" class="nav-link">📚 Guías</a>
             </div>
         </nav>
@@ -83,6 +84,75 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Updates Gallery Section -->
+    <section id="galeria" class="gallery latest-updates">
+        <div class="container">
+            <h2 class="section-title">🌟 Últimas Novedades del Servidor</h2>
+            <p class="gallery-intro">
+                Descubre las últimas actualizaciones y novedades de Wetlands. ¡Siempre estamos mejorando para hacer tu experiencia más divertida!
+            </p>
+
+            <div class="gallery-grid latest-grid" id="gallery-grid">
+                <!-- Latest Image: Server Rules -->
+                <div class="gallery-item featured" onclick="openGalleryModal('assets/images/reglas.png', 'Reglas Básicas del Servidor - ¡Nueva Guía Visual!')">
+                    <img src="assets/images/reglas.png"
+                         alt="Reglas Básicas del Servidor"
+                         class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-badge new">¡NUEVO!</div>
+                            <h4>📋 Reglas del Servidor</h4>
+                            <p>Nueva guía visual con las reglas básicas de convivencia</p>
+                            <span class="gallery-date">Sep 2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Image: Pool with Friends -->
+                <div class="gallery-item" onclick="openGalleryModal('assets/images/wetlands-gameplay-2025-09-13.png', 'En la piscina con amigos')">
+                    <img src="assets/images/wetlands-gameplay-2025-09-13.png"
+                         alt="En la piscina con amigos"
+                         class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h4>😎 En la piscina con amigos</h4>
+                            <p>Interactúa con amigos y aldeanos en tu propia ciudad</p>
+                            <span class="gallery-date">Sep 2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community Image -->
+                <div class="gallery-item" onclick="openGalleryModal('assets/images/pepe-gabo.jpeg', 'Comunidad Wetlands')">
+                    <img src="assets/images/pepe-gabo.jpeg"
+                         alt="Comunidad Wetlands"
+                         class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <h4>👥 Nuestra Comunidad</h4>
+                            <p>Jugadores unidos por la diversión y el aprendizaje</p>
+                            <span class="gallery-date">Sep 2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-cta">
+                <a href="galeria.html" class="gallery-view-all-btn">
+                    🖼️ Ver Toda la Galería
+                    <span class="btn-subtitle">Más capturas y actualizaciones</span>
+                </a>
+            </div>
+
+            <!-- Gallery Modal -->
+            <div id="gallery-modal" class="gallery-modal" onclick="closeGalleryModal()">
+                <span class="gallery-close">&times;</span>
+                <img class="gallery-modal-content" id="gallery-modal-image">
+                <div id="gallery-modal-caption" class="gallery-caption"></div>
             </div>
         </div>
     </section>
@@ -183,93 +253,6 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section id="galeria" class="gallery">
-        <div class="container">
-            <h2 class="section-title">📸 Galería del Servidor</h2>
-            <p class="gallery-intro">
-                Explora capturas del mundo de Wetlands y conoce algunos de los lugares más hermosos construidos por nuestra comunidad.
-            </p>
-            
-            <div class="gallery-grid" id="gallery-grid">
-                <div class="gallery-item" onclick="openGalleryModal('assets/images/Captura de pantalla de 2025-08-31 02-48-20.png', 'Aventura en el mundo de Wetlands')">
-                    <img src="assets/images/Captura de pantalla de 2025-08-31 02-48-20.png" 
-                         alt="Aventura en el mundo de Wetlands" 
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h4>🏞️ Aventura Épica</h4>
-                            <p>Explora mundos llenos de vida y diversión</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item" onclick="openGalleryModal('assets/images/pepe-gabo.jpeg', 'Comunidad Wetlands')">
-                    <img src="assets/images/pepe-gabo.jpeg" 
-                         alt="Comunidad Wetlands" 
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h4>👥 Nuestra Comunidad</h4>
-                            <p>Jugadores unidos por la diversión y el aprendizaje</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="gallery-item" onclick="openGalleryModal('assets/images/wetlands-gameplay-2025-09-13.png', 'En la piscina con amigos')">
-                    <img src="assets/images/wetlands-gameplay-2025-09-13.png"
-                         alt="En la piscina con amigos"
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h4>😎 En la piscina con amigos</h4>
-                            <p>Interactúa con amigos y aldeanos en tu propia ciudad</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Placeholders for future screenshots -->
-                <div class="gallery-item gallery-placeholder">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">🏠</div>
-                        <h4>Santuarios de Animales</h4>
-                        <p>Próximamente: Fotos de increíbles refugios construidos por jugadores</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item gallery-placeholder">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">🌱</div>
-                        <h4>Granjas Ecológicas</h4>
-                        <p>Próximamente: Cultivos sostenibles y granjas creativas</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item gallery-placeholder">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">🏗️</div>
-                        <h4>Construcciones Épicas</h4>
-                        <p>Próximamente: Las mejores creaciones de nuestra comunidad</p>
-                    </div>
-                </div>
-                
-                <div class="gallery-item gallery-placeholder">
-                    <div class="placeholder-content">
-                        <div class="placeholder-icon">🎉</div>
-                        <h4>Eventos Especiales</h4>
-                        <p>Próximamente: Celebraciones y actividades comunitarias</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Gallery Modal -->
-            <div id="gallery-modal" class="gallery-modal" onclick="closeGalleryModal()">
-                <span class="gallery-close">&times;</span>
-                <img class="gallery-modal-content" id="gallery-modal-image">
-                <div id="gallery-modal-caption" class="gallery-caption"></div>
-            </div>
-        </div>
-    </section>
 
     <!-- Documentation Section -->
     <section id="documentacion" class="documentation">
