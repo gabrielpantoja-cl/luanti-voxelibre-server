@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Galería completa de Wetlands - Todas las capturas del servidor de Luanti educativo">
+    <meta name="keywords" content="Luanti, Minetest, galería, capturas, Wetlands, servidor">
+    <title>🖼️ Galería Completa - Wetlands Chile</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-emoji">🌱</span>
+                <span class="logo-text">Wetlands</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">🏠 Inicio</a>
+                <a href="index.html#galeria" class="nav-link">📸 Últimas Novedades</a>
+                <a href="#" class="nav-link active">🖼️ Galería Completa</a>
+                <a href="index.html#como-jugar" class="nav-link">¿Cómo Jugar?</a>
+                <a href="index.html#caracteristicas" class="nav-link">Características</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Gallery Hero Section -->
+    <section class="gallery-hero">
+        <div class="container">
+            <div class="gallery-hero-content">
+                <h1 class="gallery-hero-title">🖼️ Galería Completa de Wetlands</h1>
+                <p class="gallery-hero-desc">
+                    Explora todas las capturas del servidor, desde las últimas actualizaciones hasta los momentos más memorables de nuestra comunidad.
+                </p>
+                <div class="gallery-stats">
+                    <div class="stat">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Imágenes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">Actualizado</span>
+                        <span class="stat-label">Sep 2025</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">Siempre</span>
+                        <span class="stat-label">Creciendo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Gallery Section -->
+    <section class="gallery-full">
+        <div class="container">
+            <div class="gallery-filters">
+                <h2 class="section-title">📚 Todas las Capturas</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">🌟 Todas</button>
+                    <button class="filter-btn" data-filter="updates">🆕 Actualizaciones</button>
+                    <button class="filter-btn" data-filter="community">👥 Comunidad</button>
+                    <button class="filter-btn" data-filter="gameplay">🎮 Gameplay</button>
+                </div>
+            </div>
+
+            <div class="gallery-grid-full" id="gallery-full-grid">
+                <!-- Latest Update: Server Rules -->
+                <div class="gallery-item-full" data-category="updates" onclick="openGalleryModal('assets/images/reglas.png', 'Reglas Básicas del Servidor - ¡Nueva Guía Visual!')">
+                    <img src="assets/images/reglas.png"
+                         alt="Reglas Básicas del Servidor"
+                         class="gallery-image-full">
+                    <div class="gallery-overlay-full">
+                        <div class="gallery-info-full">
+                            <div class="gallery-badge new">¡NUEVO!</div>
+                            <h4>📋 Reglas del Servidor</h4>
+                            <p>Nueva guía visual con las reglas básicas de convivencia en Wetlands</p>
+                            <div class="image-meta">
+                                <span class="category-tag updates">Actualización</span>
+                                <span class="date-tag">Sep 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gameplay: Pool Scene -->
+                <div class="gallery-item-full" data-category="gameplay" onclick="openGalleryModal('assets/images/wetlands-gameplay-2025-09-13.png', 'Relajándose en la piscina con amigos - Gameplay de Wetlands')">
+                    <img src="assets/images/wetlands-gameplay-2025-09-13.png"
+                         alt="En la piscina con amigos"
+                         class="gallery-image-full">
+                    <div class="gallery-overlay-full">
+                        <div class="gallery-info-full">
+                            <h4>😎 Momentos de Relajación</h4>
+                            <p>Disfruta de momentos tranquilos en la piscina con amigos y aldeanos en tu ciudad personalizada</p>
+                            <div class="image-meta">
+                                <span class="category-tag gameplay">Gameplay</span>
+                                <span class="date-tag">Sep 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Community: Players -->
+                <div class="gallery-item-full" data-category="community" onclick="openGalleryModal('assets/images/pepe-gabo.jpeg', 'Nuestra Comunidad - Pepe y Gabo en Wetlands')">
+                    <img src="assets/images/pepe-gabo.jpeg"
+                         alt="Comunidad Wetlands - Pepe y Gabo"
+                         class="gallery-image-full">
+                    <div class="gallery-overlay-full">
+                        <div class="gallery-info-full">
+                            <h4>👥 Nuestra Comunidad</h4>
+                            <p>Pepe y Gabo, miembros activos de la comunidad, disfrutando de aventuras juntos en el servidor</p>
+                            <div class="image-meta">
+                                <span class="category-tag community">Comunidad</span>
+                                <span class="date-tag">Sep 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gameplay: Epic Adventure -->
+                <div class="gallery-item-full" data-category="gameplay" onclick="openGalleryModal('assets/images/Captura de pantalla de 2025-08-31 02-48-20.png', 'Aventura Épica en el Mundo de Wetlands')">
+                    <img src="assets/images/Captura de pantalla de 2025-08-31 02-48-20.png"
+                         alt="Aventura en el mundo de Wetlands"
+                         class="gallery-image-full">
+                    <div class="gallery-overlay-full">
+                        <div class="gallery-info-full">
+                            <h4>🏞️ Aventura Épica</h4>
+                            <p>Explora vastos mundos llenos de vida, construcciones increíbles y diversión sin límites</p>
+                            <div class="image-meta">
+                                <span class="category-tag gameplay">Gameplay</span>
+                                <span class="date-tag">Ago 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery CTA -->
+            <div class="gallery-footer">
+                <div class="gallery-contribute">
+                    <h3>🎯 ¡Comparte tus Capturas!</h3>
+                    <p>¿Tienes capturas geniales de tus aventuras en Wetlands? ¡Nos encantaría incluirlas en la galería!</p>
+                    <div class="contribute-instructions">
+                        <div class="instruction">
+                            <span class="step-number">1</span>
+                            <span class="step-text">Toma tu captura en el juego (F12 o el botón de captura)</span>
+                        </div>
+                        <div class="instruction">
+                            <span class="step-number">2</span>
+                            <span class="step-text">Conéctate al servidor y compártela con los administradores</span>
+                        </div>
+                        <div class="instruction">
+                            <span class="step-number">3</span>
+                            <span class="step-text">¡Tu imagen podría aparecer en la próxima actualización!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="back-home">
+                    <a href="index.html" class="back-home-btn">
+                        🏠 Volver al Inicio
+                        <span class="btn-subtitle">Regresar a la página principal</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Gallery Modal -->
+            <div id="gallery-modal" class="gallery-modal" onclick="closeGalleryModal()">
+                <span class="gallery-close">&times;</span>
+                <img class="gallery-modal-content" id="gallery-modal-image">
+                <div id="gallery-modal-caption" class="gallery-caption"></div>
+                <div class="gallery-modal-nav">
+                    <button class="modal-nav-btn" id="modal-prev" onclick="event.stopPropagation(); navigateGallery(-1)">‹ Anterior</button>
+                    <button class="modal-nav-btn" id="modal-next" onclick="event.stopPropagation(); navigateGallery(1)">Siguiente ›</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🖼️ Galería de Wetlands</h4>
+                    <p>Un registro visual de las mejores aventuras en nuestro servidor educativo.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h4>📋 Información del Servidor</h4>
+                    <ul>
+                        <li><strong>Dirección:</strong> luanti.gabrielpantoja.cl</li>
+                        <li><strong>Puerto:</strong> 30000</li>
+                        <li><strong>Versión:</strong> VoxeLibre (MineClone2)</li>
+                        <li><strong>Tipo:</strong> Creativo, Sin PvP</li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>🎮 Comandos Útiles</h4>
+                    <ul>
+                        <li><code>/reglas</code> - Ver reglas del servidor</li>
+                        <li><code>/back_to_spawn</code> - Volver a tu cama</li>
+                        <li><code>/home</code> - Ir a tu casa</li>
+                        <li><code>/sethome</code> - Establecer hogar</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Wetlands. Servidor educativo y sin ánimo de lucro.</p>
+                <p>Luanti es software libre y gratuito. Aprende más en <a href="https://www.luanti.org" target="_blank">luanti.org</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/gallery.js"></script>
+</body>
+</html>
