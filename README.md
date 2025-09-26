@@ -1,4 +1,4 @@
-# 🌱 Bienvenidos a Vegan Wetlands
+# 🌱 Bienvenidos a Wetlands
 
 **Un servidor de Luanti (Minetest) donde la compasión, la creatividad y la educación florecen.**
 
@@ -6,12 +6,12 @@
 
 ---
 
-**Vegan Wetlands** es un mundo de juego único, diseñado como un espacio seguro y sin violencia para niños y familias. Aquí, la aventura y el aprendizaje van de la mano.
+**Wetlands** es un mundo de juego único, diseñado como un espacio seguro y sin violencia para niños y familias. Aquí, la aventura y el aprendizaje van de la mano.
 
 ## 💚 Nuestra Filosofía
 
 - **Compasión Animal:** Cuidamos a los animales, no los dañamos. Usa herramientas de cariño en lugar de armas.
-- **Educación Creativa:** Aprende sobre sostenibilidad, programación y alimentación consciente mientras juegas.
+- **Educación Creativa:** Aprende sobre sostenibilidad, programación y alimentación consciente mientras jueyas.
 - **Juego No-Violento:** Un entorno 100% libre de violencia, ideal para toda la familia.
 
 ## 🚀 Cómo Unirte
