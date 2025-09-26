@@ -1,0 +1,203 @@
+{
+  "meta": {
+    "title": "Guías para Jugadores de Wetlands",
+    "description": "Documentación simple y divertida para niños y familias",
+    "version": "1.0.0",
+    "audience": "niños 7-12 años",
+    "totalDocs": 5,
+    "totalSections": 18,
+    "lastUpdated": "2025-09-25"
+  },
+  "navigation": [
+    {
+      "id": "como-conectar",
+      "title": "🎮 ¿Cómo Conectar?",
+      "description": "Pasos súper fáciles para entrar al servidor",
+      "icon": "🎮",
+      "audience": "jugadores"
+    },
+    {
+      "id": "primeros-pasos",
+      "title": "🌟 Mis Primeros Pasos",
+      "description": "Tutorial divertido para empezar a jugar",
+      "icon": "🌟",
+      "audience": "jugadores"
+    },
+    {
+      "id": "comandos-utiles",
+      "title": "⚡ Comandos Mágicos",
+      "description": "Los comandos más útiles que necesitas saber",
+      "icon": "⚡",
+      "audience": "jugadores"
+    },
+    {
+      "id": "cuidado-animales",
+      "title": "🐾 Cuidar Animalitos",
+      "description": "Cómo ser el mejor cuidador de animales",
+      "icon": "🐾",
+      "audience": "jugadores"
+    },
+    {
+      "id": "reglas-divertidas",
+      "title": "📋 Reglas Súper Importantes",
+      "description": "Las reglas del servidor explicadas de forma divertida",
+      "icon": "📋",
+      "audience": "jugadores"
+    }
+  ],
+  "docs": {
+    "como-conectar": {
+      "id": "como-conectar",
+      "title": "🎮 ¿Cómo Conectar al Servidor?",
+      "icon": "🎮",
+      "audience": "jugadores",
+      "wordCount": 285,
+      "sections": [
+        {
+          "id": "descargar-luanti",
+          "title": "📱 Paso 1: Descargar Luanti",
+          "level": 1,
+          "content": "Luanti es **GRATIS** y muy fácil de descargar:\n\n**Para computador:**\n- Ve a luanti.org\n- Haz clic en \"Descargar\"\n- Instala como cualquier programa\n\n**Para celular:**\n- Busca \"Luanti\" en Google Play Store\n- Descárgalo gratis\n- ¡Es el mismo juego!"
+        },
+        {
+          "id": "conectar-servidor",
+          "title": "🌐 Paso 2: Conectar al Servidor",
+          "level": 1,
+          "content": "¡Súper fácil!\n\n1. Abre Luanti\n2. Haz clic en **\"Unirse al juego\"**\n3. Escribe la dirección: `luanti.gabrielpantoja.cl`\n4. Escribe el puerto: `30000`\n5. ¡Haz clic en \"Conectar\" y listo!\n\n💡 **Tip:** Si no funciona, pide ayuda a un adulto"
+        },
+        {
+          "id": "primer-personaje",
+          "title": "🎨 Paso 3: Crear tu Personaje",
+          "level": 1,
+          "content": "¡Hora de crear tu avatar!\n\n1. Elige un **nombre divertido** (pero apropiado)\n2. **No uses tu nombre real** por seguridad\n3. Ejemplos buenos: AnimalFriend, PlantLover, KindPlayer\n4. ¡Dale \"Play\" y comienza tu aventura!"
+        }
+      ]
+    },
+    "primeros-pasos": {
+      "id": "primeros-pasos",
+      "title": "🌟 Mis Primeros Pasos en Wetlands",
+      "icon": "🌟",
+      "audience": "jugadores",
+      "wordCount": 420,
+      "sections": [
+        {
+          "id": "bienvenida",
+          "title": "🎉 ¡Bienvenido a Wetlands!",
+          "level": 1,
+          "content": "¡Felicidades! Ya estás en nuestro servidor súper especial.\n\n**En Wetlands puedes:**\n- 🏗️ Construir casas increíbles\n- 🐰 Cuidar animalitos adorables\n- 🌱 Plantar jardines hermosos\n- 👥 Hacer nuevos amigos\n- 🎓 Aprender cosas geniales\n\n**¡Y lo mejor: SIN violencia, solo diversión!**"
+        },
+        {
+          "id": "controles-basicos",
+          "title": "🎮 Controles Súper Fáciles",
+          "level": 1,
+          "content": "**Moverse es súper fácil:**\n- **W, A, S, D**: Caminar (como en otros juegos)\n- **Espacio**: Saltar y volar hacia arriba\n- **Shift**: Agacharse y volar hacia abajo\n- **F**: ¡Activa el poder de volar! 🦅\n- **J**: ¡Súper velocidad! ⚡\n\n**Para interactuar:**\n- **Clic izquierdo**: Romper bloques\n- **Clic derecho**: Poner bloques\n- **I**: Ver tu mochila mágica\n- **T**: Hablar con otros jugadores"
+        },
+        {
+          "id": "primera-casa",
+          "title": "🏠 Construye tu Primera Casa",
+          "level": 1,
+          "content": "¡Hora de construir tu hogar!\n\n**Pasos súper simples:**\n1. **Encuentra un lugar bonito** (cerca de agua o árboles)\n2. **Usa bloques naturales** (madera, piedra)\n3. **Haz una casa pequeña** para empezar\n4. **Agrega ventanas** para que entre luz\n5. **Pon una puerta** súper genial\n\n💡 **Secreto:** En modo creativo tienes bloques infinitos. ¡Usa los que quieras!"
+        },
+        {
+          "id": "hacer-amigos",
+          "title": "👥 Hacer Nuevos Amigos",
+          "level": 1,
+          "content": "¡Los amigos hacen todo más divertido!\n\n**Consejos para hacer amigos:**\n- 😊 **Sé súper amable** con todos\n- 🤝 **Ayuda** a otros jugadores\n- 💬 **Habla en el chat** (presiona T)\n- 🎁 **Comparte** bloques y construcciones\n- 🌟 **Felicita** las construcciones geniales de otros\n\n**Recuerda:** ¡Todos empezamos como nuevos jugadores!"
+        }
+      ]
+    },
+    "comandos-utiles": {
+      "id": "comandos-utiles",
+      "title": "⚡ Comandos Mágicos del Servidor",
+      "icon": "⚡",
+      "audience": "jugadores",
+      "wordCount": 315,
+      "sections": [
+        {
+          "id": "comandos-movimiento",
+          "title": "🚀 Comandos de Movimiento",
+          "level": 1,
+          "content": "¡Estos comandos te ayudan a moverte como un superhéroe!\n\n- **`/back_to_spawn`**: Regresar al inicio del mundo (súper útil si te pierdes)\n- **`/home`**: Ir directo a tu casa (si ya tienes una configurada)\n- **`/sethome`**: Marcar tu casa como \"hogar\" para ir rápido\n- **`/sit`**: Sentarte cómodamente donde estés\n- **`/lay`**: Recostarte en el pasto o flores (súper relajante)"
+        },
+        {
+          "id": "comandos-informacion",
+          "title": "📚 Comandos de Información Súper Útiles",
+          "level": 1,
+          "content": "¡Aprende cosas geniales con estos comandos!\n\n- **`/reglas`**: Ver todas las reglas importantes del servidor\n- **`/r`**: Versión rápida de las reglas (súper práctica)\n- **`/filosofia`**: Conocer la misión especial de Wetlands\n- **`/santuario`**: Aprender a cuidar animalitos de la mejor forma\n- **`/?`**: Ver lista de TODOS los comandos disponibles"
+        },
+        {
+          "id": "como-usar-comandos",
+          "title": "💡 ¿Cómo Usar los Comandos?",
+          "level": 1,
+          "content": "¡Es súper fácil usar comandos!\n\n**Pasos simples:**\n1. **Presiona T** para abrir el chat\n2. **Escribe el comando** exactamente como está escrito\n3. **Presiona Enter** y ¡magia!\n\n**Ejemplo:** Si escribes `/sit` y presionas Enter, ¡tu personaje se sentará!\n\n🔥 **Truco:** Puedes usar comandos en cualquier momento mientras juegas"
+        }
+      ]
+    },
+    "cuidado-animales": {
+      "id": "cuidado-animales",
+      "title": "🐾 Cómo Cuidar Animalitos en Wetlands",
+      "icon": "🐾",
+      "audience": "jugadores",
+      "wordCount": 380,
+      "sections": [
+        {
+          "id": "filosofia-animales",
+          "title": "❤️ Nuestra Filosofía con los Animales",
+          "level": 1,
+          "content": "En Wetlands, **los animales son nuestros amigos**, no objetos.\n\n**Principios importantes:**\n- 🤗 **Respetamos** a todos los animalitos\n- 🏠 **Creamos hogares seguros** para ellos\n- 🥕 **Les damos comida** saludable y rica\n- 👀 **Los observamos** sin molestarlos\n- 📸 **Los fotografiamos** para recordar momentos bonitos\n\n**¡Somos sus protectores y cuidadores especiales!**"
+        },
+        {
+          "id": "construccion-santuarios",
+          "title": "🏗️ Construir Santuarios Geniales",
+          "level": 1,
+          "content": "¡Los santuarios son hogares súper especiales para animales!\n\n**Qué necesita un buen santuario:**\n- 🌊 **Agua fresca** siempre disponible\n- 🌾 **Comida rica** (pasto, zanahorias, manzanas)\n- 🏠 **Refugio** para cuando llueve o hace frío\n- 🌳 **Árboles** para dar sombra\n- 🚪 **Espacio grande** para que corran y jueguen\n- 🎨 **Decoración bonita** que les guste\n\n**¡Hazlo hermoso para que se sientan súper felices!**"
+        },
+        {
+          "id": "interaccion-respetuosa",
+          "title": "🤝 Interactuar con Respeto",
+          "level": 1,
+          "content": "**Cómo ser el mejor amigo de los animales:**\n\n**✅ SÍ hacer:**\n- Observarlos desde una distancia cómoda\n- Darles comida despacio y con cariño\n- Construir cerca de ellos para cuidarlos\n- Tomar fotos bonitas (F12 para captura)\n- Aprender sobre cada tipo de animal\n\n**❌ NO hacer:**\n- Perseguirlos o asustarlos\n- Hacer ruido fuerte cerca de ellos\n- Construir jaulas pequeñas\n- Molestarlos cuando están descansando\n\n**Recuerda: ¡Cada animal es único y especial!**"
+        },
+        {
+          "id": "tipos-animales",
+          "title": "🦋 Tipos de Animalitos en Wetlands",
+          "level": 1,
+          "content": "**¡Conoce a nuestros amigos animales!**\n\n- 🐰 **Conejos**: Les gustan las zanahorias y saltar\n- 🐔 **Gallinas**: Ponen huevos y les gusta el trigo\n- 🐄 **Vacas**: Grandes y gentiles, les gusta el pasto\n- 🐷 **Cerditos**: Súper inteligentes y juguetones\n- 🐑 **Ovejas**: Esponjosas y tranquilas\n- 🐎 **Caballos**: Rápidos y majestuosos\n\n**¡Cada uno tiene personalidad propia!**"
+        }
+      ]
+    },
+    "reglas-divertidas": {
+      "id": "reglas-divertidas",
+      "title": "📋 Las Reglas Súper Importantes de Wetlands",
+      "icon": "📋",
+      "audience": "jugadores",
+      "wordCount": 340,
+      "sections": [
+        {
+          "id": "regla-dorada",
+          "title": "⭐ La Regla Dorada",
+          "level": 1,
+          "content": "**¡La regla más importante de todas!**\n\n🌟 **\"Trata a todos como te gustaría que te trataran\"** 🌟\n\nEsto significa:\n- 😊 **Sé súper amable** con otros jugadores\n- 🤝 **Ayuda** cuando alguien necesite ayuda\n- 💬 **Habla bonito** en el chat\n- 🎁 **Comparte** y sé generoso\n- 🌈 **Haz que todos se diviertan**\n\n**¡Si sigues esta regla, ya eres un jugador genial!**"
+        },
+        {
+          "id": "construcciones-respetuosas",
+          "title": "🏗️ Construir con Respeto",
+          "level": 1,
+          "content": "**Reglas para construir súper bien:**\n\n**✅ SÍ puedes:**\n- Construir casas increíbles donde quieras\n- Usar todos los bloques disponibles\n- Hacer proyectos súper grandes\n- Decorar con colores bonitos\n- Construir santuarios para animales\n\n**❌ NO hagas:**\n- Destruir construcciones de otros (¡están protegidas!)\n- Construir cosas feas o groseras\n- Hacer estructuras que den miedo\n- Bloquear caminos importantes"
+        },
+        {
+          "id": "chat-amigable",
+          "title": "💬 Chat Súper Amigable",
+          "level": 1,
+          "content": "**Reglas para hablar genial en el chat:**\n\n**✅ Palabras mágicas:**\n- \"Por favor\" y \"Gracias\"\n- \"¡Qué construcción tan genial!\"\n- \"¿Puedo ayudarte?\"\n- \"¡Bienvenido al servidor!\"\n\n**❌ No uses:**\n- Palabras groseras o feas\n- Mensajes que lastimen a otros\n- MAYÚSCULAS TODO EL TIEMPO (es como gritar)\n- Spam (repetir el mismo mensaje)\n\n**¡Recuerda: hay niños jugando!**"
+        },
+        {
+          "id": "animales-felices",
+          "title": "🐾 Mantener Animales Súper Felices",
+          "level": 1,
+          "content": "**Reglas especiales para nuestros amigos animales:**\n\n- 🏠 **Construye casas grandes** para ellos (no jaulas pequeñas)\n- 🥕 **Dales comida rica** (zanahorias, manzanas, trigo)\n- 💧 **Agua fresca** siempre disponible\n- 🌳 **Sombra** para los días soleados\n- 👀 **Obsérvalos con respeto** (no los molestes)\n- 📸 **Toma fotos bonitas** de ellos\n\n**¡Los animales felices hacen un servidor feliz!**"
+        }
+      ]
+    }
+  }
+}
