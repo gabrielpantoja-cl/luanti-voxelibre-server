@@ -1,4 +1,4 @@
-# 🗺️ UBICACIONES Y COORDENADAS DEL MUNDO VEGAN WETLANDS
+# 🗺️ UBICACIONES Y COORDENADAS DEL MUNDO WETLANDS VALDIVIA
 
 **Fecha de creación**: 10 de Septiembre, 2025  
 **Última actualización**: 16 de Septiembre, 2025  
@@ -99,7 +99,7 @@ Si te pierdes nuevamente, usa este comando en el servidor para encontrar áreas 
 
 ```bash
 # Conectarse al servidor
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/map.sqlite \"SELECT x, z, COUNT(*) as block_count FROM blocks GROUP BY x, z HAVING block_count > 1 ORDER BY block_count DESC LIMIT 20;\""
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Wetlands-Valdivia && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/map.sqlite \"SELECT x, z, COUNT(*) as block_count FROM blocks GROUP BY x, z HAVING block_count > 1 ORDER BY block_count DESC LIMIT 20;\""
 ```
 
 **Interpretar resultados:**
@@ -201,4 +201,4 @@ Si necesitas acceso completo de administrador:
 
 ---
 
-**⚠️ IMPORTANTE**: Mantén este documento actualizado cada vez que descubras nuevas ubicaciones importantes. ¡Nunca más te perderás en Vegan Wetlands! 🌱
+**⚠️ IMPORTANTE**: Mantén este documento actualizado cada vez que descubras nuevas ubicaciones importantes. ¡Nunca más te perderás en Wetlands Valdivia! 🌱

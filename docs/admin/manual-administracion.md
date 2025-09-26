@@ -1,6 +1,6 @@
 # 🛠️ Guía de Administración del Servidor
 
-Este documento es el manual de operaciones para los administradores de Vegan Wetlands. Contiene todos los procedimientos y comandos necesarios para la gestión, el mantenimiento y la solución de problemas del servidor.
+Este documento es el manual de operaciones para los administradores de Wetlands Valdivia. Contiene todos los procedimientos y comandos necesarios para la gestión, el mantenimiento y la solución de problemas del servidor.
 
 ---
 
@@ -12,7 +12,7 @@ La gestión de jugadores se realiza a través de una base de datos **SQLite**, n
 
 ### 1.1. Listar Todos los Jugadores Registrados
 
-Para obtener una lista completa de todos los usuarios registrados, ejecuta el siguiente comando en la terminal del VPS, desde la carpeta raíz del proyecto (`/home/gabriel/Vegan-Wetlands`):
+Para obtener una lista completa de todos los usuarios registrados, ejecuta el siguiente comando en la terminal del VPS, desde la carpeta raíz del proyecto (`/home/gabriel/Wetlands-Valdivia`):
 
 ```bash
 docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
@@ -84,28 +84,28 @@ Deberías ver una lista de backups, con el más reciente teniendo menos de 6 hor
 
 **Verificación de Contenedores:**
 ```bash
-docker ps | grep vegan-wetlands
+docker ps | grep wetlands-valdivia
 ```
-Ambos contenedores (`vegan-wetlands-server` y `vegan-wetlands-backup`) deben aparecer como "Up".
+Ambos contenedores (`wetlands-valdivia-server` y `wetlands-valdivia-backup`) deben aparecer como "Up".
 
 ### 2.2. Backup Manual de Emergencia
 
 Si necesitas crear un backup inmediato:
 ```bash
-docker exec -t vegan-wetlands-backup sh /scripts/backup.sh
+docker exec -t wetlands-valdivia-backup sh /scripts/backup.sh
 ```
 
 ### 2.3. Procedimiento de Restauración (Básico)
 
-1.  **Detén el servidor:** `docker stop vegan-wetlands-server vegan-wetlands-backup`
+1.  **Detén el servidor:** `docker stop wetlands-valdivia-server wetlands-valdivia-backup`
 2.  **Respalda el mundo actual:** `mv server/worlds server/worlds_DAÑADO_$(date +%Y%m%d)`
 3.  **Crea carpeta limpia:** `mkdir -p server/worlds`
 4.  **Restaurar backup más reciente:** 
     ```bash
-    LATEST_BACKUP=$(ls -t server/backups/vegan_wetlands_backup_*.tar.gz | head -1)
+    LATEST_BACKUP=$(ls -t server/backups/wetlands_valdivia_backup_*.tar.gz | head -1)
     tar -xzf "$LATEST_BACKUP" -C server/worlds/
     ```
-5.  **Reinicia servicios:** `docker start vegan-wetlands-server && docker start vegan-wetlands-backup`
+5.  **Reinicia servicios:** `docker start wetlands-valdivia-server && docker start wetlands-valdivia-backup`
 
 ### 2.4. Troubleshooting de Backups
 
@@ -113,10 +113,10 @@ docker exec -t vegan-wetlands-backup sh /scripts/backup.sh
 
 ```bash
 # Verificar logs del contenedor backup
-docker logs vegan-wetlands-backup --tail 20
+docker logs wetlands-valdivia-backup --tail 20
 
 # Test manual para verificar funcionamiento
-docker exec -t vegan-wetlands-backup sh /scripts/backup.sh
+docker exec -t wetlands-valdivia-backup sh /scripts/backup.sh
 ```
 
 **Si el contenedor backup falla constantemente:**

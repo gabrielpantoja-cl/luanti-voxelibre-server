@@ -1,6 +1,6 @@
 # 🔌 Conexión Básica al Servidor
 
-Guía paso a paso para conectarse al servidor Santuario Compasivo por primera vez.
+Guía paso a paso para conectarse al servidor Wetlands Valdivia por primera vez.
 
 ## 📥 Descargar e Instalar Luanti
 
@@ -132,4 +132,4 @@ Una vez conectado, puedes usar estos comandos en el chat:
 4. **Hacer amigos**: Ser amable con otros jugadores
 5. **Construir**: Crear refugios bonitos para animales
 
-¡Bienvenido a Santuario Compasivo! 🌱
+¡Bienvenido a Wetlands Valdivia! 🌱

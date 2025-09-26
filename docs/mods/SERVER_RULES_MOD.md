@@ -5,7 +5,7 @@
 - **Nombre**: `server_rules`
 - **Versión**: 1.0
 - **Autor**: gabo
-- **Propósito**: Sistema de reglas automático y comandos para el servidor Wetlands
+- **Propósito**: Sistema de reglas automático y comandos para el servidor Wetlands Valdivia
 - **Ubicación**: `server/mods/server_rules/`
 
 ## 🎯 Funcionalidades
@@ -38,7 +38,7 @@
 #### Para TODOS los Usuarios (joinplayer)
 Al conectarse cualquier jugador recibe:
 ```
-🌱 ¡Bienvenid@ a Wetlands, [nombre]!
+🌱 ¡Bienvenid@ a Wetlands Valdivia, [nombre]!
 
 📋 REGLAS BÁSICAS:
 1) 🚫 No molestar a otros jugadores
@@ -58,7 +58,7 @@ Al conectarse cualquier jugador recibe:
 #### Para Jugadores Nuevos (newplayer)
 Mensaje adicional después de 8 segundos:
 ```
-🌟 ¡Eres nuevo en Wetlands! 🌟
+🌟 ¡Eres nuevo en Wetlands Valdivia! 🌟
 Este es un servidor educativo y compasivo.
 Aquí aprendemos sobre respeto hacia los animales
 y disfrutamos construyendo sin violencia.
@@ -66,7 +66,7 @@ y disfrutamos construyendo sin violencia.
 🎯 Consejos para comenzar:
 • Explora y observa los animales con respeto
 • Construye refugios bonitos para ellos
-• Prueba alimentos veganos como tofu y seitan
+• Prueba alimentos plant-based como tofu y seitan
 • Haz amigos y construyan juntos
 ```
 
@@ -88,7 +88,7 @@ server/mods/server_rules/
 ```ini
 name = server_rules
 title = Reglas del Servidor
-description = Muestra las reglas del servidor Vegan Wetlands
+description = Muestra las reglas del servidor Wetlands Valdivia
 author = gabo
 version = 1.0
 depends =
@@ -170,7 +170,7 @@ docker compose logs luanti-server | grep -i "server_rules\|error"
 Editar el array `reglas` en `init.lua`:
 ```lua
 local reglas = {
-    "🌱 REGLAS DE WETLANDS 🌱",
+    "🌱 REGLAS DE WETLANDS VALDIVIA 🌱",
     "",
     "📝 REGLAS BÁSICAS (OBLIGATORIAS):",
     -- Agregar/modificar reglas aquí

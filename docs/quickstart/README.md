@@ -1,6 +1,6 @@
 # 🚀 Guías de Inicio Rápido
 
-Documentación para nuevos jugadores y primeras conexiones al servidor Santuario Compasivo.
+Documentación para nuevos jugadores y primeras conexiones al servidor Wetlands Valdivia.
 
 ## 📋 Contenido
 

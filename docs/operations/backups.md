@@ -1,4 +1,4 @@
-# 🌱 Sistema de Backups - Santuario Compasivo
+# 🌱 Sistema de Backups - Wetlands Valdivia
 
 ## Guía Completa de Backup y Recuperación
 
@@ -37,8 +37,8 @@ Esta documentación proporciona información exhaustiva sobre el sistema de back
 
 ### Componentes
 
-1. **Contenedor Principal**: `vegan-wetlands-server` (Luanti)
-2. **Contenedor Backup**: `vegan-wetlands-backup` (Alpine Linux)
+1. **Contenedor Principal**: `wetlands-valdivia-server` (Luanti)
+2. **Contenedor Backup**: `wetlands-valdivia-backup` (Alpine Linux)
 3. **Script de Backup**: `/scripts/backup.sh`
 4. **Almacenamiento**: Volume persistente `./server/backups`
 
@@ -48,7 +48,7 @@ Esta documentación proporciona información exhaustiva sobre el sistema de back
 # Contenedor de backup actual (método funcional)
 backup-cron:
   image: alpine:latest
-  container_name: vegan-wetlands-backup
+  container_name: wetlands-valdivia-backup
   restart: unless-stopped
   volumes:
     - ./server/worlds:/worlds:ro
@@ -144,46 +144,46 @@ backup-cron:
 ssh gabriel@<VPS_HOST_IP>
 
 # Navegar al proyecto
-cd /home/gabriel/Vegan-Wetlands
+cd /home/gabriel/Wetlands-Valdivia
 
 # Verificar backups existentes
 ls -lh server/backups/
 
 # Verificar contenedores funcionando
-docker ps | grep vegan-wetlands
+docker ps | grep wetlands-valdivia
 ```
 
 **Resultado Esperado**:
 - Al menos un backup con menos de 6 horas de antigüedad
-- Ambos contenedores (`vegan-wetlands-server` y `vegan-wetlands-backup`) en estado "Up"
+- Ambos contenedores (`wetlands-valdivia-server` y `wetlands-valdivia-backup`) en estado "Up"
 
 ### 2. Verificación Detallada (Salud del Sistema)
 
 ```bash
 # Verificar logs del contenedor backup
-docker logs vegan-wetlands-backup --tail 50
+docker logs wetlands-valdivia-backup --tail 50
 
 # Verificar logs del servidor Luanti
-docker logs vegan-wetlands-server --tail 50
+docker logs wetlands-valdivia-server --tail 50
 
 # Verificar conectividad del servidor
 ss -tulpn | grep :30000
 
 # Verificar salud del contenedor
-docker inspect vegan-wetlands-server | grep -A5 '"Health"'
+docker inspect wetlands-valdivia-server | grep -A5 '"Health"'
 ```
 
 ### 3. Test Manual de Backup
 
 ```bash
 # Ejecutar backup manual para verificar funcionamiento
-docker exec -t vegan-wetlands-backup sh /scripts/backup.sh
+docker exec -t wetlands-valdivia-backup sh /scripts/backup.sh
 
 # Verificar que se creó el nuevo backup
 ls -lht server/backups/ | head -3
 
 # Verificar integridad del backup
-tar -tzf server/backups/vegan_wetlands_backup_YYYYMMDD-HHMMSS.tar.gz | head -10
+tar -tzf server/backups/wetlands_valdivia_backup_YYYYMMDD-HHMMSS.tar.gz | head -10
 ```
 
 ---
@@ -217,9 +217,9 @@ tar -tzf server/backups/vegan_wetlands_backup_YYYYMMDD-HHMMSS.tar.gz | head -10
 
 **Comando de Solución Final:**
 ```bash
-docker run -d --name vegan-wetlands-backup \
+docker run -d --name wetlands-valdivia-backup \
   --restart unless-stopped \
-  --network vegan-wetlands_luanti-network \
+  --network wetlands-valdivia_luanti-network \
   -v ./server/worlds:/worlds:ro \
   -v ./server/backups:/backups \
   -v ./scripts:/scripts:ro \
@@ -262,11 +262,11 @@ docker run -d --name vegan-wetlands-backup \
 # Script: monitor-backups.sh
 # Uso: Ejecutar desde el directorio del proyecto
 
-echo "🌱 === MONITOR DE BACKUPS - SANTUARIO COMPASIVO ==="
+echo "🌱 === MONITOR DE BACKUPS - WETLANDS VALDIVIA ==="
 echo "Fecha: $(date)"
 
 # Verificar último backup
-LAST_BACKUP=$(ls -t server/backups/vegan_wetlands_backup_*.tar.gz 2>/dev/null | head -1)
+LAST_BACKUP=$(ls -t server/backups/wetlands_valdivia_backup_*.tar.gz 2>/dev/null | head -1)
 if [ -z "$LAST_BACKUP" ]; then
     echo "❌ ERROR: No se encontraron backups"
     exit 1
@@ -285,10 +285,10 @@ fi
 # Verificar contenedores
 echo ""
 echo "📊 Estado de contenedores:"
-docker ps --filter name=vegan-wetlands --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+docker ps --filter name=wetlands-valdivia --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 # Contar backups
-BACKUP_COUNT=$(ls server/backups/vegan_wetlands_backup_*.tar.gz 2>/dev/null | wc -l)
+BACKUP_COUNT=$(ls server/backups/wetlands_valdivia_backup_*.tar.gz 2>/dev/null | wc -l)
 echo ""
 echo "📦 Backups totales: $BACKUP_COUNT/10"
 
@@ -311,8 +311,8 @@ echo "🌱 === FIN DEL REPORTE ==="
 
 ```bash
 # 1. Detener servicios
-cd /home/gabriel/Vegan-Wetlands
-docker stop vegan-wetlands-server vegan-wetlands-backup
+cd /home/gabriel/Wetlands-Valdivia
+docker stop wetlands-valdivia-server wetlands-valdivia-backup
 
 # 2. Backup del estado actual (por seguridad)
 mv server/worlds server/worlds_CORRUPTED_$(date +%Y%m%d_%H%M%S)
@@ -321,19 +321,19 @@ mv server/worlds server/worlds_CORRUPTED_$(date +%Y%m%d_%H%M%S)
 mkdir -p server/worlds
 
 # 4. Restaurar desde backup
-BACKUP_FILE=$(ls -t server/backups/vegan_wetlands_backup_*.tar.gz | head -1)
+BACKUP_FILE=$(ls -t server/backups/wetlands_valdivia_backup_*.tar.gz | head -1)
 tar -xzf "$BACKUP_FILE" -C server/worlds/
 
 # 5. Verificar restauración
 ls -la server/worlds/
 
 # 6. Reiniciar servicios
-docker start vegan-wetlands-server
+docker start wetlands-valdivia-server
 sleep 10
-docker start vegan-wetlands-backup
+docker start wetlands-valdivia-backup
 
 # 7. Verificar funcionamiento
-docker ps | grep vegan-wetlands
+docker ps | grep wetlands-valdivia
 ss -tulpn | grep :30000
 ```
 
@@ -406,12 +406,12 @@ echo "🎭 SIMULACRO DE RESTAURACIÓN"
 echo "Este script simula una restauración SIN modificar el servidor real"
 
 # Crear ambiente de test temporal
-TEST_DIR="/tmp/vegan_wetlands_restore_test"
+TEST_DIR="/tmp/wetlands_valdivia_restore_test"
 rm -rf "$TEST_DIR"
 mkdir -p "$TEST_DIR"
 
 # Copiar backup más reciente
-LATEST_BACKUP=$(ls -t server/backups/vegan_wetlands_backup_*.tar.gz | head -1)
+LATEST_BACKUP=$(ls -t server/backups/wetlands_valdivia_backup_*.tar.gz | head -1)
 echo "📦 Usando backup: $(basename $LATEST_BACKUP)"
 
 # Extraer en ambiente de test
@@ -518,13 +518,13 @@ Para integrar con el sistema n8n existente en el VPS:
 **Para Administradores: Revisión Diaria Recomendada**
 
 ```bash
-# Ejecutar desde /home/gabriel/Vegan-Wetlands en el VPS
+# Ejecutar desde /home/gabriel/Wetlands-Valdivia en el VPS
 
 # ✅ 1. Verificar último backup (debe ser <6h)
 ls -lht server/backups/ | head -2
 
 # ✅ 2. Verificar contenedores activos
-docker ps | grep vegan-wetlands
+docker ps | grep wetlands-valdivia
 
 # ✅ 3. Verificar servidor accesible
 nc -u -z -w3 localhost 30000 && echo "✅ Puerto 30000 OK" || echo "❌ Puerto 30000 FAIL"
@@ -533,7 +533,7 @@ nc -u -z -w3 localhost 30000 && echo "✅ Puerto 30000 OK" || echo "❌ Puerto 3
 df -h . | tail -1
 
 # ✅ 5. Verificar logs recientes (sin errores)
-docker logs vegan-wetlands-backup --tail 10 --since="1h"
+docker logs wetlands-valdivia-backup --tail 10 --since="1h"
 ```
 
 **Frecuencia**: Diaria (recomendado)
@@ -547,8 +547,8 @@ docker logs vegan-wetlands-backup --tail 10 --since="1h"
 **En caso de problemas críticos:**
 
 1. **Problema de backup**: El mundo está SIEMPRE seguro mientras el servidor funcione
-2. **Backup manual**: Usar `docker exec -t vegan-wetlands-backup sh /scripts/backup.sh`
-3. **Servidor caído**: Usar `docker start vegan-wetlands-server`
+2. **Backup manual**: Usar `docker exec -t wetlands-valdivia-backup sh /scripts/backup.sh`
+3. **Servidor caído**: Usar `docker start wetlands-valdivia-server`
 4. **Documentación**: Revisar `CLAUDE.md` y `docs/2-guia-de-administracion.md`
 
 **⚠️ NUNCA hacer:**

@@ -1,4 +1,4 @@
-# Usuarios Registrados - Servidor Vegan Wetlands
+# Usuarios Registrados - Servidor Wetlands Valdivia
 
 ## Estado Actual (22-09-2025)
 

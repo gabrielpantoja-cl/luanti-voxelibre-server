@@ -1,6 +1,6 @@
 # 🔌 API Documentation
 
-Documentación para futuras implementaciones de APIs del servidor Santuario Compasivo.
+Documentación para futuras implementaciones de APIs del servidor Wetlands Valdivia.
 
 ## 🚧 Estado Actual
 
@@ -47,7 +47,7 @@ Documentación para futuras implementaciones de APIs del servidor Santuario Comp
 
 ```json
 {
-  "world_name": "Vegan Wetlands",
+  "world_name": "Wetlands Valdivia",
   "seed": "compassion2025",
   "spawn_point": [0, 15, 0],
   "world_size": "2.1 GB",

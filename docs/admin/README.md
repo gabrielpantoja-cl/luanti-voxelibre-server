@@ -1,6 +1,6 @@
 # 👨‍💼 Documentación de Administración
 
-Guías para administradores del servidor Vegan Wetlands sobre gestión de usuarios, seguridad y operaciones.
+Guías para administradores del servidor Wetlands Valdivia sobre gestión de usuarios, seguridad y operaciones.
 
 ## 📋 Contenido
 

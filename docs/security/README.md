@@ -1,4 +1,4 @@
-# 🛡️ DOCUMENTACIÓN DE SEGURIDAD - SANTUARIO COMPASIVO
+# 🛡️ DOCUMENTACIÓN DE SEGURIDAD - WETLANDS VALDIVIA
 
 **Servidor**: luanti.gabrielpantoja.cl:30000
 **Última Actualización**: 2025-09-22 (Post-Incidente HAKER)
