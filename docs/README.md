@@ -1,4 +1,4 @@
-# 📚 Documentación Santuario Compasivo
+# 📚 Documentación Wetlands Valdivia
 
 Documentación técnica completa del servidor Luanti educativo y compasivo para niños 7+ años.
 
@@ -71,7 +71,7 @@ Documentación histórica y archivos reorganizados
 - **Capacidad**: Hasta 20 jugadores
 
 ### Repositorio y Arquitectura
-- **Repo principal**: https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git
+- **Repo principal**: https://github.com/gabrielpantoja-cl/Wetlands-Valdivia.git
 - **Referencia técnica**: [CLAUDE.md](../CLAUDE.md) (archivo principal para Claude Code)
 - **Tecnologías**: Docker Compose + Luanti + VoxeLibre
 - **VPS**: DigitalOcean (<VPS_HOST_IP>)
@@ -137,7 +137,7 @@ ssh gabriel@<VPS_HOST_IP>
 - **Mundo**: VoxeLibre (MineClone2) v0.90.1
 
 ### Desarrollo Activo
-- **Mods personalizados**: 3 (education_blocks, server_rules, comida_compasiva integrado)
+- **Mods personalizados**: 3 (education_blocks, server_rules, alimentacion_consciente integrado)
 - **Configuraciones críticas**: Sistema nuclear anti-monstruos
 - **Landing page**: Moderna, responsiva, child-friendly
 - **CI/CD**: Automatizado con GitHub Actions
@@ -177,6 +177,6 @@ ssh gabriel@<VPS_HOST_IP>
 ---
 
 **📅 Última actualización**: 21 de Septiembre, 2025
-**👥 Mantenido por**: Equipo del Santuario Compasivo
+**👥 Mantenido por**: Equipo Wetlands Valdivia
 **📊 Versión**: 2.0 (Documentación Reorganizada y Optimizada)
-**🔗 Repositorio**: https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git
+**🔗 Repositorio**: https://github.com/gabrielpantoja-cl/Wetlands-Valdivia.git

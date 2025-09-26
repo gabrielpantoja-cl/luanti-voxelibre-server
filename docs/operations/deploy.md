@@ -1,6 +1,6 @@
 # 🚀 Guía de Despliegue e Infraestructura
 
-Este documento es la guía técnica para la infraestructura del servidor Santuario Compasivo. Cubre el despliegue, la configuración de Docker, el pipeline de CI/CD con GitHub Actions y la gestión del VPS.
+Este documento es la guía técnica para la infraestructura del servidor Wetlands Valdivia. Cubre el despliegue, la configuración de Docker, el pipeline de CI/CD con GitHub Actions y la gestión del VPS.
 
 ---
 
@@ -8,7 +8,7 @@ Este documento es la guía técnica para la infraestructura del servidor Santuar
 
 El proyecto se ejecuta en un **VPS de DigitalOcean** y está completamente **orquestado con Docker Compose**. Esto asegura un entorno de despliegue consistente y fácil de gestionar.
 
-*   **Repositorio Principal (`Vegan-Wetlands`):** Contiene todo el código del juego: mods, configuración de Luanti, landing page, etc.
+*   **Repositorio Principal (`Wetlands-Valdivia`):** Contiene todo el código del juego: mods, configuración de Luanti, landing page, etc.
 *   **VPS:** Ubuntu 24.04.3 LTS.
 *   **Orquestación:** Docker y Docker Compose.
 
@@ -29,7 +29,7 @@ La sección de volúmenes es crítica para la persistencia de datos y la carga d
 services:
   luanti-server:
     image: linuxserver/luanti:latest
-    container_name: vegan-wetlands-server
+    container_name: wetlands-valdivia-server
     restart: unless-stopped
     ports:
       - "30000:30000/udp"
@@ -93,7 +93,7 @@ La página de bienvenida (`luanti.gabrielpantoja.cl`) no es servida por el conte
 Si necesitaras recrear el servidor en un nuevo VPS, los pasos serían:
 
 1.  **Preparar el VPS:** Instalar Docker y Docker Compose.
-2.  **Clonar el Repositorio:** `git clone https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`
+2.  **Clonar el Repositorio:** `git clone https://github.com/gabrielpantoja-cl/Wetlands-Valdivia.git`
 3.  **Configurar el Juego Base (VoxeLibre):** Asegurarse de que el juego `mineclone2` esté presente en la carpeta `server/games/`.
 4.  **Configurar `luanti.conf`:** Revisar la configuración del servidor en `server/config/luanti.conf`.
 5.  **Iniciar por Primera Vez:** Ejecutar `docker-compose up -d`.

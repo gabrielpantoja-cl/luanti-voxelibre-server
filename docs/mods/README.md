@@ -1,6 +1,6 @@
-# Documentación de Mods - Wetlands Server
+# Documentación de Mods - Wetlands Valdivia
 
-Esta carpeta contiene la documentación completa de todos los mods personalizados del servidor Wetlands.
+Esta carpeta contiene la documentación completa de todos los mods personalizados del servidor Wetlands Valdivia.
 
 ## 📚 Índice de Documentación
 
@@ -15,7 +15,7 @@ Esta carpeta contiene la documentación completa de todos los mods personalizado
 |-----|-------------|---------------|---------|
 | **server_rules** | Sistema de reglas automático y comandos | [📋 SERVER_RULES_MOD.md](SERVER_RULES_MOD.md) | ✅ Operativo |
 | **education_blocks** | Bloques educativos interactivos | [📚 EDUCATION_BLOCKS_MOD.md](EDUCATION_BLOCKS_MOD.md) | ✅ Operativo |
-| **vegan_food** | Alimentos veganos del ContentDB | [Documentación Externa](https://content.luanti.org/packages/Daenvil/vegan_food/) | ✅ Operativo |
+| **vegan_food** | Alimentos plant-based del ContentDB | [Documentación Externa](https://content.luanti.org/packages/Daenvil/vegan_food/) | ✅ Operativo |
 | **back_to_spawn** | Teleportación a spawn personal | [Documentación Externa](https://content.luanti.org/packages/Alex5002/mcl_back_to_spawn/) | ✅ Operativo |
 
 #### 🔧 Comandos Disponibles
@@ -106,5 +106,5 @@ Cada mod debe tener su documentación que incluya:
 
 ---
 **Última actualización**: 2025-09-21
-**Responsable**: Equipo Wetlands
+**Responsable**: Equipo Wetlands Valdivia
 **Próxima revisión**: Al agregar nuevos mods

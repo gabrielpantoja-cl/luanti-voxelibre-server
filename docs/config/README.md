@@ -1,6 +1,6 @@
 # ⚙️ Configuraciones del Servidor
 
-Documentación sobre configuraciones específicas del servidor Luanti Vegan Wetlands.
+Documentación sobre configuraciones específicas del servidor Luanti Wetlands Valdivia.
 
 ## 📋 Contenido
 

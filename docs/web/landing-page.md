@@ -2,7 +2,7 @@
 
 ## Resumen de Mejoras Implementadas
 
-Este documento detalla las mejoras significativas realizadas en la landing page oficial del servidor Luanti Santuario Compasivo (`https://luanti.gabrielpantoja.cl`) durante septiembre de 2025.
+Este documento detalla las mejoras significativas realizadas en la landing page oficial del servidor Luanti Wetlands Valdivia (`https://luanti.gabrielpantoja.cl`) durante septiembre de 2025.
 
 ## 📋 Tareas Completadas
 
@@ -167,7 +167,7 @@ Para ver los cambios en desarrollo local:
 
 ```bash
 # Opción recomendada: Servidor HTTP con Python
-cd /home/gabriel/Documentos/Vegan-Wetlands/server/landing-page
+cd /home/gabriel/Documentos/Wetlands-Valdivia/server/landing-page
 python3 -m http.server 8080
 # Abrir http://localhost:8080
 
@@ -182,13 +182,13 @@ xdg-open index.html
 **Paso 1: Hacer cambios locales**
 ```bash
 # Editar archivos en tu máquina local
-cd /home/gabriel/Documentos/Vegan-Wetlands/server/landing-page/
+cd /home/gabriel/Documentos/Wetlands-Valdivia/server/landing-page/
 # Modificar index.html, CSS, JS o agregar imágenes
 ```
 
 **Paso 2: Commit y push al repositorio**
 ```bash
-cd /home/gabriel/Documentos/Vegan-Wetlands/
+cd /home/gabriel/Documentos/Wetlands-Valdivia/
 git add server/landing-page/
 git commit -m "Actualizar landing page: [descripción de cambios]"
 git push origin main
@@ -197,7 +197,7 @@ git push origin main
 **Paso 3: Actualizar en el VPS**
 ```bash
 # SSH al VPS y hacer pull
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && git pull origin main"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Wetlands-Valdivia && git pull origin main"
 ```
 
 **Paso 4: Reiniciar nginx (si es necesario)**
@@ -218,7 +218,7 @@ curl -I http://luanti.gabrielpantoja.cl
 ```yaml
 # En vps-do/docker-compose.yml
 volumes:
-  - /home/gabriel/Vegan-Wetlands/server/landing-page:/var/www/luanti-landing:ro
+  - /home/gabriel/Wetlands-Valdivia/server/landing-page:/var/www/luanti-landing:ro
 ```
 
 **Esto significa**:
