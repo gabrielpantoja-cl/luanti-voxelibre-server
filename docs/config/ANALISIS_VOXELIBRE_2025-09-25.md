@@ -4,7 +4,7 @@
 
 ## 1. Introducción
 
-Este documento detalla la arquitectura interna y el funcionamiento del juego base `Voxelibre` (anteriormente conocido como Mineclone 2), que sirve como fundamento para el servidor "Vegan Wetlands". El análisis se basa en la revisión del código fuente ubicado en `estudio-juego-basevoxelibre/`.
+Este documento detalla la arquitectura interna y el funcionamiento del juego base `Voxelibre` (anteriormente conocido como Mineclone 2), que sirve como fundamento para el servidor "Wetlands Valdivia". El análisis se basa en la revisión del código fuente ubicado en `estudio-juego-basevoxelibre/`.
 
 Voxelibre es un juego de tipo *sandbox* de supervivencia construido sobre el motor Luanti (un fork de Minetest). Su diseño es altamente modular y extensible, con toda la lógica del juego implementada a través de un sistema de **mods en Lua**.
 
