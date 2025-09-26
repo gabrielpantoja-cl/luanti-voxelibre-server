@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a compassionate, educational, and creative environment for children 7+ years old. The server features custom mods that promote animal care, compassionate education, and non-violent gameplay through animal sanctuaries.
+Wetlands is a **Luanti (formerly Minetest) game server** designed as a compassionate, educational, and creative environment for children 7+ years old. The server features custom mods that promote animal care, compassionate education, and non-violent gameplay through animal sanctuaries.
 
 **IMPORTANT**: This repository (`https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`) contains **ALL** Luanti-specific code, configuration, and deployment logic. It is completely independent from the VPS administrative repository (`vps-do.git`).
 
@@ -13,7 +13,7 @@ Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a com
 ### 🎮 This Repository (Vegan-Wetlands.git)
 **Responsibility**: Complete Luanti server implementation
 - Docker Compose configuration for Luanti
-- Custom mods (animal_sanctuary, vegan_food, education_blocks)
+- Custom mods (animal_sanctuary, education_blocks)
 - Server configuration files
 - World data and backups
 - **Landing page development** (HTML/CSS/JS for luanti.gabrielpantoja.cl)
@@ -132,7 +132,7 @@ docker-compose logs backup-cron
 - `docker-compose.yml`: Main container orchestration
 - `server/config/luanti.conf`: Server configuration (creative mode, compassionate-friendly settings)
 - `server/games/`: VoxeLibre (MineClone2) game files
-- `server/mods/`: Custom Lua mods (animal_sanctuary, vegan_food, education_blocks)
+- `server/mods/`: Custom Lua mods (animal_sanctuary, education_blocks)
 - `server/worlds/`: Persistent world data
 - `server/backups/`: Automated backup storage
 - `server/landing-page/`: Modern landing page (HTML/CSS/JS) for luanti.gabrielpantoja.cl
@@ -208,21 +208,6 @@ All Luanti-related development must happen in this repository (`Vegan-Wetlands.g
 - Auto-restart on container failure
 
 ## Third-Party Content Attribution
-
-### 🌱 Plant-Based Food Mod
-**Source**: [vegan_food mod by Daenvil](https://content.luanti.org/packages/Daenvil/vegan_food/)  
-**Version**: Latest from Luanti ContentDB  
-**License**: 
-- **Code**: GPL v3.0
-- **Textures**: CC BY-SA 4.0
-
-**Credits**:
-- **Developer**: [Daenvil](https://github.com/daenvil)
-- **Original textures**: Tofu and not-fish fillet by Daenvil
-- **Base textures**: Derived from VoxeLibre, based on Pixel Perfection resource pack for Minecraft 1.11 by XSSheep
-- **Special thanks**: [Mindful Minecraft community](https://veganminecraft.com)
-
-**Integration**: Provides professional plant-based food items (tofu, seitan, plant milk, syrup) with high-quality textures for the starter kit, replacing placeholder items that lacked proper textures.
 
 ### 🏠 Back to Spawn Mod
 **Source**: [mcl_back_to_spawn by Alex5002](https://content.luanti.org/packages/Alex5002/mcl_back_to_spawn/)  
@@ -522,7 +507,7 @@ docker-compose exec luanti-server ls -la /config/.minetest/games/
 
 ## 🌱 Landing Page System
 
-The landing page provides a modern, child-friendly web interface for Vegan Wetlands, accessible at `https://luanti.gabrielpantoja.cl`.
+The landing page provides a modern, child-friendly web interface for Wetlands, accessible at `https://luanti.gabrielpantoja.cl`.
 
 ### Architecture Overview
 
