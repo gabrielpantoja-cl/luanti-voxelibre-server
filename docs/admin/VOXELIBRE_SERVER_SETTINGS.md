@@ -74,6 +74,48 @@ Las Game Rules controlan aspectos fundamentales del comportamiento del servidor 
 - **Impacto**: Controla si los jugadores se lastiman al caer
 - **Recomendado para Wetlands**: ❌ `false` (servidor sin daño)
 
+#### `gamerule:fireDamage` (Default: true)
+- **Descripción**: Whether fire damage should be applied
+- **Español**: Si debe aplicarse daño por fuego
+- **Impacto**: Controla si los jugadores se lastiman por fuego y lava
+- **Recomendado para Wetlands**: ❌ `false` (servidor sin daño)
+
+#### `gamerule:freezeDamage` (Default: true)
+- **Descripción**: Whether freeze damage should be applied
+- **Español**: Si debe aplicarse daño por congelamiento
+- **Impacto**: Controla si los jugadores se lastiman por frío extremo
+- **Recomendado para Wetlands**: ❌ `false` (servidor sin daño)
+
+#### `gamerule:keepInventory` (Default: false)
+- **Descripción**: Whether the player should keep items and experience in their inventory after death
+- **Español**: Si el jugador debe mantener objetos y experiencia en su inventario después de morir
+- **Impacto**: Elimina la pérdida de objetos al morir
+- **Recomendado para Wetlands**: ✅ `true` (experiencia sin frustración para niños)
+
+#### `gamerule:maxCommandChainLength` (Default: 65536)
+- **Descripción**: Determines the maximum length of a chain of commands
+- **Español**: Determina la longitud máxima de una cadena de comandos
+- **Impacto**: Previene bucles infinitos en command blocks
+- **Recomendado para Wetlands**: ✅ `65536` (valor por defecto seguro)
+
+#### `gamerule:maxEntityCramming` (Default: 24)
+- **Descripción**: The maximum number of pushable entities a mob or player can push
+- **Español**: El número máximo de entidades empujables que un mob o jugador puede empujar
+- **Impacto**: Previene acumulación excesiva de entidades en un área
+- **Recomendado para Wetlands**: ✅ `24` (previene lag y problemas de rendimiento)
+
+#### `gamerule:mobGriefing` (Default: true)
+- **Descripción**: Whether mobs should be able to change blocks and pick up items
+- **Español**: Si los mobs deben poder cambiar bloques y recoger objetos
+- **Impacto**: Controla si mobs pueden destruir cultivos, mover bloques, etc.
+- **Recomendado para Wetlands**: ❌ `false` (protección de construcciones y cultivos)
+
+#### `gamerule:naturalRegeneration` (Default: true)
+- **Descripción**: Whether the player can regenerate health naturally if their hunger is at least 18 (×9) and they are not starving
+- **Español**: Si el jugador puede regenerar salud naturalmente si su hambre es al menos 18 y no está muriendo de hambre
+- **Impacto**: Controla regeneración automática de salud
+- **Recomendado para Wetlands**: ✅ `true` (regeneración natural mantiene la experiencia fluida)
+
 ## Configuración Recomendada para Wetlands
 
 ### Filosofía del Servidor
@@ -94,6 +136,13 @@ gamerule:doVinesSpread = true         # Crecimiento natural de plantas
 gamerule:doWeatherCycle = true        # Experiencia climática natural
 gamerule:drowningDamage = false       # Sin daño por ahogamiento
 gamerule:fallDamage = false           # Sin daño por caída
+gamerule:fireDamage = false           # Sin daño por fuego
+gamerule:freezeDamage = false         # Sin daño por congelamiento
+gamerule:keepInventory = true         # Sin pérdida de objetos
+gamerule:maxCommandChainLength = 65536 # Prevenir bucles infinitos
+gamerule:maxEntityCramming = 24       # Optimización de rendimiento
+gamerule:mobGriefing = false          # Protección de construcciones
+gamerule:naturalRegeneration = true   # Regeneración natural de salud
 ```
 
 ## Aplicación de Cambios
