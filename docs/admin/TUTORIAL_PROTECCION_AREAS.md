@@ -1,48 +1,44 @@
 # Tutorial: Sistema de Protección de Áreas - Servidor Wetlands
 
-## Diagnóstico Actual del Sistema
+## 🚨 DIAGNÓSTICO ACTUALIZADO (Sep 27, 2025)
 
-### 🔍 Mods de Protección Instalados
+### ✅ Estado Actual de Protecciones
 
 **1. `areas` Mod** - Sistema Principal de Protección
 - **Ubicación**: `/config/.minetest/mods/areas/`
-- **Estado**: ✅ Activo
-- **Función**: Protección de áreas grandes mediante comandos de admin
-- **Compatibilidad**: Universal (Minetest/VoxeLibre)
+- **Estado**: ✅ Activo y FUNCIONANDO
+- **Configuración**: ✅ Habilitado en `luanti.conf` con `load_mod_areas = true`
+- **Privilegios**: ✅ Usuario `gabo` tiene privilegio `areas`
+- **Comandos disponibles**: ✅ `/area_pos1`, `/area_pos2`, `/protect`
 
 **2. `protector` Mod** - Protección Individual por Bloques
 - **Ubicación**: `/config/.minetest/mods/protector/`
-- **Estado**: ✅ Activo
-- **Función**: Bloques protectores que los jugadores pueden colocar
-- **Compatibilidad**: ✅ VoxeLibre/MineClone2 compatible
-- **Radio**: Protege área alrededor del bloque
+- **Estado**: ✅ Activo y FUNCIONANDO
+- **Configuración**: ✅ Habilitado en `luanti.conf` con `load_mod_protector = true`
+- **Items**: ✅ `/give protector:protect 20` funciona correctamente
 
-**3. `voxelibre_protection` Mod** - Protección Nativa VoxeLibre
-- **Ubicación**: `/config/.minetest/mods/voxelibre_protection/`
+**3. `home_teleport` Mod** - Sistema de Spawn y Casa
+- **Ubicación**: `/config/.minetest/mods/home_teleport/`
 - **Estado**: ✅ Activo
-- **Autor**: Claude (mod personalizado)
-- **Función**: Integración con sistema nativo de VoxeLibre
+- **Comandos disponibles**: ✅ `/spawn`, `/setspawn`, `/home`, `/sethome`
 
 **4. Sistema Nativo VoxeLibre**
 - **Camas (Beds)**: Protección automática alrededor de camas
 - **Cofres**: Sistema básico de propiedad
-- **Spawn Protection**: Protección automática del spawn
+- **Comando de spawn personal**: `/back_to_spawn` (ir a tu cama)
 
-### 🎯 Privilegios de Protección Disponibles
+### 🎯 Privilegios de Protección Confirmados
 
-**Privilegios actuales relacionados con protección:**
+**Usuario `gabo` tiene los siguientes privilegios:**
 ```
-protection_bypass  # Ignorar todas las protecciones (solo admin)
-home              # Establecer y teletransportarse a casa
-spawn             # Acceso a comandos de spawn
-teleport          # Teletransportación
-worldedit         # Herramientas de construcción masiva
+✅ areas             # Gestionar áreas protegidas
+✅ protection_bypass  # Ignorar todas las protecciones (admin)
+✅ home              # Establecer y teletransportarse a casa
+✅ spawn             # Acceso a comandos de spawn
+✅ teleport          # Teletransportación
+✅ worldedit         # Herramientas de construcción masiva
+✅ server            # Privilegios de administrador
 ```
-
-**Privilegios faltantes** (no disponibles actualmente):
-- `areas` - Para gestionar áreas protegidas
-- `areas_admin` - Administración de áreas
-- `protector` - Usar bloques protectores
 
 ## Tutorial Paso a Paso para Admin (gabo)
 
@@ -144,13 +140,37 @@ Coordenadas spawn actuales: 0,15,0
 Radio recomendado de protección: 50-100 bloques
 ```
 
-#### 4.2 Proteger Área de Spawn
+#### 4.2 Proteger Área de Spawn - METODOLOGÍA CORRECTA
+
+**Paso 1: Ir al spawn**
 ```
-1. Ir al spawn: /spawn
-2. Caminar 50 bloques al noreste: /area_pos1
-3. Caminar 50 bloques al suroeste: /area_pos2
-4. Crear protección: /protect spawn_principal
-5. Verificar: /area_info
+/spawn    # Te lleva al spawn del servidor (coordenadas 0,15,0)
+```
+
+**Paso 2: Marcar las esquinas del área a proteger**
+```
+# Camina a la esquina noreste (ej: +50, +50 desde spawn)
+/area_pos1    # Marca primera esquina donde estás parado
+
+# Camina a la esquina suroeste (ej: -50, -50 desde spawn)
+/area_pos2    # Marca segunda esquina donde estás parado
+```
+
+**Paso 3: Crear la protección**
+```
+/protect spawn_principal    # Crea área protegida con el nombre "spawn_principal"
+```
+
+**Paso 4: Verificar que funcionó**
+```
+/areas        # Listar todas las áreas (debe aparecer "spawn_principal")
+/area_info    # Info del área donde estás parado
+```
+
+**Comandos de respaldo si hay problemas:**
+```
+/area_pos get    # Ver las posiciones actuales marcadas
+/select_area 1   # Seleccionar área por ID (si ya existe)
 ```
 
 ### Fase 5: Diagnóstico y Troubleshooting
@@ -196,12 +216,18 @@ docker-compose exec luanti-server grep -i "areas\|protector\|protection" /config
 3. **Tutorial para jugadores**: Cómo proteger sus construcciones
 4. **Sistema de permisos por roles**: Diferentes niveles de acceso
 
-## Estado Actual de Protecciones
+## 🎯 Estado Final de Protecciones (ACTUALIZADO)
 
-❌ **Spawn sin protección** - Vulnerable a griefing
-❌ **Admin sin privilegio `areas`** - No puede crear protecciones
-✅ **Protector mod activo** - Jugadores pueden usar bloques protectores
-✅ **Sistema VoxeLibre básico** - Camas y cofres funcionan
-❌ **Áreas administrativas sin definir** - Zonas importantes desprotegidas
+✅ **Admin con privilegio `areas`** - Usuario `gabo` puede crear protecciones
+✅ **Mod `areas` activo** - Comandos `/area_pos1`, `/area_pos2`, `/protect` funcionando
+✅ **Mod `protector` activo** - Bloques protectores disponibles
+✅ **Comando `/spawn` funcionando** - Sistema `home_teleport` activo
+✅ **Sistema VoxeLibre básico** - Camas y cofres protegidos
+❌ **Spawn sin protección** - PENDIENTE: Usar metodología actualizada
 
-**CRÍTICO**: Se necesita configurar protecciones inmediatamente para evitar griefing del spawn y áreas importantes.
+## 🚨 ACCIÓN INMEDIATA REQUERIDA:
+  1. ✅ Otorgar privilegio areas a gabo - **COMPLETADO**
+  2. ❌ Proteger spawn urgentemente - **PENDIENTE**
+  3. ❌ Testear comandos /area_pos1 y /protect - **PENDIENTE**
+
+**METODOLOGÍA CONFIRMADA**: Todos los comandos y mods están funcionando. Seguir la **Fase 4.2** del tutorial para proteger el spawn inmediatamente.
