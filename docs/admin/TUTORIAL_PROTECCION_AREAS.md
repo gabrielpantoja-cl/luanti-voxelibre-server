@@ -1,28 +1,34 @@
 # Tutorial: Sistema de Protección de Áreas - Servidor Wetlands
 
-## 🚨 DIAGNÓSTICO ACTUALIZADO (Sep 27, 2025)
+## 🚨 DIAGNÓSTICO COMPLETADO (Sep 27, 2025)
 
 ### ✅ Estado Actual de Protecciones
 
-**1. `areas` Mod** - Sistema Principal de Protección
-- **Ubicación**: `/config/.minetest/mods/areas/`
+**1. `voxelibre_protection` Mod** - Sistema Principal de Protección VoxeLibre
+- **Ubicación**: `/config/.minetest/mods/voxelibre_protection/`
 - **Estado**: ✅ Activo y FUNCIONANDO
-- **Configuración**: ✅ Habilitado en `luanti.conf` con `load_mod_areas = true`
-- **Privilegios**: ✅ Usuario `gabo` tiene privilegio `areas`
-- **Comandos disponibles**: ✅ `/area_pos1`, `/area_pos2`, `/protect`
+- **Configuración**: ✅ Habilitado en `luanti.conf` con `load_mod_voxelibre_protection = true`
+- **Privilegios**: ✅ Usuario `gabo` tiene privilegio `server`
+- **Comandos disponibles**: ✅ `/pos1`, `/pos2`, `/protect_area`, `/protect_here`
 
-**2. `protector` Mod** - Protección Individual por Bloques
+**2. `areas` Mod** - ❌ NO COMPATIBLE con VoxeLibre
+- **Ubicación**: `/config/.minetest/mods/areas/`
+- **Estado**: ❌ INACTIVO (incompatible con VoxeLibre)
+- **Problema**: Diseñado para Minetest vanilla, no para VoxeLibre
+- **Comandos NO funcionan**: ❌ `/area_pos1`, `/area_pos2`, `/protect`
+
+**3. `protector` Mod** - Protección Individual por Bloques
 - **Ubicación**: `/config/.minetest/mods/protector/`
 - **Estado**: ✅ Activo y FUNCIONANDO
 - **Configuración**: ✅ Habilitado en `luanti.conf` con `load_mod_protector = true`
 - **Items**: ✅ `/give protector:protect 20` funciona correctamente
 
-**3. `home_teleport` Mod** - Sistema de Spawn y Casa
+**4. `home_teleport` Mod** - Sistema de Spawn y Casa
 - **Ubicación**: `/config/.minetest/mods/home_teleport/`
 - **Estado**: ✅ Activo
 - **Comandos disponibles**: ✅ `/spawn`, `/setspawn`, `/home`, `/sethome`
 
-**4. Sistema Nativo VoxeLibre**
+**5. Sistema Nativo VoxeLibre**
 - **Camas (Beds)**: Protección automática alrededor de camas
 - **Cofres**: Sistema básico de propiedad
 - **Comando de spawn personal**: `/back_to_spawn` (ir a tu cama)
@@ -31,13 +37,12 @@
 
 **Usuario `gabo` tiene los siguientes privilegios:**
 ```
-✅ areas             # Gestionar áreas protegidas
+✅ server            # Privilegios de administrador (incluye protección)
 ✅ protection_bypass  # Ignorar todas las protecciones (admin)
 ✅ home              # Establecer y teletransportarse a casa
 ✅ spawn             # Acceso a comandos de spawn
 ✅ teleport          # Teletransportación
 ✅ worldedit         # Herramientas de construcción masiva
-✅ server            # Privilegios de administrador
 ```
 
 ## Tutorial Paso a Paso para Admin (gabo)
@@ -95,41 +100,40 @@ VoxeLibre incluye:
 /protector_list     # Listar tus protectores
 ```
 
-### Fase 3: Protección Avanzada con Mod `areas` (Solo Admin)
+### Fase 3: Protección Avanzada con Mod `voxelibre_protection` (Solo Admin)
 
-#### 3.1 Verificar Instalación de Areas
+#### 3.1 Verificar Instalación de VoxeLibre Protection
 ```bash
 # En el servidor
-docker-compose exec luanti-server ls /config/.minetest/mods/areas/
+docker-compose exec luanti-server ls /config/.minetest/mods/voxelibre_protection/
 ```
 
-#### 3.2 Comandos Básicos de Areas (Requiere privilegio `areas`)
+#### 3.2 Comandos VoxeLibre Protection (Requiere privilegio `server`)
 
-**Seleccionar Área:**
+**Seleccionar Área Manualmente:**
 ```
-/area_pos1    # Marca esquina 1 (donde estás parado)
-/area_pos2    # Marca esquina 2 (donde estás parado)
+/pos1    # Marca esquina 1 (donde estás parado)
+/pos2    # Marca esquina 2 (donde estás parado)
 ```
 
 **Crear Área Protegida:**
 ```
-/protect <nombre_area>           # Crear área con nombre
-/protect spawn_area             # Ejemplo: proteger spawn
-/protect casa_principal         # Ejemplo: proteger casa
+/protect_area <nombre_area>        # Crear área entre pos1 y pos2
+/protect_area spawn_principal      # Ejemplo: proteger spawn
+/protect_area casa_gabo           # Ejemplo: proteger casa
+```
+
+**Protección Rápida (RECOMENDADO):**
+```
+/protect_here <radio> <nombre>     # Proteger área alrededor del jugador
+/protect_here 50 spawn_principal   # Proteger 50 bloques alrededor del spawn
+/protect_here 20 casa_entrada     # Proteger 20 bloques alrededor
 ```
 
 **Gestionar Áreas:**
 ```
-/areas                          # Listar todas las áreas
-/area_info                      # Info del área donde estás
-/unprotect <id_area>           # Eliminar protección
-/area_open <id_area>           # Hacer área pública
-```
-
-**Dar Permisos:**
-```
-/area_owner <id_area> <usuario>     # Transferir propiedad
-/area_add_owner <id_area> <usuario>  # Agregar co-propietario
+/list_areas                        # Listar todas las áreas protegidas
+/unprotect_area <nombre_area>      # Eliminar protección por nombre
 ```
 
 ### Fase 4: Protección de Spawn (Crítico)
@@ -140,37 +144,44 @@ Coordenadas spawn actuales: 0,15,0
 Radio recomendado de protección: 50-100 bloques
 ```
 
-#### 4.2 Proteger Área de Spawn - METODOLOGÍA CORRECTA
+#### 4.2 Proteger Área de Spawn - METODOLOGÍA VOXELIBRE
+
+**🎯 MÉTODO RÁPIDO (RECOMENDADO):**
 
 **Paso 1: Ir al spawn**
 ```
 /spawn    # Te lleva al spawn del servidor (coordenadas 0,15,0)
 ```
 
-**Paso 2: Marcar las esquinas del área a proteger**
+**Paso 2: Protección instantánea**
 ```
-# Camina a la esquina noreste (ej: +50, +50 desde spawn)
-/area_pos1    # Marca primera esquina donde estás parado
-
-# Camina a la esquina suroeste (ej: -50, -50 desde spawn)
-/area_pos2    # Marca segunda esquina donde estás parado
+/protect_here 50 spawn_principal    # Protege 50 bloques alrededor del spawn
 ```
 
-**Paso 3: Crear la protección**
+**Paso 3: Verificar que funcionó**
 ```
-/protect spawn_principal    # Crea área protegida con el nombre "spawn_principal"
-```
-
-**Paso 4: Verificar que funcionó**
-```
-/areas        # Listar todas las áreas (debe aparecer "spawn_principal")
-/area_info    # Info del área donde estás parado
+/list_areas    # Debe aparecer "spawn_principal" en la lista
 ```
 
-**Comandos de respaldo si hay problemas:**
+**🔧 MÉTODO MANUAL (Alternativo):**
+
+**Paso 1: Ir al spawn y marcar esquinas**
 ```
-/area_pos get    # Ver las posiciones actuales marcadas
-/select_area 1   # Seleccionar área por ID (si ya existe)
+/spawn                # Ir al spawn (0,15,0)
+# Caminar a (-50, Y, -50) desde spawn
+/pos1                 # Marcar esquina 1
+# Caminar a (+50, Y, +50) desde spawn
+/pos2                 # Marcar esquina 2
+```
+
+**Paso 2: Crear la protección**
+```
+/protect_area spawn_principal    # Crear área entre pos1 y pos2
+```
+
+**Paso 3: Verificar**
+```
+/list_areas           # Verificar que aparece "spawn_principal"
 ```
 
 ### Fase 5: Diagnóstico y Troubleshooting
@@ -184,19 +195,24 @@ docker-compose exec luanti-server grep -i "areas\|protector\|protection" /config
 #### 5.2 Comandos de Diagnóstico en Juego
 ```
 /mods                    # Ver todos los mods cargados
-/help areas             # Ver comandos disponibles de areas
+/help pos1              # Ver comandos disponibles de voxelibre_protection
+/help protect_area      # Ver comandos de protección de áreas
 /help protector         # Ver comandos disponibles de protector
 ```
 
 #### 5.3 Problemas Comunes
 
 **Error: "Unknown command 'protect'"**
-- Causa: Mod `areas` no está cargado o falta privilegio `areas`
-- Solución: Verificar configuración de mods
+- Causa: Intentando usar comandos del mod `areas` incompatible
+- Solución: Usar comandos VoxeLibre: `/protect_area` o `/protect_here`
+
+**Error: "Unknown command 'area_pos1'"**
+- Causa: Mod `areas` no compatible con VoxeLibre
+- Solución: Usar comandos VoxeLibre: `/pos1` y `/pos2`
 
 **Error: "Permission denied"**
 - Causa: Usuario no tiene privilegios suficientes
-- Solución: Otorgar privilegio `areas` al admin
+- Solución: Otorgar privilegio `server` al admin
 
 **Bloques se pueden romper en área protegida**
 - Causa: Usuario tiene `protection_bypass`
@@ -205,9 +221,9 @@ docker-compose exec luanti-server grep -i "areas\|protector\|protection" /config
 ## Próximos Pasos Recomendados
 
 ### Immediate Actions Needed:
-1. **Verificar si mod `areas` está funcionando**: Probar comandos `/area_pos1`
-2. **Otorgar privilegio `areas` a gabo**: Para usar comandos de administración
-3. **Proteger spawn inmediatamente**: Área crítica sin protección actual
+1. **✅ COMPLETADO: Mod VoxeLibre Protection funcionando**: Comandos `/pos1`, `/protect_area` activos
+2. **✅ COMPLETADO: Usuario gabo tiene privilegios**: Privilegio `server` otorgado
+3. **🎯 ACCIÓN INMEDIATA: Proteger spawn**: Usar `/protect_here 50 spawn_principal`
 4. **Testear protector blocks**: Verificar que funcionen en VoxeLibre
 
 ### Future Enhancements:
@@ -218,16 +234,21 @@ docker-compose exec luanti-server grep -i "areas\|protector\|protection" /config
 
 ## 🎯 Estado Final de Protecciones (ACTUALIZADO)
 
-✅ **Admin con privilegio `areas`** - Usuario `gabo` puede crear protecciones
-✅ **Mod `areas` activo** - Comandos `/area_pos1`, `/area_pos2`, `/protect` funcionando
+✅ **Admin con privilegio `server`** - Usuario `gabo` puede crear protecciones
+✅ **Mod `voxelibre_protection` activo** - Comandos `/pos1`, `/pos2`, `/protect_area`, `/protect_here` funcionando
 ✅ **Mod `protector` activo** - Bloques protectores disponibles
 ✅ **Comando `/spawn` funcionando** - Sistema `home_teleport` activo
 ✅ **Sistema VoxeLibre básico** - Camas y cofres protegidos
-❌ **Spawn sin protección** - PENDIENTE: Usar metodología actualizada
+❌ **Spawn sin protección** - PENDIENTE: Usar `/protect_here 50 spawn_principal`
+❌ **Mod `areas` incompatible** - No funciona con VoxeLibre
 
 ## 🚨 ACCIÓN INMEDIATA REQUERIDA:
-  1. ✅ Otorgar privilegio areas a gabo - **COMPLETADO**
-  2. ❌ Proteger spawn urgentemente - **PENDIENTE**
-  3. ❌ Testear comandos /area_pos1 y /protect - **PENDIENTE**
+  1. ✅ Otorgar privilegios a gabo - **COMPLETADO**
+  2. ✅ Identificar sistema de protección correcto - **COMPLETADO** (VoxeLibre Protection)
+  3. 🎯 **Proteger spawn AHORA** - **Usar: `/protect_here 50 spawn_principal`**
 
-**METODOLOGÍA CONFIRMADA**: Todos los comandos y mods están funcionando. Seguir la **Fase 4.2** del tutorial para proteger el spawn inmediatamente.
+**COMANDOS CORRECTOS PARA VOXELIBRE:**
+- `/pos1` y `/pos2` (NO `/area_pos1`)
+- `/protect_area <nombre>` (NO `/protect`)
+- `/protect_here <radio> <nombre>` (RECOMENDADO para spawn)
+- `/list_areas` (NO `/areas`)
