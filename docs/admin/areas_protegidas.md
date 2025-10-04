@@ -26,16 +26,63 @@
 
 ### Áreas Actualmente Protegidas
 
-**Total de áreas protegidas:** 0
+**Total de áreas protegidas:** 5 áreas
+**Sistema utilizado:** VoxeLibre Protection Mod
+**Total de bloques protegidos:** ~522,589 bloques
 
-**Estado:** ❌ No hay áreas protegidas todavía
+**Estado:** ✅ Sistema activo con áreas protegidas
 
-**Motivo:** Los privilegios se acaban de otorgar. Los usuarios aún no han creado áreas protegidas.
+### Listado Completo de Áreas
 
-**Próximos pasos:**
-1. Informar a los usuarios sobre los nuevos comandos disponibles
-2. Crear tutorial en el juego con `/ayuda_proteccion`
-3. Proteger áreas críticas como el spawn
+#### 1. **spawn_principal** 🏠
+- **ID:** spawn_principal
+- **Propietario:** gabo
+- **Coordenadas:** (-9, 5, -9) a (11, 45, 11)
+- **Tamaño:** 21 x 41 x 21 bloques (18,081 bloques totales)
+- **Fecha de creación:** 2025-10-02 18:13:13 UTC
+- **Miembros adicionales:** Ninguno
+- **Descripción:** Área de spawn principal del servidor
+- **Tipo:** Área pública crítica
+
+#### 2. **cama_pepelomo1** 🛏️
+- **ID:** cama_pepelomo1
+- **Propietario:** gabo
+- **Coordenadas:** (85, 25, -128) a (185, 65, -28)
+- **Tamaño:** 101 x 41 x 101 bloques (418,441 bloques totales)
+- **Fecha de creación:** 2025-09-28 12:01:38 UTC
+- **Miembros adicionales:** pepelomo (co-propietario)
+- **Descripción:** Área residencial de pepelomo
+- **Tipo:** Área privada compartida
+
+#### 3. **piscina_comun1** 🏊
+- **ID:** piscina_comun1
+- **Propietario:** gabo
+- **Coordenadas:** (4, -1, -84) a (34, 39, -54)
+- **Tamaño:** 31 x 41 x 31 bloques (39,421 bloques totales)
+- **Fecha de creación:** 2025-09-30 19:40:52 UTC
+- **Miembros adicionales:** Ninguno
+- **Descripción:** Piscina comunitaria
+- **Tipo:** Área recreativa comunitaria
+
+#### 4. **edificio_oro_1** 🏛️
+- **ID:** edificio_oro_1
+- **Propietario:** gabo
+- **Coordenadas:** (221, 23, -136) a (235, 63, -122)
+- **Tamaño:** 15 x 41 x 15 bloques (9,225 bloques totales)
+- **Fecha de creación:** 2025-10-03 19:35:53 UTC
+- **Miembros adicionales:** Ninguno
+- **Descripción:** Edificio de oro decorativo
+- **Tipo:** Estructura especial
+
+#### 5. **casa_lulu1** 🏡
+- **ID:** casa_lulu1
+- **Propietario:** gabo
+- **Coordenadas:** (186, 8, -159) a (216, 48, -129)
+- **Tamaño:** 31 x 41 x 31 bloques (39,421 bloques totales)
+- **Fecha de creación:** 2025-10-03 20:48:01 UTC
+- **Miembros adicionales:** Ninguno
+- **Descripción:** Casa de lulu
+- **Tipo:** Área residencial
 
 ---
 
@@ -227,19 +274,18 @@ Esto protegerá un área de 20 bloques de radio alrededor de donde estás parado
 
 ---
 
-## 🚨 Áreas Críticas que Requieren Protección
+## 🚨 Áreas Críticas - Estado de Protección
 
 ### Prioridad ALTA
 
-#### 1. Spawn Principal
+#### 1. Spawn Principal ✅
 - **Ubicación:** (0, 15, 0)
-- **Radio recomendado:** 50-100 bloques
-- **Estado:** ❌ SIN PROTEGER
-- **Comando sugerido (admin):**
-  ```bash
-  /spawn
-  /protect_here 50 spawn_principal
-  ```
+- **Área protegida:** spawn_principal
+- **Coordenadas protegidas:** (-9, 5, -9) a (11, 45, 11)
+- **Tamaño:** 21x41x21 bloques
+- **Estado:** ✅ PROTEGIDO desde 2025-10-02
+- **Propietario:** gabo
+- **Cobertura:** Radio de ~10 bloques desde el spawn
 
 #### 2. Estructuras Comunitarias
 - **Edificios públicos:** Tutorial hall, marketplace
@@ -266,22 +312,28 @@ Esto protegerá un área de 20 bloques de radio alrededor de donde estás parado
 
 ### Estadísticas Actuales (2025-10-03)
 
-**Protecciones por usuario:**
-- gabo: 0 áreas
-- pepelomo: 0 áreas
+**Protecciones por propietario:**
+- gabo: 5 áreas (propietario principal de todas)
+- pepelomo: 0 áreas como propietario (co-propietario en 1 área: cama_pepelomo1)
 - veight: 0 áreas
 - gaelsin: 0 áreas
 - Gapi: 0 áreas
 - pepelomoomomomo: 0 áreas
-- lulu: 0 áreas
+- lulu: 0 áreas (tiene casa_lulu1 protegida por gabo)
 - lulululuo: 0 áreas
 - jutaro2010: 0 áreas
 - jutaro: 0 áreas
 - lulululuo0000: 0 áreas
 
-**Total de bloques protegidos:** 0
-**Áreas públicas (abiertas):** 0
-**Áreas privadas (cerradas):** 0
+**Estadísticas generales:**
+- **Total de bloques protegidos:** ~522,589 bloques
+- **Área más grande:** cama_pepelomo1 (418,441 bloques)
+- **Área más pequeña:** edificio_oro_1 (9,225 bloques)
+- **Área más antigua:** cama_pepelomo1 (2025-09-28)
+- **Área más reciente:** casa_lulu1 (2025-10-03)
+- **Áreas con co-propietarios:** 1 (cama_pepelomo1)
+- **Áreas públicas (abiertas):** 0
+- **Áreas privadas (cerradas):** 5
 
 ### Comandos de Monitoreo (Admin)
 
@@ -352,12 +404,10 @@ docker compose exec luanti-server ls -la /config/.minetest/mods/ | grep -E "area
    - Todos los usuarios tienen `areas` y `areas_high_limit`
    - Configuración por defecto actualizada en `luanti.conf`
 
-2. **🎯 URGENTE: Proteger spawn**
-   ```bash
-   # Admin debe ejecutar:
-   /spawn
-   /protect_here 50 spawn_principal
-   ```
+2. **✅ COMPLETADO: Proteger spawn**
+   - Spawn principal protegido desde 2025-10-02
+   - Área: spawn_principal (21x41x21 bloques)
+   - Cobertura: (-9,5,-9) a (11,45,11)
 
 3. **📢 COMUNICAR a los jugadores**
    - Anunciar nuevos comandos disponibles
@@ -461,7 +511,8 @@ Pregunta en el chat o contacta a un administrador con `/msg gabo <mensaje>`
 ---
 
 **Documento generado automáticamente**
-**Fuente de datos:** Sistema de protección VoxeLibre + Areas Mod
+**Fuente de datos:** Base de datos SQLite (`mod_storage.sqlite`) - VoxeLibre Protection Mod
 **Servidor:** luanti.gabrielpantoja.cl:30000
 **Estado:** ✅ SISTEMA ACTIVO - Todos los usuarios habilitados
-**Áreas protegidas actuales:** 0 (sistema recién implementado)
+**Áreas protegidas actuales:** 5 áreas activas (~522,589 bloques protegidos)
+**Última consulta de datos:** 2025-10-03 21:00 UTC
