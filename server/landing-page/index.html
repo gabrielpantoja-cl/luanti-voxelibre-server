@@ -97,14 +97,28 @@
             </p>
 
             <div class="gallery-grid latest-grid" id="gallery-grid">
-                <!-- Latest Image: Server Rules -->
-                <div class="gallery-item featured" onclick="openGalleryModal('assets/images/reglas.png', 'Reglas Básicas del Servidor - ¡Nueva Guía Visual!')">
+                <!-- Latest Image: Area Protection System -->
+                <div class="gallery-item featured" onclick="openGalleryModal('assets/images/protect_area.jpeg', '¡Sistema de Protección de Áreas Disponible! - Protege tu casa')">
+                    <img src="assets/images/protect_area.jpeg"
+                         alt="Sistema de Protección de Áreas Activado"
+                         class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-info">
+                            <div class="gallery-badge new">¡NUEVO!</div>
+                            <h4>🛡️ Protege Tu Casa</h4>
+                            <p>¡Todos los jugadores pueden proteger sus construcciones! Usa /area_pos1 y /area_pos2</p>
+                            <span class="gallery-date">Oct 2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Image: Server Rules -->
+                <div class="gallery-item" onclick="openGalleryModal('assets/images/reglas.png', 'Reglas Básicas del Servidor - ¡Nueva Guía Visual!')">
                     <img src="assets/images/reglas.png"
                          alt="Reglas Básicas del Servidor"
                          class="gallery-image">
                     <div class="gallery-overlay">
                         <div class="gallery-info">
-                            <div class="gallery-badge new">¡NUEVO!</div>
                             <h4>📋 Reglas del Servidor</h4>
                             <p>Nueva guía visual con las reglas básicas de convivencia</p>
                             <span class="gallery-date">Sep 2025</span>
@@ -312,6 +326,9 @@
                     <h4>⚡ Comandos Mágicos</h4>
                     <ul>
                         <li><code>/back_to_spawn</code> - Volver al inicio 🏠</li>
+                        <li><code>/area_pos1</code> - Marcar esquina 1 🛡️</li>
+                        <li><code>/area_pos2</code> - Marcar esquina 2 🛡️</li>
+                        <li><code>/protect [nombre]</code> - Proteger área 🔒</li>
                         <li><code>/reglas</code> - Ver reglas importantes 📋</li>
                         <li><code>/sit</code> - Sentarse cómodamente 🪑</li>
                         <li><code>/santuario</code> - Cuidar animalitos 🐾</li>
