@@ -28,10 +28,18 @@ Todo mod desarrollado para Wetlands debe adherirse a principios fundamentales:
 
 ---
 
-## 🏗️ 2. Arquitectura VoxeLibre (CRÍTICO)
+## 🏗️ 2. Arquitectura de Mods y Docker (CRÍTICO)
 
-### ⚠️ La Regla de Oro
-**VoxeLibre NO usa el directorio `/mods` estándar**. Solo carga mods desde su estructura de carpetas categorizadas específica.
+### ⚠️ Principio Fundamental: "Git → Docker Automático"
+
+**Los mods custom tienen PRIORIDAD ALTA sobre los mods base de VoxeLibre.**
+
+El mapeo de volúmenes Docker sincroniza automáticamente:
+1. Editas código en repositorio local
+2. Haces `git push` al repositorio remoto
+3. En VPS haces `git pull`
+4. Reinicias servidor: `docker-compose restart luanti-server`
+5. ✅ Cambios automáticamente cargados (NO necesitas copiar archivos manualmente)
 
 ### 📁 Estructura de Directorios Docker
 
@@ -40,14 +48,33 @@ Todo mod desarrollado para Wetlands debe adherirse a principios fundamentales:
 services:
   luanti-server:
     volumes:
-      # ✅ CORRECTO - Mapeo a categorías VoxeLibre:
-      - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods
-      - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary
-      - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks
-
-      # ❌ INCORRECTO - No funciona con VoxeLibre:
-      # - ./server/mods/mi_mod:/config/.minetest/mods/mi_mod
+      # ✅ CORRECTO - Mods custom con PRIORIDAD ALTA
+      - ./server/mods:/config/.minetest/mods
+      - ./server/games:/config/.minetest/games
 ```
+
+### 🗂️ Jerarquía de Carga de Mods
+
+```
+/config/.minetest/
+├── mods/                              # ✅ PRIORIDAD ALTA (mods custom)
+│   ├── server_rules/
+│   ├── vegan_food/
+│   ├── education_blocks/
+│   └── voxelibre_protection/
+└── games/mineclone2/
+    └── mods/                          # ⚠️ PRIORIDAD BAJA (mods base VoxeLibre)
+        ├── CORE/
+        ├── ITEMS/
+        ├── ENTITIES/
+        └── ...
+```
+
+**Ventajas de este sistema:**
+- ✅ No necesitas copiar archivos manualmente al contenedor
+- ✅ Cambios en el repositorio se reflejan automáticamente
+- ✅ Deployment simplificado: `git pull` + `docker-compose restart`
+- ✅ Mods custom pueden sobrescribir comportamiento de VoxeLibre si es necesario
 
 ### 🗂️ Categorías VoxeLibre Principales
 
