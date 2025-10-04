@@ -111,7 +111,7 @@ minetest.register_on_joinplayer(function(player)
         minetest.chat_send_player(name, "• /santuario - Aprende sobre santuarios")
         minetest.chat_send_player(name, "• /back_to_spawn - Volver a tu spawn")
         minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🎮 ¡Construye, explora y aprende con compasión! 💚")
+        minetest.chat_send_player(name, "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas")
     end)
 end)
 
