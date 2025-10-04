@@ -232,10 +232,8 @@ minetest.register_globalstep(function(dtime)
         timer = 0
         local mensajes_rotativos = {
             "🌱 Recordatorio: Usa /reglas para las reglas completas",
-            "🐾 ¿Sabías que puedes usar /santuario para aprender sobre animales?",
             "💚 Descubre nuestra filosofía con /filosofia",
-            "🏠 Construye refugios bonitos para los animales",
-            "🌾 Prueba deliciosos alimentos a base de plantas"
+            "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas"
         }
         local mensaje = mensajes_rotativos[math.random(1, #mensajes_rotativos)]
         minetest.chat_send_all(mensaje)
