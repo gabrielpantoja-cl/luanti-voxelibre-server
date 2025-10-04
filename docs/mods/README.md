@@ -1,174 +1,309 @@
-# Documentación de Mods - Wetlands Valdivia
+# 🌱 Documentación de Mods - Wetlands Server
 
-Esta carpeta contiene la documentación completa de todos los mods personalizados del servidor Wetlands Valdivia.
+Esta carpeta contiene toda la documentación técnica para desarrollo, deployment y mantenimiento de mods del servidor Wetlands.
+
+---
 
 ## 📚 Índice de Documentación
 
-### Documentación General
-- **[Sistema de Mods VoxeLibre](../VOXELIBRE_MOD_SYSTEM.md)** - Guía técnica completa sobre compatibilidad y troubleshooting
+### 🎯 Guías Principales
 
-### Mods Personalizados
+#### [MOD_DEVELOPMENT.md](./MOD_DEVELOPMENT.md)
+**Guía Completa de Desarrollo de Mods**
+Documento maestro que cubre TODO el proceso de desarrollo de mods para Wetlands:
+- Filosofía de desarrollo compasivo y educativo
+- Arquitectura Docker y mapeo de volúmenes (**Git → Docker automático**)
+- Estructura profesional de mods
+- APIs de VoxeLibre y tabla de conversiones
+- Patrones de código profesional (nodos, entidades, comandos)
+- Proceso completo de deployment (local → git → VPS)
+- Troubleshooting avanzado
+- Testing y validación
+- Best practices y convenciones
 
-#### 🎮 Mods Activos y Funcionando
-
-| Mod | Descripción | Documentación | Estado |
-|-----|-------------|---------------|---------|
-| **server_rules** | Sistema de reglas automático y comandos | [📋 SERVER_RULES_MOD_V2.md](SERVER_RULES_MOD_V2.md) | ✅ Operativo |
-| **education_blocks** | Bloques educativos interactivos | [📚 EDUCATION_BLOCKS_MOD.md](EDUCATION_BLOCKS_MOD.md) | ✅ Operativo |
-| **vegan_food** | Alimentos plant-based | [Documentación Externa](https://content.luanti.org/packages/Daenvil/vegan_food/) | ✅ Operativo |
-| **back_to_spawn** | Teleportación a spawn personal | [Documentación Externa](https://content.luanti.org/packages/Alex5002/mcl_back_to_spawn/) | ✅ Operativo |
-| **halloween_ghost** | Evento especial de Halloween | - | ✅ Operativo (temporal) |
-| **voxelibre_protection** | Sistema de protección compatible | [📄 voxelibre_protection.md](voxelibre_protection.md) | ✅ Operativo |
-| **protector** | Protección de áreas | [Documentación Externa](https://content.luanti.org/packages/TenPlus1/protector/) | ✅ Operativo |
-| **areas** | Gestión de áreas protegidas | [Documentación Externa](https://content.luanti.org/packages/ShadowNinja/areas/) | ✅ Operativo |
-| **creative_force** | Modo creativo forzado | - | ✅ Operativo |
-| **vegan_replacements** | Reemplazos veganos en recetas | - | ✅ Operativo |
-| **wetland_city** | Estructuras y ciudad del servidor | - | ✅ Operativo |
-| **sethome** | Sistema de homes personales | - | ✅ Operativo |
-| **worldedit** | Suite completa de edición | [Documentación Externa](https://github.com/Uberi/Minetest-WorldEdit) | ✅ Operativo (4 mods) |
-
-#### 🔧 Comandos Disponibles
-
-| Comando | Función | Mod Responsable |
-|---------|---------|-----------------|
-| `/reglas` | Muestra reglas completas del servidor | server_rules |
-| `/r` | Reglas rápidas | server_rules |
-| `/santuario` | Info sobre cuidado de animales | server_rules |
-| `/filosofia` | Filosofía del servidor | education_blocks |
-| `/back_to_spawn` | Teletransporte a spawn | back_to_spawn |
-
-## 🛠️ Guías de Desarrollo
-
-### Para Crear Nuevos Mods
-1. **Leer primero**: [Sistema de Mods VoxeLibre](../VOXELIBRE_MOD_SYSTEM.md)
-2. **Verificar compatibilidad**: Usar items `mcl_*` en lugar de `default:*`
-3. **Evitar dependencias problemáticas**: No usar `mcl_sounds`, `default`, `farming`
-4. **Crear documentación**: Seguir el formato de los mods existentes
-
-### Estructura de Documentación de Mod
-Cada mod debe tener su documentación que incluya:
-- 📋 **Información General**: Nombre, propósito, autor
-- 🎯 **Funcionalidades**: Comandos, bloques, mecánicas
-- 🛠️ **Implementación Técnica**: APIs, compatibilidad, recetas
-- 🧪 **Testing**: Cómo verificar que funciona
-- 🚨 **Troubleshooting**: Problemas comunes y soluciones
-
-## 🚨 Problemas Resueltos (Historial)
-
-### Octubre 3, 2025 - Limpieza de Mods Incompatibles
-**Problema**: Mods legacy y incompatibles causando riesgo de corrupción de texturas
-**Causa**:
-- Mods incompatibles con VoxeLibre (biofuel, mobkit, motorboat)
-- Mods duplicados (animal_sanctuary.disabled, vegan_foods, motorboat.disabled)
-- Archivos sueltos de WorldEdit en directorio root de mods
-- Inconsistencia entre VPS y repositorio local
-
-**Solución**:
-- ✅ Eliminados 5 mods incompatibles: biofuel, mobkit, motorboat (+ versiones .disabled)
-- ✅ Eliminados 3 mods duplicados/legacy: animal_sanctuary.disabled, vegan_foods, home_teleport
-- ✅ Limpiados 7 archivos sueltos de documentación WorldEdit
-- ✅ Actualizada configuración luanti.conf (deshabilitados mods eliminados)
-- ✅ Sincronizado VPS y repositorio local
-
-**Resultado**:
-- 🎯 De 26 mods a 18 mods (reducción de 8 directorios)
-- ✅ Eliminado riesgo de corrupción de texturas
-- ✅ Consistencia 100% entre VPS y local
-- ✅ Servidor funcionando correctamente
-
-### Septiembre 21, 2025 - Fix Comandos del Servidor
-**Problema**: Comandos `/reglas`, `/filosofia`, `/santuario` no funcionaban
-**Causa**:
-- Conflictos entre `education_blocks` y `education_blocks.disabled`
-- Dependencias incorrectas en `mod.conf`
-- Items de Minetest vanilla en recetas
-
-**Solución**:
-- Eliminado archivos `.disabled`
-- Actualizado dependencies para VoxeLibre
-- Convertido recetas a items `mcl_*`
-- Implementado sistema de reglas automáticas
-
-**Resultado**: ✅ Todos los comandos funcionando correctamente
-
-## 📊 Estadísticas del Sistema
-
-### Mods Cargados Actualmente (Oct 2025)
-- **Total de mods activos**: 18 mods
-- **Mods del ContentDB**: 4 (vegan_food, back_to_spawn, protector, areas)
-- **Mods desarrollados localmente**: 6 (server_rules, education_blocks, halloween_ghost, voxelibre_protection, creative_force, vegan_replacements, wetland_city)
-- **Suite WorldEdit**: 4 mods (worldedit, worldedit_brush, worldedit_commands, worldedit_gui, worldedit_shortcommands)
-- **Sistema de homes**: sethome
-- **Comandos disponibles**: 5+
-- **Bloques educativos**: 3
-
-### Compatibilidad
-- ✅ **VoxeLibre v0.90.1**: Totalmente compatible
-- ✅ **Luanti 5.13+**: Funcionando
-- ✅ **Docker linuxserver/luanti**: Optimizado
-- ✅ **Sin mods incompatibles**: Limpieza Oct 2025 completa
-
-## 🔮 Roadmap de Mods
-
-### Próximas Mejoras
-- [ ] **animal_sanctuary**: Reactivar con compatibilidad VoxeLibre completa
-- [ ] **Nuevos bloques educativos**: Reciclaje, energías renovables, compostaje
-- [ ] **Sistema de quests**: Misiones educativas sobre compasión animal
-- [ ] **Mejoras halloween_ghost**: Más eventos temporales educativos
-
-### Mods en Consideración
-- [ ] **quests_compassion**: Sistema de misiones educativas
-- [ ] **sustainable_farming**: Agricultura sostenible avanzada
-- [ ] **animal_behavior**: Comportamientos realistas de animales del santuario
-- [ ] **renewable_energy**: Energías renovables en el juego
-
-### ❌ Mods Descartados (Incompatibles)
-- ❌ **biofuel**: Incompatible con VoxeLibre (corrupción de texturas)
-- ❌ **mobkit**: Incompatible con VoxeLibre (corrupción de texturas)
-- ❌ **motorboat**: Incompatible con VoxeLibre (corrupción de texturas)
-
-## 📞 Soporte y Contribuciones
-
-### Reportar Problemas con Mods
-1. **Verificar documentación**: Consultar este directorio primero
-2. **Revisar logs**: `docker compose logs luanti-server`
-3. **Seguir troubleshooting**: Usar guías de cada mod
-4. **Crear issue**: En el repositorio GitHub con logs completos
-
-### Contribuir Nuevos Mods
-1. **Fork del repositorio**: Crear rama para nuevo mod
-2. **Seguir estándares**: Compatibilidad VoxeLibre obligatoria
-3. **Crear documentación**: Seguir formato establecido
-4. **Testing completo**: Verificar en servidor de prueba
-5. **Pull request**: Con documentación completa
+**👉 EMPIEZA AQUÍ si vas a desarrollar un nuevo mod.**
 
 ---
-**Última actualización**: 2025-10-03 (Limpieza de mods incompatibles)
-**Responsable**: Equipo Wetlands Valdivia
-**Próxima revisión**: Al agregar nuevos mods
 
-## 📋 Lista Completa de Mods Activos
+### 🔧 Documentación de Mods Específicos
 
+#### [education_blocks.md](./education_blocks.md)
+**Mod: Education Blocks**
+Bloques interactivos educativos sobre compasión animal y alimentación consciente.
+- Comandos: `/filosofia`, `/santuario` (deprecado - ahora en server_rules)
+- Bloques educativos con mensajes interactivos
+- Sistema de partículas y efectos visuales
+
+#### [voxelibre_protection.md](./voxelibre_protection.md)
+**Mod: VoxeLibre Protection System**
+Sistema completo de protección de áreas compatible con VoxeLibre.
+- Comandos: `/area_*` para gestión de áreas
+- Protección de construcciones por usuario
+- Sistema de permisos y privilegios
+- Compatible con WorldEdit
+
+**Nota:** Revisar también `docs/admin/areas_protegidas.md` para guía de administración.
+
+---
+
+## 🗂️ Estructura de Mods en el Servidor
+
+### Ubicación Física
 ```
-server/mods/
-├── animal_sanctuary/          # Santuarios de animales (deshabilitado temporalmente)
-├── areas/                     # Gestión de áreas protegidas
-├── back_to_spawn/            # Teleportación a spawn personal
-├── creative_force/           # Modo creativo forzado
-├── education_blocks/         # Bloques educativos interactivos
-├── halloween_ghost/          # Evento especial Halloween 2025
-├── protector/                # Protección de áreas (TenPlus1)
-├── server_rules/             # Sistema de reglas automáticas
-├── sethome/                  # Sistema de homes personales
-├── vegan_food/               # Alimentos plant-based
-├── vegan_replacements/       # Reemplazos veganos en recetas
-├── voxelibre_protection/     # Protección compatible VoxeLibre
-├── wetland_city/             # Estructuras y ciudad
-├── worldedit/                # Editor de mundos (core)
-├── worldedit_brush/          # Herramientas de pincel
-├── worldedit_commands/       # Comandos adicionales
-├── worldedit_gui/            # Interfaz gráfica
-└── worldedit_shortcommands/  # Comandos abreviados
+server/mods/                           # ✅ Repositorio Git
+├── server_rules/                      # Sistema de reglas y bienvenida
+├── vegan_food/                        # Comida vegana
+├── education_blocks/                  # Bloques educativos
+├── voxelibre_protection/              # Protección de áreas
+├── animal_sanctuary/                  # Santuarios de animales
+├── back_to_spawn/                     # Teleportación a spawn (tercero)
+├── areas/                             # Sistema de áreas (tercero)
+├── protector/                         # Protector de bloques (tercero)
+├── sethome/                           # Sistema de homes (tercero)
+├── halloween_ghost/                   # Evento temporal Halloween
+├── worldedit/                         # Editor de mundos (tercero)
+└── ...                                # Otros mods
 ```
 
-**Total**: 18 directorios de mods activos
+### Mapeo Docker (CRÍTICO)
+```yaml
+# docker-compose.yml
+volumes:
+  - ./server/mods:/config/.minetest/mods           # ✅ PRIORIDAD ALTA
+  - ./server/games:/config/.minetest/games         # Base VoxeLibre
+```
+
+**Principio fundamental:**
+> Los mods en `/config/.minetest/mods/` tienen **PRIORIDAD ALTA** sobre los mods base de VoxeLibre en `/config/.minetest/games/mineclone2/mods/`
+
+---
+
+## 🚀 Flujo de Trabajo: Git → Docker
+
+### Workflow Estándar
+
+1. **Desarrollo Local**
+   ```bash
+   cd server/mods/mi_mod/
+   nano init.lua
+   ```
+
+2. **Commit y Push**
+   ```bash
+   git add server/mods/mi_mod/
+   git commit -m "✨ Update mi_mod: nueva funcionalidad"
+   git push origin main
+   ```
+
+3. **Deployment VPS**
+   ```bash
+   ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && git pull origin main && docker-compose restart luanti-server"
+   ```
+
+4. **Verificación**
+   ```bash
+   ssh gabriel@<VPS_IP> "docker-compose logs --tail=50 luanti-server | grep mi_mod"
+   ```
+
+### ✅ Ventajas de este sistema
+- **NO necesitas copiar archivos manualmente** al contenedor
+- Cambios en Git se reflejan automáticamente después de reiniciar
+- Deployment simplificado y versionado
+- Rollback fácil con `git revert`
+
+---
+
+## 📋 Lista de Mods Activos
+
+### Mods Custom (Wetlands)
+
+| Mod | Versión | Comandos | Descripción | Doc |
+|-----|---------|----------|-------------|-----|
+| `server_rules` | 2.0 | `/reglas`, `/r`, `/filosofia`, `/santuario` | Sistema de reglas, bienvenida y filosofía | (Pendiente) |
+| `vegan_food` | 1.0 | - | Comida vegana (tofu, seitan, leche de avena) | (Pendiente) |
+| `education_blocks` | 1.0 | - | Bloques educativos interactivos | [Ver doc](./education_blocks.md) |
+| `voxelibre_protection` | 1.0 | `/area_*` | Sistema de protección de áreas | [Ver doc](./voxelibre_protection.md) |
+| `animal_sanctuary` | 1.0 | - | Santuarios y cuidado animal | (Pendiente) |
+
+### Mods de Terceros
+
+| Mod | Fuente | Comandos | Descripción |
+|-----|--------|----------|-------------|
+| `back_to_spawn` | [ContentDB](https://content.luanti.org/packages/Alex5002/mcl_back_to_spawn/) | `/back_to_spawn` | Teleportación a spawn personal |
+| `areas` | ContentDB | `/area_*` | Sistema de protección de áreas |
+| `protector` | ContentDB | - | Protector de bloques |
+| `sethome` | ContentDB | `/sethome`, `/home` | Sistema de homes |
+| `worldedit` | ContentDB | `//pos1`, `//pos2`, etc. | Editor de mundos |
+
+**Nota:** Ver `CLAUDE.md` sección "Third-Party Content Attribution" para más detalles de mods de terceros.
+
+---
+
+## 🛠️ Recursos de Desarrollo
+
+### APIs de VoxeLibre
+
+**APIs Estables (usar siempre):**
+- `mcl_core` - Bloques fundamentales
+- `mcl_farming` - Agricultura
+- `mcl_mobs` - Entidades/mobs
+- `mcl_util` - Utilidades
+- `mcl_inventory` - Inventarios
+- `mcl_player` - Mecánicas del jugador
+
+**APIs Problemáticas (evitar):**
+- `default` - No existe en VoxeLibre (usar `mcl_core`)
+- `farming` - Usar `mcl_farming`
+- `mcl_sounds` - Eliminada en versiones recientes
+- `mobs` - Usar `mcl_mobs`
+
+### Tabla de Conversión Rápida
+
+| Luanti Vanilla | VoxeLibre | Uso |
+|----------------|-----------|-----|
+| `default:apple` | `mcl_core:apple` | Comida |
+| `default:stick` | `mcl_core:stick` | Crafteo |
+| `default:stone` | `mcl_core:stone` | Bloques |
+| `farming:wheat` | `mcl_farming:wheat_item` | Agricultura |
+
+---
+
+## 🧪 Testing y Debugging
+
+### Logs del Servidor
+```bash
+# Logs en tiempo real
+docker-compose logs -f luanti-server
+
+# Filtrar por mod específico
+docker-compose logs luanti-server | grep "nombre_mod"
+
+# Ver solo errores
+docker-compose logs luanti-server | grep -i "error\|warning"
+```
+
+### Debug In-Game
+```lua
+-- En init.lua del mod
+local debug_mode = minetest.settings:get_bool("mi_mod_debug", false)
+
+if debug_mode then
+    minetest.log("action", "[mi_mod] DEBUG: variable = " .. tostring(variable))
+end
+```
+
+### Comandos Admin Útiles
+```
+/reload                    # Recargar mods sin reiniciar (requiere privilegio 'server')
+/mods                      # Ver mods cargados
+/privs <usuario>          # Ver privilegios de usuario
+/grant <usuario> <priv>   # Otorgar privilegio
+```
+
+---
+
+## 🎯 Filosofía de Desarrollo Wetlands
+
+Todo mod debe adherirse a estos principios:
+
+### 🌿 Compasivo y Pacífico
+Sin mecánicas de violencia, caza o explotación animal. Enfoque en cuidado, protección y cooperación.
+
+### 📚 Educativo
+Cada mod debe enseñar sobre compasión, sostenibilidad o habilidades técnicas de forma natural.
+
+### 👶 Apropiado para Niños
+Contenido seguro y constructivo para edades 7+ años.
+
+### ⚡ Rendimiento y Calidad
+Código limpio, eficiente y bien documentado para estabilidad del servidor.
+
+### 🤝 Construcción de Comunidad
+Fomentar colaboración y experiencias compartidas positivas.
+
+---
+
+## 📖 Convenciones
+
+### Idioma
+- **Código y comentarios:** Español
+- **Variables:** `snake_case` (ej: `cuidar_animal`)
+- **Items:** `modname:item_name` (ej: `vegan_food:tofu`)
+
+### Estructura de Archivos
+```
+mi_mod/
+├── mod.conf              # Configuración obligatoria
+├── init.lua              # Punto de entrada
+├── locale/               # Traducciones (opcional)
+│   ├── template.txt
+│   └── es.tr
+├── textures/             # Imágenes PNG
+├── sounds/               # Archivos OGG
+└── README.md             # Documentación del mod
+```
+
+### Logging
+```lua
+minetest.log("action", "[mi_mod] Mensaje informativo")
+minetest.log("error", "[mi_mod] Error: " .. error_msg)
+minetest.log("warning", "[mi_mod] Advertencia")
+```
+
+---
+
+## 🔗 Enlaces Útiles
+
+### Documentación Oficial
+- [Luanti Lua API Reference](https://github.com/minetest/minetest/blob/master/doc/lua_api.md)
+- [VoxeLibre Wiki](https://git.minetest.land/VoxeLibre/VoxeLibre/wiki)
+- [Minetest Modding Book](https://rubenwardy.com/minetest_modding_book/)
+
+### Repositorios
+- [Vegan-Wetlands GitHub](https://github.com/gabrielpantoja-cl/Vegan-Wetlands)
+- [VoxeLibre GitHub](https://git.minetest.land/VoxeLibre/VoxeLibre)
+
+### Herramientas
+- [luacheck](https://github.com/mpeterv/luacheck) - Linter para Lua
+- [Luanti ContentDB](https://content.luanti.org/) - Mods de terceros
+
+---
+
+## 🚨 Troubleshooting Común
+
+### Mod no carga
+1. Verificar sintaxis Lua: `luacheck server/mods/mi_mod/init.lua`
+2. Revisar logs: `docker-compose logs luanti-server | grep mi_mod`
+3. Verificar `mod.conf` (nombre correcto, dependencias)
+4. Comprobar que está habilitado en `world.mt`
+
+### Texturas no se ven
+1. Verificar nombres de archivos (case-sensitive)
+2. Formato PNG válido
+3. Nombres coinciden con `inventory_image` en código
+
+### Cambios no se aplican
+1. **Reiniciar servidor:** `docker-compose restart luanti-server`
+2. Verificar que hiciste `git pull` en VPS
+3. Limpiar caché del cliente Luanti
+
+### Items/Comandos no funcionan
+1. Verificar compatibilidad con VoxeLibre (usar `mcl_*` en lugar de `default:`)
+2. Revisar dependencias en `mod.conf`
+3. Comprobar privilegios requeridos para comandos
+
+---
+
+## 📝 TODO: Documentación Pendiente
+
+- [ ] `server_rules.md` - Documentar sistema de reglas v2.0
+- [ ] `vegan_food.md` - Documentar comida vegana
+- [ ] `animal_sanctuary.md` - Documentar santuarios
+- [ ] `halloween_ghost.md` - Documentar evento Halloween
+- [ ] Actualizar guías con ejemplos de mods existentes
+
+---
+
+**Última actualización:** 2025-10-04
+**Mantenedor:** Gabriel Pantoja
+**Licencia:** GPL-3.0

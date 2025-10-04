@@ -37,29 +37,60 @@ The Nether: Y ≈ -29000 (inframundo)
 
 ### Estructura Modular de Wetlands
 ```
-server/mods/
-├── animal_sanctuary/     -- Sistema de santuarios y cuidado animal
-├── education_blocks/     -- Bloques educativos interactivos
-├── vegan_food/          -- Alimentos plant-based
-├── server_rules/        -- Sistema de reglas y bienvenida
-└── back_to_spawn/       -- Teleportación compasiva
+server/mods/                 # ✅ Repositorio Git (PRIORIDAD ALTA)
+├── animal_sanctuary/        -- Sistema de santuarios y cuidado animal
+├── education_blocks/        -- Bloques educativos interactivos
+├── vegan_food/             -- Alimentos plant-based
+├── server_rules/           -- Sistema de reglas y bienvenida
+└── back_to_spawn/          -- Teleportación compasiva
 
 # Estructura interna de mod profesional:
 mods/tu_mod/
-├── mod.conf             -- Configuración y dependencias
-├── init.lua             -- Punto de entrada principal
-├── api.lua              -- APIs públicas del mod
-├── nodes.lua            -- Definición de bloques
-├── items.lua            -- Herramientas y objetos
-├── entities.lua         -- Mobs y entidades
-├── crafting.lua         -- Recetas de crafteo
-├── locale/              -- Traducciones
+├── mod.conf                -- Configuración y dependencias
+├── init.lua                -- Punto de entrada principal
+├── api.lua                 -- APIs públicas del mod
+├── nodes.lua               -- Definición de bloques
+├── items.lua               -- Herramientas y objetos
+├── entities.lua            -- Mobs y entidades
+├── crafting.lua            -- Recetas de crafteo
+├── locale/                 -- Traducciones
 │   ├── template.txt
 │   └── es.tr
-├── textures/            -- Texturas y assets
-├── sounds/              -- Efectos de sonido
-└── models/              -- Modelos 3D
+├── textures/               -- Texturas y assets
+├── sounds/                 -- Efectos de sonido
+└── models/                 -- Modelos 3D
 ```
+
+### 🚀 Principio Fundamental: "Git → Docker Automático"
+
+**CRÍTICO**: Los mods custom se cargan automáticamente vía mapeo de volúmenes Docker.
+
+**NO necesitas copiar archivos manualmente al contenedor.**
+
+**Mapeo Docker (docker-compose.yml):**
+```yaml
+volumes:
+  - ./server/mods:/config/.minetest/mods           # ✅ PRIORIDAD ALTA (mods custom)
+  - ./server/games:/config/.minetest/games         # Base VoxeLibre
+```
+
+**Jerarquía de carga:**
+```
+/config/.minetest/
+├── mods/                              # ✅ PRIORIDAD ALTA (tus mods custom)
+│   ├── server_rules/
+│   ├── vegan_food/
+│   └── tu_mod/                        # ← Tu mod nuevo aquí
+└── games/mineclone2/
+    └── mods/                          # ⚠️ PRIORIDAD BAJA (mods base VoxeLibre)
+```
+
+**Workflow de Deployment:**
+1. Editas código en `server/mods/tu_mod/`
+2. `git push origin main`
+3. En VPS: `git pull origin main`
+4. `docker-compose restart luanti-server`
+5. ✅ Cambios cargados automáticamente (sin copiar archivos manualmente)
 
 ## 🔧 APIs Profesionales de VoxeLibre
 
