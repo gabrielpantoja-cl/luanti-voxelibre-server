@@ -1,6 +1,6 @@
 # Sistema de Protección de Áreas - Servidor Wetlands
 
-**Última actualización:** 2025-10-03 21:00 UTC
+**Última actualización:** 2025-10-04 11:20 UTC
 **Estado del sistema:** ✅ ACTIVO - Todos los usuarios habilitados
 
 ---
@@ -50,9 +50,10 @@
 - **Coordenadas:** (85, 25, -128) a (185, 65, -28)
 - **Tamaño:** 101 x 41 x 101 bloques (418,441 bloques totales)
 - **Fecha de creación:** 2025-09-28 12:01:38 UTC
-- **Miembros adicionales:** pepelomo (co-propietario)
+- **Miembros adicionales:** pepelomo (puede editar)
 - **Descripción:** Área residencial de pepelomo
 - **Tipo:** Área privada compartida
+- **Permisos:** pepelomo puede construir, destruir y modificar bloques
 
 #### 3. **piscina_comun1** 🏊
 - **ID:** piscina_comun1
@@ -80,9 +81,10 @@
 - **Coordenadas:** (186, 8, -159) a (216, 48, -129)
 - **Tamaño:** 31 x 41 x 31 bloques (39,421 bloques totales)
 - **Fecha de creación:** 2025-10-03 20:48:01 UTC
-- **Miembros adicionales:** Ninguno
-- **Descripción:** Casa de lulu
-- **Tipo:** Área residencial
+- **Miembros adicionales:** lulu81 (puede editar)
+- **Descripción:** Casa de lulu81
+- **Tipo:** Área residencial compartida
+- **Permisos:** lulu81 puede construir, destruir y modificar bloques
 
 ---
 
@@ -314,12 +316,12 @@ Esto protegerá un área de 20 bloques de radio alrededor de donde estás parado
 
 **Protecciones por propietario:**
 - gabo: 5 áreas (propietario principal de todas)
-- pepelomo: 0 áreas como propietario (co-propietario en 1 área: cama_pepelomo1)
+- pepelomo: 0 áreas como propietario (miembro en 1 área: cama_pepelomo1)
+- lulu81: 0 áreas como propietario (miembro en 1 área: casa_lulu1)
 - veight: 0 áreas
 - gaelsin: 0 áreas
 - Gapi: 0 áreas
 - pepelomoomomomo: 0 áreas
-- lulu: 0 áreas (tiene casa_lulu1 protegida por gabo)
 - lulululuo: 0 áreas
 - jutaro2010: 0 áreas
 - jutaro: 0 áreas
@@ -331,9 +333,16 @@ Esto protegerá un área de 20 bloques de radio alrededor de donde estás parado
 - **Área más pequeña:** edificio_oro_1 (9,225 bloques)
 - **Área más antigua:** cama_pepelomo1 (2025-09-28)
 - **Área más reciente:** casa_lulu1 (2025-10-03)
-- **Áreas con co-propietarios:** 1 (cama_pepelomo1)
+- **Áreas con miembros autorizados:** 2 (cama_pepelomo1, casa_lulu1)
 - **Áreas públicas (abiertas):** 0
 - **Áreas privadas (cerradas):** 5
+
+**Resumen de permisos de edición por área:**
+1. **spawn_principal**: Solo admin (gabo)
+2. **cama_pepelomo1**: gabo (propietario) + pepelomo (miembro)
+3. **piscina_comun1**: Solo admin (gabo)
+4. **edificio_oro_1**: Solo admin (gabo)
+5. **casa_lulu1**: gabo (propietario) + lulu81 (miembro)
 
 ### Comandos de Monitoreo (Admin)
 
@@ -515,4 +524,42 @@ Pregunta en el chat o contacta a un administrador con `/msg gabo <mensaje>`
 **Servidor:** luanti.gabrielpantoja.cl:30000
 **Estado:** ✅ SISTEMA ACTIVO - Todos los usuarios habilitados
 **Áreas protegidas actuales:** 5 áreas activas (~522,589 bloques protegidos)
-**Última consulta de datos:** 2025-10-03 21:00 UTC
+**Última consulta de datos:** 2025-10-04 11:20 UTC
+
+## 📋 Comandos para Administradores
+
+### Agregar miembro a área existente
+
+Para agregar un jugador como miembro de un área protegida (permitiéndole editar), usa:
+
+```bash
+/area_add_member <nombre_area> <jugador>
+```
+
+**Ejemplos:**
+```bash
+# Agregar lulu81 a casa_lulu1
+/area_add_member casa_lulu1 lulu81
+
+# Agregar pepelomo a cama_pepelomo1
+/area_add_member cama_pepelomo1 pepelomo
+```
+
+### Remover miembro de área
+
+```bash
+/area_remove_member <nombre_area> <jugador>
+```
+
+### Ver información detallada de un área
+
+```bash
+/area_info <nombre_area>
+```
+
+**Resultado incluye:**
+- Propietario
+- Fecha de creación
+- Coordenadas (min y max)
+- Volumen total
+- Lista de miembros autorizados
