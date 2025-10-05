@@ -6,11 +6,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Wetlands is a **Luanti (formerly Minetest) game server** designed as a compassionate, educational, and creative environment for children 7+ years old. The server features custom mods that promote animal care, compassionate education, and non-violent gameplay through animal sanctuaries.
 
-**IMPORTANT**: This repository (`https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`) contains **ALL** Luanti-specific code, configuration, and deployment logic. It is completely independent from the VPS administrative repository (`vps-do.git`).
+**IMPORTANT**: This repository (`https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git`) contains **ALL** Luanti-specific code, configuration, and deployment logic. It is completely independent from the VPS administrative repository (`vps-do.git`).
 
 ## Repository Architecture Strategy
 
-### 🎮 This Repository (Vegan-Wetlands.git)
+### 🎮 This Repository (luanti-voxelibre-server.git)
 **Responsibility**: Complete Luanti server implementation
 - Docker Compose configuration for Luanti
 - Custom mods (animal_sanctuary, education_blocks)
@@ -163,7 +163,7 @@ All mods follow Luanti mod structure:
 ## Development Workflow
 
 ### ⚠️ CRITICAL: Work Only in This Repository
-All Luanti-related development must happen in this repository (`Vegan-Wetlands.git`). **Never** modify Docker Compose files or Luanti configuration in the VPS administrative repository (`vps-do.git`).
+All Luanti-related development must happen in this repository (`luanti-voxelibre-server.git`). **Never** modify Docker Compose files or Luanti configuration in the VPS administrative repository (`vps-do.git`).
 
 ### Adding New Mods
 1. Create mod directory in `server/mods/`
@@ -434,7 +434,7 @@ docker compose restart luanti-server
 ### Deployment Flow
 GitHub Actions in **this repository** automatically:
 1. Backs up current world state on VPS
-2. Pulls latest code from `Vegan-Wetlands.git`
+2. Pulls latest code from `luanti-voxelibre-server.git`
 3. Updates Luanti containers on VPS
 4. Validates server startup and connectivity
 5. Can send notifications via webhooks (n8n integration available)
@@ -446,7 +446,7 @@ GitHub Actions in **this repository** automatically:
 - **Status monitoring**: Automated health checks post-deployment
 
 ### Repository Coordination
-- **This repo (Vegan-Wetlands.git)**: Manages Luanti server lifecycle
+- **This repo (luanti-voxelibre-server.git)**: Manages Luanti server lifecycle
 - **VPS repo (vps-do.git)**: Manages general infrastructure (nginx, n8n, etc.)
 - **No conflicts**: Each repository manages its own services independently
 

@@ -21,7 +21,7 @@ Te especializas en:
 
 ### 🗂️ Estructura del Proyecto
 ```
-Vegan-Wetlands/ (Repository Principal)
+luanti-voxelibre-server/ (Repository Principal)
 ├── server/
 │   ├── mods/                   # Mods de Wetlands
 │   ├── config/                 # Configuraciones

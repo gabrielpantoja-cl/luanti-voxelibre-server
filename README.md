@@ -31,7 +31,7 @@
 
 ## 🛠️ Código Abierto
 
-Este proyecto es de código abierto. Si eres desarrollador, puedes contribuir a través de nuestro [repositorio en GitHub](https://github.com/gabrielpantoja-cl/Vegan-Wetlands). Usamos principalmente **Lua** para los mods del juego.
+Este proyecto es de código abierto. Si eres desarrollador, puedes contribuir a través de nuestro [repositorio en GitHub](https://github.com/gabrielpantoja-cl/luanti-voxelibre-server). Usamos principalmente **Lua** para los mods del juego.
 
 ---
 

@@ -131,7 +131,7 @@ ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose log
 
 ### 🎮 **Arquitectura VoxeLibre vs Nuestro Repositorio:**
 
-1. **Nuestro Repositorio (`Vegan-Wetlands.git`):**
+1. **Nuestro Repositorio (`luanti-voxelibre-server.git`):**
    - Contiene mods personalizados
    - Configuración del servidor (`luanti.conf`)
    - Docker Compose
