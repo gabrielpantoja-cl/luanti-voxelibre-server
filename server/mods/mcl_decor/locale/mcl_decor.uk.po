@@ -1,0 +1,579 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain mcl_decor x.x.x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: ltt_convert 0.2.0\n"
+
+msgid "VoxeLibre Furniture and decorations"
+msgstr ""
+
+msgid "Adds more decoration and furniture blocks to VoxeLibre (ex. MineClone2) and Mineclonia"
+msgstr ""
+
+msgid "Checkerboard Tile"
+msgstr "Шахова дошка"
+
+msgid "Checkerboard Stair"
+msgstr "Шахові сходи"
+
+msgid "Checkerboard Slab"
+msgstr "Шаховий напівблок "
+
+msgid "Double Checkerboard Slab"
+msgstr "Подвійний шаховий напівблок"
+
+msgid "@1 (closed)"
+msgstr "@1 (зачинено)"
+
+msgid "@1 Stair"
+msgstr "@1 сходи"
+
+msgid "@1 Slab"
+msgstr "@1 напівблок"
+
+msgid "Double @1 Slab"
+msgstr "Подвійний @1 напівблок"
+
+msgid "White Armchair"
+msgstr "Біле крісло"
+
+msgid "White Curtains"
+msgstr "Білі занавіски"
+
+msgid "White Planks"
+msgstr "Білі дощечки"
+
+msgid "White Fence"
+msgstr "Біла огорожа"
+
+msgid "White Fence Gate"
+msgstr "Біла калітка"
+
+msgid "Grey Armchair"
+msgstr "Сіре крісло"
+
+msgid "Grey Curtains"
+msgstr "Сірі занавіски"
+
+msgid "Grey Planks"
+msgstr "Сірі дощечки"
+
+msgid "Grey Fence"
+msgstr "Сіра огорожа"
+
+msgid "Grey Fence Gate"
+msgstr "Сіра калітка"
+
+msgid "Light Grey Armchair"
+msgstr "Світло-сіре крісло"
+
+msgid "Light Grey Curtains"
+msgstr "Світло-сірі занавіски"
+
+msgid "Light Grey Planks"
+msgstr "Світло-сірі дощечки"
+
+msgid "Light Grey Fence"
+msgstr "Світло-сіра огорожа"
+
+msgid "Light Grey Fence Gate"
+msgstr "Світло-сіра калітка"
+
+msgid "Black Armchair"
+msgstr "Чорне крісло"
+
+msgid "Black Curtains"
+msgstr "Чорні занавіски"
+
+msgid "Black Planks"
+msgstr "Чорні дощечки"
+
+msgid "Black Fence"
+msgstr "Чорна огорожа"
+
+msgid "Black Fence Gate"
+msgstr "Чорна калітка"
+
+msgid "Red Armchair"
+msgstr "Червоне крісло"
+
+msgid "Red Curtains"
+msgstr "Червоні занавіски"
+
+msgid "Red Planks"
+msgstr "Червоні дощечки"
+
+msgid "Red Fence"
+msgstr "Червона огорожа"
+
+msgid "Red Fence Gate"
+msgstr "Червона калітка"
+
+msgid "Yellow Armchair"
+msgstr "Жовте крісло"
+
+msgid "Yellow Curtains"
+msgstr "Жовті занавіски"
+
+msgid "Yellow Planks"
+msgstr "Жовті дощечки"
+
+msgid "Yellow Fence"
+msgstr "Жовта огорожа"
+
+msgid "Yellow Fence Gate"
+msgstr "Жовта калітка"
+
+msgid "Green Armchair"
+msgstr "Зелене крісло"
+
+msgid "Green Curtains"
+msgstr "Зелені занавіски"
+
+msgid "Green Planks"
+msgstr "Зелені дощечки"
+
+msgid "Green Fence"
+msgstr "Зелена огорожа"
+
+msgid "Green Fence Gate"
+msgstr "Зелена калітка"
+
+msgid "Cyan Armchair"
+msgstr "Бірюзове крісло"
+
+msgid "Cyan Curtains"
+msgstr "Бірюзові занавіски"
+
+msgid "Cyan Planks"
+msgstr "Бірюзові дощечки"
+
+msgid "Cyan Fence"
+msgstr "Бірюзова огорожа"
+
+msgid "Cyan Fence Gate"
+msgstr "Бірюзова калітка"
+
+msgid "Blue Armchair"
+msgstr "Синє крісло"
+
+msgid "Blue Curtains"
+msgstr "Сині занавіски"
+
+msgid "Blue Planks"
+msgstr "Сині дощечки"
+
+msgid "Blue Fence"
+msgstr "Синя огорожа"
+
+msgid "Blue Fence Gate"
+msgstr "Синя калітка"
+
+msgid "Magenta Armchair"
+msgstr "Пурпурове крісло"
+
+msgid "Magenta Curtains"
+msgstr "Пурпурові занавіски"
+
+msgid "Magenta Planks"
+msgstr "Пурпурові дощечки"
+
+msgid "Magenta Fence"
+msgstr "Пурпурова огорожа"
+
+msgid "Magenta Fence Gate"
+msgstr "Пурпурова калітка"
+
+msgid "Orange Armchair"
+msgstr "Помаранчеве крісло"
+
+msgid "Orange Curtains"
+msgstr "Помаранчеві занавіски"
+
+msgid "Orange Planks"
+msgstr "Помаранчеві дощечки"
+
+msgid "Orange Fence"
+msgstr "Помаранчева огорожа"
+
+msgid "Orange Fence Gate"
+msgstr "Помаранчева калітка"
+
+msgid "Purple Armchair"
+msgstr "Фіолетове крісло"
+
+msgid "Purple Curtains"
+msgstr "Фіолетові занавіски"
+
+msgid "Purple Planks"
+msgstr "Фіолетові дощечки"
+
+msgid "Purple Fence"
+msgstr "Фіолетова огорожа"
+
+msgid "Purple Fence Gate"
+msgstr "Фіолетова калітка"
+
+msgid "Brown Armchair"
+msgstr "Коричневе крісло"
+
+msgid "Brown Curtains"
+msgstr "Коричневі занавіски"
+
+msgid "Brown Planks"
+msgstr "Коричневі дощечки"
+
+msgid "Brown Fence"
+msgstr "Коричнева огорожа"
+
+msgid "Brown Fence Gate"
+msgstr "Коричнева калітка"
+
+msgid "Pink Armchair"
+msgstr "Рожеве крісло"
+
+msgid "Pink Curtains"
+msgstr "Рожеві занавіски"
+
+msgid "Pink Planks"
+msgstr "Рожеві дощечки"
+
+msgid "Pink Fence"
+msgstr "Рожева огорожа"
+
+msgid "Pink Fence Gate"
+msgstr "Рожева калітка"
+
+msgid "Lime Armchair"
+msgstr "Лаймове крісло"
+
+msgid "Lime Curtains"
+msgstr "Лаймові занавіски"
+
+msgid "Lime Planks"
+msgstr "Лаймові дощечки"
+
+msgid "Lime Fence"
+msgstr "Лаймова огорожа"
+
+msgid "Lime Fence Gate"
+msgstr "Лаймова калітка"
+
+msgid "Light Blue Armchair"
+msgstr "Голубе крісло"
+
+msgid "Light Blue Curtains"
+msgstr "Голубі занавіски"
+
+msgid "Light Blue Planks"
+msgstr "Голубі дощечки"
+
+msgid "Light Blue Fence"
+msgstr "Голуба огорожа"
+
+msgid "Light Blue Fence Gate"
+msgstr "Голуба калітка"
+
+msgid "Fridge opens"
+msgstr "Холодильник відкривається"
+
+msgid "Fridge closes"
+msgstr "Холодильник зачиняється"
+
+msgid "Curtain moves"
+msgstr "Штори переміщуються"
+
+msgid "Counter"
+msgstr "Стійка"
+
+msgid "Sticks"
+msgstr "Палки"
+
+msgid "Bass guitar"
+msgstr "Басс-гітара"
+
+msgid "Bass drum"
+msgstr "Басс-барабан"
+
+msgid "Snare drum"
+msgstr "Барабан"
+
+msgid "Bell"
+msgstr "Дзвін"
+
+msgid "Flute"
+msgstr "Флейта"
+
+msgid "Chime"
+msgstr "Дзвіночок"
+
+msgid "Guitar"
+msgstr "Гітара"
+
+msgid "Xylophone"
+msgstr "Ксилофон"
+
+msgid "Iron xylophone"
+msgstr "Залілизний ксилофон"
+
+msgid "Cow bell"
+msgstr "Коров'ячий дзвінок"
+
+msgid "Didgeridoo"
+msgstr "Діджеріду"
+
+msgid "Square wave"
+msgstr "Квадратні хвилі"
+
+msgid "Banjo"
+msgstr "Банджо"
+
+msgid "Electric piano"
+msgstr "Електро-піаніно"
+
+msgid "Piano"
+msgstr "Фортепіано"
+
+msgid "Doorbell"
+msgstr "Дверний дзвінок"
+
+msgid "Instrument: @1"
+msgstr "Інструмент: @1"
+
+msgid "Plays a melody when rung"
+msgstr "Грає мелодію коли дзвониш"
+
+msgid "A doorbell is a button-like musical block which plays a melody when rung, allowing the visitors to notify the owner of their arrival."
+msgstr "Дверний дзівнок - це подібний до кнопки музикальний блок, який грає мелодію коли дзвониш по ньому, дозволяючи прохожим повідомити власника про їхній прихід."
+
+msgid "To ring the doorbell, rightclick it. Doorbell plays a different instrument based on which additional ingredient (beside a wood plank and Redstone Dust) was added when crafting it:"
+msgstr "Щоби подзвонити в двері, ПКМ-ніть по ньому. Дверний дзвінок грає різні інструменти, основуючись на додатковому інгрідієнті(окрім дерев'яних дощечок та червоно-кам'яневого пилу) який використовувся при крафті:"
+
+msgid "Wood"
+msgstr "Деревина"
+
+msgid "@1 or @2"
+msgstr "@1 або @2"
+
+msgid "Nothing"
+msgstr "Нічого"
+
+msgid "The melody played by the doorbell can be configured through modifying the mod.conf file."
+msgstr "Мелодія яка грається на дверному дзвінку можна змінити через модифікацію файлу mod.conf."
+
+msgid "Fridge"
+msgstr "Холодильник"
+
+msgid "27 inventory slots"
+msgstr "27 слотів інвентарю"
+
+msgid "Fridges are containers which provide 27 inventory slots."
+msgstr "Холодильники є контейнерами які надають 27 слотів інвентарю."
+
+msgid "To access its inventory, rightclick it. When broken, the items will drop out."
+msgstr "Щоб відкрити інвентар, натисніть ПКМ. Якщо зламаний, речі випадуть з нього."
+
+msgid "Inventory"
+msgstr "Інвентар"
+
+msgid "Oak Hedge"
+msgstr "Дубовий живопліт"
+
+msgid "Dark Oak Hedge"
+msgstr "Темнодубовий живопліт"
+
+msgid "Jungle Hedge"
+msgstr "Тропічнодеревний живопліт"
+
+msgid "Acacia Hedge"
+msgstr "Акацієвий живопліт"
+
+msgid "Spruce Hedge"
+msgstr "Ялинковий живопліт"
+
+msgid "Birch Hedge"
+msgstr "Березовий живопліт"
+
+msgid "Mangrove Hedge"
+msgstr "Мангровий живопліт"
+
+msgid "Cherry Hedge"
+msgstr "Вишневий живопліт"
+
+msgid "Azalea Hedge"
+msgstr "Алазієвий живопліт"
+
+msgid "Flowering Azalea Hedge"
+msgstr "Квітучий алазієвий живопліт"
+
+msgid "Oven"
+msgstr "Духовка"
+
+msgid "Recipe book"
+msgstr "Книга рецептів"
+
+msgid "Cooks food faster than furnace"
+msgstr "Готує швидше ніж пічка"
+
+msgid "Ovens cook several items, using a furnace fuel, into something else, but twice as fast as a normal furnace and have quadrice slots for result than smoker"
+msgstr "Духовка готує декілька речей в щось інше, використовуючи паливо пічки, але вдвічі швидше ніж звичайна пічка та має у чотири рази більше місць для приготовленого ніж коптильник"
+
+msgid "Use the oven to open the furnace menu."
+msgstr "Використовуйте духовку щоби відкрити меню пічку."
+
+msgid "Place a furnace fuel in the lower slot and the source material in the upper slot."
+msgstr "Покладіть паливо пічки в нижній слот та потрібний матеріал наверх."
+
+msgid "The oven will slowly use its fuel to smelt the item."
+msgstr "Духовка поступово використає своє паливо щоби виплавити об'єкт."
+
+msgid "The result will be placed into one of the output slots at the right side."
+msgstr "Результат буде розташовано в слотах видачі по правій стороні"
+
+msgid "Use the recipe book to see what foods you can smelt, what you can use as fuel and how long it will burn."
+msgstr "Використовуйте книгу рецептів для того, яку їжу ви можете зробити, а також скільки палива треба витратити та як довго воно буде горіти."
+
+msgid "Active Oven"
+msgstr "Активна духовка"
+
+msgid "Gravel Path"
+msgstr "Гравієва доріжка"
+
+msgid "Cobblestone Path"
+msgstr "Круглякова доріжка"
+
+msgid "Stone Path"
+msgstr "Кам'яна доріжка"
+
+msgid "Granite Path"
+msgstr "Гранітова доріжка"
+
+msgid "Andesite Path"
+msgstr "Андезитова доріжка"
+
+msgid "Diorite Path"
+msgstr "Диоритова доріжка"
+
+msgid "Netherrack Path"
+msgstr "Незерокам'яна доріжка"
+
+msgid "Deepslate Path"
+msgstr "Сланцева доріжка"
+
+msgid "Cobbled Deepslate Path"
+msgstr "Подроблена сланцева доріжка"
+
+msgid "Tuff Path"
+msgstr "Доріжка з туфу"
+
+msgid "Table Lamp"
+msgstr " Настільна лампа"
+
+msgid "Oak Chair"
+msgstr "Дубовий стілець"
+
+msgid "Oak Table"
+msgstr "Дубовий стіл"
+
+msgid "Dark Oak Chair"
+msgstr "Темнодубовий стілець"
+
+msgid "Dark Oak Table"
+msgstr "Темнодубовий стіл"
+
+msgid "Jungle Chair"
+msgstr "Тропічнодеревний стілець"
+
+msgid "Jungle Table"
+msgstr "Тропічнодеревний стіл"
+
+msgid "Spruce Chair"
+msgstr "Ялинковий стілець"
+
+msgid "Spruce Table"
+msgstr "Ялинковий стіл"
+
+msgid "Acacia Chair"
+msgstr "Акацієвий стілець"
+
+msgid "Acacia Table"
+msgstr "Акацієвий стіл"
+
+msgid "Birch Chair"
+msgstr "Березовий стілець"
+
+msgid "Birch Table"
+msgstr "Березовий стіл"
+
+msgid "Mangrove Chair"
+msgstr "Мангровий стілець"
+
+msgid "Mangrove Table"
+msgstr "Мангровий стіл"
+
+msgid "Cherry Chair"
+msgstr "Вишневий стілець"
+
+msgid "Cherry Table"
+msgstr "Вишневий стіл"
+
+msgid "Bamboo Chair"
+msgstr "Бамбуковий стілець"
+
+msgid "Bamboo Table"
+msgstr "Бамбуковий стіл"
+
+msgid "Crimson Chair"
+msgstr "Багряний стілець"
+
+msgid "Crimson Table"
+msgstr "Багряний стіл"
+
+msgid "Warped Chair"
+msgstr "Химерний стілець"
+
+msgid "Warped Table"
+msgstr "Химерний стіл"
+
+msgid "Oak Slab Table"
+msgstr "Стіл з дубового напівблоку"
+
+msgid "Dark Oak Slab Table"
+msgstr "Стіл з темнодубового напівблоку"
+
+msgid "Jungle Slab Table"
+msgstr "Стіл з тропічнодеревневого напівблоку"
+
+msgid "Spruce Slab Table"
+msgstr "Стіл з ялинкового напівблоку"
+
+msgid "Acacia Slab Table"
+msgstr "Стіл з акацієвого напівблоку"
+
+msgid "Birch Slab Table"
+msgstr "Стіл з березового напівблоку"
+
+msgid "Mangrove Slab Table"
+msgstr "Стіл з мангрового напівблоку"
+
+msgid "Cherry Slab Table"
+msgstr "Стіл з вишневого напівблоку"
+
+msgid "Bamboo Slab Table"
+msgstr "Стіл з бамбукового напівблоку"
+
+msgid "Crimson Slab Table"
+msgstr "Стіл з багряного напівблоку"
+
+msgid "Warped Slab Table"
+msgstr "Стіл з химерного напівблоку"
+
