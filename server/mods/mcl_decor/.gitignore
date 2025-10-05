@@ -1,0 +1,6 @@
+textures/src/**
+*.swp
+*.bak
+*.patch
+ltt_convert.py
+mod_translation_updater.py

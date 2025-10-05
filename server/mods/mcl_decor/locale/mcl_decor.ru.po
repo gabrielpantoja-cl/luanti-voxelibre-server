@@ -1,0 +1,579 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain mcl_decor x.x.x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: ltt_convert 0.2.0\n"
+
+msgid "VoxeLibre Furniture and decorations"
+msgstr "VoxeLibre Мебель и декорации"
+
+msgid "Adds more decoration and furniture blocks to VoxeLibre (ex. MineClone2) and Mineclonia"
+msgstr "Добавляет декорации и мебель в VoxeLibre (ex. MineClone2) и Mineclonia"
+
+msgid "Checkerboard Tile"
+msgstr "Шахматная плитка"
+
+msgid "Checkerboard Stair"
+msgstr "Ступеньки из шахматной плитки"
+
+msgid "Checkerboard Slab"
+msgstr "Плита из шахматной плитки"
+
+msgid "Double Checkerboard Slab"
+msgstr "Двойной шахматный полублок"
+
+msgid "@1 (closed)"
+msgstr "@1 (закрыты)"
+
+msgid "@1 Stair"
+msgstr "Ступенька из @1"
+
+msgid "@1 Slab"
+msgstr "Плита из @1"
+
+msgid "Double @1 Slab"
+msgstr "Двойная плита из @1"
+
+msgid "White Armchair"
+msgstr "Белое кресло"
+
+msgid "White Curtains"
+msgstr "Белые шторы"
+
+msgid "White Planks"
+msgstr "Белые доски"
+
+msgid "White Fence"
+msgstr "Белый забор"
+
+msgid "White Fence Gate"
+msgstr "Белая калитка"
+
+msgid "Grey Armchair"
+msgstr "Серое кресло"
+
+msgid "Grey Curtains"
+msgstr "Серые шторы"
+
+msgid "Grey Planks"
+msgstr "Серые доски"
+
+msgid "Grey Fence"
+msgstr "Серый забор"
+
+msgid "Grey Fence Gate"
+msgstr "Серая калитка"
+
+msgid "Light Grey Armchair"
+msgstr "Светло-серое кресло"
+
+msgid "Light Grey Curtains"
+msgstr "Светло-серые шторы"
+
+msgid "Light Grey Planks"
+msgstr "Светло-серые доски"
+
+msgid "Light Grey Fence"
+msgstr "Светло-серый забор"
+
+msgid "Light Grey Fence Gate"
+msgstr "Светло-серая калитка"
+
+msgid "Black Armchair"
+msgstr "Чёрное кресло"
+
+msgid "Black Curtains"
+msgstr "Чёрные шторы"
+
+msgid "Black Planks"
+msgstr "Чёрные доски"
+
+msgid "Black Fence"
+msgstr "Чёрный забор"
+
+msgid "Black Fence Gate"
+msgstr "Чёрная калитка"
+
+msgid "Red Armchair"
+msgstr "Красное кресло"
+
+msgid "Red Curtains"
+msgstr "Красные шторы"
+
+msgid "Red Planks"
+msgstr "Красные доски"
+
+msgid "Red Fence"
+msgstr "Красный забор"
+
+msgid "Red Fence Gate"
+msgstr "Красная калитка"
+
+msgid "Yellow Armchair"
+msgstr "Жёлтое кресло"
+
+msgid "Yellow Curtains"
+msgstr "Жёлтые шторы"
+
+msgid "Yellow Planks"
+msgstr "Жёлтые доски"
+
+msgid "Yellow Fence"
+msgstr "Жёлтый забор"
+
+msgid "Yellow Fence Gate"
+msgstr "Жёлтая калитка"
+
+msgid "Green Armchair"
+msgstr "Зелёное кресло"
+
+msgid "Green Curtains"
+msgstr "Зелёные шторы"
+
+msgid "Green Planks"
+msgstr "Зелёные доски"
+
+msgid "Green Fence"
+msgstr "Зелёный забор"
+
+msgid "Green Fence Gate"
+msgstr "Зелёная калитка"
+
+msgid "Cyan Armchair"
+msgstr "Голубое кресло"
+
+msgid "Cyan Curtains"
+msgstr "Голубые шторы"
+
+msgid "Cyan Planks"
+msgstr "Голубые доски"
+
+msgid "Cyan Fence"
+msgstr "Голубой забор"
+
+msgid "Cyan Fence Gate"
+msgstr "Голубая калитка"
+
+msgid "Blue Armchair"
+msgstr "Синее кресло"
+
+msgid "Blue Curtains"
+msgstr "Синие шторы"
+
+msgid "Blue Planks"
+msgstr "Синие доски"
+
+msgid "Blue Fence"
+msgstr "Синий забор"
+
+msgid "Blue Fence Gate"
+msgstr "Синяя калитка"
+
+msgid "Magenta Armchair"
+msgstr "Фиолетовое кресло"
+
+msgid "Magenta Curtains"
+msgstr "Фиолетовые шторы"
+
+msgid "Magenta Planks"
+msgstr "Фиолетовые доски"
+
+msgid "Magenta Fence"
+msgstr "Фиолетовый забор"
+
+msgid "Magenta Fence Gate"
+msgstr "Фиолетовая калитка"
+
+msgid "Orange Armchair"
+msgstr "Оранжевое кресло"
+
+msgid "Orange Curtains"
+msgstr "Оранжевые шторы"
+
+msgid "Orange Planks"
+msgstr "Оранжевые доски"
+
+msgid "Orange Fence"
+msgstr "Оранжевый забор"
+
+msgid "Orange Fence Gate"
+msgstr "Оранжевая калитка"
+
+msgid "Purple Armchair"
+msgstr "Пурпурное кресло"
+
+msgid "Purple Curtains"
+msgstr "Пурпурные шторы"
+
+msgid "Purple Planks"
+msgstr "Пурпурные доски"
+
+msgid "Purple Fence"
+msgstr "Пурпурный забор"
+
+msgid "Purple Fence Gate"
+msgstr "Пурпурная калитка"
+
+msgid "Brown Armchair"
+msgstr "Коричневое кресло"
+
+msgid "Brown Curtains"
+msgstr "Коричневые шторы"
+
+msgid "Brown Planks"
+msgstr "Коричневые доски"
+
+msgid "Brown Fence"
+msgstr "Коричневый забор"
+
+msgid "Brown Fence Gate"
+msgstr "Коричневая калитка"
+
+msgid "Pink Armchair"
+msgstr "Розовое кресло"
+
+msgid "Pink Curtains"
+msgstr "Розовые шторы"
+
+msgid "Pink Planks"
+msgstr "Розовые доски"
+
+msgid "Pink Fence"
+msgstr "Розовый забор"
+
+msgid "Pink Fence Gate"
+msgstr "Розовая калитка"
+
+msgid "Lime Armchair"
+msgstr "Зелёное лаймовое кресло"
+
+msgid "Lime Curtains"
+msgstr "Зелёные лаймовые шторы"
+
+msgid "Lime Planks"
+msgstr "Зелёные лаймовые доски"
+
+msgid "Lime Fence"
+msgstr "Зелёный лаймовый забор"
+
+msgid "Lime Fence Gate"
+msgstr "Зелёная лаймовая калитка"
+
+msgid "Light Blue Armchair"
+msgstr "Светло-голубое кресло"
+
+msgid "Light Blue Curtains"
+msgstr "Светло-голубые шторы"
+
+msgid "Light Blue Planks"
+msgstr "Светло-голубые доски"
+
+msgid "Light Blue Fence"
+msgstr "Светло-голубой забор"
+
+msgid "Light Blue Fence Gate"
+msgstr "Светло-голубая калитка"
+
+msgid "Fridge opens"
+msgstr "Холодильник открывается"
+
+msgid "Fridge closes"
+msgstr "Холодильник закрывается"
+
+msgid "Curtain moves"
+msgstr "Штора движется"
+
+msgid "Counter"
+msgstr "Стойка"
+
+msgid "Sticks"
+msgstr "Палочки"
+
+msgid "Bass guitar"
+msgstr "Бас-гитара"
+
+msgid "Bass drum"
+msgstr "Большой барабан"
+
+msgid "Snare drum"
+msgstr "Малый барабан"
+
+msgid "Bell"
+msgstr "Колокольчик"
+
+msgid "Flute"
+msgstr "Флейта"
+
+msgid "Chime"
+msgstr "Чаймс"
+
+msgid "Guitar"
+msgstr "Гитара"
+
+msgid "Xylophone"
+msgstr "Ксилофон"
+
+msgid "Iron xylophone"
+msgstr "Вибрафон"
+
+msgid "Cow bell"
+msgstr "Коровий колокольчик"
+
+msgid "Didgeridoo"
+msgstr "Диджериду"
+
+msgid "Square wave"
+msgstr "Битная музыка"
+
+msgid "Banjo"
+msgstr "Банджо"
+
+msgid "Electric piano"
+msgstr "Электронное пианино"
+
+msgid "Piano"
+msgstr "Пианино"
+
+msgid "Doorbell"
+msgstr "Дверной звонок"
+
+msgid "Instrument: @1"
+msgstr "Инструмент: @1"
+
+msgid "Plays a melody when rung"
+msgstr "Проигрывает мелодию при нажатии"
+
+msgid "A doorbell is a button-like musical block which plays a melody when rung, allowing the visitors to notify the owner of their arrival."
+msgstr "Дверной звонок - это блок-кнопка, который проигрывает мелодию при нажатии, давая возможость гостям уведомить владельца о своём прибытии."
+
+msgid "To ring the doorbell, rightclick it. Doorbell plays a different instrument based on which additional ingredient (beside a wood plank and Redstone Dust) was added when crafting it:"
+msgstr "Чтобы позвонить в дверной звонок, нажмите по нему ПКМ. Дверной звонок играет разными инструментами в зависимости от того, какой дополнительный предмет (помимо доски и красной пыли) был добавлен при изготовлении:"
+
+msgid "Wood"
+msgstr "Дерево"
+
+msgid "@1 or @2"
+msgstr "@1 или @2"
+
+msgid "Nothing"
+msgstr "Ничего"
+
+msgid "The melody played by the doorbell can be configured through modifying the mod.conf file."
+msgstr "Мелодия, проигрываемая дверным звонком, может быть изменена посредством редактирования файла mod.conf"
+
+msgid "Fridge"
+msgstr "Холодильник"
+
+msgid "27 inventory slots"
+msgstr "27 слотов"
+
+msgid "Fridges are containers which provide 27 inventory slots."
+msgstr "Холодильники это контейнеры, имеющие 27 слотов."
+
+msgid "To access its inventory, rightclick it. When broken, the items will drop out."
+msgstr "Чтобы открыть его инвентарь, нажмите ПКМ. Когда он будет разрушен, все предметы выпадут."
+
+msgid "Inventory"
+msgstr "Инвентарь"
+
+msgid "Oak Hedge"
+msgstr "Дубовая живая изгородь"
+
+msgid "Dark Oak Hedge"
+msgstr "Живая изгородь из тёмного дуба"
+
+msgid "Jungle Hedge"
+msgstr "Живая изгородь из тропического дерева"
+
+msgid "Acacia Hedge"
+msgstr "Живая изгородь из акации"
+
+msgid "Spruce Hedge"
+msgstr "Еловая живая изгородь"
+
+msgid "Birch Hedge"
+msgstr "Берёзовая живая изгородь"
+
+msgid "Mangrove Hedge"
+msgstr "Мангровая живая изгородь"
+
+msgid "Cherry Hedge"
+msgstr "Вишнёвая живая изгородь"
+
+msgid "Azalea Hedge"
+msgstr "Азалиевая живая изгородь"
+
+msgid "Flowering Azalea Hedge"
+msgstr "Цветущая азалиевая живая изгородь"
+
+msgid "Oven"
+msgstr "Духовка"
+
+msgid "Recipe book"
+msgstr "Книга рецептов"
+
+msgid "Cooks food faster than furnace"
+msgstr "Готовит еду быстрее печки"
+
+msgid "Ovens cook several items, using a furnace fuel, into something else, but twice as fast as a normal furnace and have quadrice slots for result than smoker"
+msgstr "Духовки могут готовить несколько предметов одновременно, расходуя топливо для печки, во что-то ещё, но они готовят в 2 раза быстрее обычных печек и имеют 4 выходных слота вместо 1"
+
+msgid "Use the oven to open the furnace menu."
+msgstr "Нажмите ПКМ по духовке, чтобы открыть меню приготовления."
+
+msgid "Place a furnace fuel in the lower slot and the source material in the upper slot."
+msgstr "Положите топливо в нижний слой и исходный материал в вверхний слот."
+
+msgid "The oven will slowly use its fuel to smelt the item."
+msgstr "Духовка будет медленно расходовать топливо, чтобы приготовить предмет."
+
+msgid "The result will be placed into one of the output slots at the right side."
+msgstr "Результат будет размещён в одном из выходных слотов справа."
+
+msgid "Use the recipe book to see what foods you can smelt, what you can use as fuel and how long it will burn."
+msgstr "Используйте книгу рецептов чтобы посмотреть, какую еду вы можете готовить, что можете использовать в качестве топлива и сколько это будет готовиться."
+
+msgid "Active Oven"
+msgstr "Включенная духовка"
+
+msgid "Gravel Path"
+msgstr "Гравийная дорожка"
+
+msgid "Cobblestone Path"
+msgstr "Булыжниковая дорожка"
+
+msgid "Stone Path"
+msgstr "Каменная дорожка"
+
+msgid "Granite Path"
+msgstr "Гранитовая дорожка"
+
+msgid "Andesite Path"
+msgstr "Андезитовая дорожка"
+
+msgid "Diorite Path"
+msgstr "Диоритовая дорожка"
+
+msgid "Netherrack Path"
+msgstr "Адская каменная дорожка"
+
+msgid "Deepslate Path"
+msgstr "Сланцевая дорожка"
+
+msgid "Cobbled Deepslate Path"
+msgstr "Дроблёная сланцевая дорожка"
+
+msgid "Tuff Path"
+msgstr "Туфовая дорожка"
+
+msgid "Table Lamp"
+msgstr "Настольная лампа"
+
+msgid "Oak Chair"
+msgstr "Дубовый стул"
+
+msgid "Oak Table"
+msgstr "Дубовый стол"
+
+msgid "Dark Oak Chair"
+msgstr "Стул из тёмного дуба"
+
+msgid "Dark Oak Table"
+msgstr "Стол из тёмного дуба"
+
+msgid "Jungle Chair"
+msgstr "Стул из тропического дерева"
+
+msgid "Jungle Table"
+msgstr "Стол из тропического дерева"
+
+msgid "Spruce Chair"
+msgstr "Еловый стул"
+
+msgid "Spruce Table"
+msgstr "Еловый стол"
+
+msgid "Acacia Chair"
+msgstr "Стул из акации"
+
+msgid "Acacia Table"
+msgstr "Стол из акации"
+
+msgid "Birch Chair"
+msgstr "Берёзовый стул"
+
+msgid "Birch Table"
+msgstr "Берёзовый стол"
+
+msgid "Mangrove Chair"
+msgstr "Мангровый стул"
+
+msgid "Mangrove Table"
+msgstr "Мангровый стол"
+
+msgid "Cherry Chair"
+msgstr "Вишнёвый стул"
+
+msgid "Cherry Table"
+msgstr "Вишнёвый стол"
+
+msgid "Bamboo Chair"
+msgstr "Бамбуковый стул"
+
+msgid "Bamboo Table"
+msgstr "Бамбуковый стол"
+
+msgid "Crimson Chair"
+msgstr "Багровый стул"
+
+msgid "Crimson Table"
+msgstr "Багровый стол"
+
+msgid "Warped Chair"
+msgstr "Искажённый стул"
+
+msgid "Warped Table"
+msgstr "Искажённый стол"
+
+msgid "Oak Slab Table"
+msgstr "Дубовый полублочный стол"
+
+msgid "Dark Oak Slab Table"
+msgstr "Полублочный стол из тёмного дуба"
+
+msgid "Jungle Slab Table"
+msgstr "Полублочный стол из тропического дерева"
+
+msgid "Spruce Slab Table"
+msgstr "Еловый полублочный стол"
+
+msgid "Acacia Slab Table"
+msgstr "Полублочный стол из акации"
+
+msgid "Birch Slab Table"
+msgstr "Берёзовый полублочный стол"
+
+msgid "Mangrove Slab Table"
+msgstr "Мангровый полублочный стол"
+
+msgid "Cherry Slab Table"
+msgstr "Вишнёвый полублочный стол"
+
+msgid "Bamboo Slab Table"
+msgstr "Бамбуковый полублочный стол"
+
+msgid "Crimson Slab Table"
+msgstr "Багровый полублочный стол"
+
+msgid "Warped Slab Table"
+msgstr "Искажённый полублочный стол"
+

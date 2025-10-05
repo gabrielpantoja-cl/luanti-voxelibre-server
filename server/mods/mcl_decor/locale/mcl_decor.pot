@@ -1,0 +1,579 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain mcl_decor x.x.x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: ltt_convert 0.2.0\n"
+
+msgid "VoxeLibre Furniture and decorations"
+msgstr ""
+
+msgid "Adds more decoration and furniture blocks to VoxeLibre (ex. MineClone2) and Mineclonia"
+msgstr ""
+
+msgid "Checkerboard Tile"
+msgstr ""
+
+msgid "Checkerboard Stair"
+msgstr ""
+
+msgid "Checkerboard Slab"
+msgstr ""
+
+msgid "Double Checkerboard Slab"
+msgstr ""
+
+msgid "@1 (closed)"
+msgstr ""
+
+msgid "@1 Stair"
+msgstr ""
+
+msgid "@1 Slab"
+msgstr ""
+
+msgid "Double @1 Slab"
+msgstr ""
+
+msgid "White Armchair"
+msgstr ""
+
+msgid "White Curtains"
+msgstr ""
+
+msgid "White Planks"
+msgstr ""
+
+msgid "White Fence"
+msgstr ""
+
+msgid "White Fence Gate"
+msgstr ""
+
+msgid "Grey Armchair"
+msgstr ""
+
+msgid "Grey Curtains"
+msgstr ""
+
+msgid "Grey Planks"
+msgstr ""
+
+msgid "Grey Fence"
+msgstr ""
+
+msgid "Grey Fence Gate"
+msgstr ""
+
+msgid "Light Grey Armchair"
+msgstr ""
+
+msgid "Light Grey Curtains"
+msgstr ""
+
+msgid "Light Grey Planks"
+msgstr ""
+
+msgid "Light Grey Fence"
+msgstr ""
+
+msgid "Light Grey Fence Gate"
+msgstr ""
+
+msgid "Black Armchair"
+msgstr ""
+
+msgid "Black Curtains"
+msgstr ""
+
+msgid "Black Planks"
+msgstr ""
+
+msgid "Black Fence"
+msgstr ""
+
+msgid "Black Fence Gate"
+msgstr ""
+
+msgid "Red Armchair"
+msgstr ""
+
+msgid "Red Curtains"
+msgstr ""
+
+msgid "Red Planks"
+msgstr ""
+
+msgid "Red Fence"
+msgstr ""
+
+msgid "Red Fence Gate"
+msgstr ""
+
+msgid "Yellow Armchair"
+msgstr ""
+
+msgid "Yellow Curtains"
+msgstr ""
+
+msgid "Yellow Planks"
+msgstr ""
+
+msgid "Yellow Fence"
+msgstr ""
+
+msgid "Yellow Fence Gate"
+msgstr ""
+
+msgid "Green Armchair"
+msgstr ""
+
+msgid "Green Curtains"
+msgstr ""
+
+msgid "Green Planks"
+msgstr ""
+
+msgid "Green Fence"
+msgstr ""
+
+msgid "Green Fence Gate"
+msgstr ""
+
+msgid "Cyan Armchair"
+msgstr ""
+
+msgid "Cyan Curtains"
+msgstr ""
+
+msgid "Cyan Planks"
+msgstr ""
+
+msgid "Cyan Fence"
+msgstr ""
+
+msgid "Cyan Fence Gate"
+msgstr ""
+
+msgid "Blue Armchair"
+msgstr ""
+
+msgid "Blue Curtains"
+msgstr ""
+
+msgid "Blue Planks"
+msgstr ""
+
+msgid "Blue Fence"
+msgstr ""
+
+msgid "Blue Fence Gate"
+msgstr ""
+
+msgid "Magenta Armchair"
+msgstr ""
+
+msgid "Magenta Curtains"
+msgstr ""
+
+msgid "Magenta Planks"
+msgstr ""
+
+msgid "Magenta Fence"
+msgstr ""
+
+msgid "Magenta Fence Gate"
+msgstr ""
+
+msgid "Orange Armchair"
+msgstr ""
+
+msgid "Orange Curtains"
+msgstr ""
+
+msgid "Orange Planks"
+msgstr ""
+
+msgid "Orange Fence"
+msgstr ""
+
+msgid "Orange Fence Gate"
+msgstr ""
+
+msgid "Purple Armchair"
+msgstr ""
+
+msgid "Purple Curtains"
+msgstr ""
+
+msgid "Purple Planks"
+msgstr ""
+
+msgid "Purple Fence"
+msgstr ""
+
+msgid "Purple Fence Gate"
+msgstr ""
+
+msgid "Brown Armchair"
+msgstr ""
+
+msgid "Brown Curtains"
+msgstr ""
+
+msgid "Brown Planks"
+msgstr ""
+
+msgid "Brown Fence"
+msgstr ""
+
+msgid "Brown Fence Gate"
+msgstr ""
+
+msgid "Pink Armchair"
+msgstr ""
+
+msgid "Pink Curtains"
+msgstr ""
+
+msgid "Pink Planks"
+msgstr ""
+
+msgid "Pink Fence"
+msgstr ""
+
+msgid "Pink Fence Gate"
+msgstr ""
+
+msgid "Lime Armchair"
+msgstr ""
+
+msgid "Lime Curtains"
+msgstr ""
+
+msgid "Lime Planks"
+msgstr ""
+
+msgid "Lime Fence"
+msgstr ""
+
+msgid "Lime Fence Gate"
+msgstr ""
+
+msgid "Light Blue Armchair"
+msgstr ""
+
+msgid "Light Blue Curtains"
+msgstr ""
+
+msgid "Light Blue Planks"
+msgstr ""
+
+msgid "Light Blue Fence"
+msgstr ""
+
+msgid "Light Blue Fence Gate"
+msgstr ""
+
+msgid "Fridge opens"
+msgstr ""
+
+msgid "Fridge closes"
+msgstr ""
+
+msgid "Curtain moves"
+msgstr ""
+
+msgid "Counter"
+msgstr ""
+
+msgid "Sticks"
+msgstr ""
+
+msgid "Bass guitar"
+msgstr ""
+
+msgid "Bass drum"
+msgstr ""
+
+msgid "Snare drum"
+msgstr ""
+
+msgid "Bell"
+msgstr ""
+
+msgid "Flute"
+msgstr ""
+
+msgid "Chime"
+msgstr ""
+
+msgid "Guitar"
+msgstr ""
+
+msgid "Xylophone"
+msgstr ""
+
+msgid "Iron xylophone"
+msgstr ""
+
+msgid "Cow bell"
+msgstr ""
+
+msgid "Didgeridoo"
+msgstr ""
+
+msgid "Square wave"
+msgstr ""
+
+msgid "Banjo"
+msgstr ""
+
+msgid "Electric piano"
+msgstr ""
+
+msgid "Piano"
+msgstr ""
+
+msgid "Doorbell"
+msgstr ""
+
+msgid "Instrument: @1"
+msgstr ""
+
+msgid "Plays a melody when rung"
+msgstr ""
+
+msgid "A doorbell is a button-like musical block which plays a melody when rung, allowing the visitors to notify the owner of their arrival."
+msgstr ""
+
+msgid "To ring the doorbell, rightclick it. Doorbell plays a different instrument based on which additional ingredient (beside a wood plank and Redstone Dust) was added when crafting it:"
+msgstr ""
+
+msgid "Wood"
+msgstr ""
+
+msgid "@1 or @2"
+msgstr ""
+
+msgid "Nothing"
+msgstr ""
+
+msgid "The melody played by the doorbell can be configured through modifying the mod.conf file."
+msgstr ""
+
+msgid "Fridge"
+msgstr ""
+
+msgid "27 inventory slots"
+msgstr ""
+
+msgid "Fridges are containers which provide 27 inventory slots."
+msgstr ""
+
+msgid "To access its inventory, rightclick it. When broken, the items will drop out."
+msgstr ""
+
+msgid "Inventory"
+msgstr ""
+
+msgid "Oak Hedge"
+msgstr ""
+
+msgid "Dark Oak Hedge"
+msgstr ""
+
+msgid "Jungle Hedge"
+msgstr ""
+
+msgid "Acacia Hedge"
+msgstr ""
+
+msgid "Spruce Hedge"
+msgstr ""
+
+msgid "Birch Hedge"
+msgstr ""
+
+msgid "Mangrove Hedge"
+msgstr ""
+
+msgid "Cherry Hedge"
+msgstr ""
+
+msgid "Azalea Hedge"
+msgstr ""
+
+msgid "Flowering Azalea Hedge"
+msgstr ""
+
+msgid "Oven"
+msgstr ""
+
+msgid "Recipe book"
+msgstr ""
+
+msgid "Cooks food faster than furnace"
+msgstr ""
+
+msgid "Ovens cook several items, using a furnace fuel, into something else, but twice as fast as a normal furnace and have quadrice slots for result than smoker"
+msgstr ""
+
+msgid "Use the oven to open the furnace menu."
+msgstr ""
+
+msgid "Place a furnace fuel in the lower slot and the source material in the upper slot."
+msgstr ""
+
+msgid "The oven will slowly use its fuel to smelt the item."
+msgstr ""
+
+msgid "The result will be placed into one of the output slots at the right side."
+msgstr ""
+
+msgid "Use the recipe book to see what foods you can smelt, what you can use as fuel and how long it will burn."
+msgstr ""
+
+msgid "Active Oven"
+msgstr ""
+
+msgid "Gravel Path"
+msgstr ""
+
+msgid "Cobblestone Path"
+msgstr ""
+
+msgid "Stone Path"
+msgstr ""
+
+msgid "Granite Path"
+msgstr ""
+
+msgid "Andesite Path"
+msgstr ""
+
+msgid "Diorite Path"
+msgstr ""
+
+msgid "Netherrack Path"
+msgstr ""
+
+msgid "Deepslate Path"
+msgstr ""
+
+msgid "Cobbled Deepslate Path"
+msgstr ""
+
+msgid "Tuff Path"
+msgstr ""
+
+msgid "Table Lamp"
+msgstr ""
+
+msgid "Oak Chair"
+msgstr ""
+
+msgid "Oak Table"
+msgstr ""
+
+msgid "Dark Oak Chair"
+msgstr ""
+
+msgid "Dark Oak Table"
+msgstr ""
+
+msgid "Jungle Chair"
+msgstr ""
+
+msgid "Jungle Table"
+msgstr ""
+
+msgid "Spruce Chair"
+msgstr ""
+
+msgid "Spruce Table"
+msgstr ""
+
+msgid "Acacia Chair"
+msgstr ""
+
+msgid "Acacia Table"
+msgstr ""
+
+msgid "Birch Chair"
+msgstr ""
+
+msgid "Birch Table"
+msgstr ""
+
+msgid "Mangrove Chair"
+msgstr ""
+
+msgid "Mangrove Table"
+msgstr ""
+
+msgid "Cherry Chair"
+msgstr ""
+
+msgid "Cherry Table"
+msgstr ""
+
+msgid "Bamboo Chair"
+msgstr ""
+
+msgid "Bamboo Table"
+msgstr ""
+
+msgid "Crimson Chair"
+msgstr ""
+
+msgid "Crimson Table"
+msgstr ""
+
+msgid "Warped Chair"
+msgstr ""
+
+msgid "Warped Table"
+msgstr ""
+
+msgid "Oak Slab Table"
+msgstr ""
+
+msgid "Dark Oak Slab Table"
+msgstr ""
+
+msgid "Jungle Slab Table"
+msgstr ""
+
+msgid "Spruce Slab Table"
+msgstr ""
+
+msgid "Acacia Slab Table"
+msgstr ""
+
+msgid "Birch Slab Table"
+msgstr ""
+
+msgid "Mangrove Slab Table"
+msgstr ""
+
+msgid "Cherry Slab Table"
+msgstr ""
+
+msgid "Bamboo Slab Table"
+msgstr ""
+
+msgid "Crimson Slab Table"
+msgstr ""
+
+msgid "Warped Slab Table"
+msgstr ""
+

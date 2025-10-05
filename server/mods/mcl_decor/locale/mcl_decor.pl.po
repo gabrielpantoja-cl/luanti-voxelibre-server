@@ -1,0 +1,579 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Luanti textdomain mcl_decor x.x.x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: ltt_convert 0.2.0\n"
+
+msgid "VoxeLibre Furniture and decorations"
+msgstr ""
+
+msgid "Adds more decoration and furniture blocks to VoxeLibre (ex. MineClone2) and Mineclonia"
+msgstr ""
+
+msgid "Checkerboard Tile"
+msgstr ""
+
+msgid "Checkerboard Stair"
+msgstr ""
+
+msgid "Checkerboard Slab"
+msgstr ""
+
+msgid "Double Checkerboard Slab"
+msgstr ""
+
+msgid "@1 (closed)"
+msgstr ""
+
+msgid "@1 Stair"
+msgstr ""
+
+msgid "@1 Slab"
+msgstr ""
+
+msgid "Double @1 Slab"
+msgstr ""
+
+msgid "White Armchair"
+msgstr "Fotel biały"
+
+msgid "White Curtains"
+msgstr "Zasłony białe"
+
+msgid "White Planks"
+msgstr "Deski białe"
+
+msgid "White Fence"
+msgstr ""
+
+msgid "White Fence Gate"
+msgstr ""
+
+msgid "Grey Armchair"
+msgstr "Fotel szary"
+
+msgid "Grey Curtains"
+msgstr "Zasłony szare"
+
+msgid "Grey Planks"
+msgstr "Deski szare"
+
+msgid "Grey Fence"
+msgstr ""
+
+msgid "Grey Fence Gate"
+msgstr ""
+
+msgid "Light Grey Armchair"
+msgstr "Fotel jasnoszary"
+
+msgid "Light Grey Curtains"
+msgstr "Zasłony jasnoszare"
+
+msgid "Light Grey Planks"
+msgstr "Deski jasnoszare"
+
+msgid "Light Grey Fence"
+msgstr ""
+
+msgid "Light Grey Fence Gate"
+msgstr ""
+
+msgid "Black Armchair"
+msgstr "Fotel czarny"
+
+msgid "Black Curtains"
+msgstr "Zasłony czarne"
+
+msgid "Black Planks"
+msgstr "Deski czarne"
+
+msgid "Black Fence"
+msgstr ""
+
+msgid "Black Fence Gate"
+msgstr ""
+
+msgid "Red Armchair"
+msgstr "Fotel czerwony"
+
+msgid "Red Curtains"
+msgstr "Zasłony czerwone"
+
+msgid "Red Planks"
+msgstr "Deski czerwone"
+
+msgid "Red Fence"
+msgstr ""
+
+msgid "Red Fence Gate"
+msgstr ""
+
+msgid "Yellow Armchair"
+msgstr "Fotel żółty"
+
+msgid "Yellow Curtains"
+msgstr "Zasłony żółte"
+
+msgid "Yellow Planks"
+msgstr "Deski żółte"
+
+msgid "Yellow Fence"
+msgstr ""
+
+msgid "Yellow Fence Gate"
+msgstr ""
+
+msgid "Green Armchair"
+msgstr "Fotel zielony"
+
+msgid "Green Curtains"
+msgstr "Zasłony zielone"
+
+msgid "Green Planks"
+msgstr "Deski zielone"
+
+msgid "Green Fence"
+msgstr ""
+
+msgid "Green Fence Gate"
+msgstr ""
+
+msgid "Cyan Armchair"
+msgstr "Fotel cyjanowy"
+
+msgid "Cyan Curtains"
+msgstr "Zasłony cyjanowe"
+
+msgid "Cyan Planks"
+msgstr "Deski cyjanowe"
+
+msgid "Cyan Fence"
+msgstr ""
+
+msgid "Cyan Fence Gate"
+msgstr ""
+
+msgid "Blue Armchair"
+msgstr "Fotel niebieski"
+
+msgid "Blue Curtains"
+msgstr "Zasłony niebieskie"
+
+msgid "Blue Planks"
+msgstr "Deski niebieskie"
+
+msgid "Blue Fence"
+msgstr ""
+
+msgid "Blue Fence Gate"
+msgstr ""
+
+msgid "Magenta Armchair"
+msgstr "Fotel magentowy"
+
+msgid "Magenta Curtains"
+msgstr "Zasłony magentowe"
+
+msgid "Magenta Planks"
+msgstr "Deski magentowe"
+
+msgid "Magenta Fence"
+msgstr ""
+
+msgid "Magenta Fence Gate"
+msgstr ""
+
+msgid "Orange Armchair"
+msgstr "Fotel pomarańczowy"
+
+msgid "Orange Curtains"
+msgstr "Zasłony pomarańczowe"
+
+msgid "Orange Planks"
+msgstr "Deski pomarańczowe"
+
+msgid "Orange Fence"
+msgstr ""
+
+msgid "Orange Fence Gate"
+msgstr ""
+
+msgid "Purple Armchair"
+msgstr "Fotel fioletowy"
+
+msgid "Purple Curtains"
+msgstr "Zasłony fioletowe"
+
+msgid "Purple Planks"
+msgstr "Deski fioletowe"
+
+msgid "Purple Fence"
+msgstr ""
+
+msgid "Purple Fence Gate"
+msgstr ""
+
+msgid "Brown Armchair"
+msgstr "Fotel brązowy"
+
+msgid "Brown Curtains"
+msgstr "Zasłony brązowe"
+
+msgid "Brown Planks"
+msgstr "Deski brązowe"
+
+msgid "Brown Fence"
+msgstr ""
+
+msgid "Brown Fence Gate"
+msgstr ""
+
+msgid "Pink Armchair"
+msgstr "Fotel różowy"
+
+msgid "Pink Curtains"
+msgstr "Zasłony różowe"
+
+msgid "Pink Planks"
+msgstr "Deski różowe"
+
+msgid "Pink Fence"
+msgstr ""
+
+msgid "Pink Fence Gate"
+msgstr ""
+
+msgid "Lime Armchair"
+msgstr "Fotel limonkowy"
+
+msgid "Lime Curtains"
+msgstr "Zasłony limonkowe"
+
+msgid "Lime Planks"
+msgstr "Deski limonkowe"
+
+msgid "Lime Fence"
+msgstr ""
+
+msgid "Lime Fence Gate"
+msgstr ""
+
+msgid "Light Blue Armchair"
+msgstr "Fotel błękitny"
+
+msgid "Light Blue Curtains"
+msgstr "Zasłony błękitne"
+
+msgid "Light Blue Planks"
+msgstr "Deski błękitne"
+
+msgid "Light Blue Fence"
+msgstr ""
+
+msgid "Light Blue Fence Gate"
+msgstr ""
+
+msgid "Fridge opens"
+msgstr ""
+
+msgid "Fridge closes"
+msgstr ""
+
+msgid "Curtain moves"
+msgstr ""
+
+msgid "Counter"
+msgstr ""
+
+msgid "Sticks"
+msgstr "Pałeczki"
+
+msgid "Bass guitar"
+msgstr "Gitara basowa"
+
+msgid "Bass drum"
+msgstr "Perkusja basowa"
+
+msgid "Snare drum"
+msgstr "Perkusja werblowa"
+
+msgid "Bell"
+msgstr "Dzwonek"
+
+msgid "Flute"
+msgstr "Flet"
+
+msgid "Chime"
+msgstr "Dzwonki"
+
+msgid "Guitar"
+msgstr "Gitara"
+
+msgid "Xylophone"
+msgstr "Ksylofon"
+
+msgid "Iron xylophone"
+msgstr "Żelazny ksylofon"
+
+msgid "Cow bell"
+msgstr "Krowi dzwonek"
+
+msgid "Didgeridoo"
+msgstr "Didgeridoo"
+
+msgid "Square wave"
+msgstr "Kwadratowa fala"
+
+msgid "Banjo"
+msgstr "Banjo"
+
+msgid "Electric piano"
+msgstr "Pianino elektryczne"
+
+msgid "Piano"
+msgstr "Fortepian"
+
+msgid "Doorbell"
+msgstr "Dzwonek do drzwi"
+
+msgid "Instrument: @1"
+msgstr ""
+
+msgid "Plays a melody when rung"
+msgstr "Po naciśnięciu gra melodię"
+
+msgid "A doorbell is a button-like musical block which plays a melody when rung, allowing the visitors to notify the owner of their arrival."
+msgstr "Dzwonek do drzwi to przyciskopodobny blok muzyczny, który po naciśnięciu gra melodię umożliwiając gościom powiadomienie właściciela o swoim przybyciu."
+
+msgid "To ring the doorbell, rightclick it. Doorbell plays a different instrument based on which additional ingredient (beside a wood plank and Redstone Dust) was added when crafting it:"
+msgstr "Aby zadzwonić dzwonkiem kliknij go prawym przyciskiem myszy. Dzwonek gra innym instrumentem w zależności od dodatkowego składnika (oprócz deski drewnianej i pyłu czerwonego kamienia), który został dodany podczas jego tworzenia:"
+
+msgid "Wood"
+msgstr "Drewno"
+
+msgid "@1 or @2"
+msgstr ""
+
+msgid "Nothing"
+msgstr "Nic"
+
+msgid "The melody played by the doorbell can be configured through modifying the mod.conf file."
+msgstr "Melodia grana przez dzwonek do drzwi może być konfigurowana poprzez modyfikację pliku mod.conf."
+
+msgid "Fridge"
+msgstr "Lodówka"
+
+msgid "27 inventory slots"
+msgstr "27 miejsc na ekwipunek"
+
+msgid "Fridges are containers which provide 27 inventory slots."
+msgstr "Lodówki to kontenery, które zapewniają 27 miejsc na ekwipunek."
+
+msgid "To access its inventory, rightclick it. When broken, the items will drop out."
+msgstr "Aby uzyskać dostęp do jego ekwipunku, kliknij go prawym przyciskiem myszy. Po uszkodzeniu elementy wypadną."
+
+msgid "Inventory"
+msgstr ""
+
+msgid "Oak Hedge"
+msgstr "Żywopłot dębowy"
+
+msgid "Dark Oak Hedge"
+msgstr "Żywopłot z ciemnego dębu"
+
+msgid "Jungle Hedge"
+msgstr "Żywopłot z dżungli"
+
+msgid "Acacia Hedge"
+msgstr "Żywopłot akacjowy"
+
+msgid "Spruce Hedge"
+msgstr "Żywopłot świerkowy"
+
+msgid "Birch Hedge"
+msgstr "Żywopłot brzozowy"
+
+msgid "Mangrove Hedge"
+msgstr "Żywopłot mangrowy"
+
+msgid "Cherry Hedge"
+msgstr "Żywopłot wiśniowy"
+
+msgid "Azalea Hedge"
+msgstr ""
+
+msgid "Flowering Azalea Hedge"
+msgstr ""
+
+msgid "Oven"
+msgstr "Piekarnik"
+
+msgid "Recipe book"
+msgstr ""
+
+msgid "Cooks food faster than furnace"
+msgstr "Gotuje jedzenie szybciej niż piec"
+
+msgid "Ovens cook several items, using a furnace fuel, into something else, but twice as fast as a normal furnace and have quadrice slots for result than smoker"
+msgstr "Piekarniki używając paliwa do pieca przetwarzają kilka przedmiotów w coś innego, ale robią to dwa razy szybciej niż zwykły piec i mają cztery razy więcej miejsc na wynik niż palenisko."
+
+msgid "Use the oven to open the furnace menu."
+msgstr "Użyj piekarnika, aby otworzyć menu pieca"
+
+msgid "Place a furnace fuel in the lower slot and the source material in the upper slot."
+msgstr "Umieść paliwo do pieca w dolnym slocie, a materiał źródłowy w górnym slocie."
+
+msgid "The oven will slowly use its fuel to smelt the item."
+msgstr "Piekarnik stopniowo zużyje swoje paliwo, aby przetopić przedmiot."
+
+msgid "The result will be placed into one of the output slots at the right side."
+msgstr "Wynik zostanie umieszczony w jednym z miejsc na wynik po prawej stronie."
+
+msgid "Use the recipe book to see what foods you can smelt, what you can use as fuel and how long it will burn."
+msgstr "Użyj książki kucharskiej, aby sprawdzić jakie potrawy można przetopić, co można użyć jako paliwo i jak długo będzie się palić."
+
+msgid "Active Oven"
+msgstr "Aktywny pierkarnik"
+
+msgid "Gravel Path"
+msgstr "Ścieżka żwirowa"
+
+msgid "Cobblestone Path"
+msgstr "Ścieżka z kostki brukowej"
+
+msgid "Stone Path"
+msgstr "Ścieżka z kamienia"
+
+msgid "Granite Path"
+msgstr "Ścieżka z granitu"
+
+msgid "Andesite Path"
+msgstr "Ścieżka z andezytu"
+
+msgid "Diorite Path"
+msgstr "Ścieżka z diorytu"
+
+msgid "Netherrack Path"
+msgstr "Ścieżka z netherracku"
+
+msgid "Deepslate Path"
+msgstr "Ścieżka z głębokiej skały"
+
+msgid "Cobbled Deepslate Path"
+msgstr "Ścieżka z głębokiego łupka"
+
+msgid "Tuff Path"
+msgstr ""
+
+msgid "Table Lamp"
+msgstr "Lampa stołowa"
+
+msgid "Oak Chair"
+msgstr "Krzesło dębowe"
+
+msgid "Oak Table"
+msgstr "Stół dębowy"
+
+msgid "Dark Oak Chair"
+msgstr "Krzesło z ciemnego dębu"
+
+msgid "Dark Oak Table"
+msgstr "Stół z ciemnego dębu"
+
+msgid "Jungle Chair"
+msgstr "Krzesło z dżungli"
+
+msgid "Jungle Table"
+msgstr "Stół z dżungli"
+
+msgid "Spruce Chair"
+msgstr "Krzesło świerkowe"
+
+msgid "Spruce Table"
+msgstr "Stół świerkowy"
+
+msgid "Acacia Chair"
+msgstr "Krzesło akacjowe"
+
+msgid "Acacia Table"
+msgstr "Stół akacjowy"
+
+msgid "Birch Chair"
+msgstr "Krzesło brzozowe"
+
+msgid "Birch Table"
+msgstr "Stół brzozowy"
+
+msgid "Mangrove Chair"
+msgstr "Krzesło mangrowe"
+
+msgid "Mangrove Table"
+msgstr "Stół mangrowy"
+
+msgid "Cherry Chair"
+msgstr "Krzesło wiśniowe"
+
+msgid "Cherry Table"
+msgstr "Stół wiśniowy"
+
+msgid "Bamboo Chair"
+msgstr "Krzesło bambusowe"
+
+msgid "Bamboo Table"
+msgstr "Stół bambusowy"
+
+msgid "Crimson Chair"
+msgstr "Krzesło karmazynowe"
+
+msgid "Crimson Table"
+msgstr "Stół karmazynowy"
+
+msgid "Warped Chair"
+msgstr "Krzesło zdeformowane"
+
+msgid "Warped Table"
+msgstr "Stół zdeformowany"
+
+msgid "Oak Slab Table"
+msgstr "Stół z płyt dębowych"
+
+msgid "Dark Oak Slab Table"
+msgstr "Stół z płyt ciemnego dębu"
+
+msgid "Jungle Slab Table"
+msgstr "Stół z płyt dżunglowych"
+
+msgid "Spruce Slab Table"
+msgstr "Stół z płyt świerkowych"
+
+msgid "Acacia Slab Table"
+msgstr "Stół z płyt akacjowych"
+
+msgid "Birch Slab Table"
+msgstr "Stół z płyt brzozowych"
+
+msgid "Mangrove Slab Table"
+msgstr "Stół z płyt mangrowych"
+
+msgid "Cherry Slab Table"
+msgstr "Stół z płyt wiśniowych"
+
+msgid "Bamboo Slab Table"
+msgstr "Stół z płyt bambusowych"
+
+msgid "Crimson Slab Table"
+msgstr "Stół z płyt karmazynowych"
+
+msgid "Warped Slab Table"
+msgstr "Stół z płyt zdeformowanych"
+
