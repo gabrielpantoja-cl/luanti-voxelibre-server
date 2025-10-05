@@ -31,7 +31,7 @@ jobs:
             cd /opt/vegan-wetlands
             
             echo "📥 Clonando repositorio..."
-            git clone https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git .
+            git clone https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git .
             
             echo "🔧 Configurando VPS..."
             chmod +x scripts/setup-vps.sh

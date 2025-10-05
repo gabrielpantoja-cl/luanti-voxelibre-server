@@ -153,7 +153,7 @@ ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worl
 5. **Actualizar este documento** con nuevos hallazgos
 
 ### Información Adicional
-- **Repositorio**: `https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`
+- **Repositorio**: `https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git`
 - **Documentación completa**: `CLAUDE.md`
 - **Servidor**: `luanti.gabrielpantoja.cl:30000`
 

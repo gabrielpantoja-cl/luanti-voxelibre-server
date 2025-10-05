@@ -260,7 +260,7 @@ minetest.log("warning", "[mi_mod] Advertencia")
 - [Minetest Modding Book](https://rubenwardy.com/minetest_modding_book/)
 
 ### Repositorios
-- [Vegan-Wetlands GitHub](https://github.com/gabrielpantoja-cl/Vegan-Wetlands)
+- [Wetlands Luanti Server GitHub](https://github.com/gabrielpantoja-cl/luanti-voxelibre-server)
 - [VoxeLibre GitHub](https://git.minetest.land/VoxeLibre/VoxeLibre)
 
 ### Herramientas

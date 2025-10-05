@@ -6,7 +6,7 @@ Este archivo proporciona orientación específica a Google Gemini cuando trabaja
 
 Vegan Wetlands es un **servidor de juego Luanti (anteriormente Minetest)** diseñado como un entorno compasivo, educativo y creativo para niños de 7+ años. El servidor cuenta con mods personalizados que promueven el cuidado animal, la educación compasiva y el juego no violento a través de santuarios de animales.
 
-**IMPORTANTE**: Este repositorio (`https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`) contiene **TODO** el código específico de Luanti, configuración y lógica de despliegue. Es completamente independiente del repositorio administrativo VPS (`vps-do.git`).
+**IMPORTANTE**: Este repositorio (`https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git`) contiene **TODO** el código específico de Luanti, configuración y lógica de despliegue. Es completamente independiente del repositorio administrativo VPS (`vps-do.git`).
 
 ## 🚨 REGLAS CRÍTICAS DE SEGURIDAD DE TEXTURAS
 
@@ -38,25 +38,25 @@ Vegan Wetlands es un **servidor de juego Luanti (anteriormente Minetest)** dise�
 
 ```bash
 # PASO 1: BACKUP DE EMERGENCIA DEL MUNDO (¡CRÍTICO!)
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
 # PASO 2: REVERTIR CAMBIOS PROBLEMÁTICOS
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && git reset --hard HEAD~1"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && git reset --hard HEAD~1"
 
 # PASO 3: LIMPIAR ESTADO DEL CONTENEDOR
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose down && docker system prune -f"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose down && docker system prune -f"
 
 # PASO 4: REMOVER VOXELIBRE CORROMPIDO
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
 
 # PASO 5: DESCARGAR VOXELIBRE FRESCO (56MB)
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
 
 # PASO 6: REINICIAR CON ESTADO LIMPIO
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose up -d"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose up -d"
 
 # PASO 7: VERIFICAR RECUPERACIÓN
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && sleep 10 && docker-compose ps && du -sh server/worlds/world"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && sleep 10 && docker-compose ps && du -sh server/worlds/world"
 ```
 
 ## Acceso al Servidor
@@ -101,7 +101,7 @@ docker-compose ps
 
 ## Arquitectura del Repositorio
 
-### 🎮 Este Repositorio (Vegan-Wetlands.git)
+### 🎮 Este Repositorio (luanti-voxelibre-server.git)
 **Responsabilidad**: Implementación completa del servidor Luanti
 - Configuración Docker Compose para Luanti
 - Mods personalizados (animal_sanctuary, vegan_food, education_blocks)
