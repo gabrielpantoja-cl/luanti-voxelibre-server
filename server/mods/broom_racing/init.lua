@@ -117,12 +117,15 @@ minetest.register_tool("broom_racing:broom_basic", {
             })
         else
             -- Montar
-            if not broom_racing.active_racers[player_name] then
-                broom_racing.active_racers[player_name] = {}
-            end
-            broom_racing.active_racers[player_name].mounted = true
-            broom_racing.active_racers[player_name].broom_type = "basic"
-            broom_racing.active_racers[player_name].speed_mult = 0.6
+            local pos = user:get_pos()
+            broom_racing.active_racers[player_name] = {
+                mounted = true,
+                broom_type = "basic",
+                speed_mult = 0.6,
+                speed = 0,
+                altitude = pos.y,
+                particle_timer = 0,
+            }
 
             minetest.chat_send_player(player_name, "🧹 ¡Montado en escoba básica! Arriba=acelerar, Salto=subir, Agacharse=bajar")
 
@@ -159,12 +162,15 @@ minetest.register_tool("broom_racing:broom_fast", {
                 speed = 1,
             })
         else
-            if not broom_racing.active_racers[player_name] then
-                broom_racing.active_racers[player_name] = {}
-            end
-            broom_racing.active_racers[player_name].mounted = true
-            broom_racing.active_racers[player_name].broom_type = "fast"
-            broom_racing.active_racers[player_name].speed_mult = 0.8
+            local pos = user:get_pos()
+            broom_racing.active_racers[player_name] = {
+                mounted = true,
+                broom_type = "fast",
+                speed_mult = 0.8,
+                speed = 0,
+                altitude = pos.y,
+                particle_timer = 0,
+            }
 
             minetest.chat_send_player(player_name, "🧹 ¡Montado en escoba rápida! Arriba=acelerar, Salto=subir, Agacharse=bajar")
 
@@ -200,12 +206,15 @@ minetest.register_tool("broom_racing:broom_magic", {
                 speed = 1,
             })
         else
-            if not broom_racing.active_racers[player_name] then
-                broom_racing.active_racers[player_name] = {}
-            end
-            broom_racing.active_racers[player_name].mounted = true
-            broom_racing.active_racers[player_name].broom_type = "magic"
-            broom_racing.active_racers[player_name].speed_mult = 1.0
+            local pos = user:get_pos()
+            broom_racing.active_racers[player_name] = {
+                mounted = true,
+                broom_type = "magic",
+                speed_mult = 1.0,
+                speed = 0,
+                altitude = pos.y,
+                particle_timer = 0,
+            }
 
             minetest.chat_send_player(player_name, "🧹✨ ¡Montado en escoba mágica! Velocidad máxima desbloqueada!")
 
