@@ -117,6 +117,7 @@ minetest.register_tool("broom_racing:broom_basic", {
             })
         else
             -- Montar
+
             local pos = user:get_pos()
             broom_racing.active_racers[player_name] = {
                 mounted = true,
