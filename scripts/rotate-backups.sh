@@ -10,7 +10,11 @@ set -e
 # Configuración
 BACKUP_DIR="/home/gabriel/Vegan-Wetlands/server/backups"
 RETENTION_DAYS=10
-LOG_FILE="/var/log/luanti-backup-rotation.log"
+LOG_DIR="/home/gabriel/Vegan-Wetlands/logs"
+LOG_FILE="$LOG_DIR/backup-rotation.log"
+
+# Crear directorio de logs si no existe
+mkdir -p "$LOG_DIR"
 
 # Función de logging
 log() {
