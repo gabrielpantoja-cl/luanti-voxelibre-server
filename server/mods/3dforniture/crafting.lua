@@ -36,8 +36,8 @@
 	minetest.register_craft( {
 		output = '3dforniture:table', '3dforniture:chair 2',
 		recipe = {
-			{ 'default:wood','default:wood', 'default:wood' },
-			{ 'default:stick', '', 'default:stick' },
+			{ 'mcl_core:wood','mcl_core:wood', 'mcl_core:wood' },
+			{ 'mcl_core:stick', '', 'mcl_core:stick' },
 		},
 	})
 
@@ -51,9 +51,9 @@
 	minetest.register_craft( {
 		output = '3dforniture:chair 2',
 		recipe = {
-			{ 'default:stick',''},
-			{ 'default:wood','default:wood' },
-			{ 'default:stick','default:stick' },
+			{ 'mcl_core:stick',''},
+			{ 'mcl_core:wood','mcl_core:wood' },
+			{ 'mcl_core:stick','mcl_core:stick' },
 		},
 	})
 
@@ -67,9 +67,9 @@
 	minetest.register_craft( {
 		output = '3dforniture:armchair 2',
 		recipe = {
-			{ 'default:wood',''},
-			{ 'default:wood','default:wood' },
-			{ 'default:wood','default:wood' },
+			{ 'mcl_core:wood',''},
+			{ 'mcl_core:wood','mcl_core:wood' },
+			{ 'mcl_core:wood','mcl_core:wood' },
 		},
 	})
 
@@ -83,9 +83,9 @@
 	minetest.register_craft( {
 		output = '3dforniture:table_lamp_off',
 		recipe = {
-			{'default:paper','default:torch' ,'default:paper'},
-			{'','default:stick',''},
-			{'','stairs:slab_wood',''},
+			{'mcl_core:paper','mcl_torches:torch' ,'mcl_core:paper'},
+			{'','mcl_core:stick',''},
+			{'','mcl_stairs:slab_wood',''},
 		},
 	})
 
@@ -101,9 +101,9 @@
 		minetest.register_craft( {
 			output = '3dforniture:toilet',
 			recipe = {
-				{'','','bucket:bucket_water'},
-				{ 'default:cobble','default:cobble', 'default:cobble' },
-				{ '', 'bucket:bucket_empty', '' },
+				{'','','mcl_buckets:bucket_water'},
+				{ 'mcl_core:cobble','mcl_core:cobble', 'mcl_core:cobble' },
+				{ '', 'mcl_buckets:bucket_empty', '' },
 			},
 		})
 
@@ -111,7 +111,7 @@
 		minetest.register_craft( {
 			output = '3dforniture:sink',
 			recipe = {
-				{ 'default:cobble','bucket:bucket_empty', 'default:cobble' },
+				{ 'mcl_core:cobble','mcl_buckets:bucket_empty', 'mcl_core:cobble' },
 			},
 		})
 
@@ -119,7 +119,7 @@
 		minetest.register_craft( {
 			output = '3dforniture:taps',
 			recipe = {
-				{ 'default:steel_ingot','bucket:bucket_water', 'default:steel_ingot' },
+				{ 'mcl_core:iron_ingot','mcl_buckets:bucket_water', 'mcl_core:iron_ingot' },
 			},
 		})
 
@@ -127,7 +127,7 @@
 		minetest.register_craft( {
 			output = '3dforniture:shower_tray',
 			recipe = {
-				{ 'default:cobble','bucket:bucket_water', 'default:cobble' },
+				{ 'mcl_core:cobble','mcl_buckets:bucket_water', 'mcl_core:cobble' },
 			},
 		})
 
@@ -135,7 +135,7 @@
 		minetest.register_craft( {
 			output = '3dforniture:shower_head',
 			recipe = {
-				{'default:steel_ingot', 'bucket:bucket_water'},
+				{'mcl_core:iron_ingot', 'mcl_buckets:bucket_water'},
 			},
 		})
 
@@ -145,8 +145,8 @@
 	minetest.register_craft( {
 		output = '3dforniture:bars 10',
 		recipe = {
-			{ 'default:steel_ingot','default:steel_ingot','default:steel_ingot' },
-			{ 'default:steel_ingot','default:steel_ingot','default:steel_ingot' },
+			{ 'mcl_core:iron_ingot','mcl_core:iron_ingot','mcl_core:iron_ingot' },
+			{ 'mcl_core:iron_ingot','mcl_core:iron_ingot','mcl_core:iron_ingot' },
 		},
 	})
 
@@ -163,9 +163,9 @@
 	minetest.register_craft( {
 		output = '3dforniture:chains 4',
 		recipe = {
-			{'','default:steel_ingot',''},
-			{ 'default:steel_ingot','', 'default:steel_ingot' },
-			{ '', 'default:steel_ingot', '' },
+			{'','mcl_core:iron_ingot',''},
+			{ 'mcl_core:iron_ingot','', 'mcl_core:iron_ingot' },
+			{ '', 'mcl_core:iron_ingot', '' },
 		},
 	})
 
@@ -173,7 +173,7 @@
 	minetest.register_craft( {
 		output = '3dforniture:torch_wall 10',
 		recipe = {
-			{ 'default:coal_lump' },
-			{ 'default:steel_ingot' },
+			{ 'mcl_core:coal_lump' },
+			{ 'mcl_core:iron_ingot' },
 		},
 	})

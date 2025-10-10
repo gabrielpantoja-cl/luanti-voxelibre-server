@@ -38,11 +38,11 @@
    
 ]]--
 
--- Load VoxeLibre compatibility layer FIRST
-dofile(minetest.get_modpath("3dforniture").."/voxelibre_compat.lua")
-
+-- Load crafting recipes and nodes (adapted for VoxeLibre)
 dofile(minetest.get_modpath("3dforniture").."/crafting.lua")
 dofile(minetest.get_modpath("3dforniture").."/nodes.lua")
+
+minetest.log("action", "[3D Forniture] Mod loaded successfully (VoxeLibre compatible)")
 
 --[[
 --alias
