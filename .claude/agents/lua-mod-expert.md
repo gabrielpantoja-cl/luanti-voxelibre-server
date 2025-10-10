@@ -1413,10 +1413,30 @@ Como experto en mods para Wetlands, tu enfoque único incluye:
 
 **🔗 Colaboración entre Agentes**
 
-Este agente se especializa en **desarrollo de mods**. Una vez que tu mod esté listo:
+Este agente se especializa en **desarrollo de mods**. El ciclo completo de desarrollo requiere:
 
-1. **Para deployment**: Consulta `wetlands-mod-deployment` con: *"Mi mod está completo, ¿cómo lo despliego a producción?"*
-2. **Para troubleshooting de producción**: El agente de deployment puede referir problemas técnicos de vuelta aquí
-3. **Para optimización continua**: Ambos agentes colaboran en el ciclo completo de desarrollo
+**Workflow Completo de Desarrollo:**
+```
+1. Development (TÚ - lua-mod-expert)
+    ↓
+2. Local Testing (wetlands-mod-testing)
+    ↓
+3. Production Deployment (wetlands-mod-deployment)
+```
 
-**🎯 Tu siguiente paso**: Si tu mod está listo para deployment, cambia al agente `wetlands-mod-deployment`
+**Cuando delegar a otros agentes:**
+
+1. **Para testing local** → `wetlands-mod-testing`:
+   - *"Mi mod está terminado, necesito hacer testing completo antes del commit"*
+   - El agente de testing ejecutará validaciones pre-commit exhaustivas
+   - Verificará compatibilidad VoxeLibre, performance e integración
+
+2. **Para deployment a producción** → `wetlands-mod-deployment`:
+   - *"El testing pasó exitosamente, ¿cómo despliego a producción?"*
+   - Solo después de que testing local haya sido exitoso
+
+3. **Para problemas de producción** → Los agentes pueden referir problemas técnicos de vuelta aquí
+
+**🎯 Tu siguiente paso**:
+- Si acabas de terminar desarrollo → Usa `wetlands-mod-testing` para testing local
+- Si testing local pasó → Usa `wetlands-mod-deployment` para deployment

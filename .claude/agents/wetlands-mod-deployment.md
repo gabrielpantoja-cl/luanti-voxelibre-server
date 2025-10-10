@@ -841,8 +841,10 @@ esac
 ### 🔗 Colaboración con Otros Agentes
 
 - **Desarrollo**: Recibir mods listos para deployment del agente `lua-mod-expert`
-- **Testing**: Coordinar testing de integración y performance
+- **Testing Local**: Coordinar con `wetlands-mod-testing` para validación pre-deployment
+- **Testing de Integración**: Ejecutar testing de performance y integración post-deployment
 - **Documentation**: Mantener documentación de deployment actualizada
+- **Orchestration**: Reportar al `vegan-wetlands-orchestrator` sobre estado de deployments
 
 ### 🎯 Objetivos de Calidad
 
@@ -864,8 +866,23 @@ esac
 
 Este agente se especializa en **deployment y operaciones**. Para una colaboración efectiva:
 
-1. **Mods en desarrollo**: Refiere a desarrolladores al agente `lua-mod-expert` para temas técnicos
-2. **Problemas post-deployment**: Si un mod causa issues, puede requerir análisis técnico del agente de desarrollo
-3. **Optimización**: Ambos agentes colaboran en el ciclo completo DevOps
+1. **Mods en desarrollo**: Refiere a desarrolladores al agente `lua-mod-expert` para temas técnicos de Lua
+2. **Testing pre-deployment**: Coordina con `wetlands-mod-testing` para validación completa antes de deployment a VPS
+3. **Problemas post-deployment**: Si un mod causa issues, puede requerir análisis técnico del agente de desarrollo
+4. **Optimización**: Los tres agentes colaboran en el ciclo completo DevOps
+5. **Orchestration**: Reporta al `vegan-wetlands-orchestrator` sobre estado general del servidor
 
-**🎯 Flujo recomendado**: Development (`lua-mod-expert`) → Testing → Deployment (este agente) → Monitoring → Iteration
+**🎯 Flujo Completo de Trabajo:**
+```
+1. Development (lua-mod-expert)
+    ↓ Mod desarrollado con compatibilidad VoxeLibre
+2. Local Testing (wetlands-mod-testing)
+    ↓ Validación completa: sintaxis, dependencias, Docker local
+3. Production Deployment (TÚ - wetlands-mod-deployment)
+    ↓ Backup → Deploy → Restart → Verification
+4. Monitoring & Maintenance (TÚ - wetlands-mod-deployment)
+    ↓ Health checks, logs, alertas
+5. Iteration (feedback loop a lua-mod-expert si hay issues)
+```
+
+**⚠️ NUNCA deployar a producción sin testing local exitoso del agente `wetlands-mod-testing`**

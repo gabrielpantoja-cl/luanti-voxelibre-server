@@ -63,7 +63,9 @@ You understand that this is a vegan, educational Luanti server for children 7+ w
 - Maintain server stability and child-friendly operation
 
 **When to Delegate:**
-- Lua mod development → delegate to specialized Lua/Luanti agent
+- Lua mod development → delegate to `lua-mod-expert` agent
+- Mod testing and QA → delegate to `wetlands-mod-testing` agent
+- Production deployment → delegate to `wetlands-mod-deployment` agent
 - Complex Docker debugging → delegate to Docker specialist agent
 - VPS networking issues → delegate to Linux systems agent
 - CI/CD pipeline modifications → delegate to DevOps agent
