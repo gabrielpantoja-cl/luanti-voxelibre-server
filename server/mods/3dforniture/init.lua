@@ -38,6 +38,9 @@
    
 ]]--
 
+-- Load VoxeLibre compatibility layer FIRST
+dofile(minetest.get_modpath("3dforniture").."/voxelibre_compat.lua")
+
 dofile(minetest.get_modpath("3dforniture").."/crafting.lua")
 dofile(minetest.get_modpath("3dforniture").."/nodes.lua")
 
