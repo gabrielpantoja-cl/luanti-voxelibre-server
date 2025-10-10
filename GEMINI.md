@@ -1,198 +1,237 @@
 # GEMINI.md
 
-Este archivo proporciona orientación específica a Google Gemini cuando trabaja con código en este repositorio.
+This file provides specific guidance to Google Gemini when working with code in this repository.
 
-## Información del Proyecto
+## Project Overview
 
-Vegan Wetlands es un **servidor de juego Luanti (anteriormente Minetest)** diseñado como un entorno compasivo, educativo y creativo para niños de 7+ años. El servidor cuenta con mods personalizados que promueven el cuidado animal, la educación compasiva y el juego no violento a través de santuarios de animales.
+Vegan Wetlands is a **Luanti (formerly Minetest) game server** designed as a compassionate, educational, and creative environment for children 7+ years old. The server features custom mods that promote animal care, compassionate education, and non-violent gameplay through animal sanctuaries.
 
-**IMPORTANTE**: Este repositorio (`https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git`) contiene **TODO** el código específico de Luanti, configuración y lógica de despliegue. Es completamente independiente del repositorio administrativo VPS (`vps-do.git`).
+**IMPORTANT**: This repository (`https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git`) contains **ALL** Luanti-specific code, configuration, and deployment logic. It is completely independent from the VPS administrative repository (`vps-do.git`).
 
-## 🚨 REGLAS CRÍTICAS DE SEGURIDAD DE TEXTURAS
+## 🚨 CRITICAL: Texture Corruption Prevention & Recovery Protocol
 
-### **⚠️ NUNCA HAGAS ESTO - CAUSA CORRUPCIÓN TOTAL:**
+### **⚠️ GOLDEN RULES - NEVER BREAK THESE:**
 
-1. **🚫 NUNCA modifiques `docker-compose.yml` para mapear mods**
-   ```yaml
-   # ❌ ESTO CORROMPE TEXTURAS:
-   volumes:
-     - ./server/mods/nuevo_mod:/config/.minetest/games/mineclone2/mods/MISC/nuevo_mod
-   ```
-   
-2. **🚫 NUNCA instales mods con dependencias de texturas**
-   - `motorboat`, `biofuel`, `mobkit` causan corrupción completa
-   - VoxeLibre tiene un sistema de texturas frágil
-   - Los conflictos de ID de textura son cascada y persistentes
+1.  **🚫 NEVER modify `docker-compose.yml` to map mods directly.**
+    ```yaml
+    # ❌ THIS CORRUPTS TEXTURES:
+    volumes:
+      - ./server/mods/new_mod:/config/.minetest/games/mineclone2/mods/MISC/new_mod
+    ```
+    VoxeLibre's texture system is fragile. Mapping mods this way causes cascading and persistent texture ID conflicts.
 
-3. **🚫 NUNCA hagas cambios sin backup del mundo**
+2.  **🚫 NEVER install mods with known texture dependencies.**
+    - Mods like `motorboat`, `biofuel`, `mobkit` are known to cause complete texture corruption.
+    - Always test new mods in a local, isolated environment first.
 
-### **✅ PROTOCOLO DE EMERGENCIA PARA CORRUPCIÓN DE TEXTURAS**
+3.  **✅ ALWAYS create a world backup before making any mod-related changes.**
 
-**Síntomas de Corrupción:**
-- Todos los bloques muestran la misma textura incorrecta
-- Texturas faltantes (tablero rosa/negro)
-- Errores de carga de texturas en logs
-- Jugadores reportan fallas visuales
+### **🛠️ Emergency Texture Recovery Protocol**
 
-**PASOS DE RECUPERACIÓN INMEDIATA:**
+**Symptoms of Corruption:**
+- All blocks display the same incorrect texture.
+- Missing textures (pink/black checkerboard pattern).
+- Texture loading errors appear in server logs.
+- Players report widespread visual glitches.
+
+**IMMEDIATE RECOVERY STEPS:**
 
 ```bash
-# PASO 1: BACKUP DE EMERGENCIA DEL MUNDO (¡CRÍTICO!)
+# STEP 1: EMERGENCY WORLD BACKUP (CRITICAL!)
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
-# PASO 2: REVERTIR CAMBIOS PROBLEMÁTICOS
+# STEP 2: REVERT PROBLEMATIC CHANGES
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && git reset --hard HEAD~1"
 
-# PASO 3: LIMPIAR ESTADO DEL CONTENEDOR
+# STEP 3: CLEAN CONTAINER STATE COMPLETELY
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose down && docker system prune -f"
 
-# PASO 4: REMOVER VOXELIBRE CORROMPIDO
+# STEP 4: REMOVE CORRUPTED VOXELIBRE GAME FILES
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
 
-# PASO 5: DESCARGAR VOXELIBRE FRESCO (56MB)
+# STEP 5: DOWNLOAD FRESH VOXELIBRE (56MB)
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
 
-# PASO 6: REINICIAR CON ESTADO LIMPIO
+# STEP 6: RESTART WITH A CLEAN STATE
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose up -d"
 
-# PASO 7: VERIFICAR RECUPERACIÓN
+# STEP 7: VERIFY RECOVERY
 ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && sleep 10 && docker-compose ps && du -sh server/worlds/world"
 ```
 
-## Acceso al Servidor
+### **📊 Recovery Success Metrics (Last: Sep 9, 2025)**
+- ✅ World data preserved (174MB intact).
+- ✅ All blocks display correct textures.
+- ✅ Server stable on port 30000.
+- ✅ No dependency errors in logs.
+- ✅ Players can connect normally.
+- **Recovery Time**: ~3 minutes.
+- **Data Loss**: Zero.
+
+## Repository Architecture
+
+### 🎮 This Repository (luanti-voxelibre-server.git)
+**Responsibility**: Complete Luanti server implementation.
+- Docker Compose configuration for Luanti.
+- Custom mods (`animal_sanctuary`, `vegan_food`, `education_blocks`).
+- Server configuration files (`luanti.conf`).
+- World data and backups.
+- **Landing page development** (HTML/CSS/JS for `luanti.gabrielpantoja.cl`).
+- Luanti-specific CI/CD pipeline.
+- Game logic and mechanics.
+
+### 🏗️ VPS Administrative Repository (vps-do.git)
+**Responsibility**: General VPS infrastructure.
+- Nginx reverse proxy.
+- n8n automation.
+- Portainer container management.
+- **Does NOT contain any Luanti-specific files.**
+
+## Server Access
 
 ```bash
-# Acceso SSH al servidor de producción
+# SSH access to the production server
 ssh gabriel@<VPS_IP>
 ```
 
-## Comandos Esenciales
+## Essential Commands
 
-### Gestión del Servidor
+### Server Management
 ```bash
-# Iniciar el servidor (recomendado)
+# Start the server (recommended method)
 ./scripts/start.sh
 
-# O iniciar manualmente
+# Or start manually
 docker-compose up -d
 
-# Ver logs del servidor
+# View server logs in real-time
 docker-compose logs -f luanti-server
 
-# Reiniciar servidor
+# Restart the server
 docker-compose restart luanti-server
 
-# Detener servidor
+# Stop the server
 docker-compose down
 
-# Monitorear estado del servidor
+# Monitor the status of server containers
 docker-compose ps
 ```
 
-### Operaciones de Backup
+### Backup Operations
 ```bash
-# Backup manual
+# Perform a manual backup
 ./scripts/backup.sh
 
-# Los backups automáticos corren cada 6 horas vía contenedor cron
-# Ubicación: server/backups/
-# Retención: 10 backups más recientes
+# Automatic backups run every 6 hours via a cron container.
+# Location: server/backups/
+# Retention: The 10 most recent backups are kept.
 ```
 
-## Arquitectura del Repositorio
-
-### 🎮 Este Repositorio (luanti-voxelibre-server.git)
-**Responsabilidad**: Implementación completa del servidor Luanti
-- Configuración Docker Compose para Luanti
-- Mods personalizados (animal_sanctuary, vegan_food, education_blocks)
-- Archivos de configuración del servidor
-- Datos del mundo y backups
-- **Desarrollo de página de inicio** (HTML/CSS/JS para luanti.gabrielpantoja.cl)
-- Pipeline CI/CD específico de Luanti
-- Lógica y mecánicas del juego
-
-### 🏗️ Repositorio Administrativo VPS (vps-do.git)
-**Responsabilidad**: Infraestructura general VPS
-- Proxy inverso nginx
-- Automatización n8n
-- Gestión de contenedores Portainer
-- Coordinación de servicios generales VPS
-- **NO contiene archivos específicos de Luanti**
-
-## Configuración del Servidor
-
-- **Modo**: Creativo (sin daño, sin PvP, sin TNT)
-- **Idioma**: Español (es)
-- **Jugadores Máximos**: 20
-- **Privilegios Predeterminados**: `interact,shout,home,spawn,creative`
-- **Generación de Mundo**: v7 con cuevas, mazmorras, biomas
-- **Punto de Spawn**: 0,15,0 (estático)
-
-## Sistema de Autenticación Moderno
-
-### Base de Datos SQLite (Luanti 5.13+)
-**Ubicación**: `server/worlds/world/auth.sqlite`
-
-**Comandos Útiles**:
+### Landing Page Deployment
 ```bash
-# Listar todos los usuarios registrados
+# Deploy the landing page to the VPS
+./scripts/deploy-landing.sh
+```
+
+## Modern Authentication System (SQLite)
+
+Luanti 5.13+ uses an **SQLite database (`auth.sqlite`)** for authentication, not `auth.txt`.
+
+**Location**: `server/worlds/world/auth.sqlite`
+
+### Useful Database Commands
+```bash
+# List all registered users
 docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
 
-# Ver privilegios de un usuario
-docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT * FROM user_privileges WHERE id=1;'
+# Get the ID of a specific user
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT id FROM auth WHERE name="USERNAME";'
 
-# Obtener ID de usuario
-docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT id FROM auth WHERE name="usuario";'
+# View the privileges of a specific user (replace ID)
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT * FROM user_privileges WHERE id=USER_ID;'
+
+# Grant all admin privileges to a user (replace USER_ID)
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES (USER_ID, 'server'), (USER_ID, 'privs'), (USER_ID, 'ban'), (USER_ID, 'kick'), (USER_ID, 'teleport'), (USER_ID, 'give'), (USER_ID, 'settime'), (USER_ID, 'worldedit'), (USER_ID, 'fly'), (USER_ID, 'fast'), (USER_ID, 'noclip'), (USER_ID, 'debug'), (USER_ID, 'password'), (USER_ID, 'rollback_check'), (USER_ID, 'basic_privs'), (USER_ID, 'bring'), (USER_ID, 'shutdown'), (USER_ID, 'time'), (USER_ID, 'mute'), (USER_ID, 'unban'), (USER_ID, 'creative'), (USER_ID, 'home'), (USER_ID, 'spawn');"
 ```
 
-## Comandos del Juego
+## VoxeLibre Mod System & Troubleshooting
 
-### Comandos En-Juego Disponibles
-- `/santuario`: Información sobre características del santuario de animales
-- `/filosofia`: Contenido educativo sobre la filosofía del juego
-- `/sit`: Sentarse cómodamente en la posición actual
-- `/lay`: Acostarse y relajarse en prados de césped o flores
+### Mod Directory Structure
+VoxeLibre has a specific loading order:
+1.  `/config/.minetest/mods/` (High priority, for custom server mods)
+2.  `/config/.minetest/games/mineclone2/mods/` (Low priority, for base game mods)
 
-### Comandos Administrativos Básicos de VoxeLibre
-- `/tp <jugador>`: Teletransportarse a un jugador (requiere privilegios)
-- Usar **camas** para establecer punto de respawn automáticamente
-- **Sistema de camas**: Dormir en una cama establece automáticamente tu punto de respawn
+### Common Mod Issues & Solutions
 
-## Métricas de Recuperación Exitosa (Última: 9 Sep 2025)
-- ✅ Datos del mundo preservados (174MB intactos)
-- ✅ Todos los bloques muestran texturas correctas
-- ✅ Servidor estable en puerto 30000
-- ✅ Sin errores de dependencias en logs
-- ✅ Jugadores pueden conectarse normalmente
-- **Tiempo de Recuperación**: ~3 minutos
-- **Pérdida de Datos**: Cero (mundo completamente preservado)
+**Issue: Custom commands like `/santuario` are not working.**
+- **Cause**: Mod conflicts or dependency issues with VoxeLibre.
+- **Solution**:
+    1.  Ensure the mod's `mod.conf` lists dependencies as `optional_depends` (e.g., `optional_depends = mcl_core, mcl_farming`) instead of `depends`.
+    2.  Replace vanilla Minetest item names in `init.lua` with their VoxeLibre equivalents.
 
-## Contenido de Terceros
+**VoxeLibre Item Equivalents:**
+| Minetest Vanilla | VoxeLibre Equivalent |
+| :--- | :--- |
+| `default:book` | `mcl_books:book` |
+| `default:stick` | `mcl_core:stick` |
+| `farming:wheat` | `mcl_farming:wheat_item` |
+| `default:stone` | `mcl_core:stone` |
+| `mcl_sounds` | ❌ **Remove dependency** |
 
-### 🌱 Mod de Comida Vegana
-**Fuente**: [Mod vegan_food por Daenvil](https://content.luanti.org/packages/Daenvil/vegan_food/)
-**Licencia**: GPL v3.0 (código) / CC BY-SA 4.0 (texturas)
-**Integración**: Proporciona comidas a base de plantas profesionales para el kit inicial
+**Emergency Mod Recovery:**
+If a mod breaks the server:
+```bash
+# 1. Check logs for the specific error
+docker-compose logs luanti-server | grep -i "error"
 
-## Restricciones del Proyecto
+# 2. Temporarily disable the problematic mod
+mv server/mods/problematic_mod server/mods/problematic_mod.disabled
 
-- **Sin package.json**: No es un proyecto Node.js
-- **Sin sistema de compilación tradicional**: Usa Docker Compose y Lua
-- **Sin pruebas unitarias**: Testing manual mediante juego
-- **Configuración vía archivos .conf**: No JSON/YAML
-- **Scripting basado en Lua**: Toda la lógica de mods en Lua
+# 3. Restart the server
+docker-compose restart luanti-server
+```
+
+## In-Game Commands & Features
+
+- `/santuario`: Information about animal sanctuary features.
+- `/filosofia`: Educational content on the game's philosophy.
+- `/sit`: Sit down at the current position.
+- `/lay`: Lie down on grass or flower blocks.
+- **Beds**: Sleeping in a bed sets your personal respawn point.
+
+## Server Configuration
+- **Mode**: Creative (no damage, no PvP, no TNT).
+- **Language**: Spanish (`es`).
+- **Max Players**: 20.
+- **Default Privileges**: `interact,shout,home,spawn,creative`.
+- **World Generation**: v7 with caves, dungeons, biomas.
+- **Spawn Point**: 0, 15, 0 (static).
+
+## Third-Party Content
+
+### 🌱 Vegan Food Mod
+- **Source**: [vegan_food by Daenvil](https://content.luanti.org/packages/Daenvil/vegan_food/)
+- **License**: GPL v3.0 (code) / CC BY-SA 4.0 (textures)
+- **Integration**: Provides plant-based food items for the starter kit.
+
+## Project Constraints
+- **No `package.json`**: This is not a Node.js project.
+- **No traditional build system**: Uses Docker Compose and Lua scripting.
+- **No unit tests**: Testing is performed manually through gameplay.
+- **Configuration via `.conf` files**: Not JSON or YAML.
+- **Scripting in Lua**: All mod logic is written in Lua.
 
 ---
 
-## Proceso de Descubrimiento Histórico: Sistema de Autenticación
+## Historical Discovery Process: Authentication System
 
-### Contexto
-Este documento anteriormente detallaba el proceso de investigación realizado por Gemini para resolver la discrepancia en la gestión de usuarios del servidor.
+### Context
+This document previously detailed the investigation process Gemini undertook to resolve a discrepancy in the server's user management system.
 
-### Descubrimiento Clave
-- **Problema**: Los usuarios no aparecían en `auth.txt`
-- **Solución**: El servidor usa **base de datos SQLite** (`auth.sqlite`) en lugar de archivos de texto
-- **Fuente**: Documentación en `docs/NUCLEAR_CONFIG_OVERRIDE.md`
-- **Resultado**: Sistema de autenticación moderno con SQLite correctamente identificado
+### Key Discovery
+- **Problem**: Users were not appearing in the expected `auth.txt` file.
+- **Solution**: The server uses a modern **SQLite database (`auth.sqlite`)** for authentication, not flat text files.
+- **Source**: This was confirmed by inspecting the `docs/NUCLEAR_CONFIG_OVERRIDE.md` file and observing the server's runtime behavior.
+- **Outcome**: The modern SQLite-based authentication system was correctly identified and documented.
 
-Este conocimiento histórico ha sido integrado en la documentación principal arriba.
+This historical knowledge has been integrated into the main documentation above.
