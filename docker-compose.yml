@@ -16,6 +16,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Santiago
+      - CLI_ARGS=--worldname world
     healthcheck:
       test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
       interval: 30s
