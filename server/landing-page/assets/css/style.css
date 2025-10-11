@@ -1883,17 +1883,23 @@ body {
 
 .latest-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto);
   gap: var(--space-xl);
   max-width: 1000px;
   margin: 0 auto;
 }
 
-.gallery-item.featured {
+.gallery-item.featured-main {
   grid-column: 1 / 2;
   grid-row: 1 / 3;
   height: auto;
   aspect-ratio: 4/5;
+}
+
+.gallery-item {
+    grid-column: auto;
+    grid-row: auto;
 }
 
 .gallery-badge.new {
