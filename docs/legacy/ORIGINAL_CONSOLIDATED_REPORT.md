@@ -74,7 +74,7 @@ default_privs = interact,shout,creative,give,fly,fast,noclip,home
 # Línea añadida: deny_access.200.83.160.80
 
 # Verificar bloqueo:
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && grep '200.83.160.80' server/config/luanti.conf"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && grep '200.83.160.80' server/config/luanti.conf"
 # Resultado: deny_access.200.83.160.80
 ```
 

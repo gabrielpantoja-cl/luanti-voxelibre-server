@@ -24,11 +24,11 @@ jobs:
           echo "🌱 Iniciando despliegue de Vegan Wetlands..."
           
           # Crear directorio si no existe (primer despliegue)
-          if [ ! -d "/opt/vegan-wetlands" ]; then
+          if [ ! -d "/opt/luanti-voxelibre-server" ]; then
             echo "📁 Primer despliegue: creando directorio..."
-            sudo mkdir -p /opt/vegan-wetlands
-            sudo chown $USER:$USER /opt/vegan-wetlands
-            cd /opt/vegan-wetlands
+            sudo mkdir -p /opt/luanti-voxelibre-server
+            sudo chown $USER:$USER /opt/luanti-voxelibre-server
+            cd /opt/luanti-voxelibre-server
             
             echo "📥 Clonando repositorio..."
             git clone https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git .
@@ -38,7 +38,7 @@ jobs:
             sudo ./scripts/setup-vps.sh
           else
             # Despliegue regular - navegar al directorio
-            cd /opt/vegan-wetlands
+            cd /opt/luanti-voxelibre-server
             
             # Hacer backup del mundo actual antes de actualizar
             if [ -d "server/worlds/vegan_wetlands" ] && sudo docker-compose ps | grep -q "luanti-server.*Up"; then

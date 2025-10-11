@@ -7,7 +7,7 @@ El 10 de octubre de 2025, la carpeta principal del proyecto en el VPS fue renomb
 - **Fecha del Cambio**: 10 de Octubre de 2025
 - **Ubicación**: VPS (gabriel@167.172.251.27)
 - **Ruta Afectada**: `/home/gabriel/`
-- **Nombre Anterior**: `Vegan-Wetlands`
+- **Nombre Anterior**: `luanti-voxelibre-server`
 - **Nuevo Nombre**: `luanti-voxelibre-server`
 
 ## Razón del Cambio
@@ -24,7 +24,7 @@ Este cambio puede tener implicaciones en scripts, configuraciones de Docker y ot
 5.  **Documentación**: Actualizar cualquier documentación que haga referencia al nombre de la carpeta anterior.
 
 ## Acciones Tomadas (por Gemini)
-- Se renombró la carpeta en el VPS de `Vegan-Wetlands` a `luanti-voxelibre-server`.
+- Se renombró la carpeta en el VPS de `luanti-voxelibre-server` a `luanti-voxelibre-server`.
 - Se actualizaron las referencias en `docker-compose.yml`.
 - Se actualizaron las referencias en los scripts de `scripts/`.
 - Se actualizó el URL remoto de git en el VPS.
