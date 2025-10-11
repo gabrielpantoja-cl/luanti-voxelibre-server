@@ -158,7 +158,7 @@
 				"forniture_table_lamp_l.png",
 			},
 			 paramtype = 'light',
-			paramtype2 == 'facedir',
+			paramtype2 = 'facedir',
 			 node_box = {
 				type = "fixed",
 				fixed = {
