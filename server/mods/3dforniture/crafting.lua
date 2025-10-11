@@ -139,6 +139,15 @@
 			},
 		})
 
+		--Bathroom Sign
+		minetest.register_craft( {
+			output = '3dforniture:bathroom_sign',
+			recipe = {
+				{'mcl_core:paper', 'mcl_core:paper'},
+				{'mcl_core:stick', 'mcl_core:stick'},
+			},
+		})
+
 -- Medieval Forniture
 
 	--Bars

@@ -408,6 +408,37 @@
 				groups = {cracky=2,}
 			})
 
+			--Bathroom Sign
+			minetest.register_node("3dforniture:bathroom_sign",
+				{description = 'Cartel de Baño',
+				tiles = {
+					"3dforniture_bathroom_sign.png",
+					"3dforniture_bathroom_sign.png",
+					"3dforniture_bathroom_sign.png",
+					"3dforniture_bathroom_sign.png",
+					"3dforniture_bathroom_sign.png",
+					"3dforniture_bathroom_sign.png",
+				},
+				inventory_image = "3dforniture_bathroom_sign.png",
+				drawtype = "nodebox",
+				sunlight_propagates = true,
+				paramtype = 'light',
+				paramtype2 = 'wallmounted',
+				node_box = {
+					type = "wallmounted",
+					wall_top = {-0.3, 0.4, -0.4, 0.3, 0.5, 0.4},
+					wall_bottom = {-0.3, -0.5, -0.4, 0.3, -0.4, 0.4},
+					wall_side = {-0.5, -0.4, -0.3, -0.4, 0.4, 0.3},
+				},
+				selection_box = {
+					type = "wallmounted",
+					wall_top = {-0.3, 0.4, -0.4, 0.3, 0.5, 0.4},
+					wall_bottom = {-0.3, -0.5, -0.4, 0.3, -0.4, 0.4},
+					wall_side = {-0.5, -0.4, -0.3, -0.4, 0.4, 0.3},
+				},
+				groups = {cracky=2,}
+			})
+
 	-- Medieval Forniture
 
 		--Bars
