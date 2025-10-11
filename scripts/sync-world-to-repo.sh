@@ -11,7 +11,7 @@ set -e
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORLD_BACKUP_DIR="$REPO_DIR/world-snapshots"
 VPS_HOST="gabriel@167.172.251.27"
-VPS_WORLD_PATH="/home/gabriel/Vegan-Wetlands/server/worlds"
+VPS_WORLD_PATH="/home/gabriel/luanti-voxelibre-server/server/worlds"
 DATE=$(date +%Y%m%d-%H%M%S)
 SNAPSHOT_NAME="world-snapshot-${DATE}"
 
@@ -22,7 +22,7 @@ mkdir -p "$WORLD_BACKUP_DIR"
 
 # 1. Crear snapshot comprimido desde VPS
 echo "📦 Creando snapshot del mundo en VPS..."
-ssh "$VPS_HOST" "cd /home/gabriel/Vegan-Wetlands && tar -czf /tmp/${SNAPSHOT_NAME}.tar.gz -C server/worlds ."
+ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && tar -czf /tmp/${SNAPSHOT_NAME}.tar.gz -C server/worlds ."
 
 # 2. Descargar snapshot al repositorio
 echo "⬇️  Descargando snapshot al repositorio..."
@@ -52,7 +52,7 @@ if [ "$1" = "--commit" ]; then
     git add world-snapshots/
     git commit -m "📦 World snapshot: ${SNAPSHOT_NAME}
 
-🌍 Backup automático del mundo Vegan Wetlands
+🌍 Backup automático del mundo luanti-voxelibre-server
 📊 Tamaño: $SNAPSHOT_SIZE | Total: $TOTAL_SNAPSHOTS snapshots
 📅 $(date '+%Y-%m-%d %H:%M:%S %Z')
 

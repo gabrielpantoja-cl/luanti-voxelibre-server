@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================
-# BACKUP HEALTH CHECK - VEGAN WETLANDS 🌱
+# BACKUP HEALTH CHECK - luanti-voxelibre-server 🌱
 # ============================================
 # Verifica la salud del sistema de backup y alerta problemas
 
@@ -8,7 +8,7 @@ set -e
 
 # Configuración
 VPS_HOST="gabriel@167.172.251.27"
-VPS_BACKUP_PATH="/home/gabriel/Vegan-Wetlands/server/backups"
+VPS_BACKUP_PATH="/home/gabriel/luanti-voxelibre-server/server/backups"
 EXPECTED_BACKUP_INTERVAL_HOURS=6
 MAX_BACKUP_AGE_HOURS=8  # Permitir 2h de retraso
 MIN_BACKUPS_REQUIRED=3
@@ -31,7 +31,7 @@ log_error() { echo -e "${RED}❌ $1${NC}"; }
 WARNINGS=0
 ERRORS=0
 
-echo "🌱 VEGAN WETLANDS - BACKUP HEALTH CHECK"
+echo "🌱 luanti-voxelibre-server - BACKUP HEALTH CHECK"
 echo "======================================="
 echo "📅 $(date)"
 echo ""
@@ -48,13 +48,13 @@ fi
 
 # 2. Verificar contenedor de backup
 log_info "Verificando contenedor de backup..."
-BACKUP_CONTAINER_STATUS=$(ssh "$VPS_HOST" "cd /home/gabriel/Vegan-Wetlands && docker-compose ps -q backup-cron | wc -l" 2>/dev/null || echo "0")
+BACKUP_CONTAINER_STATUS=$(ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps -q backup-cron | wc -l" 2>/dev/null || echo "0")
 
 if [ "$BACKUP_CONTAINER_STATUS" = "1" ]; then
     log_success "Contenedor de backup: Activo"
 
     # Verificar crontab
-    CRON_CONFIG=$(ssh "$VPS_HOST" "docker exec vegan-wetlands-backup crontab -l 2>/dev/null || echo 'NO_CRON'")
+    CRON_CONFIG=$(ssh "$VPS_HOST" "docker exec luanti-voxelibre-backup crontab -l 2>/dev/null || echo 'NO_CRON'")
     if echo "$CRON_CONFIG" | grep -q "0 \*/6 \* \* \*"; then
         log_success "Configuración cron: OK (cada 6 horas)"
     else
@@ -69,7 +69,7 @@ fi
 
 # 3. Verificar backups recientes
 log_info "Verificando backups recientes..."
-LATEST_BACKUP=$(ssh "$VPS_HOST" "ls -t $VPS_BACKUP_PATH/vegan_wetlands_backup_*.tar.gz 2>/dev/null | head -1 | xargs basename" 2>/dev/null || echo "")
+LATEST_BACKUP=$(ssh "$VPS_HOST" "ls -t $VPS_BACKUP_PATH/luanti_voxelibre_backup_*.tar.gz 2>/dev/null | head -1 | xargs basename" 2>/dev/null || echo "")
 
 if [ -n "$LATEST_BACKUP" ]; then
     log_success "Último backup encontrado: $LATEST_BACKUP"
@@ -108,7 +108,7 @@ fi
 
 # 4. Contar backups totales
 log_info "Verificando cantidad de backups..."
-TOTAL_BACKUPS=$(ssh "$VPS_HOST" "ls -1 $VPS_BACKUP_PATH/vegan_wetlands_backup_*.tar.gz 2>/dev/null | wc -l" || echo "0")
+TOTAL_BACKUPS=$(ssh "$VPS_HOST" "ls -1 $VPS_BACKUP_PATH/luanti_voxelibre_backup_*.tar.gz 2>/dev/null | wc -l" || echo "0")
 
 if [ "$TOTAL_BACKUPS" -ge "$MIN_BACKUPS_REQUIRED" ]; then
     log_success "Total de backups: $TOTAL_BACKUPS (OK - >=$MIN_BACKUPS_REQUIRED)"
@@ -119,8 +119,8 @@ fi
 
 # 5. Verificar integridad del mundo actual
 log_info "Verificando mundo actual..."
-CURRENT_WORLD_SIZE_MB=$(ssh "$VPS_HOST" "du -m /home/gabriel/Vegan-Wetlands/server/worlds 2>/dev/null | cut -f1" || echo "0")
-AUTH_DB_EXISTS=$(ssh "$VPS_HOST" "[ -f /home/gabriel/Vegan-Wetlands/server/worlds/world/auth.sqlite ] && echo 'YES' || echo 'NO'")
+CURRENT_WORLD_SIZE_MB=$(ssh "$VPS_HOST" "du -m /home/gabriel/luanti-voxelibre-server/server/worlds 2>/dev/null | cut -f1" || echo "0")
+AUTH_DB_EXISTS=$(ssh "$VPS_HOST" "[ -f /home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite ] && echo 'YES' || echo 'NO'")
 
 if [ "$CURRENT_WORLD_SIZE_MB" -ge "$EXPECTED_WORLD_MIN_SIZE_MB" ]; then
     log_success "Tamaño del mundo actual: ${CURRENT_WORLD_SIZE_MB}MB (OK)"
@@ -133,7 +133,7 @@ if [ "$AUTH_DB_EXISTS" = "YES" ]; then
     log_success "Base de datos de usuarios: Presente"
 
     # Verificar usuarios en DB
-    USER_COUNT=$(ssh "$VPS_HOST" "sqlite3 /home/gabriel/Vegan-Wetlands/server/worlds/world/auth.sqlite 'SELECT COUNT(*) FROM auth;' 2>/dev/null" || echo "0")
+    USER_COUNT=$(ssh "$VPS_HOST" "sqlite3 /home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite 'SELECT COUNT(*) FROM auth;' 2>/dev/null" || echo "0")
     if [ "$USER_COUNT" -gt 0 ]; then
         log_success "Usuarios registrados: $USER_COUNT"
     else

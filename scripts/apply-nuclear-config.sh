@@ -6,7 +6,7 @@
 set -e  # Salir si hay errores
 
 VPS_HOST="gabriel@167.172.251.27"
-VPS_PATH="/home/gabriel/Vegan-Wetlands"
+VPS_PATH="/home/gabriel/luanti-voxelibre-server"
 
 echo "🚨 APLICANDO CONFIGURACIÓN NUCLEAR ANTI-MOBS..."
 echo "========================================"
@@ -30,7 +30,7 @@ ssh $VPS_HOST "cd $VPS_PATH && docker-compose exec -T luanti-server cp /config/.
 echo "🚀 Aplicando configuración nuclear..."
 ssh $VPS_HOST "cd $VPS_PATH && docker-compose exec -T luanti-server tee -a /config/.minetest/games/mineclone2/minetest.conf << 'EOF'
 
-# NUCLEAR OVERRIDE - VEGAN WETLANDS CREATIVE FORCE - $(date)
+# NUCLEAR OVERRIDE - luanti-voxelibre-server CREATIVE FORCE - $(date)
 creative_mode = true
 enable_damage = false
 enable_pvp = false
@@ -81,5 +81,5 @@ echo "✅ Monstruos completamente deshabilitados"
 echo "✅ Daño desactivado"
 echo "✅ Privilegios creativos otorgados"
 echo ""
-echo "🌱 El servidor Vegan Wetlands ahora es 100% seguro para niños!"
+echo "🌱 El servidor luanti-voxelibre-server ahora es 100% seguro para niños!"
 echo "🎮 Conectar a: luanti.gabrielpantoja.cl:30000"
