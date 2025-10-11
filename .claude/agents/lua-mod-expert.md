@@ -1239,7 +1239,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 git push origin main
 
 # 4. Monitoreo post-deployment
-ssh gabriel@<VPS_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=20 luanti-server'
+ssh gabriel@<VPS_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=20 luanti-server'
 ```
 
 ### 5. **Documentación y Educación**

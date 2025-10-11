@@ -144,13 +144,13 @@ backup-cron:
 ssh gabriel@<VPS_HOST_IP>
 
 # Navegar al proyecto
-cd /home/gabriel/Wetlands-Valdivia
+cd /home/gabriel/luanti-voxelibre-server
 
 # Verificar backups existentes
 ls -lh server/backups/
 
 # Verificar contenedores funcionando
-docker ps | grep wetlands-valdivia
+docker ps | grep luanti-voxelibre-server
 ```
 
 **Resultado Esperado**:
@@ -161,23 +161,23 @@ docker ps | grep wetlands-valdivia
 
 ```bash
 # Verificar logs del contenedor backup
-docker logs wetlands-valdivia-backup --tail 50
+docker logs luanti-voxelibre-backup --tail 50
 
 # Verificar logs del servidor Luanti
-docker logs wetlands-valdivia-server --tail 50
+docker logs luanti-voxelibre-server --tail 50
 
 # Verificar conectividad del servidor
 ss -tulpn | grep :30000
 
 # Verificar salud del contenedor
-docker inspect wetlands-valdivia-server | grep -A5 '"Health"'
+docker inspect luanti-voxelibre-server | grep -A5 '"Health"'
 ```
 
 ### 3. Test Manual de Backup
 
 ```bash
 # Ejecutar backup manual para verificar funcionamiento
-docker exec -t wetlands-valdivia-backup sh /scripts/backup.sh
+docker exec -t luanti-voxelibre-backup sh /scripts/backup.sh
 
 # Verificar que se creó el nuevo backup
 ls -lht server/backups/ | head -3
@@ -217,9 +217,9 @@ tar -tzf server/backups/wetlands_valdivia_backup_YYYYMMDD-HHMMSS.tar.gz | head -
 
 **Comando de Solución Final:**
 ```bash
-docker run -d --name wetlands-valdivia-backup \
+docker run -d --name luanti-voxelibre-backup \
   --restart unless-stopped \
-  --network wetlands-valdivia_luanti-network \
+  --network luanti-voxelibre-server_luanti-network \
   -v ./server/worlds:/worlds:ro \
   -v ./server/backups:/backups \
   -v ./scripts:/scripts:ro \
@@ -262,7 +262,7 @@ docker run -d --name wetlands-valdivia-backup \
 # Script: monitor-backups.sh
 # Uso: Ejecutar desde el directorio del proyecto
 
-echo "🌱 === MONITOR DE BACKUPS - WETLANDS VALDIVIA ==="
+echo "🌱 === MONITOR DE BACKUPS - LUANTI VOXELIBRE SERVER ==="
 echo "Fecha: $(date)"
 
 # Verificar último backup
@@ -285,7 +285,7 @@ fi
 # Verificar contenedores
 echo ""
 echo "📊 Estado de contenedores:"
-docker ps --filter name=wetlands-valdivia --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+docker ps --filter name=luanti-voxelibre-server --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 # Contar backups
 BACKUP_COUNT=$(ls server/backups/wetlands_valdivia_backup_*.tar.gz 2>/dev/null | wc -l)
@@ -311,7 +311,7 @@ echo "🌱 === FIN DEL REPORTE ==="
 
 ```bash
 # 1. Detener servicios
-cd /home/gabriel/Wetlands-Valdivia
+cd /home/gabriel/luanti-voxelibre-server
 docker stop wetlands-valdivia-server wetlands-valdivia-backup
 
 # 2. Backup del estado actual (por seguridad)
@@ -333,7 +333,7 @@ sleep 10
 docker start wetlands-valdivia-backup
 
 # 7. Verificar funcionamiento
-docker ps | grep wetlands-valdivia
+docker ps | grep luanti-voxelibre-server
 ss -tulpn | grep :30000
 ```
 
@@ -406,7 +406,7 @@ echo "🎭 SIMULACRO DE RESTAURACIÓN"
 echo "Este script simula una restauración SIN modificar el servidor real"
 
 # Crear ambiente de test temporal
-TEST_DIR="/tmp/wetlands_valdivia_restore_test"
+TEST_DIR="/tmp/luanti_voxelibre_server_restore_test"
 rm -rf "$TEST_DIR"
 mkdir -p "$TEST_DIR"
 
@@ -442,13 +442,13 @@ echo "✅ Simulacro completado exitosamente"
 ```bash
 # Agregar a crontab del usuario (crontab -e)
 # Sync diario a las 2 AM con commit automático
-0 2 * * * cd /home/gabriel/Documentos/Vegan-Wetlands && ./scripts/sync-world-to-repo.sh --commit
+0 2 * * * cd /home/gabriel/Documentos/luanti-voxelibre-server && ./scripts/sync-world-to-repo.sh --commit
 ```
 
 #### 2. Cron Job Semanal - Health Check
 ```bash
 # Verificación semanal domingos 9 AM
-0 9 * * 0 cd /home/gabriel/Documentos/Vegan-Wetlands && ./scripts/backup-health-check.sh
+0 9 * * 0 cd /home/gabriel/Documentos/luanti-voxelibre-server && ./scripts/backup-health-check.sh
 ```
 
 ### 🛡️ Protocolo Anti-Pérdida Garantizado
@@ -518,13 +518,13 @@ Para integrar con el sistema n8n existente en el VPS:
 **Para Administradores: Revisión Diaria Recomendada**
 
 ```bash
-# Ejecutar desde /home/gabriel/Wetlands-Valdivia en el VPS
+# Ejecutar desde /home/gabriel/luanti-voxelibre-server en el VPS
 
 # ✅ 1. Verificar último backup (debe ser <6h)
 ls -lht server/backups/ | head -2
 
 # ✅ 2. Verificar contenedores activos
-docker ps | grep wetlands-valdivia
+docker ps | grep luanti-voxelibre-server
 
 # ✅ 3. Verificar servidor accesible
 nc -u -z -w3 localhost 30000 && echo "✅ Puerto 30000 OK" || echo "❌ Puerto 30000 FAIL"
@@ -547,7 +547,7 @@ docker logs wetlands-valdivia-backup --tail 10 --since="1h"
 **En caso de problemas críticos:**
 
 1. **Problema de backup**: El mundo está SIEMPRE seguro mientras el servidor funcione
-2. **Backup manual**: Usar `docker exec -t wetlands-valdivia-backup sh /scripts/backup.sh`
+2. **Backup manual**: Usar `docker exec -t luanti-voxelibre-backup sh /scripts/backup.sh`
 3. **Servidor caído**: Usar `docker start wetlands-valdivia-server`
 4. **Documentación**: Revisar `CLAUDE.md` y `docs/2-guia-de-administracion.md`
 

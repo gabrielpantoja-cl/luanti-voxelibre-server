@@ -114,7 +114,7 @@ echo "✅ Código subido a GitHub"
 echo "🚀 Iniciando deployment en VPS..."
 VPS_HOST="<VPS_IP>"
 VPS_USER="gabriel"
-PROJECT_PATH="/home/gabriel/Vegan-Wetlands"
+PROJECT_PATH="/home/gabriel/luanti-voxelibre-server"
 
 # Función para ejecutar comandos en VPS
 vps_exec() {
@@ -208,13 +208,13 @@ echo "🚨 DEPLOYMENT DE EMERGENCIA: $MOD_NAME"
 echo "🔥 Issue: $ISSUE_DESCRIPTION"
 
 # Backup crítico
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && ./scripts/backup.sh"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && ./scripts/backup.sh"
 
 # Deployment directo (saltando CI/CD)
-rsync -avz --progress server/mods/$MOD_NAME/ gabriel@<VPS_IP>:/home/gabriel/Vegan-Wetlands/server/mods/$MOD_NAME/
+rsync -avz --progress server/mods/$MOD_NAME/ gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/mods/$MOD_NAME/
 
 # Restart inmediato
-ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 echo "⚡ Hotfix aplicado. Verificar funcionamiento y crear commit post-facto."
 ```
@@ -223,7 +223,7 @@ echo "⚡ Hotfix aplicado. Verificar funcionamiento y crear commit post-facto."
 
 ### 🌍 Variables de Entorno VPS
 ```bash
-# En VPS: /home/gabriel/Vegan-Wetlands/.env
+# En VPS: /home/gabriel/luanti-voxelibre-server/.env
 LUANTI_SERVER_NAME="Wetlands - Servidor Educativo"
 LUANTI_SERVER_DESCRIPTION="Servidor compasivo para niños"
 LUANTI_DEFAULT_GAME="mineclone2"
@@ -320,7 +320,7 @@ echo "================================"
 
 VPS_HOST="<VPS_IP>"
 VPS_USER="gabriel"
-PROJECT_PATH="/home/gabriel/Vegan-Wetlands"
+PROJECT_PATH="/home/gabriel/luanti-voxelibre-server"
 
 # Función helper
 vps_check() {
@@ -419,7 +419,7 @@ check_server_health() {
     fi
 
     # Verificar espacio en disco
-    local disk_usage=$(df /home/gabriel/Vegan-Wetlands | tail -1 | awk '{print $5}' | sed 's/%//')
+    local disk_usage=$(df /home/gabriel/luanti-voxelibre-server | tail -1 | awk '{print $5}' | sed 's/%//')
     if (( disk_usage > 85 )); then
         send_alert "WARNING" "Poco espacio en disco: ${disk_usage}% usado"
     fi
@@ -457,10 +457,10 @@ done
 #!/bin/bash
 # backup-enhanced.sh - Sistema de backup mejorado
 
-BACKUP_DIR="/home/gabriel/Vegan-Wetlands/server/backups"
-WORLD_DIR="/home/gabriel/Vegan-Wetlands/server/worlds"
-MODS_DIR="/home/gabriel/Vegan-Wetlands/server/mods"
-CONFIG_DIR="/home/gabriel/Vegan-Wetlands/server/config"
+BACKUP_DIR="/home/gabriel/luanti-voxelibre-server/server/backups"
+WORLD_DIR="/home/gabriel/luanti-voxelibre-server/server/worlds"
+MODS_DIR="/home/gabriel/luanti-voxelibre-server/server/mods"
+CONFIG_DIR="/home/gabriel/luanti-voxelibre-server/server/config"
 MAX_BACKUPS=10
 REMOTE_BACKUP_PATH="${REMOTE_BACKUP_PATH:-}"
 
@@ -553,8 +553,8 @@ echo "✅ Backup completado exitosamente"
 #!/bin/bash
 # restore-backup.sh - Restauración segura de backups
 
-BACKUP_DIR="/home/gabriel/Vegan-Wetlands/server/backups"
-TARGET_DIR="/home/gabriel/Vegan-Wetlands/server"
+BACKUP_DIR="/home/gabriel/luanti-voxelibre-server/server/backups"
+TARGET_DIR="/home/gabriel/luanti-voxelibre-server/server"
 
 # Listar backups disponibles
 list_backups() {
@@ -606,7 +606,7 @@ restore_backup() {
 
     # Parar servidor
     echo "🛑 Deteniendo servidor..."
-    cd "/home/gabriel/Vegan-Wetlands"
+    cd "/home/gabriel/luanti-voxelibre-server"
     docker-compose stop luanti-server
 
     # Restaurar mundo
@@ -667,7 +667,7 @@ fi
 
 VPS_HOST="<VPS_IP>"
 VPS_USER="gabriel"
-PROJECT_PATH="/home/gabriel/Vegan-Wetlands"
+PROJECT_PATH="/home/gabriel/luanti-voxelibre-server"
 
 # Función para ejecutar comandos en VPS
 vps_exec() {
