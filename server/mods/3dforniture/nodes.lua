@@ -223,7 +223,7 @@
 					},
 				},
 				drop ="3dforniture:toilet",
-				groups = {cracky=3, not_in_creative_inventory=1},
+				groups = {cracky=3},
 				on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
 					minetest.swap_node(pos, {name="3dforniture:toilet_open", param2=node.param2})
 				end,
