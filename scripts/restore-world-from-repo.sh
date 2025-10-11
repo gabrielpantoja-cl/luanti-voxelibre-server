@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================
-# RESTORE WORLD FROM REPOSITORY - VEGAN WETLANDS 🌱
+# RESTORE WORLD FROM REPOSITORY - luanti-voxelibre-server 🌱
 # ============================================
 # Restaura un snapshot del mundo desde el repositorio al VPS
 
@@ -10,7 +10,7 @@ set -e
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORLD_BACKUP_DIR="$REPO_DIR/world-snapshots"
 VPS_HOST="gabriel@<VPS_IP>"
-VPS_WORLD_PATH="/home/gabriel/Vegan-Wetlands/server/worlds"
+VPS_WORLD_PATH="/home/gabriel/luanti-voxelibre-server/server/worlds"
 
 # Función de ayuda
 show_help() {
@@ -87,11 +87,11 @@ echo "🌍 [$(date)] Iniciando restauración desde snapshot..."
 # 1. Crear backup de emergencia del mundo actual en VPS
 echo "🛡️  Creando backup de emergencia del mundo actual..."
 EMERGENCY_BACKUP="emergency_backup_$(date +%Y%m%d_%H%M%S)"
-ssh "$VPS_HOST" "cd /home/gabriel/Vegan-Wetlands && cp -r server/worlds server/worlds_${EMERGENCY_BACKUP}"
+ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && cp -r server/worlds server/worlds_${EMERGENCY_BACKUP}"
 
 # 2. Detener servidor Luanti
 echo "⏸️  Deteniendo servidor Luanti..."
-ssh "$VPS_HOST" "cd /home/gabriel/Vegan-Wetlands && docker-compose stop luanti-server"
+ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && docker-compose stop luanti-server"
 
 # 3. Subir snapshot al VPS
 echo "⬆️  Subiendo snapshot al VPS..."
@@ -100,7 +100,7 @@ scp "$SNAPSHOT_FILE" "$VPS_HOST:/tmp/$SNAPSHOT_NAME"
 # 4. Restaurar mundo
 echo "🔄 Restaurando mundo..."
 ssh "$VPS_HOST" "
-    cd /home/gabriel/Vegan-Wetlands &&
+    cd /home/gabriel/luanti-voxelibre-server &&
     rm -rf server/worlds/* &&
     tar -xzf /tmp/$SNAPSHOT_NAME -C server/worlds/ &&
     rm /tmp/$SNAPSHOT_NAME &&
@@ -109,18 +109,18 @@ ssh "$VPS_HOST" "
 
 # 5. Reiniciar servidor
 echo "🚀 Reiniciando servidor Luanti..."
-ssh "$VPS_HOST" "cd /home/gabriel/Vegan-Wetlands && docker-compose start luanti-server"
+ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && docker-compose start luanti-server"
 
 # 6. Verificar restauración
 echo "🔍 Verificando restauración..."
 sleep 10
-if ssh "$VPS_HOST" "cd /home/gabriel/Vegan-Wetlands && docker-compose ps luanti-server | grep -q 'Up'"; then
+if ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps luanti-server | grep -q 'Up'"; then
     echo "✅ Restauración completada exitosamente"
     echo "🌱 Servidor funcionando correctamente"
     echo "🛡️  Backup de emergencia disponible en: worlds_${EMERGENCY_BACKUP}"
 else
     echo "❌ Error: Servidor no está funcionando después de la restauración"
-    echo "🔧 Revisa los logs: ssh gabriel@<VPS_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose logs luanti-server'"
+    echo "🔧 Revisa los logs: ssh gabriel@<VPS_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server'"
     exit 1
 fi
 

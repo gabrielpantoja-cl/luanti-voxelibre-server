@@ -2,7 +2,7 @@
 services:
   luanti-server:
     image: linuxserver/luanti:latest
-    container_name: vegan-wetlands-server
+    container_name: luanti-voxelibre-server
     restart: unless-stopped
     ports:
       - "30000:30000/udp"
@@ -29,7 +29,7 @@ services:
   # Backup service opcional con n8n integration
   backup-cron:
     image: alpine:latest
-    container_name: vegan-wetlands-backup
+    container_name: luanti-voxelibre-backup
     restart: unless-stopped
     volumes:
       - ./server/worlds:/worlds:ro

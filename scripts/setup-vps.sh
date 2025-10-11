@@ -1,9 +1,9 @@
 #!/bin/bash
 # =============================================
-# SCRIPT DE CONFIGURACIÓN VPS - VEGAN WETLANDS
+# SCRIPT DE CONFIGURACIÓN VPS - luanti-voxelibre-server
 # =============================================
 
-echo "🌱 Configurando VPS para Vegan Wetlands..."
+echo "🌱 Configurando VPS para luanti-voxelibre-server..."
 
 # Verificar que estamos en el directorio correcto
 if [ ! -f "docker-compose.yml" ]; then
@@ -34,7 +34,7 @@ fi
 # Configurar firewall para puerto 30000/UDP
 echo "🔥 Configurando firewall..."
 if command -v ufw &> /dev/null; then
-    ufw allow 30000/udp comment "Luanti Vegan Wetlands"
+    ufw allow 30000/udp comment "Luanti luanti-voxelibre-server"
     ufw reload
     echo "✅ Firewall configurado para puerto 30000/UDP"
 fi
@@ -46,12 +46,12 @@ chmod +x scripts/*.sh
 
 # Configurar cron para backups automáticos  
 echo "⏰ Configurando backups automáticos..."
-CRON_JOB="0 */6 * * * cd $(pwd) && ./scripts/backup.sh >> /var/log/vegan-wetlands-backup.log 2>&1"
+CRON_JOB="0 */6 * * * cd $(pwd) && ./scripts/backup.sh >> /var/log/luanti-voxelibre-backup.log 2>&1"
 (crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
 
 echo ""
 echo "🌱 ========================================"
-echo "🌱 VPS CONFIGURADO PARA VEGAN WETLANDS"
+echo "🌱 VPS CONFIGURADO PARA luanti-voxelibre-server"
 echo "🌱 ========================================"
 echo "✅ Docker y Docker Compose instalados"
 echo "✅ Firewall configurado (puerto 30000/UDP)"
