@@ -56,7 +56,7 @@
                 </p>
                 <div class="gallery-stats">
                     <div class="stat">
-                        <span class="stat-number">6</span>
+                        <span class="stat-number">8</span>
                         <span class="stat-label">Imágenes</span>
                     </div>
                     <div class="stat">
@@ -75,19 +75,29 @@
     <!-- Full Gallery Section -->
     <section class="gallery-full">
         <div class="container">
-            <div class="gallery-filters">
-                <h2 class="section-title">📚 Todas las Capturas</h2>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-filter="all">🌟 Todas</button>
-                    <button class="filter-btn" data-filter="updates">🆕 Actualizaciones</button>
-                    <button class="filter-btn" data-filter="community">👥 Comunidad</button>
-                    <button class="filter-btn" data-filter="gameplay">🎮 Gameplay</button>
-                </div>
-            </div>
+            <h2 class="section-title">📚 Todas las Capturas del Servidor</h2>
+            <p class="gallery-subtitle">Descubre las últimas novedades, eventos y momentos especiales de Wetlands</p>
 
             <div class="gallery-grid-full" id="gallery-full-grid">
+                <!-- Latest Update: Bathroom Kit -->
+                <div class="gallery-item-full featured-full" onclick="openGalleryModal('assets/images/baño.png', '🚿 ¡Nuevo Kit de Baño Disponible! - Construye baños completos')">
+                    <img src="assets/images/baño.png"
+                         alt="Nuevo Kit de Baño - Mod 3dforniture"
+                         class="gallery-image-full">
+                    <div class="gallery-overlay-full">
+                        <div class="gallery-info-full">
+                            <div class="gallery-badge new">🆕 ¡NUEVA ACTUALIZACIÓN!</div>
+                            <h4>🚿 Kit de Baño Completo</h4>
+                            <p>¡Nuevos items para construir baños increíbles! Incluye toilets, lavamanos, duchas, grifos y carteles de "Baño $500". ¡Decora tu casa como un pro!</p>
+                            <div class="image-meta">
+                                <span class="date-tag">Octubre 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Latest Update: Halloween Event 2025 -->
-                <div class="gallery-item-full featured-full" data-category="updates" onclick="openGalleryModal('assets/images/halloween_ghost.png', '🎃 ¡Evento de Halloween 2025! - Fantasmas amigables y sorpresas')">
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/halloween_ghost.png', '🎃 ¡Evento de Halloween 2025! - Fantasmas amigables y sorpresas')">
                     <img src="assets/images/halloween_ghost.png"
                          alt="Evento de Halloween 2025 - Fantasmas Amigables"
                          class="gallery-image-full">
@@ -97,7 +107,6 @@
                             <h4>🎃 Halloween 2025</h4>
                             <p>¡Nuevo mod de fantasmas amigables! Encuéntralos flotando, tócalos para recibir dulces y descubre las calabazas mágicas. ¡Sin sustos, solo diversión de Halloween!</p>
                             <div class="image-meta">
-                                <span class="category-tag updates">Evento Especial</span>
                                 <span class="date-tag">Octubre 2025</span>
                             </div>
                         </div>
@@ -105,7 +114,7 @@
                 </div>
 
                 <!-- Latest Update: Area Protection -->
-                <div class="gallery-item-full" data-category="updates" onclick="openGalleryModal('assets/images/protect_area.jpeg', '¡Sistema de Protección de Áreas Disponible! - Protege tu casa')">
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/protect_area.jpeg', '¡Sistema de Protección de Áreas Disponible! - Protege tu casa')">
                     <img src="assets/images/protect_area.jpeg"
                          alt="Sistema de Protección de Áreas Activado"
                          class="gallery-image-full">
@@ -114,7 +123,22 @@
                             <h4>🛡️ Protege Tu Casa</h4>
                             <p>¡Todos los jugadores pueden proteger sus construcciones! Usa /area_pos1 y /area_pos2</p>
                             <div class="image-meta">
-                                <span class="category-tag updates">Actualización</span>
+                                <span class="date-tag">Oct 2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Update: Teleport System -->
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/tele.png', '⚡ Sistema de Teletransporte - Viaja rápido por el servidor')">
+                    <img src="assets/images/tele.png"
+                         alt="Sistema de Teletransporte"
+                         class="gallery-image-full">
+                    <div class="gallery-overlay-full">
+                        <div class="gallery-info-full">
+                            <h4>⚡ Teletransporte Activado</h4>
+                            <p>¡Viaja rápidamente a diferentes zonas del servidor! Usa el sistema de teleportación para explorar</p>
+                            <div class="image-meta">
                                 <span class="date-tag">Oct 2025</span>
                             </div>
                         </div>
@@ -122,7 +146,7 @@
                 </div>
 
                 <!-- Recent Update: Server Rules -->
-                <div class="gallery-item-full" data-category="updates" onclick="openGalleryModal('assets/images/reglas.png', 'Reglas Básicas del Servidor - ¡Nueva Guía Visual!')">
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/reglas.png', 'Reglas Básicas del Servidor - ¡Nueva Guía Visual!')">
                     <img src="assets/images/reglas.png"
                          alt="Reglas Básicas del Servidor"
                          class="gallery-image-full">
@@ -131,7 +155,6 @@
                             <h4>📋 Reglas del Servidor</h4>
                             <p>Nueva guía visual con las reglas básicas de convivencia en Wetlands</p>
                             <div class="image-meta">
-                                <span class="category-tag updates">Actualización</span>
                                 <span class="date-tag">Sep 2025</span>
                             </div>
                         </div>
@@ -139,7 +162,7 @@
                 </div>
 
                 <!-- Gameplay: Pool Scene -->
-                <div class="gallery-item-full" data-category="gameplay" onclick="openGalleryModal('assets/images/wetlands-gameplay-2025-09-13.png', 'Relajándose en la piscina con amigos - Gameplay de Wetlands')">
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/wetlands-gameplay-2025-09-13.png', 'Relajándose en la piscina con amigos - Gameplay de Wetlands')">
                     <img src="assets/images/wetlands-gameplay-2025-09-13.png"
                          alt="En la piscina con amigos"
                          class="gallery-image-full">
@@ -148,7 +171,6 @@
                             <h4>😎 Momentos de Relajación</h4>
                             <p>Disfruta de momentos tranquilos en la piscina con amigos y aldeanos en tu ciudad personalizada</p>
                             <div class="image-meta">
-                                <span class="category-tag gameplay">Gameplay</span>
                                 <span class="date-tag">Sep 2025</span>
                             </div>
                         </div>
@@ -156,7 +178,7 @@
                 </div>
 
                 <!-- Community: Players -->
-                <div class="gallery-item-full" data-category="community" onclick="openGalleryModal('assets/images/pepe-gabo.jpeg', 'Nuestra Comunidad - Pepe y Gabo en Wetlands')">
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/pepe-gabo.jpeg', 'Nuestra Comunidad - Pepe y Gabo en Wetlands')">
                     <img src="assets/images/pepe-gabo.jpeg"
                          alt="Comunidad Wetlands - Pepe y Gabo"
                          class="gallery-image-full">
@@ -165,7 +187,6 @@
                             <h4>👥 Nuestra Comunidad</h4>
                             <p>Pepe y Gabo, miembros activos de la comunidad, disfrutando de aventuras juntos en el servidor</p>
                             <div class="image-meta">
-                                <span class="category-tag community">Comunidad</span>
                                 <span class="date-tag">Sep 2025</span>
                             </div>
                         </div>
@@ -173,7 +194,7 @@
                 </div>
 
                 <!-- Gameplay: Epic Adventure -->
-                <div class="gallery-item-full" data-category="gameplay" onclick="openGalleryModal('assets/images/Captura de pantalla de 2025-08-31 02-48-20.png', 'Aventura Épica en el Mundo de Wetlands')">
+                <div class="gallery-item-full" onclick="openGalleryModal('assets/images/Captura de pantalla de 2025-08-31 02-48-20.png', 'Aventura Épica en el Mundo de Wetlands')">
                     <img src="assets/images/Captura de pantalla de 2025-08-31 02-48-20.png"
                          alt="Aventura en el mundo de Wetlands"
                          class="gallery-image-full">
@@ -182,7 +203,6 @@
                             <h4>🏞️ Aventura Épica</h4>
                             <p>Explora vastos mundos llenos de vida, construcciones increíbles y diversión sin límites</p>
                             <div class="image-meta">
-                                <span class="category-tag gameplay">Gameplay</span>
                                 <span class="date-tag">Ago 2025</span>
                             </div>
                         </div>
@@ -237,27 +257,33 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>🖼️ Galería de Wetlands</h4>
-                    <p>Un registro visual de las mejores aventuras en nuestro servidor educativo.</p>
+                    <h4>🌱 Wetlands</h4>
+                    <p>Un servidor de Luanti educativo para toda la familia.</p>
                 </div>
 
                 <div class="footer-section">
                     <h4>📋 Información del Servidor</h4>
                     <ul>
-                        <li><strong>Dirección:</strong> luanti.gabrielpantoja.cl</li>
-                        <li><strong>Puerto:</strong> 30000</li>
-                        <li><strong>Versión:</strong> VoxeLibre (MineClone2)</li>
-                        <li><strong>Tipo:</strong> Creativo, Sin PvP</li>
+                        <li>Versión: VoxeLibre (MineClone2)</li>
+                        <li>Idioma: Español</li>
+                        <li>Máximo jugadores: 20</li>
+                        <li>Tipo: Creativo, Sin PvP</li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
-                    <h4>🎮 Comandos Útiles</h4>
+                    <h4>⚡ Comandos Mágicos</h4>
                     <ul>
-                        <li><code>/reglas</code> - Ver reglas del servidor</li>
-                        <li><code>/back_to_spawn</code> - Volver a tu cama</li>
-                        <li><code>/home</code> - Ir a tu casa</li>
-                        <li><code>/sethome</code> - Establecer hogar</li>
+                        <li><code>/back_to_spawn</code> - Volver al inicio 🏠</li>
+                        <li><code>/area_pos1</code> - Marcar esquina 1 🛡️</li>
+                        <li><code>/area_pos2</code> - Marcar esquina 2 🛡️</li>
+                        <li><code>/protect [nombre]</code> - Proteger área 🔒</li>
+                        <li><code>/reglas</code> - Ver reglas importantes 📋</li>
+                        <li><code>/sit</code> - Sentarse cómodamente 🪑</li>
+                        <li><code>/santuario</code> - Cuidar animalitos 🐾</li>
+                        <li><code>/filosofia</code> - Conocer nuestra misión 🌟</li>
+                        <li><code>/lay</code> - Recostarse en pasto 🌱</li>
+                        <li><code>/?</code> - Ver todos los comandos ✨</li>
                     </ul>
                 </div>
             </div>
