@@ -133,7 +133,7 @@ function setupModalNavigation() {
 
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
-        if (modal.style.display === 'block') {
+        if (modal.classList.contains('active')) {
             switch(e.key) {
                 case 'ArrowLeft':
                     e.preventDefault();
@@ -220,7 +220,7 @@ function openGalleryModal(imageSrc, caption) {
         currentImageIndex = galleryData.findIndex(item => item.src === imageSrc) || 0;
 
         // Update modal content
-        modal.style.display = 'block';
+        modal.classList.add('active');
         modalImage.src = imageSrc;
         modalCaption.textContent = caption;
 
@@ -247,8 +247,7 @@ function closeGalleryModal() {
         modal.classList.add('modal-closing');
 
         setTimeout(() => {
-            modal.style.display = 'none';
-            modal.classList.remove('modal-open', 'modal-closing');
+            modal.classList.remove('active', 'modal-open', 'modal-closing');
 
             // Restore body scroll
             document.body.style.overflow = '';
