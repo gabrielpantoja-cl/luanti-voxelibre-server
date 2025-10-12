@@ -1,10 +1,11 @@
--- PVP Arena Mod v1.0.0
+-- PVP Arena Mod v1.1.0
 -- Permite PvP en zonas específicas del servidor Wetlands
 -- Autor: gabo (Gabriel Pantoja)
 
 pvp_arena = {}
 pvp_arena.arenas = {}
 pvp_arena.players_in_arena = {}
+pvp_arena.player_creative_status = {}  -- Guardar estado de creative antes de entrar
 
 -- Cargar comandos del chat
 dofile(minetest.get_modpath("pvp_arena") .. "/commands.lua")
@@ -92,18 +93,44 @@ function pvp_arena.set_pvp(player_name, enabled)
     local player = minetest.get_player_by_name(player_name)
     if not player then return end
 
-    -- VoxeLibre: Modificar la capacidad de recibir daño de otros jugadores
+    -- Marcar metadata de PVP habilitado
     local meta = player:get_meta()
     meta:set_int("pvp_enabled", enabled and 1 or 0)
 
-    -- También establecer la propiedad del jugador
-    local armor_groups = player:get_armor_groups()
     if enabled then
-        armor_groups.fleshy = 100  -- Vulnerable a daño
+        -- ENTRAR A ARENA: Guardar estado creative y removerlo temporalmente
+        local privs = minetest.get_player_privs(player_name)
+        pvp_arena.player_creative_status[player_name] = privs.creative or false
+
+        if privs.creative then
+            privs.creative = nil
+            minetest.set_player_privs(player_name, privs)
+            minetest.log("action", "[PVP Arena] Removed creative from " .. player_name .. " (arena entry)")
+        end
+
+        -- Hacer vulnerable al jugador
+        local armor_groups = player:get_armor_groups()
+        armor_groups.fleshy = 100
+        player:set_armor_groups(armor_groups)
+
     else
-        armor_groups.fleshy = 0    -- Invulnerable en zona pacífica
+        -- SALIR DE ARENA: Restaurar creative si lo tenía antes
+        local had_creative = pvp_arena.player_creative_status[player_name]
+
+        if had_creative then
+            local privs = minetest.get_player_privs(player_name)
+            privs.creative = true
+            minetest.set_player_privs(player_name, privs)
+            minetest.log("action", "[PVP Arena] Restored creative to " .. player_name .. " (arena exit)")
+        end
+
+        pvp_arena.player_creative_status[player_name] = nil
+
+        -- Hacer invulnerable al jugador
+        local armor_groups = player:get_armor_groups()
+        armor_groups.fleshy = 0
+        player:set_armor_groups(armor_groups)
     end
-    player:set_armor_groups(armor_groups)
 
     minetest.log("action", "[PVP Arena] PVP " .. (enabled and "enabled" or "disabled") .. " for " .. player_name)
 end
@@ -184,8 +211,18 @@ end)
 -- Limpiar estado al desconectar
 minetest.register_on_leaveplayer(function(player)
     local name = player:get_player_name()
+
+    -- Si estaba en arena, restaurar creative antes de desconectar
     if pvp_arena.players_in_arena[name] then
+        local had_creative = pvp_arena.player_creative_status[name]
+        if had_creative then
+            local privs = minetest.get_player_privs(name)
+            privs.creative = true
+            minetest.set_player_privs(name, privs)
+        end
+
         pvp_arena.players_in_arena[name] = nil
+        pvp_arena.player_creative_status[name] = nil
         minetest.log("action", "[PVP Arena] Cleaned up state for " .. name)
     end
 end)
