@@ -108,10 +108,19 @@ function pvp_arena.set_pvp(player_name, enabled)
             minetest.log("action", "[PVP Arena] Removed creative from " .. player_name .. " (arena entry)")
         end
 
+        -- FORZAR HP: Activar sistema de vida para VoxeLibre
+        player:set_hp(20)  -- Vida completa (20 HP = 10 corazones)
+
         -- Hacer vulnerable al jugador
         local armor_groups = player:get_armor_groups()
         armor_groups.fleshy = 100
         player:set_armor_groups(armor_groups)
+
+        -- Forzar propiedades de daño para VoxeLibre
+        player:set_properties({
+            hp_max = 20,
+            breath_max = 10
+        })
 
     else
         -- SALIR DE ARENA: Restaurar creative si lo tenía antes
