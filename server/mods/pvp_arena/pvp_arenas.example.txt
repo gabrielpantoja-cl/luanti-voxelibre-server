@@ -1,0 +1,1 @@
+return {name = "Arena Principal", center = {x=41, y=23, z=232}, radius=25, enabled=true, created_by="gabo", created_at=1728950400}
