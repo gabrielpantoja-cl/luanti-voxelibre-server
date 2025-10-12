@@ -233,7 +233,8 @@ minetest.register_globalstep(function(dtime)
         local mensajes_rotativos = {
             "🌱 Recordatorio: Usa /reglas para las reglas completas",
             "💚 Descubre nuestra filosofía con /filosofia",
-            "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas"
+            "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas",
+            "🌐 Visita nuestra página web: https://luanti.gabrielpantoja.cl"
         }
         local mensaje = mensajes_rotativos[math.random(1, #mensajes_rotativos)]
         minetest.chat_send_all(mensaje)
