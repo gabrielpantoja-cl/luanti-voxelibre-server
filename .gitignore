@@ -33,3 +33,34 @@ secrets/
 # Backups grandes (excluir de Git)
 world-snapshots/*.tar.gz
 server/worlds/world/
+
+# ==========================================
+# Documentación Administrativa Privada
+# ==========================================
+# Contiene información sensible sobre usuarios, IPs, coordenadas exactas
+
+# Análisis de usuarios (contiene nombres de usuario, IPs potenciales)
+docs/admin/analisis-usuarios-30-dias.md
+docs/admin/estado-usuarios-actual.md
+
+# Ubicaciones exactas en el mundo (grief prevention)
+docs/admin/ubicaciones-coordenadas.md
+
+# Información de seguridad con IPs reales
+docs/admin/seguridad-y-bloqueos.md
+
+# Configuración de VPS y credenciales
+docs/admin/SISTEMA_ACTUAL_VPS_2025-10-11.md
+
+# Archivos de incidentes con datos sensibles
+docs/security/incidents/2025-09-20_HAKER_ATTACK/
+docs/security/incidents/2025-09-20_INCIDENTE_HAKER_DESCONEXION_MASIVA.md
+
+# Legacy docs con posible información sensible
+docs/legacy/FORENSIC_*.md
+docs/legacy/COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md
+docs/legacy/SECURITY_INCIDENT_CONSOLIDATED_20250920.md
+docs/legacy/IP_BLOCKING_MANUAL.md
+
+# Mantener resto de documentación pública
+# (guías técnicas, mods, configuración general)
