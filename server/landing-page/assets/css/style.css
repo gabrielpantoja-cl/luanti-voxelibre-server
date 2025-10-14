@@ -2460,3 +2460,36 @@ body {
     max-width: 100%;
   }
 }
+
+/* ===== GITHUB LINKS IN FOOTER ===== */
+.github-link,
+.contribute-link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-green-light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: var(--space-xs) 0;
+}
+
+.github-link:hover,
+.contribute-link:hover {
+  color: var(--white);
+  text-decoration: underline;
+  transform: translateX(2px);
+}
+
+.github-link svg {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.github-link:hover svg {
+  transform: rotate(360deg);
+}
+
+.contribute-link::before {
+  content: '🤝 ';
+  margin-right: 4px;
+}
