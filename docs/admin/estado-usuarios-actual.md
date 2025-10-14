@@ -1,18 +1,21 @@
 # Estado de Usuarios - Servidor Wetlands
 
-**Última actualización:** 2025-10-03 21:00 UTC
-**Total de usuarios registrados:** 11
+**Última actualización:** 2025-10-14 20:20 UTC
+**Total de usuarios registrados:** 16
+**Usuarios activos últimos 30 días:** 14 (87.5%)
 
 ---
 
 ## 📊 Resumen de Usuarios y Privilegios
 
+**📈 CRECIMIENTO:** +5 nuevos usuarios desde último reporte (45% de crecimiento en 11 días)
+
 ### Usuarios con Privilegios Administrativos (2)
 
 #### 1. **gabo** (ID: 1)
-- **Último login:** 2025-10-03 20:30:25 UTC
+- **Último login:** 2025-10-14 19:52:56 UTC
 - **Rol:** Administrador Principal
-- **Privilegios (33):**
+- **Privilegios (35):**
   ```
   advancements, announce, areas, ban, basic_privs, bring, creative,
   debug, fast, fly, give, help_reveal, home, hunger, interact, kick,
@@ -28,7 +31,8 @@
   - Worldedit y edición avanzada
 
 #### 2. **lulululuo** (ID: 29)
-- **Último login:** 2025-10-03 18:57:01 UTC
+- **Último login:** 2025-10-03 21:50:21 UTC
+- ⚠️ **INACTIVO:** Sin conexión desde hace 11 días
 - **Rol:** Usuario con privilegios de protección extendidos
 - **Privilegios (6):**
   ```
@@ -44,7 +48,7 @@
 ### Usuarios con Privilegios Creativos Avanzados (4)
 
 #### 3. **pepelomo** (ID: 4)
-- **Último login:** 2025-10-03 20:29:47 UTC
+- **Último login:** 2025-10-14 19:29:36 UTC (hace ~1 hora)
 - **Privilegios (19):**
   ```
   advancements, areas, areas_high_limit, basic_privs, bring, creative,
@@ -62,7 +66,7 @@
   ```
 
 #### 5. **gaelsin** (ID: 17)
-- **Último login:** 2025-10-02 18:58:07 UTC
+- **Último login:** 2025-10-09 21:21:50 UTC (hace ~5 días)
 - **Privilegios (17):**
   ```
   advancements, areas, areas_high_limit, basic_privs, creative, debug,
@@ -71,7 +75,7 @@
   ```
 
 #### 6. **Gapi** (ID: 19)
-- **Último login:** 2025-09-21 06:02:27 UTC
+- **Último login:** 2025-10-09 20:52:35 UTC (hace ~5 días)
 - **Privilegios (17):**
   ```
   advancements, areas, areas_high_limit, basic_privs, creative, debug,
@@ -81,17 +85,38 @@
 
 ---
 
+### Usuarios Nuevos Activos (2)
+
+#### 7. **lulu81** (ID: 33)
+- **Último login:** 2025-10-11 22:15:18 UTC (hace ~3 días)
+- **Primera sesión:** 2025-10-04 13:33:32
+- **Privilegios (3):**
+  ```
+  interact, shout, fly
+  ```
+- **Estado:** ✅ ACTIVO - Nuevo usuario con buena retención
+
+#### 8. **julii** (ID: 36)
+- **Último login:** 2025-10-11 13:37:01 UTC (hace ~3 días)
+- **Primera sesión:** 2025-10-05 19:14:13
+- **Privilegios (3):**
+  ```
+  interact, shout, fly
+  ```
+- **Estado:** ✅ ACTIVO - Nuevo usuario con buena retención
+
 ### Usuarios Básicos con Protección (5)
 
-#### 7. **pepelomoomomomo** (ID: 27)
-- **Último login:** 2025-10-03 14:36:55 UTC
+#### 9. **pepelomoomomomo** (ID: 27)
+- **Último login:** 2025-10-03 18:23:55 UTC (hace ~11 días)
+
 - **Privilegios (5):**
   ```
   areas, areas_high_limit, fly, interact, shout
   ```
 
-#### 8. **lulu** (ID: 28)
-- **Último login:** 2025-10-03 14:39:56 UTC
+#### 10. **lulu** (ID: 28)
+- **Último login:** 2025-10-03 18:26:56 UTC (hace ~11 días)
 - **Privilegios (5):**
   ```
   areas, areas_high_limit, fly, interact, shout
@@ -104,15 +129,15 @@
   areas, areas_high_limit, interact, shout
   ```
 
-#### 10. **jutaro** (ID: 31)
-- **Último login:** 2025-10-03 16:03:23 UTC
+#### 11. **jutaro** (ID: 31)
+- **Último login:** 2025-10-03 22:43:23 UTC (hace ~11 días)
 - **Privilegios (5):**
   ```
   areas, areas_high_limit, fly, interact, shout
   ```
 
-#### 11. **lulululuo0000** (ID: 32)
-- **Último login:** 2025-10-03 20:30:39 UTC
+#### 12. **lulululuo0000** (ID: 32)
+- **Último login:** 2025-10-03 23:43:39 UTC (hace ~11 días)
 - **Privilegios (5):**
   ```
   areas, areas_high_limit, fly, interact, shout
