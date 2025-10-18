@@ -49,6 +49,14 @@ minetest.register_entity("halloween_ghost:ghost", {
     spawn_y = nil,  -- Altura inicial de spawn
 
     on_activate = function(self, staticdata)
+        -- CRÍTICO: Verificar límite ANTES de activar
+        if active_ghosts >= MAX_GHOSTS then
+            -- Auto-eliminar si superamos el límite (previene spawns excesivos)
+            self.object:remove()
+            minetest.log("warning", "[Halloween Ghost] Spawn rechazado - Límite alcanzado (" .. active_ghosts .. "/" .. MAX_GHOSTS .. ")")
+            return
+        end
+
         self.object:set_armor_groups({immortal = 1})
         self.timer = 0
         self.lifetime = 0
