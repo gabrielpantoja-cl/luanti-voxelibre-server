@@ -1,6 +1,24 @@
 -- Halloween Ghost Mod
 -- Fantasma amigable para eventos de Halloween
 -- Apropiado para servidor educativo y compasivo
+-- Spawn Location: 123, 25, -204 (misma ubicación que zombies)
+
+-- Configuración del mod
+local GHOST_SPAWN_POS = {x = 123, y = 25, z = -204}
+local SPAWN_RADIUS = 15  -- Radio de spawn alrededor del punto central
+local MAX_GHOSTS = 8   -- Máximo de fantasmas activos simultáneamente
+local SPAWN_INTERVAL = 45  -- Segundos entre spawns automáticos (más lento que zombies)
+local GHOST_LIFETIME = 240  -- 4 minutos antes de desaparecer automáticamente
+local MAX_HEIGHT = 50  -- Altura máxima sobre el spawn (evita que suban infinitamente)
+
+-- Contador de fantasmas activos
+local active_ghosts = 0
+
+-- Función para verificar si estamos en época de Halloween (Octubre)
+local function is_halloween_season()
+    local date = os.date("*t")
+    return date.month == 10  -- Octubre
+end
 
 -- Registro del fantasma como entity
 minetest.register_entity("halloween_ghost:ghost", {
@@ -26,34 +44,88 @@ minetest.register_entity("halloween_ghost:ghost", {
     },
 
     timer = 0,
+    lifetime = 0,
     float_height = 1.5,
+    spawn_y = nil,  -- Altura inicial de spawn
 
     on_activate = function(self, staticdata)
         self.object:set_armor_groups({immortal = 1})
         self.timer = 0
-        -- Hacer que el fantasma flote suavemente
-        self.object:set_velocity({x=0, y=0.5, z=0})
+        self.lifetime = 0
+
+        -- Guardar altura de spawn para limitar altura máxima
+        local pos = self.object:get_pos()
+        if pos then
+            self.spawn_y = pos.y
+        end
+
+        active_ghosts = active_ghosts + 1
+
+        minetest.log("action", "[Halloween Ghost] Fantasma spawneado. Total activos: " .. active_ghosts)
     end,
 
     on_step = function(self, dtime)
         self.timer = self.timer + dtime
+        self.lifetime = self.lifetime + dtime
 
         -- Movimiento flotante suave (sube y baja)
         local pos = self.object:get_pos()
         if not pos then return end
 
-        local vel = self.object:get_velocity()
-        local new_y = math.sin(self.timer * 2) * 0.5
+        -- Auto-despawn después del tiempo de vida
+        if self.lifetime > GHOST_LIFETIME then
+            -- Efecto de partículas al desaparecer
+            for i = 1, 15 do
+                minetest.add_particle({
+                    pos = pos,
+                    velocity = {
+                        x = math.random(-1, 1),
+                        y = math.random(0, 2),
+                        z = math.random(-1, 1)
+                    },
+                    acceleration = {x=0, y=-3, z=0},
+                    expirationtime = math.random(1, 2),
+                    size = math.random(1, 3),
+                    collisiondetection = true,
+                    texture = "halloween_ghost_particle.png",
+                    glow = 10,
+                })
+            end
 
-        -- Movimiento aleatorio horizontal
-        if self.timer > 3 then
-            self.timer = 0
-            local random_vel = {
-                x = math.random(-1, 1) * 0.5,
-                y = new_y,
-                z = math.random(-1, 1) * 0.5
-            }
-            self.object:set_velocity(random_vel)
+            active_ghosts = math.max(0, active_ghosts - 1)
+            self.object:remove()
+            return
+        end
+
+        -- Limitar altura máxima (evitar que suban infinitamente)
+        if self.spawn_y and pos.y > (self.spawn_y + MAX_HEIGHT) then
+            -- Forzar descenso suave si superan altura máxima
+            self.object:set_velocity({
+                x = math.random(-1, 1) * 0.3,
+                y = -0.8,  -- Descenso suave
+                z = math.random(-1, 1) * 0.3
+            })
+        else
+            -- Movimiento flotante normal con límite
+            local vel = self.object:get_velocity()
+            local new_y = math.sin(self.timer * 2) * 0.5
+
+            -- Limitar velocidad ascendente si está cerca del límite
+            local height_diff = self.spawn_y and (pos.y - self.spawn_y) or 0
+            if height_diff > (MAX_HEIGHT * 0.8) then
+                new_y = math.min(new_y, -0.2)  -- Forzar descenso gradual
+            end
+
+            -- Movimiento aleatorio horizontal cada 3 segundos
+            if self.timer > 3 then
+                self.timer = 0
+                local random_vel = {
+                    x = math.random(-1, 1) * 0.5,
+                    y = new_y,
+                    z = math.random(-1, 1) * 0.5
+                }
+                self.object:set_velocity(random_vel)
+            end
         end
 
         -- Efecto de partículas místicas
@@ -110,7 +182,12 @@ minetest.register_entity("halloween_ghost:ghost", {
         end
 
         -- El fantasma desaparece con sonido
+        active_ghosts = math.max(0, active_ghosts - 1)
         self.object:remove()
+    end,
+
+    on_death = function(self, killer)
+        active_ghosts = math.max(0, active_ghosts - 1)
     end,
 })
 
@@ -182,5 +259,119 @@ minetest.register_node("halloween_ghost:magic_pumpkin", {
     end,
 })
 
+-- Función para spawn de fantasma individual
+local function spawn_ghost(pos)
+    if active_ghosts >= MAX_GHOSTS then
+        return false, "Límite de fantasmas alcanzado (" .. MAX_GHOSTS .. ")"
+    end
+
+    -- Verificar que la posición sea válida
+    local node = minetest.get_node(pos)
+    if not node then
+        return false, "Posición inválida"
+    end
+
+    -- Spawn con offset aleatorio
+    local spawn_pos = {
+        x = pos.x + math.random(-SPAWN_RADIUS, SPAWN_RADIUS),
+        y = pos.y + math.random(0, 3),  -- Un poco más alto para efecto fantasmal
+        z = pos.z + math.random(-SPAWN_RADIUS, SPAWN_RADIUS)
+    }
+
+    minetest.add_entity(spawn_pos, "halloween_ghost:ghost")
+    return true
+end
+
+-- Sistema de spawn automático (solo en Octubre)
+local spawn_timer = 0
+minetest.register_globalstep(function(dtime)
+    if not is_halloween_season() then
+        return
+    end
+
+    spawn_timer = spawn_timer + dtime
+
+    if spawn_timer >= SPAWN_INTERVAL then
+        spawn_timer = 0
+
+        if active_ghosts < MAX_GHOSTS then
+            spawn_ghost(GHOST_SPAWN_POS)
+        end
+    end
+end)
+
+-- Comando: Limpiar todos los fantasmas
+minetest.register_chatcommand("limpiar_fantasmas", {
+    params = "",
+    description = "Elimina todos los fantasmas activos del servidor",
+    privs = {server = true},
+    func = function(name, param)
+        local removed = 0
+
+        for _, obj in pairs(minetest.luaentities) do
+            if obj.name == "halloween_ghost:ghost" then
+                obj.object:remove()
+                removed = removed + 1
+            end
+        end
+
+        active_ghosts = 0
+
+        return true, "👻 Eliminados " .. removed .. " fantasmas del servidor"
+    end,
+})
+
+-- Comando: Estado de fantasmas
+minetest.register_chatcommand("estado_fantasmas", {
+    params = "",
+    description = "Muestra información sobre los fantasmas activos",
+    privs = {},
+    func = function(name, param)
+        local info = {
+            "👻 === Estado de Fantasmas de Halloween ===",
+            "Fantasmas activos: " .. active_ghosts .. "/" .. MAX_GHOSTS,
+            "Zona de spawn: " .. minetest.pos_to_string(GHOST_SPAWN_POS),
+            "Radio de spawn: " .. SPAWN_RADIUS .. " bloques",
+            "Altura máxima: +" .. MAX_HEIGHT .. " bloques desde spawn",
+            "Temporada Halloween: " .. (is_halloween_season() and "ACTIVA (Octubre)" or "Inactiva"),
+            "Tiempo entre spawns: " .. SPAWN_INTERVAL .. " segundos",
+            "Tiempo de vida: " .. GHOST_LIFETIME .. " segundos (4 minutos)",
+        }
+
+        return true, table.concat(info, "\n")
+    end,
+})
+
+-- Comando: Invasión de fantasmas (en ubicación fija, no en jugador)
+minetest.register_chatcommand("invasion_fantasmas", {
+    params = "<cantidad>",
+    description = "Inicia invasión de fantasmas en zona de spawn (1-" .. MAX_GHOSTS .. ")",
+    privs = {server = true},
+    func = function(name, param)
+        local cantidad = tonumber(param) or 5
+        if cantidad < 1 then cantidad = 1 end
+        if cantidad > MAX_GHOSTS then cantidad = MAX_GHOSTS end
+
+        local spawned = 0
+        for i = 1, cantidad do
+            if active_ghosts < MAX_GHOSTS then
+                spawn_ghost(GHOST_SPAWN_POS)
+                spawned = spawned + 1
+            end
+        end
+
+        minetest.chat_send_all("👻 ¡INVASIÓN FANTASMAL! " .. spawned .. " fantasmas han aparecido cerca de " .. minetest.pos_to_string(GHOST_SPAWN_POS) .. "!")
+
+        return true, "Invasión iniciada con " .. spawned .. " fantasmas"
+    end,
+})
+
 -- Registro en el log
-minetest.log("action", "[Halloween Ghost] Mod cargado exitosamente - Evento de Halloween activado")
+if is_halloween_season() then
+    minetest.log("action", "[Halloween Ghost] Mod cargado - TEMPORADA HALLOWEEN ACTIVA")
+    minetest.log("action", "[Halloween Ghost] Zona de spawn: " .. minetest.pos_to_string(GHOST_SPAWN_POS))
+else
+    minetest.log("action", "[Halloween Ghost] Mod cargado - Temporada inactiva (no es Octubre)")
+end
+
+minetest.log("action", "[Halloween Ghost] Configuración: MAX=" .. MAX_GHOSTS .. ", Intervalo=" .. SPAWN_INTERVAL .. "s, Altura máx=" .. MAX_HEIGHT .. "m")
