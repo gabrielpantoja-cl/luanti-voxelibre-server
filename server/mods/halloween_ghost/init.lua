@@ -6,7 +6,7 @@
 -- Configuración del mod
 local GHOST_SPAWN_POS = {x = 123, y = 25, z = -204}
 local SPAWN_RADIUS = 15  -- Radio de spawn alrededor del punto central
-local MAX_GHOSTS = 8   -- Máximo de fantasmas activos simultáneamente
+local MAX_GHOSTS = 20  -- Máximo de fantasmas activos simultáneamente
 local SPAWN_INTERVAL = 45  -- Segundos entre spawns automáticos (más lento que zombies)
 local GHOST_LIFETIME = 240  -- 4 minutos antes de desaparecer automáticamente
 local MAX_HEIGHT = 50  -- Altura máxima sobre el spawn (evita que suban infinitamente)
