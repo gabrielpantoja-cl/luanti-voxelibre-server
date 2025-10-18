@@ -41,6 +41,7 @@ Configuraciones específicas del servidor
 Desarrollo y documentación de mods personalizados
 - **[Education Blocks](mods/EDUCATION_BLOCKS_MOD.md)** - Bloques educativos interactivos
 - **[Server Rules](mods/SERVER_RULES_MOD.md)** - Sistema automático de reglas
+- **[PVP Arena System](mods/PVP_ARENA_SETUP.md)** - Sistema completo de arenas PVP
 - **[Desarrollo de Mods](mods/README.md)** - Guía para crear nuevos mods
 
 ### 🔧 [operations/](operations/)
@@ -165,6 +166,7 @@ ssh gabriel@<VPS_HOST_IP>
 4. **Escalación crítica**: Contactar administradores con información específica
 
 ### Contribuciones
+- **Guía de Contribución**: Ver [CONTRIBUTING.md](../CONTRIBUTING.md) en la raíz del repositorio
 - **Pull Requests**: Seguir las guías de desarrollo en [mods/](mods/)
 - **Issues**: Reportar en el repositorio GitHub
 - **Documentación**: Mantener actualizada después de cambios importantes
