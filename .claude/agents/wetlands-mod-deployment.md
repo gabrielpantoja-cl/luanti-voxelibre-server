@@ -136,16 +136,28 @@ vps_exec "ls -la server/mods/$MOD_NAME/" || {
     exit 1
 }
 
-# 4. Habilitar mod en world.mt
-echo "⚙️ Habilitando mod en configuración..."
-vps_exec "docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
+# 4. Habilitar mod en world.mt (con verificación de duplicados)
+echo "⚙️ Configurando mod en world.mt..."
 
-# Verificar que se agregó correctamente
-echo "🔍 Verificando configuración..."
+# Verificar si el mod ya está configurado
+if vps_exec "docker-compose exec -T luanti-server grep -q '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"; then
+    echo "⚠️ Mod ya configurado en world.mt. Actualizando estado a 'true'..."
+    vps_exec "docker-compose exec -T luanti-server sed -i 's/^load_mod_$MOD_NAME = .*/load_mod_$MOD_NAME = true/' /config/.minetest/worlds/world/world.mt"
+else
+    echo "✅ Agregando mod nuevo a world.mt..."
+    vps_exec "docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
+fi
+
+# Verificar que se configuró correctamente
+echo "🔍 Verificando configuración final..."
 vps_exec "docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep $MOD_NAME" || {
     echo "❌ Error: Mod no habilitado en world.mt"
     exit 1
 }
+
+# Mostrar línea específica de configuración
+echo "📋 Configuración aplicada:"
+vps_exec "docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
 
 # 5. Restart servidor
 echo "🔄 Reiniciando servidor..."
@@ -886,3 +898,230 @@ Este agente se especializa en **deployment y operaciones**. Para una colaboraci�
 ```
 
 **⚠️ NUNCA deployar a producción sin testing local exitoso del agente `wetlands-mod-testing`**
+
+---
+
+## 📚 Anatomía del Archivo world.mt (CONOCIMIENTO CRÍTICO)
+
+### 🎯 ¿Qué es world.mt?
+
+El archivo `world.mt` es el **archivo de configuración maestro** de cada mundo en Luanti. Controla:
+- Qué mods están habilitados/deshabilitados
+- Qué juego base utiliza el mundo (VoxeLibre, Minetest Game, etc.)
+- Configuraciones de backend (SQLite, PostgreSQL, etc.)
+
+**Ubicación en VPS**: `/config/.minetest/worlds/world/world.mt`
+**Ubicación local**: `server/worlds/world/world.mt`
+
+### 📋 Estructura de un world.mt Típico
+
+```ini
+# Configuración del juego base
+gameid = mineclone2
+world_name = world
+
+# Backends de almacenamiento
+backend = sqlite3
+player_backend = sqlite3
+auth_backend = sqlite3
+mod_storage_backend = sqlite3
+
+# Configuración del servidor
+creative_mode = false
+enable_damage = true
+
+# Mods habilitados (cada línea = un mod)
+load_mod_animal_sanctuary = true
+load_mod_vegan_food = true
+load_mod_education_blocks = true
+load_mod_server_rules = true
+load_mod_mcl_back_to_spawn = true
+load_mod_halloween_zombies = true
+```
+
+### ⚠️ Problemas Comunes con world.mt
+
+#### 1. **Duplicación de Configuración de Mods**
+```ini
+# ❌ PROBLEMA: Mod configurado dos veces
+load_mod_animal_sanctuary = false
+load_mod_animal_sanctuary = true  # Comportamiento impredecible
+
+# ✅ CORRECTO: Una sola línea por mod
+load_mod_animal_sanctuary = true
+```
+
+**Síntomas**:
+- Mod no carga aunque aparezca como `= true`
+- Comportamiento inconsistente entre reinicios
+
+**Solución**:
+```bash
+# Verificar duplicados antes de agregar
+docker-compose exec -T luanti-server grep '^load_mod_nombre_mod' /config/.minetest/worlds/world/world.mt
+
+# Si existe, actualizar (no agregar)
+docker-compose exec -T luanti-server sed -i 's/^load_mod_nombre_mod = .*/load_mod_nombre_mod = true/' /config/.minetest/worlds/world/world.mt
+```
+
+#### 2. **Mod Deshabilitado Accidentalmente**
+```ini
+# ❌ PROBLEMA: Mod instalado pero deshabilitado
+load_mod_important_mod = false
+
+# Síntoma: El mod está en server/mods/ pero no funciona en el juego
+```
+
+**Verificación**:
+```bash
+# Listar TODOS los mods en world.mt
+docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep load_mod
+
+# Verificar estado específico de un mod
+docker-compose exec -T luanti-server grep '^load_mod_nombre_mod' /config/.minetest/worlds/world/world.mt
+```
+
+#### 3. **Mod Faltante en world.mt**
+```bash
+# Mod existe en server/mods/nuevo_mod/
+# Pero NO aparece en world.mt
+# Resultado: Mod NO se carga en el servidor
+```
+
+**Solución**:
+```bash
+# Agregar mod explícitamente
+echo "load_mod_nuevo_mod = true" >> /config/.minetest/worlds/world/world.mt
+```
+
+### 🔧 Comandos de Diagnóstico Esenciales
+
+```bash
+# 1. Ver configuración completa de world.mt
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt"
+
+# 2. Listar solo mods habilitados
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep 'load_mod.*= true' /config/.minetest/worlds/world/world.mt"
+
+# 3. Listar solo mods deshabilitados
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep 'load_mod.*= false' /config/.minetest/worlds/world/world.mt"
+
+# 4. Verificar estado de un mod específico
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_animal_sanctuary' /config/.minetest/worlds/world/world.mt"
+
+# 5. Buscar duplicados (líneas que aparecen más de una vez)
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | sort | uniq -d"
+```
+
+### ✅ Checklist de Validación Post-Deployment
+
+Después de cada deployment de mod, SIEMPRE ejecutar:
+
+```bash
+#!/bin/bash
+# validate-world-mt.sh - Validación completa de world.mt
+
+MOD_NAME=$1
+
+echo "🔍 VALIDANDO CONFIGURACIÓN DE MOD: $MOD_NAME"
+echo "============================================="
+
+# 1. Verificar que el mod existe en directorio
+echo "📂 Verificando existencia del mod en directorio..."
+if ssh gabriel@<VPS_IP> "test -d /home/gabriel/luanti-voxelibre-server/server/mods/$MOD_NAME"; then
+    echo "✅ Mod existe en server/mods/$MOD_NAME/"
+else
+    echo "❌ ERROR: Mod NO existe en server/mods/"
+    exit 1
+fi
+
+# 2. Verificar configuración en world.mt
+echo ""
+echo "⚙️ Verificando configuración en world.mt..."
+MOD_CONFIG=$(ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt")
+
+if [ -z "$MOD_CONFIG" ]; then
+    echo "❌ ERROR: Mod NO está configurado en world.mt"
+    exit 1
+fi
+
+echo "📋 Configuración encontrada:"
+echo "$MOD_CONFIG"
+
+# 3. Verificar que está habilitado (= true)
+if echo "$MOD_CONFIG" | grep -q "= true"; then
+    echo "✅ Mod está HABILITADO"
+else
+    echo "⚠️ ADVERTENCIA: Mod está DESHABILITADO (= false)"
+    exit 1
+fi
+
+# 4. Verificar que no hay duplicados
+DUPLICATE_COUNT=$(ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt | wc -l")
+
+if [ "$DUPLICATE_COUNT" -gt 1 ]; then
+    echo "❌ ERROR: Mod configurado $DUPLICATE_COUNT veces (duplicado)"
+    echo "📋 Líneas duplicadas:"
+    ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
+    exit 1
+else
+    echo "✅ Sin duplicados en configuración"
+fi
+
+# 5. Verificar en logs del servidor
+echo ""
+echo "📋 Verificando carga en logs del servidor..."
+MOD_LOAD_LOG=$(ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=100 luanti-server | grep -i '$MOD_NAME'")
+
+if [ -n "$MOD_LOAD_LOG" ]; then
+    echo "✅ Mod aparece en logs del servidor:"
+    echo "$MOD_LOAD_LOG" | head -3
+else
+    echo "⚠️ Mod NO aparece en logs (puede ser normal si no genera output)"
+fi
+
+echo ""
+echo "🎉 Validación completada para: $MOD_NAME"
+```
+
+### 🚨 Reglas de Oro para world.mt
+
+1. **NUNCA edites world.mt manualmente en producción** - Usa scripts automatizados
+2. **SIEMPRE verifica duplicados antes de agregar** - Evita configuraciones conflictivas
+3. **SIEMPRE valida después del deployment** - Confirma que el mod está activo
+4. **NUNCA asumas que append (>>) es seguro** - Puede crear duplicados
+5. **SIEMPRE reinicia el servidor después de cambios** - Los cambios requieren reload
+
+### 📊 Ejemplo de Workflow Completo
+
+```bash
+# PASO 1: Verificar estado actual
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt"
+
+# PASO 2: Buscar configuración existente del mod
+MOD_NAME="animal_sanctuary"
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
+
+# PASO 3: Si existe, actualizar; si no, agregar
+if [ $? -eq 0 ]; then
+    # Mod ya existe, actualizar
+    ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sed -i 's/^load_mod_$MOD_NAME = .*/load_mod_$MOD_NAME = true/' /config/.minetest/worlds/world/world.mt"
+else
+    # Mod nuevo, agregar
+    ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
+fi
+
+# PASO 4: Verificar cambio aplicado
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
+
+# PASO 5: Reiniciar servidor
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+
+# PASO 6: Validar que el servidor inició correctamente
+sleep 15
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps | grep luanti-server"
+```
+
+---
+
+**🎓 Principio Fundamental**: El archivo `world.mt` es tan crítico como el código de tus mods. Trátalo con el mismo nivel de rigor y validación que usas para deployment de código.
