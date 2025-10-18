@@ -309,14 +309,15 @@ minetest.register_globalstep(function(dtime)
     end
 end)
 
--- Comando: Limpiar todos los fantasmas
+-- Comando: Limpiar todos los fantasmas (GLOBAL - todo el mundo)
 minetest.register_chatcommand("limpiar_fantasmas", {
     params = "",
-    description = "Elimina todos los fantasmas activos del servidor",
+    description = "Elimina TODOS los fantasmas del mundo entero (no solo área cargada)",
     privs = {server = true},
     func = function(name, param)
         local removed = 0
 
+        -- Método 1: Limpiar entities en memoria (chunks cargados)
         for _, obj in pairs(minetest.luaentities) do
             if obj.name == "halloween_ghost:ghost" then
                 obj.object:remove()
@@ -324,9 +325,55 @@ minetest.register_chatcommand("limpiar_fantasmas", {
             end
         end
 
+        -- Método 2: Buscar en radio gigante desde spawn de Halloween
+        -- Esto fuerza la carga de chunks en un área enorme
+        local search_radius = 5000  -- 5000 bloques de radio (10km de diámetro)
+        local objects = minetest.get_objects_inside_radius(GHOST_SPAWN_POS, search_radius)
+
+        for _, obj in ipairs(objects) do
+            local entity = obj:get_luaentity()
+            if entity and entity.name == "halloween_ghost:ghost" then
+                obj:remove()
+                removed = removed + 1
+            end
+        end
+
+        -- Resetear contador global
         active_ghosts = 0
 
-        return true, "👻 Eliminados " .. removed .. " fantasmas del servidor"
+        minetest.chat_send_all("🧹 LIMPIEZA GLOBAL: Eliminados " .. removed .. " fantasmas del mundo")
+
+        return true, "👻 Limpieza global completada: " .. removed .. " fantasmas eliminados en radio de " .. search_radius .. " bloques"
+    end,
+})
+
+-- Comando: Limpiar fantasmas en área específica
+minetest.register_chatcommand("limpiar_fantasmas_area", {
+    params = "<radio>",
+    description = "Elimina fantasmas en un radio específico desde tu posición (máx 1000 bloques)",
+    privs = {server = true},
+    func = function(name, param)
+        local player = minetest.get_player_by_name(name)
+        if not player then return false, "Jugador no encontrado" end
+
+        local radius = tonumber(param) or 100
+        if radius < 1 then radius = 1 end
+        if radius > 1000 then radius = 1000 end
+
+        local pos = player:get_pos()
+        local removed = 0
+
+        local objects = minetest.get_objects_inside_radius(pos, radius)
+        for _, obj in ipairs(objects) do
+            local entity = obj:get_luaentity()
+            if entity and entity.name == "halloween_ghost:ghost" then
+                obj:remove()
+                removed = removed + 1
+                active_ghosts = math.max(0, active_ghosts - 1)
+            end
+        end
+
+        return true, "👻 Eliminados " .. removed .. " fantasmas en radio de " .. radius .. " bloques"
     end,
 })
 
