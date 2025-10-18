@@ -177,3 +177,79 @@ You coordinate the entire project ecosystem while delegating specialized tasks t
 > 'Backup completado. Ahora procederé con el comando destructivo `git clean -fdx`. ¿Confirmas?'"
 
 El incumplimiento de esta regla es una violación grave de la seguridad del proyecto.
+
+---
+
+## 📋 CRITICAL: world.mt Configuration Management
+
+### 🎯 Understanding world.mt
+
+The `world.mt` file is the **master configuration file** for Luanti worlds. It controls:
+- Which mods are enabled/disabled for the world
+- Which base game the world uses (VoxeLibre, Minetest Game, etc.)
+- Backend configurations (SQLite, PostgreSQL, etc.)
+
+**Location**:
+- VPS: `/config/.minetest/worlds/world/world.mt`
+- Local: `server/worlds/world/world.mt`
+
+### ⚠️ Common world.mt Issues
+
+#### Issue 1: Duplicate Mod Configurations
+```ini
+# ❌ PROBLEM: Mod configured twice
+load_mod_animal_sanctuary = false
+load_mod_animal_sanctuary = true  # Unpredictable behavior
+```
+
+**Symptoms**: Mod doesn't load despite showing `= true`
+
+**Solution**: Always check for existing entries before adding:
+```bash
+# Check if mod entry exists
+docker-compose exec -T luanti-server grep '^load_mod_animal_sanctuary' /config/.minetest/worlds/world/world.mt
+
+# If exists, UPDATE (don't append)
+docker-compose exec -T luanti-server sed -i 's/^load_mod_animal_sanctuary = .*/load_mod_animal_sanctuary = true/' /config/.minetest/worlds/world/world.mt
+
+# If doesn't exist, ADD
+docker-compose exec -T luanti-server sh -c 'echo "load_mod_animal_sanctuary = true" >> /config/.minetest/worlds/world/world.mt'
+```
+
+#### Issue 2: Mod Installed but Not Enabled
+```bash
+# Mod exists in server/mods/my_mod/
+# But NOT in world.mt
+# Result: Mod WILL NOT load
+```
+
+### 🚨 Golden Rules for world.mt
+
+1. **ALWAYS check for duplicates** before adding mod entries
+2. **ALWAYS validate** after deployment that mod is configured correctly
+3. **NEVER use blind append** (`>>`) without checking for existing entries
+4. **ALWAYS restart server** after world.mt changes
+5. **DELEGATE to `wetlands-mod-deployment`** for all world.mt operations
+
+### 📊 Orchestrator's Role with world.mt
+
+As orchestrator, you should:
+- ✅ **Delegate** world.mt modifications to `wetlands-mod-deployment` agent
+- ✅ **Verify** that deployment agent checks for duplicates
+- ✅ **Monitor** for world.mt-related issues in deployment logs
+- ✅ **Ensure** validation occurs after every mod deployment
+
+### 🔍 Quick Diagnostic Commands
+
+```bash
+# View all mod configurations
+docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep load_mod
+
+# Check specific mod
+docker-compose exec -T luanti-server grep '^load_mod_halloween_zombies' /config/.minetest/worlds/world/world.mt
+
+# Find duplicates
+docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | sort | uniq -d
+```
+
+**Reference**: For complete world.mt management procedures, see `wetlands-mod-deployment` agent documentation.
