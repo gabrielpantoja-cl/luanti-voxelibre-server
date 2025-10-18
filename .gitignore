@@ -52,6 +52,9 @@ docs/admin/seguridad-y-bloqueos.md
 # Configuración de VPS y credenciales
 docs/admin/SISTEMA_ACTUAL_VPS_2025-10-11.md
 
+# Configuración DNS (información de infraestructura)
+docs/admin/DNS_CONFIG.md
+
 # Archivos de incidentes con datos sensibles
 docs/security/incidents/2025-09-20_HAKER_ATTACK/
 docs/security/incidents/2025-09-20_INCIDENTE_HAKER_DESCONEXION_MASIVA.md
