@@ -30,10 +30,7 @@ minetest.register_entity("halloween_zombies:friendly_zombie", {
         mesh = "mobs_mc_zombie.b3d",
         visual_size = {x=3, y=3},
         textures = {
-            {
-                "mobs_mc_empty.png",    -- armor overlay
-                "mobs_mc_zombie.png",   -- zombie texture
-            }
+            "mobs_mc_husk.png",   -- Usando textura de Husk (zombie del desierto) de VoxeLibre
         },
         is_visible = true,
         makes_footstep_sound = true,
