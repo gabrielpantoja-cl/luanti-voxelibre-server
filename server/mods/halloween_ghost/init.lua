@@ -209,10 +209,10 @@ minetest.register_chatcommand("invocar_fantasma", {
     end,
 })
 
--- Comando para evento de Halloween (spawns múltiples)
+-- Comando para evento de Halloween (spawns múltiples) - LEGACY con límite
 minetest.register_chatcommand("evento_halloween", {
     params = "<cantidad>",
-    description = "Inicia evento de Halloween con fantasmas (1-20)",
+    description = "Inicia evento de Halloween con fantasmas cerca de jugador (1-" .. MAX_GHOSTS .. ")",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
@@ -220,22 +220,31 @@ minetest.register_chatcommand("evento_halloween", {
 
         local cantidad = tonumber(param) or 5
         if cantidad < 1 then cantidad = 1 end
-        if cantidad > 20 then cantidad = 20 end
+        if cantidad > MAX_GHOSTS then cantidad = MAX_GHOSTS end
 
         local pos = player:get_pos()
+        local spawned = 0
 
         for i = 1, cantidad do
+            if active_ghosts >= MAX_GHOSTS then
+                break  -- Respeta el límite global
+            end
+
             local spawn_pos = {
                 x = pos.x + math.random(-10, 10),
                 y = pos.y + math.random(1, 5),
                 z = pos.z + math.random(-10, 10)
             }
             minetest.add_entity(spawn_pos, "halloween_ghost:ghost")
+            spawned = spawned + 1
         end
 
-        minetest.chat_send_all("🎃 ¡Evento de Halloween! " .. cantidad .. " fantasmas han aparecido!")
-
-        return true, "Evento iniciado con " .. cantidad .. " fantasmas"
+        if spawned > 0 then
+            minetest.chat_send_all("🎃 ¡Evento de Halloween! " .. spawned .. " fantasmas han aparecido!")
+            return true, "Evento iniciado con " .. spawned .. " fantasmas"
+        else
+            return false, "Límite de fantasmas alcanzado (" .. active_ghosts .. "/" .. MAX_GHOSTS .. ")"
+        end
     end,
 })
 
