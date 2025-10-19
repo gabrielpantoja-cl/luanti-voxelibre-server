@@ -102,12 +102,12 @@ function pvp_arena.set_pvp(player_name, enabled)
         -- ENTRAR A ARENA: Guardar estado creative y deshabilitarlo temporalmente
         local meta = player:get_meta()
 
-        -- Guardar estado actual de creative (metadata de VoxeLibre)
-        local current_creative = meta:get_int("creative_mode")
-        pvp_arena.player_creative_status[player_name] = current_creative
+        -- Guardar estado actual de gamemode (metadata de VoxeLibre)
+        local current_gamemode = meta:get_string("gamemode")
+        pvp_arena.player_creative_status[player_name] = current_gamemode
 
-        -- Deshabilitar creative mode para este jugador
-        meta:set_int("creative_mode", 0)
+        -- Deshabilitar creative mode para este jugador (cambiar a survival)
+        meta:set_string("gamemode", "survival")
 
         -- TAMBIÉN manejar privilegio creative por compatibilidad
         local privs = minetest.get_player_privs(player_name)
@@ -137,18 +137,18 @@ function pvp_arena.set_pvp(player_name, enabled)
         -- SALIR DE ARENA: Restaurar creative mode
         local meta = player:get_meta()
 
-        -- Restaurar metadata de creative
-        local had_creative_meta = pvp_arena.player_creative_status[player_name]
-        if had_creative_meta and had_creative_meta == 1 then
-            meta:set_int("creative_mode", 1)
+        -- Restaurar gamemode metadata
+        local previous_gamemode = pvp_arena.player_creative_status[player_name]
+        if previous_gamemode and previous_gamemode == "creative" then
+            meta:set_string("gamemode", "creative")
         else
             -- Por defecto, habilitar creative para todos
-            meta:set_int("creative_mode", 1)
+            meta:set_string("gamemode", "creative")
         end
 
         -- TAMBIÉN restaurar privilegio creative
         local had_creative_priv = pvp_arena.player_creative_priv[player_name]
-        if had_creative_priv or had_creative_meta == 1 then
+        if had_creative_priv or previous_gamemode == "creative" then
             local privs = minetest.get_player_privs(player_name)
             privs.creative = true
             minetest.set_player_privs(player_name, privs)
@@ -245,7 +245,8 @@ minetest.register_on_joinplayer(function(player)
 
     if not in_arena then
         -- FUERA DE ARENA: Habilitar creative mode automáticamente
-        meta:set_int("creative_mode", 1)
+        -- VoxeLibre usa "gamemode" metadata, no "creative_mode"
+        meta:set_string("gamemode", "creative")
 
         -- También dar privilegio creative
         local privs = minetest.get_player_privs(name)
