@@ -17,6 +17,24 @@ Custom music discs mod for the Wetlands Luanti/VoxeLibre server. This mod adds e
 - **File**: `wetlands_music_karu_beats.ogg`
 - **Description**: An ambient, relaxing track perfect for exploring the sanctuary
 
+### 2. Battleship
+- **Artist**: Patrick de Arteaga
+- **Identifier**: `wetlands_pvp_battle_2`
+- **File**: `pvp_battle_2.ogg`
+- **Description**: Created for your battles and tense scenes.
+
+### 3. Intergalactic Odyssey
+- **Artist**: Patrick de Arteaga
+- **Identifier**: `wetlands_pvp_battle_3`
+- **File**: `pvp_battle_3.ogg`
+- **Description**: A futuristic track with a rock style, suitable for battles or arcade games.
+
+### 4. Chase At Rush Hour
+- **Artist**: Patrick de Arteaga
+- **Identifier**: `wetlands_pvp_battle_4`
+- **File**: `pvp_battle_4.ogg`
+- **Description**: A cinematic style track ideal for action scenes or playable moments of high adrenaline.
+
 ## Technical Specifications
 
 ### Audio Format
@@ -115,6 +133,7 @@ Music tracks should be:
 
 ### Current Tracks
 1. **Karu Beats** - [Source/Artist information]
+2. **Battleship**, **Intergalactic Odyssey**, **Chase At Rush Hour** - Patrick de Arteaga (patrickdearteaga.com)
 
 ## License
 
