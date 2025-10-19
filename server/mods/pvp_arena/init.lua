@@ -235,6 +235,38 @@ function pvp_arena.show_exit_message(player)
         minetest.colorize("#66BB6A", "🌱 Estás de vuelta en zona pacífica"))
 end
 
+-- Habilitar creative mode para jugadores nuevos al unirse
+minetest.register_on_joinplayer(function(player)
+    local name = player:get_player_name()
+    local meta = player:get_meta()
+
+    -- Verificar si es primera vez que se une (o no está en arena)
+    local in_arena = pvp_arena.is_player_in_arena(name)
+
+    if not in_arena then
+        -- FUERA DE ARENA: Habilitar creative mode automáticamente
+        meta:set_int("creative_mode", 1)
+
+        -- También dar privilegio creative
+        local privs = minetest.get_player_privs(name)
+        if not privs.creative then
+            privs.creative = true
+            minetest.set_player_privs(name, privs)
+            minetest.log("action", "[PVP Arena] Granted creative mode to " .. name .. " (new player or rejoining)")
+        end
+
+        -- Mensaje de bienvenida pacífico
+        minetest.after(2, function()
+            if minetest.get_player_by_name(name) then
+                minetest.chat_send_player(name,
+                    minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Estás en zona pacífica con inventario creativo completo."))
+                minetest.chat_send_player(name,
+                    minetest.colorize("#81C784", "   Explora, construye y cuida de los animales. PvP solo en arenas específicas."))
+            end
+        end)
+    end
+end)
+
 -- Inicialización
 minetest.register_on_mods_loaded(function()
     pvp_arena.load_arenas()
