@@ -306,4 +306,45 @@ minetest.register_chatcommand("arena_stats", {
     end
 })
 
+-- /grant_creative_all - Otorga creative a TODOS los usuarios existentes (admin only)
+minetest.register_chatcommand("grant_creative_all", {
+    description = "Otorga creative mode a todos los usuarios existentes sin él (admin only)",
+    privs = {server = true},
+    func = function(name)
+        local granted_count = 0
+        local already_have = 0
+
+        -- Obtener todos los usuarios autenticados
+        local auth_handler = minetest.get_auth_handler()
+
+        -- Iterar sobre todos los jugadores conocidos
+        for username in auth_handler.iterate() do
+            local privs = minetest.get_player_privs(username)
+
+            if not privs.creative then
+                -- Otorgar creative
+                privs.creative = true
+                privs.give = true
+                privs.fly = true
+                privs.fast = true
+                privs.noclip = true
+                privs.home = true
+                privs.protect = true
+                minetest.set_player_privs(username, privs)
+                granted_count = granted_count + 1
+
+                minetest.log("action", "[PVP Arena] Granted creative to existing user: " .. username)
+            else
+                already_have = already_have + 1
+            end
+        end
+
+        local msg = minetest.colorize("#4CAF50", "✅ Operación completada:\n") ..
+                    minetest.colorize("#2196F3", "• Usuarios con creative otorgado: ") .. granted_count .. "\n" ..
+                    minetest.colorize("#FFB74D", "• Usuarios que ya tenían creative: ") .. already_have
+
+        return true, msg
+    end
+})
+
 minetest.log("action", "[PVP Arena] Commands registered successfully")
