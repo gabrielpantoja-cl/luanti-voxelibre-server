@@ -29,3 +29,30 @@ minetest.log("action", "[wetlands_music] Mod loaded successfully with custom mus
 --     "wetlands_music_record_identifier.png",
 --     "wetlands_music_sound_file"
 -- )
+
+-- Wetlands Custom Disc 2: Battleship
+mcl_jukebox.register_record(
+	"Battleship",                          -- title
+	"Patrick de Arteaga",           -- author
+	"wetlands_pvp_battle_2",                 -- identifier
+	"wetlands_music_record_pvp_battle_2.png", -- texture image
+	"pvp_battle_2"            -- sound file (without .ogg extension)
+)
+
+-- Wetlands Custom Disc 3: Intergalactic Odyssey
+mcl_jukebox.register_record(
+	"Intergalactic Odyssey",                          -- title
+	"Patrick de Arteaga",           -- author
+	"wetlands_pvp_battle_3",                 -- identifier
+	"wetlands_music_record_pvp_battle_3.png", -- texture image
+	"pvp_battle_3"            -- sound file (without .ogg extension)
+)
+
+-- Wetlands Custom Disc 4: Chase At Rush Hour
+mcl_jukebox.register_record(
+	"Chase At Rush Hour",                          -- title
+	"Patrick de Arteaga",           -- author
+	"wetlands_pvp_battle_4",                 -- identifier
+	"wetlands_music_record_pvp_battle_4.png", -- texture image
+	"pvp_battle_4"            -- sound file (without .ogg extension)
+)
