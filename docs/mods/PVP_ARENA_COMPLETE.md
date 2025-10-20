@@ -618,6 +618,167 @@ echo "🎉 Testing completado"
 
 ## 🐛 Troubleshooting
 
+### ⚠️ PROBLEMA CRÍTICO IDENTIFICADO: Proyectiles Atraviesan Protección
+
+**Fecha de Diagnóstico**: 20 de Octubre 2025
+**Estado**: 🔴 BUG CRÍTICO - Requiere solución urgente
+**Severidad**: Alta - Permite daño no consensual fuera de arena
+
+#### Descripción del Bug
+
+**Síntomas**:
+- Jugadores pueden **disparar flechas desde fuera de la arena** y dañar a jugadores dentro de sus casas
+- Las **flechas explosivas** (`mcl_potions:leaping_arrow_entity`) son especialmente problemáticas
+- Los **golpes directos cuerpo a cuerpo sí están bloqueados** correctamente
+- El sistema muestra `damage=0` en logs pero **los proyectiles aún impactan visualmente**
+
+**Evidencia de Logs** (20 Oct 2025, 19:14:26):
+```
+# pepelomo dispara desde su posición (fuera de arena)
+2025-10-20 19:14:26: ACTION[Server]: pepelomo activates mcl_bows:bow
+
+# gabo respawnea en su casa (posición: 230, 39, -129) - FUERA DE ARENA
+2025-10-20 19:14:40: ACTION[Server]: gabo respawns at (230, 39, -129)
+
+# Flechas impactan a gabo (damage=0 pero visualmente molestas)
+2025-10-20 19:14:43: ACTION[Server]: LuaEntitySAO "mcl_potions:leaping_arrow_entity"
+  at (227,39,-130) punched player gabo, damage=0
+
+# Golpes directos SÍ son bloqueados correctamente
+2025-10-20 19:14:56: ACTION[Server]: player pepelomo punched player gabo,
+  damage=0 (handled by Lua) ← CORRECTO
+```
+
+**Arena Principal**: Centro en `(41, 23, 232)`, Radio 25 bloques
+**Casa de gabo**: `(230, 39, -129)` → **~214 bloques de distancia = FUERA DE ARENA**
+
+#### Causa Raíz del Problema
+
+El hook `register_on_punchplayer` **solo intercepta golpes directos** de jugadores, pero **NO intercepta entidades de proyectiles**:
+
+```lua
+-- ACTUAL (server/mods/pvp_arena/init.lua:línea ~245)
+minetest.register_on_punchplayer(function(player, hitter, ...)
+    if not hitter:is_player() then
+        return false  -- ❌ Permite TODAS las entidades (incluye flechas)
+    end
+    -- Validación solo para jugadores atacando jugadores
+end)
+```
+
+**Problema**: Las flechas son **entidades LuaEntitySAO**, no jugadores, por lo que:
+1. `hitter:is_player()` retorna `false`
+2. El hook retorna `false` → **permite el daño**
+3. Las flechas pueden viajar libremente desde cualquier posición
+
+#### Solución Propuesta v1.2.0
+
+**Agregar hook adicional para entidades**:
+
+```lua
+-- NUEVO HOOK: Interceptar daño de entidades (proyectiles)
+minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, tool_capabilities, dir, damage)
+    local victim_name = player:get_player_name()
+
+    -- Caso 1: Entidad atacante (flechas, bolas de fuego, etc.)
+    if not hitter:is_player() then
+        local entity = hitter:get_luaentity()
+
+        -- Verificar si la entidad tiene un "owner" (quien la disparó)
+        if entity and entity.owner then
+            local shooter_name = entity.owner
+            local shooter_in_arena = pvp_arena.is_player_in_arena(shooter_name)
+            local victim_in_arena = pvp_arena.is_player_in_arena(victim_name)
+
+            -- Bloquear si al menos uno está fuera de arena
+            if not (shooter_in_arena and victim_in_arena) then
+                -- Notificar al atacante
+                local shooter = minetest.get_player_by_name(shooter_name)
+                if shooter then
+                    minetest.chat_send_player(shooter_name,
+                        minetest.colorize("#FF6B6B",
+                        "❌ No puedes atacar con proyectiles fuera de la Arena PVP"))
+                end
+
+                -- Eliminar el proyectil para evitar spam visual
+                hitter:remove()
+
+                return true  -- CANCELAR daño
+            end
+        end
+
+        -- Si no tiene owner o ambos están en arena, permitir
+        return false
+    end
+
+    -- Caso 2: Jugador atacante (golpes directos) - código existente
+    local hitter_name = hitter:get_player_name()
+    local victim_in_arena = pvp_arena.is_player_in_arena(victim_name)
+    local hitter_in_arena = pvp_arena.is_player_in_arena(hitter_name)
+
+    if victim_in_arena and hitter_in_arena then
+        return false  -- Permitir PvP
+    else
+        if not hitter_in_arena then
+            minetest.chat_send_player(hitter_name,
+                minetest.colorize("#FF6B6B", "❌ No puedes atacar fuera de la Arena PVP"))
+        end
+        return true  -- CANCELAR daño
+    end
+end)
+```
+
+#### Entidades de Proyectiles en VoxeLibre
+
+Proyectiles que requieren validación:
+- `mcl_bows:arrow_entity` - Flechas normales
+- `mcl_potions:leaping_arrow_entity` - Flechas con poción de salto
+- `mcl_potions:water_breathing_arrow_entity` - Flechas con poción
+- `mcl_throwing:snowball_entity` - Bolas de nieve
+- `mcl_throwing:egg_entity` - Huevos
+- `mcl_throwing:ender_pearl_entity` - Perlas de ender
+- `mcl_fire:fire_charge` - Cargas de fuego (si están habilitadas)
+
+**Todos tienen campo `entity.owner`** que identifica quién disparó el proyectil.
+
+#### Testing de la Solución
+
+**Prueba 1: Flechas desde fuera hacia adentro**
+1. Jugador A en spawn (fuera de arena)
+2. Jugador B dentro de arena
+3. A dispara flecha a B → ❌ **Debe ser bloqueada y eliminada**
+
+**Prueba 2: Flechas desde adentro hacia afuera**
+1. Jugador A dentro de arena
+2. Jugador B en su casa (fuera de arena)
+3. A dispara flecha a B → ❌ **Debe ser bloqueada**
+
+**Prueba 3: Flechas entre jugadores en arena**
+1. Ambos jugadores dentro de Arena Principal
+2. A dispara flecha a B → ✅ **Debe permitir daño**
+
+**Prueba 4: Bolas de nieve/huevos**
+1. Jugador fuera de arena lanza bola de nieve
+2. Impacta jugador en casa → ❌ **Debe ser bloqueada**
+
+#### Estado Actual del Sistema
+
+| Tipo de Ataque | Fuera → Fuera | Fuera → Dentro | Dentro → Fuera | Dentro → Dentro |
+|----------------|---------------|----------------|----------------|-----------------|
+| **Golpes directos** | 🛡️ Bloqueado | 🛡️ Bloqueado | 🛡️ Bloqueado | ⚔️ Permitido |
+| **Flechas** | 🐛 **Bug** | 🐛 **Bug** | 🐛 **Bug** | ⚔️ Permitido* |
+| **Proyectiles mágicos** | 🐛 **Bug** | 🐛 **Bug** | 🐛 **Bug** | ⚔️ Permitido* |
+
+*Permitido solo si ambos jugadores están en arena (funcionamiento correcto)
+
+#### Prioridad de Implementación
+
+1. **🔴 URGENTE**: Implementar hook de entidades (v1.2.0)
+2. **🟡 MEDIO**: Testing exhaustivo con todos los proyectiles
+3. **🟢 BAJO**: Agregar configuración para permitir/bloquear proyectiles específicos
+
+---
+
 ### Problema 1: Mod No Carga
 
 **Síntomas**: No aparecen comandos `/arena_*`, no hay mensajes de arena
@@ -929,14 +1090,132 @@ end
 
 ---
 
+### 🎨 Mejoras Visuales: Delimitar Arena PvP en el Mundo
+
+#### Problema Actual
+La Arena Principal está **definida virtualmente** (centro: 41,23,232 - radio: 25 bloques), pero **no hay marcadores físicos** en el mundo que indiquen dónde comienza y termina la zona PvP. Esto causa confusión para los jugadores.
+
+#### Soluciones Propuestas
+
+**Opción 1: Cercado con Vallas (Recomendado)**
+```lua
+-- Usar vallas de madera o nether para delimitar
+Material: mcl_fences:fence (valla de madera)
+Patrón: Círculo de radio 25 bloques en Y=23
+Altura: 2-3 bloques de altura
+Visibilidad: Alta, no obstruye vista
+```
+
+**Construcción manual o con WorldEdit**:
+```lua
+-- 1. Teleportarse al centro
+/arena_tp Arena_Principal
+
+-- 2. Usar WorldEdit para crear círculo de vallas
+// Ver sección "WorldEdit para VoxeLibre" más abajo
+```
+
+**Opción 2: Piso Distintivo**
+```lua
+-- Cambiar el piso dentro de la arena
+Material interior: mcl_core:sandstone o mcl_nether:netherrack
+Material perímetro: Vidrio de colores alternados
+Altura: Y=22 (un bloque bajo el centro)
+Efecto: Claramente distinguible desde arriba
+```
+
+**Opción 3: Iluminación Perimetral**
+```lua
+-- Antorchas o faroles cada 5 bloques
+Material: mcl_torches:torch o mcl_lanterns:lantern_floor
+Espaciado: Cada 5 bloques en el perímetro
+Altura: Y=24 (postes de 2 bloques)
+Beneficio: Visible de noche, estético
+```
+
+**Opción 4: Señalización con Carteles**
+```lua
+-- Carteles informativos en las entradas
+Texto: "⚔️ ARENA PVP - COMBATE PERMITIDO ⚔️"
+Ubicación: 4 puntos cardinales (N, S, E, O)
+Material: mcl_signs:sign_wall
+Altura: Y=24 (altura visual)
+```
+
+**Opción 5: Combinación Completa** (Máxima Claridad)
+1. **Vallas** alrededor del perímetro circular (radio 25)
+2. **Piso de arena/arenisca** dentro de la arena
+3. **Faroles** cada 10 bloques para iluminación
+4. **Carteles** en las 8 direcciones principales
+5. **Línea de vidrio rojo** en el perímetro a nivel del suelo
+
+#### Implementación Usando WorldEdit
+
+Ver documento completo: `docs/mods/WORLDEDIT_VOXELIBRE_GUIDE.md`
+
+**Comandos rápidos para delimitar arena**:
+
+```lua
+-- 1. Crear círculo de vallas (radio 25)
+//gmask air
+//pos1 41,23,232
+//hollowcylinder mcl_fences:fence 25 3
+
+-- 2. Crear piso distintivo (radio 24, interior)
+//pos1 41,22,232
+//cyl mcl_core:sandstone 24 1
+
+-- 3. Añadir iluminación perimetral
+//pos1 41,24,232
+//hollowcyl mcl_lanterns:lantern_floor 25 1
+
+-- 4. Línea de advertencia (vidrio rojo en perímetro)
+//pos1 41,22,232
+//hollowcyl mcl_core:glass_red 25 1
+```
+
+#### Beneficios de Delimitación Visual
+
+✅ **Claridad**: Jugadores ven inmediatamente dónde comienza la zona PvP
+✅ **Seguridad**: Reduce accidentes y malentendidos
+✅ **Estética**: Arena se ve profesional y bien definida
+✅ **Navegación**: Más fácil encontrar la arena desde lejos
+✅ **Prevención**: Menos probabilidad de ataques "accidentales"
+
+#### Costos Estimados (Materiales VoxeLibre)
+
+Para arena de radio 25 bloques:
+- **Vallas**: ~160 vallas (círculo perímetro x 3 bloques altura)
+- **Piso**: ~1,963 bloques de arenisca (círculo radio 24)
+- **Iluminación**: ~31 faroles (espaciado cada 5 bloques)
+- **Carteles**: 8 carteles (direcciones cardinales)
+- **Vidrio rojo**: ~157 bloques (línea perímetro)
+
+**Total estimado**: ~2,320 bloques (obtenibles en modo creativo)
+
+---
+
 ## 🎯 Roadmap y Mejoras Futuras
 
-### v1.2.0 - Próxima Versión (En Desarrollo)
+### v1.2.0 - Próxima Versión (URGENTE - En Desarrollo)
 
+**🔴 PRIORIDAD CRÍTICA**:
+- [ ] **FIX: Bloquear proyectiles (flechas, bolas de nieve) fuera de arena** - Bug crítico
+- [ ] Implementar hook `register_on_punchplayer` para entidades con `owner`
+- [ ] Testing exhaustivo con todos los tipos de proyectiles VoxeLibre
+- [ ] Eliminar proyectiles visualmente cuando son bloqueados
+
+**Mejoras de UX**:
 - [ ] HUD permanente mostrando "ZONA PVP" cuando estás dentro
 - [ ] Comando `/arena_mute` para silenciar mensajes temporalmente
 - [ ] Sistema de cooldown para evitar spam de entrada/salida
 - [ ] Soporte para arenas rectangulares (no solo circulares)
+
+**Mejoras Visuales** (ver sección siguiente):
+- [ ] Delimitar arena con bloques de vidrio o barreras
+- [ ] Agregar señalización con carteles informativos
+- [ ] Iluminación perimetral con antorchas o faroles
+- [ ] Piso diferenciado dentro de la arena
 
 ### v1.3.0 - Estadísticas
 
