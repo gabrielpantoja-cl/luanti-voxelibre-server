@@ -52,7 +52,7 @@ services:
 
   # Discord notifier - Notificaciones de conexiones de jugadores
   discord-notifier:
-    image: docker:latest
+    image: alpine:latest
     container_name: luanti-discord-notifier
     restart: unless-stopped
     volumes:
@@ -62,7 +62,11 @@ services:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-voxelibre-server
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
-    command: sh /scripts/discord-notifier.sh
+    command: >
+      sh -c "
+        apk add --no-cache curl docker-cli bash &&
+        bash /scripts/discord-notifier.sh
+      "
     depends_on:
       - luanti-server
     networks:
