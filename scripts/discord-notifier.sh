@@ -84,10 +84,14 @@ process_log_line() {
     local line="$1"
 
     # Detectar conexión de jugador
-    # Patrones comunes: "PlayerName joins game", "PlayerName connected"
-    if echo "$line" | grep -qE "joins game|connected.*from"; then
-        # Extraer nombre del jugador
-        local player_name=$(echo "$line" | grep -oP '(?<=\[Server\]: )([^:]+)(?= (joins game|connected))' || echo "Jugador desconocido")
+    # Formato: "ACTION[Server]: NOMBRE [IP] joins game. List of players: ..."
+    if echo "$line" | grep -q "joins game"; then
+        # Extraer nombre del jugador usando sed
+        local player_name=$(echo "$line" | sed -n 's/.*ACTION\[Server\]: \([^ ]*\) .* joins game.*/\1/p')
+
+        if [ -z "$player_name" ]; then
+            player_name="Jugador desconocido"
+        fi
 
         log "Jugador conectado: $player_name"
         send_discord_notification \
@@ -96,10 +100,14 @@ process_log_line() {
     fi
 
     # Detectar desconexión de jugador
-    # Patrones comunes: "PlayerName leaves game", "PlayerName disconnected"
-    if echo "$line" | grep -qE "leaves game|disconnected"; then
-        # Extraer nombre del jugador
-        local player_name=$(echo "$line" | grep -oP '(?<=\[Server\]: )([^:]+)(?= (leaves game|disconnected))' || echo "Jugador desconocido")
+    # Formato: "ACTION[Server]: NOMBRE leaves game. List of players: ..."
+    if echo "$line" | grep -q "leaves game"; then
+        # Extraer nombre del jugador usando sed
+        local player_name=$(echo "$line" | sed -n 's/.*ACTION\[Server\]: \([^ ]*\) leaves game.*/\1/p')
+
+        if [ -z "$player_name" ]; then
+            player_name="Jugador desconocido"
+        fi
 
         log "Jugador desconectado: $player_name"
         send_discord_notification \
