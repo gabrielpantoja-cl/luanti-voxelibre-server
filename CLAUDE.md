@@ -43,6 +43,7 @@ Wetlands is a **Luanti (formerly Minetest) game server** designed as a compassio
 - **Configuration**: Lua-based mods and `.conf` files
 - **Deployment**: GitHub Actions CI/CD with automated backups (independent pipeline)
 - **Server Port**: 30000/UDP (official server: `luanti.gabrielpantoja.cl:30000`)
+- **Notifications**: Discord webhooks for real-time player connection alerts
 - **Repository Strategy**: Centralized Luanti development in this dedicated repository
 
 ## VPS Access
@@ -95,6 +96,25 @@ docker-compose ps
 # Automatic backups run every 6 hours via cron container
 # Location: server/backups/
 # Retention: 10 latest backups
+```
+
+### Discord Notifications
+```bash
+# Test Discord notifications
+./scripts/send-discord-test.sh "Mensaje de prueba"
+
+# View notifier logs
+docker-compose logs -f discord-notifier
+
+# Restart notifier
+docker-compose restart discord-notifier
+
+# The system automatically sends notifications when:
+# - Players connect to the server (🟢)
+# - Players disconnect from the server (🔴)
+# - The monitor starts (🤖)
+
+# Full documentation: docs/DISCORD_NOTIFICATIONS.md
 ```
 
 ### Landing Page Deployment
