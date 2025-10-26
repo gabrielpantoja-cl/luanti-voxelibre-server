@@ -345,10 +345,43 @@ VoxeLibre uses a specific mod loading system that differs from vanilla Luanti:
 ├── mods/                    # 🎯 PRIMARY LOCATION (High Priority)
 │   ├── server_rules/        # ✅ Custom server mods go here
 │   ├── education_blocks/    # ✅ Load automatically if enabled
-│   └── vegan_food/          # ✅ Personal mods
+│   ├── vegan_food/          # ✅ Personal mods
+│   ├── pvp_arena/           # ✅ PVP arena system
+│   ├── worldedit/           # 🔧 WorldEdit core API
+│   ├── worldedit_commands/  # 🔧 WorldEdit chat commands
+│   ├── worldedit_shortcommands/  # 🔧 Short command aliases
+│   ├── worldedit_brush/     # 🔧 WorldEdit brush tools
+│   └── worldedit_gui/       # 🔧 WorldEdit GUI (disabled)
 ├── games/mineclone2/mods/   # 🏠 VoxeLibre base mods (Low Priority)
 └── worlds/world/world.mt    # 📋 World-specific mod configuration
 ```
+
+### 📦 Mod Interaction System
+
+**WorldEdit + PVP Arena Integration**:
+- **WorldEdit**: Provides tools for building/maintaining Arena Principal
+- **PVP Arena**: Defines combat zones and manages gameplay mechanics
+- **Integration**: WorldEdit commands used to construct arena structure at (41, 23, 232)
+
+**Key Mod Dependencies**:
+```
+pvp_arena
+├── depends: mcl_core, mcl_player
+└── optional_depends: areas, worldedit
+
+worldedit_commands
+├── depends: worldedit
+└── provides: //pos1, //set, //cylinder commands
+
+worldedit_shortcommands
+├── depends: worldedit_commands
+└── provides: /1, /2, /set, /cylinder (single slash aliases)
+```
+
+**Documentation**:
+- WorldEdit System: `docs/mods/WORLDEDIT_SYSTEM.md`
+- PVP Arena Construction: `docs/mods/PVP_ARENA_WORLDEDIT_GUIDE.md`
+- General Modding: `docs/mods/MODDING_GUIDE.md`
 
 ### 🚨 Common Mod Issues & Solutions
 
