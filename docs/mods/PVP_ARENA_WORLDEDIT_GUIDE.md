@@ -64,18 +64,24 @@
 
 **Objetivo**: Regenerar solo el piso de arenisca sin tocar nada más
 
-**✅ COMANDOS VERIFICADOS**:
+**✅ COMANDOS VERIFICADOS** (26 Oct 2025):
 
 ```lua
-# 1. Teleportarse al centro de la arena
-/teleport 41 23 232
+# 1. Teleportarse al nivel del suelo
+/teleport 41 22 232
 
-# 2. Marcar posición en el nivel del suelo
-/1 41 22 232
+# 2. Marcar posición 1 (donde estás parado)
+//pos1
 
-# 3. Crear cilindro de arenisca (radio 24 bloques)
-/cylinder y 1 24 mcl_core:sandstone
+# 3. Crear cilindro de arenisca (eje Y, altura 1, radio 24)
+//cylinder y 1 24 mcl_core:sandstone
 ```
+
+**Sintaxis**: `//cylinder <eje> <altura> <radio> <bloque>`
+- `y` = eje vertical (círculo horizontal)
+- `1` = altura en bloques
+- `24` = radio desde pos1
+- `mcl_core:sandstone` = tipo de bloque
 
 **Tiempo**: ~5 segundos
 **Bloques modificados**: ~1,810 bloques
@@ -85,23 +91,27 @@
 
 **Piso hasta el borde de las vallas** (radio 25):
 ```lua
-/1 41 22 232
-/cylinder y 1 25 mcl_core:sandstone
+/teleport 41 22 232
+//pos1
+//cylinder y 1 25 mcl_core:sandstone
 ```
 
 **Piso con múltiples capas** (más sólido):
 ```lua
 # Superficie (Y=22)
-/1 41 22 232
-/cylinder y 1 24 mcl_core:sandstone
+/teleport 41 22 232
+//pos1
+//cylinder y 1 24 mcl_core:sandstone
 
 # Capa inferior (Y=21)
-/1 41 21 232
-/cylinder y 1 24 mcl_core:sandstone
+/teleport 41 21 232
+//pos1
+//cylinder y 1 24 mcl_core:sandstone
 
 # Base de piedra (Y=20)
-/1 41 20 232
-/cylinder y 1 24 mcl_core:stone
+/teleport 41 20 232
+//pos1
+//cylinder y 1 24 mcl_core:stone
 ```
 
 ---
