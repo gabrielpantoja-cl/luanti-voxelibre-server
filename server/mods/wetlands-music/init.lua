@@ -106,7 +106,7 @@ mcl_jukebox.register_record(
 -- Disc 10: TE QUEDAS
 mcl_jukebox.register_record(
 	"TE QUEDAS",
-	"José Daniel (JD)",
+	"Gabriel Pantoja",
 	"wetlands_te_quedas",
 	"wetlands_music_te_quedas.png",
 	"wetlands_music_te_quedas"
