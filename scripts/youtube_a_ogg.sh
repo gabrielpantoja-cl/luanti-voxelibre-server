@@ -6,10 +6,15 @@
 # Compatible con Minecraft y Luanti (Voxelibre)
 # -------------------------------------------------------------
 
+# Añadir directorio local al PATH para usar yt-dlp actualizado
+export PATH="$HOME/.local/bin:$PATH"
+
 # Verifica dependencias
 if ! command -v yt-dlp &> /dev/null; then
-  echo "⚠️ yt-dlp no está instalado. Instalando..."
-  sudo apt update && sudo apt install -y yt-dlp
+  echo "⚠️ yt-dlp no está instalado. Instalando última versión..."
+  mkdir -p "$HOME/.local/bin"
+  curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o "$HOME/.local/bin/yt-dlp"
+  chmod +x "$HOME/.local/bin/yt-dlp"
 fi
 
 if ! command -v ffmpeg &> /dev/null; then
