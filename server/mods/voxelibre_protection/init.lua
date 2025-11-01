@@ -129,13 +129,23 @@ local function is_area_protected(pos, name, action_type)
 
     -- EXCEPCIÓN: Permitir abrir cofres en arenas PVP
     if action_type == "rightclick" and is_chest_or_container(pos) then
+        log("info", "Chest access attempt by " .. name .. " at " .. minetest.pos_to_string(pos))
+        log("info", "pvp_arena available: " .. tostring(pvp_arena ~= nil))
+
         -- Verificar si el jugador está en una arena PVP
         if pvp_arena and pvp_arena.is_player_in_arena then
-            local in_arena = pvp_arena.is_player_in_arena(name)
+            log("info", "pvp_arena.is_player_in_arena function available")
+            local in_arena, arena_data = pvp_arena.is_player_in_arena(name)
+            log("info", name .. " in arena: " .. tostring(in_arena))
+
             if in_arena then
-                log("info", name .. " accessing chest in PVP arena (allowed)")
+                log("action", name .. " accessing chest in PVP arena '" .. (arena_data and arena_data.name or "unknown") .. "' (ALLOWED)")
                 return false -- Permitir acceso a cofres en arena
+            else
+                log("info", name .. " not in arena, checking protection...")
             end
+        else
+            log("warning", "pvp_arena mod not available or function missing!")
         end
     end
 
