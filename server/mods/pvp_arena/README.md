@@ -1,6 +1,6 @@
 # 🏟️ PVP Arena Mod - Sistema de Zonas de Combate con Scoring
 
-**Versión**: 1.2.0 🆕
+**Versión**: 1.3.0 🆕
 **Estado**: ✅ Producción
 **Servidor**: Wetlands 🌱 Luanti/VoxeLibre
 
@@ -15,10 +15,13 @@ Mod que permite PvP en zonas específicas delimitadas con **sistema de scoring e
 - ✅ Gestión automática del privilegio `creative`
 - ✅ Zonas circulares en 3D (altura + radio)
 - ✅ Múltiples arenas configurables
-- ✅ **🆕 Scoreboard en tiempo real con Top 10**
-- ✅ **🆕 Sistema de Killstreaks (Triple Kill, Rampage, Godlike)**
-- ✅ **🆕 Tracking de K/D ratio y estadísticas personales**
-- ✅ **🆕 Anuncios automáticos de kills en chat**
+- ✅ Scoreboard en tiempo real con Top 10
+- ✅ Sistema de Killstreaks (Triple Kill, Rampage, Godlike)
+- ✅ Tracking de K/D ratio y estadísticas personales
+- ✅ Anuncios automáticos de kills en chat
+- ✅ **🆕 Ghost Mode estilo LoL al morir (invisible, fly, espectador)**
+- ✅ **🆕 Countdown regresivo de respawn (5, 4, 3, 2, 1...)**
+- ✅ **🆕 Scoreboard mejorado (nombres hasta 18 caracteres)**
 - ✅ Sistema de mensajes visuales
 
 ---

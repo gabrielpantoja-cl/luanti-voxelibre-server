@@ -1,5 +1,5 @@
--- PVP Arena Mod v1.2.0
--- Permite PvP en zonas específicas con sistema de scoring en tiempo real
+-- PVP Arena Mod v1.3.0
+-- Permite PvP en zonas específicas con sistema de scoring y respawn estilo LoL
 -- Autor: gabo (Gabriel Pantoja)
 
 pvp_arena = {}
@@ -8,6 +8,8 @@ pvp_arena.players_in_arena = {}
 pvp_arena.player_creative_status = {}  -- Guardar estado de creative metadata antes de entrar
 pvp_arena.player_creative_priv = {}    -- Guardar privilegio creative antes de entrar
 pvp_arena.last_attacker = {}           -- Rastrear último atacante de cada jugador
+pvp_arena.dead_players = {}            -- Rastrear jugadores muertos en respawn
+pvp_arena.respawn_time = 5             -- Tiempo de respawn en segundos (estilo LoL)
 
 -- Cargar sistema de scoring
 dofile(minetest.get_modpath("pvp_arena") .. "/scoring.lua")
@@ -299,6 +301,7 @@ minetest.register_on_leaveplayer(function(player)
 
     -- Limpiar tracking de ataques y anunciar estadísticas finales
     pvp_arena.last_attacker[name] = nil
+    pvp_arena.dead_players[name] = nil  -- Limpiar estado de muerte
     pvp_arena.cleanup_player_stats(name)
 end)
 
@@ -332,6 +335,89 @@ minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, 
         return true  -- Cancelar el golpe
     end
 end)
+
+-- Activar modo fantasma (ghost mode) para jugador muerto
+function pvp_arena.enable_ghost_mode(player_name)
+    local player = minetest.get_player_by_name(player_name)
+    if not player then return end
+
+    -- Guardar posición de muerte
+    pvp_arena.dead_players[player_name] = {
+        death_pos = player:get_pos(),
+        death_time = os.time()
+    }
+
+    -- Hacer invisible
+    player:set_properties({
+        visual_size = {x = 0, y = 0},
+        makes_footstep_sound = false,
+        is_visible = false,
+        pointable = false
+    })
+
+    -- Modo espectador: fly + noclip temporales
+    local privs = minetest.get_player_privs(player_name)
+    privs.fly = true
+    privs.noclip = true
+    minetest.set_player_privs(player_name, privs)
+
+    -- Hacer invulnerable completamente
+    player:set_armor_groups({fleshy = 0, immortal = 1})
+
+    minetest.log("action", "[PVP Arena] " .. player_name .. " entered ghost mode")
+end
+
+-- Desactivar modo fantasma y respawnear jugador
+function pvp_arena.disable_ghost_mode(player_name)
+    local player = minetest.get_player_by_name(player_name)
+    if not player then return end
+
+    -- Restaurar visibilidad
+    player:set_properties({
+        visual_size = {x = 1, y = 1},
+        makes_footstep_sound = true,
+        is_visible = true,
+        pointable = true
+    })
+
+    -- Quitar fly/noclip si no debería tenerlos
+    local in_arena = pvp_arena.is_player_in_arena(player_name)
+    if in_arena then
+        -- En arena: modo survival (vulnerable)
+        local privs = minetest.get_player_privs(player_name)
+        privs.fly = nil
+        privs.noclip = nil
+        minetest.set_player_privs(player_name, privs)
+
+        -- Hacer vulnerable de nuevo
+        player:set_armor_groups({fleshy = 100})
+
+        -- HP completo
+        player:set_hp(20)
+    end
+
+    -- Limpiar estado de muerte
+    pvp_arena.dead_players[player_name] = nil
+
+    minetest.log("action", "[PVP Arena] " .. player_name .. " respawned from ghost mode")
+end
+
+-- Mostrar countdown de respawn
+function pvp_arena.show_respawn_countdown(player_name, seconds_remaining)
+    local player = minetest.get_player_by_name(player_name)
+    if not player then return end
+
+    local color = "#FF6B6B"
+    local icon = "💀"
+
+    if seconds_remaining <= 2 then
+        color = "#FFEB3B"
+        icon = "⚡"
+    end
+
+    local msg = minetest.colorize(color, icon .. " RESPAWN EN " .. seconds_remaining .. " SEGUNDOS " .. icon)
+    minetest.chat_send_player(player_name, msg)
+end
 
 -- Hook para detectar muertes de jugadores en arena
 minetest.register_on_dieplayer(function(player, reason)
@@ -367,12 +453,44 @@ minetest.register_on_dieplayer(function(player, reason)
         pvp_arena.last_attacker[victim_name] = nil
     end
 
-    -- Respawn automático en arena después de 3 segundos
-    minetest.after(3.0, function()
+    -- SISTEMA DE RESPAWN ESTILO LOL: Ghost mode + Countdown
+    -- Activar ghost mode inmediatamente
+    pvp_arena.enable_ghost_mode(victim_name)
+
+    -- Mensaje de muerte
+    minetest.chat_send_player(victim_name,
+        minetest.colorize("#FF6B6B", "═══════════════════════════════════"))
+    minetest.chat_send_player(victim_name,
+        minetest.colorize("#FF6B6B", "        💀 HAS MUERTO 💀         "))
+    minetest.chat_send_player(victim_name,
+        minetest.colorize("#FFEB3B", "   Revivirás en " .. pvp_arena.respawn_time .. " segundos...   "))
+    minetest.chat_send_player(victim_name,
+        minetest.colorize("#FF6B6B", "═══════════════════════════════════"))
+
+    -- Countdown regresivo (5, 4, 3, 2, 1)
+    for i = pvp_arena.respawn_time, 1, -1 do
+        minetest.after((pvp_arena.respawn_time - i) + 0.5, function()
+            local still_dead = pvp_arena.dead_players[victim_name]
+            if still_dead and minetest.get_player_by_name(victim_name) then
+                pvp_arena.show_respawn_countdown(victim_name, i)
+            end
+        end)
+    end
+
+    -- Respawn final después del countdown completo
+    minetest.after(pvp_arena.respawn_time + 0.5, function()
         local respawned_player = minetest.get_player_by_name(victim_name)
-        if respawned_player and pvp_arena.is_player_in_arena(victim_name) then
-            -- Restaurar HP completo
-            respawned_player:set_hp(20)
+        if respawned_player and pvp_arena.dead_players[victim_name] then
+            -- Desactivar ghost mode y respawnear
+            pvp_arena.disable_ghost_mode(victim_name)
+
+            -- Mensaje de respawn
+            minetest.chat_send_player(victim_name,
+                minetest.colorize("#4CAF50", "✨ ¡HAS REVIVIDO! ✨"))
+            minetest.chat_send_player(victim_name,
+                minetest.colorize("#66BB6A", "🌱 De vuelta a la batalla con vida completa"))
+
+            minetest.log("action", "[PVP Arena] " .. victim_name .. " respawned successfully")
         end
     end)
 end)

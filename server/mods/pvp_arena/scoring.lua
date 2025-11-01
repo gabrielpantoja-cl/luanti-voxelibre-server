@@ -160,15 +160,15 @@ function pvp_arena.format_scoreboard(max_entries)
         return minetest.colorize("#FFB74D", "📊 No hay estadísticas aún. ¡Sé el primero en combatir!")
     end
 
-    local msg = minetest.colorize("#4CAF50", "╔═══════════════════════════════════════════════╗\n")
+    local msg = minetest.colorize("#4CAF50", "╔═══════════════════════════════════════════════════╗\n")
     msg = msg .. minetest.colorize("#4CAF50", "║") ..
-          minetest.colorize("#FFEB3B", "     🏆 SCOREBOARD - ARENA PVP 🏆         ") ..
+          minetest.colorize("#FFEB3B", "       🏆 SCOREBOARD - ARENA PVP 🏆           ") ..
           minetest.colorize("#4CAF50", "║\n")
-    msg = msg .. minetest.colorize("#4CAF50", "╠═══════════════════════════════════════════════╣\n")
+    msg = msg .. minetest.colorize("#4CAF50", "╠═══════════════════════════════════════════════════╣\n")
 
     -- Header
-    msg = msg .. minetest.colorize("#90CAF9", "║ #  Jugador          K    D    K/D   Streak   ║\n")
-    msg = msg .. minetest.colorize("#4CAF50", "╠═══════════════════════════════════════════════╣\n")
+    msg = msg .. minetest.colorize("#90CAF9", "║ #  Jugador              K    D    K/D   Streak   ║\n")
+    msg = msg .. minetest.colorize("#4CAF50", "╠═══════════════════════════════════════════════════╣\n")
 
     -- Entries
     for i, player in ipairs(scoreboard) do
@@ -191,12 +191,12 @@ function pvp_arena.format_scoreboard(max_entries)
         -- Formatear K/D ratio
         local kd_str = string.format("%.2f", player.kd_ratio)
 
-        -- Formatear nombre (máx 14 caracteres)
+        -- Formatear nombre (máx 18 caracteres - mejorado para evitar confusión)
         local name_display = player.name
-        if #name_display > 14 then
-            name_display = string.sub(name_display, 1, 11) .. "..."
+        if #name_display > 18 then
+            name_display = string.sub(name_display, 1, 15) .. "..."
         end
-        name_display = string.format("%-14s", name_display)
+        name_display = string.format("%-18s", name_display)
 
         -- Formatear línea
         local line = string.format("║ %s %s %3d  %3d  %5s   %2d     ║",
@@ -211,7 +211,7 @@ function pvp_arena.format_scoreboard(max_entries)
         msg = msg .. minetest.colorize(color, line) .. "\n"
     end
 
-    msg = msg .. minetest.colorize("#4CAF50", "╚═══════════════════════════════════════════════╝")
+    msg = msg .. minetest.colorize("#4CAF50", "╚═══════════════════════════════════════════════════╝")
 
     return msg
 end
