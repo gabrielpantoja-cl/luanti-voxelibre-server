@@ -1,4 +1,4 @@
--- PVP Arena Mod v1.3.0
+-- PVP Arena Mod v1.3.2
 -- Permite PvP en zonas específicas con sistema de scoring y respawn estilo LoL
 -- Autor: gabo (Gabriel Pantoja)
 
@@ -446,6 +446,41 @@ function pvp_arena.show_respawn_countdown(player_name, seconds_remaining)
     local msg = minetest.colorize(color, icon .. " RESPAWN EN " .. seconds_remaining .. " SEGUNDOS " .. icon)
     minetest.chat_send_player(player_name, msg)
 end
+
+-- Hook para controlar el respawn y evitar que VoxeLibre teleporte al spawn del mundo
+minetest.register_on_respawnplayer(function(player)
+    local player_name = player:get_player_name()
+
+    -- Si el jugador está en nuestro sistema de respawn de arena, manejamos nosotros
+    if pvp_arena.dead_players[player_name] then
+        local death_data = pvp_arena.dead_players[player_name]
+        local arena = death_data.arena
+
+        if arena then
+            -- Determinar punto de respawn
+            local respawn_pos
+            if arena.respawn_point then
+                respawn_pos = arena.respawn_point
+            else
+                respawn_pos = {
+                    x = arena.center.x,
+                    y = arena.center.y,
+                    z = arena.center.z - 10
+                }
+            end
+
+            -- Teleportar inmediatamente al punto de respawn de la arena
+            player:set_pos(respawn_pos)
+            minetest.log("action", "[PVP Arena] Prevented default spawn - player " .. player_name .. " will respawn at arena")
+
+            -- Retornar true para evitar que VoxeLibre use el spawn por defecto
+            return true
+        end
+    end
+
+    -- Si no está en arena, dejar que VoxeLibre maneje el respawn normalmente
+    return false
+end)
 
 -- Hook para detectar muertes de jugadores en arena
 minetest.register_on_dieplayer(function(player, reason)
