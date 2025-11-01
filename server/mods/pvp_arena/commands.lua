@@ -107,6 +107,28 @@ minetest.register_chatcommand("arena_donde", {
 })
 
 -- ═══════════════════════════════════════════════════════
+-- COMANDOS DE SCORING (Sistema de Puntuación)
+-- ═══════════════════════════════════════════════════════
+
+-- /arena_score - Muestra el scoreboard completo
+minetest.register_chatcommand("arena_score", {
+    description = "Muestra el scoreboard de la arena PVP",
+    func = function(name)
+        pvp_arena.show_scoreboard(name)
+        return true
+    end
+})
+
+-- /mis_stats - Muestra tus estadísticas personales
+minetest.register_chatcommand("mis_stats", {
+    description = "Muestra tus estadísticas PVP personales",
+    func = function(name)
+        local stats_msg = pvp_arena.show_player_stats(name)
+        return true, stats_msg
+    end
+})
+
+-- ═══════════════════════════════════════════════════════
 -- COMANDOS PARA ADMINISTRADORES
 -- ═══════════════════════════════════════════════════════
 

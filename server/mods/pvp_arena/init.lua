@@ -1,5 +1,5 @@
--- PVP Arena Mod v1.1.0
--- Permite PvP en zonas específicas del servidor Wetlands
+-- PVP Arena Mod v1.2.0
+-- Permite PvP en zonas específicas con sistema de scoring en tiempo real
 -- Autor: gabo (Gabriel Pantoja)
 
 pvp_arena = {}
@@ -7,6 +7,10 @@ pvp_arena.arenas = {}
 pvp_arena.players_in_arena = {}
 pvp_arena.player_creative_status = {}  -- Guardar estado de creative metadata antes de entrar
 pvp_arena.player_creative_priv = {}    -- Guardar privilegio creative antes de entrar
+pvp_arena.last_attacker = {}           -- Rastrear último atacante de cada jugador
+
+-- Cargar sistema de scoring
+dofile(minetest.get_modpath("pvp_arena") .. "/scoring.lua")
 
 -- Cargar comandos del chat
 dofile(minetest.get_modpath("pvp_arena") .. "/commands.lua")
@@ -185,6 +189,7 @@ minetest.register_globalstep(function(dtime)
             pvp_arena.players_in_arena[name] = arena.name
             pvp_arena.set_pvp(name, true)
             pvp_arena.show_enter_message(player, arena)
+            pvp_arena.init_player_stats(name)  -- Inicializar stats
             minetest.log("action", "[PVP Arena] " .. name .. " entered " .. arena.name)
 
         elseif not in_arena and was_in_arena then
@@ -291,6 +296,10 @@ minetest.register_on_leaveplayer(function(player)
         pvp_arena.player_creative_status[name] = nil
         minetest.log("action", "[PVP Arena] Cleaned up state for " .. name)
     end
+
+    -- Limpiar tracking de ataques y anunciar estadísticas finales
+    pvp_arena.last_attacker[name] = nil
+    pvp_arena.cleanup_player_stats(name)
 end)
 
 -- Hook para daño entre jugadores (verificación adicional)
@@ -308,6 +317,11 @@ minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, 
 
     if victim_in_arena and hitter_in_arena then
         -- Ambos en arena: PERMITIR daño
+        -- Rastrear último atacante para sistema de scoring
+        pvp_arena.last_attacker[victim_name] = {
+            name = hitter_name,
+            time = os.time()
+        }
         return false
     else
         -- Al menos uno fuera de arena: CANCELAR daño
@@ -317,6 +331,50 @@ minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, 
         end
         return true  -- Cancelar el golpe
     end
+end)
+
+-- Hook para detectar muertes de jugadores en arena
+minetest.register_on_dieplayer(function(player, reason)
+    local victim_name = player:get_player_name()
+
+    -- Verificar si el jugador murió en una arena
+    local in_arena = pvp_arena.is_player_in_arena(victim_name)
+    if not in_arena then
+        return  -- Muerte fuera de arena, ignorar
+    end
+
+    -- Verificar si hay un atacante registrado recientemente (últimos 10 segundos)
+    local attacker_data = pvp_arena.last_attacker[victim_name]
+    if attacker_data and (os.time() - attacker_data.time) <= 10 then
+        -- Registrar la kill
+        pvp_arena.register_kill(attacker_data.name, victim_name)
+        pvp_arena.last_attacker[victim_name] = nil
+    else
+        -- Muerte sin atacante claro (caída, lava, etc.)
+        pvp_arena.init_player_stats(victim_name)
+        pvp_arena.scores[victim_name].deaths = pvp_arena.scores[victim_name].deaths + 1
+        pvp_arena.scores[victim_name].current_streak = 0
+
+        local death_msg = minetest.colorize("#90CAF9", victim_name) ..
+                         minetest.colorize("#FFFFFF", " murió ") ..
+                         minetest.colorize("#FFB74D", "(accidente)")
+
+        -- Anunciar a jugadores en arenas
+        for player_name, _ in pairs(pvp_arena.players_in_arena) do
+            minetest.chat_send_player(player_name, death_msg)
+        end
+
+        pvp_arena.last_attacker[victim_name] = nil
+    end
+
+    -- Respawn automático en arena después de 3 segundos
+    minetest.after(3.0, function()
+        local respawned_player = minetest.get_player_by_name(victim_name)
+        if respawned_player and pvp_arena.is_player_in_arena(victim_name) then
+            -- Restaurar HP completo
+            respawned_player:set_hp(20)
+        end
+    end)
 end)
 
 minetest.log("action", "[PVP Arena] Mod initialization complete")
