@@ -44,13 +44,14 @@ function pvp_arena.create_default_arena()
         name = "Arena Principal",
         center = {x = 41, y = 23, z = 232},  -- Coordenadas de la construcción existente
         radius = 25,  -- Radio de 25 bloques = 51x51 área
+        respawn_point = {x = 41, y = 23, z = 205},  -- 27 bloques al norte (fuera de zona de combate)
         enabled = true,
         created_by = "gabo",
         created_at = os.time()
     }
     table.insert(pvp_arena.arenas, default_arena)
     pvp_arena.save_arenas()
-    minetest.log("action", "[PVP Arena] Created default arena at (41, 23, 232)")
+    minetest.log("action", "[PVP Arena] Created default arena at (41, 23, 232) with respawn at (41, 23, 205)")
 end
 
 -- Guardar arenas a archivo
@@ -341,10 +342,14 @@ function pvp_arena.enable_ghost_mode(player_name)
     local player = minetest.get_player_by_name(player_name)
     if not player then return end
 
-    -- Guardar posición de muerte
+    -- Detectar en qué arena murió el jugador
+    local _, current_arena = pvp_arena.is_player_in_arena(player_name)
+
+    -- Guardar posición de muerte y arena
     pvp_arena.dead_players[player_name] = {
         death_pos = player:get_pos(),
-        death_time = os.time()
+        death_time = os.time(),
+        arena = current_arena  -- Guardar referencia a la arena
     }
 
     -- Hacer invisible
@@ -372,6 +377,33 @@ function pvp_arena.disable_ghost_mode(player_name)
     local player = minetest.get_player_by_name(player_name)
     if not player then return end
 
+    -- Obtener arena donde murió el jugador
+    local death_data = pvp_arena.dead_players[player_name]
+    if not death_data or not death_data.arena then
+        minetest.log("warning", "[PVP Arena] No arena data found for " .. player_name .. " during respawn")
+        return
+    end
+
+    local arena = death_data.arena
+
+    -- Determinar punto de respawn
+    local respawn_pos
+    if arena.respawn_point then
+        -- Usar respawn point configurado de la arena
+        respawn_pos = arena.respawn_point
+    else
+        -- Fallback: 10 bloques al norte del centro de la arena
+        respawn_pos = {
+            x = arena.center.x,
+            y = arena.center.y,
+            z = arena.center.z - 10
+        }
+    end
+
+    -- Teleportar al jugador al punto de respawn
+    player:set_pos(respawn_pos)
+    minetest.log("action", "[PVP Arena] Teleported " .. player_name .. " to respawn point " .. minetest.pos_to_string(respawn_pos))
+
     -- Restaurar visibilidad
     player:set_properties({
         visual_size = {x = 1, y = 1},
@@ -380,26 +412,22 @@ function pvp_arena.disable_ghost_mode(player_name)
         pointable = true
     })
 
-    -- Quitar fly/noclip si no debería tenerlos
-    local in_arena = pvp_arena.is_player_in_arena(player_name)
-    if in_arena then
-        -- En arena: modo survival (vulnerable)
-        local privs = minetest.get_player_privs(player_name)
-        privs.fly = nil
-        privs.noclip = nil
-        minetest.set_player_privs(player_name, privs)
+    -- Quitar fly/noclip
+    local privs = minetest.get_player_privs(player_name)
+    privs.fly = nil
+    privs.noclip = nil
+    minetest.set_player_privs(player_name, privs)
 
-        -- Hacer vulnerable de nuevo
-        player:set_armor_groups({fleshy = 100})
+    -- Hacer vulnerable de nuevo
+    player:set_armor_groups({fleshy = 100})
 
-        -- HP completo
-        player:set_hp(20)
-    end
+    -- HP completo
+    player:set_hp(20)
 
     -- Limpiar estado de muerte
     pvp_arena.dead_players[player_name] = nil
 
-    minetest.log("action", "[PVP Arena] " .. player_name .. " respawned from ghost mode")
+    minetest.log("action", "[PVP Arena] " .. player_name .. " respawned successfully at arena respawn point")
 end
 
 -- Mostrar countdown de respawn
