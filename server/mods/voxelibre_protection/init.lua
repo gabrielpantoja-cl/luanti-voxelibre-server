@@ -97,10 +97,46 @@ local function check_area_overlap(min_pos, max_pos, exclude_area)
     return false
 end
 
+-- Detectar si un nodo es un cofre o contenedor
+local function is_chest_or_container(pos)
+    local node = minetest.get_node(pos)
+    if not node or not node.name then
+        return false
+    end
+
+    -- Lista de contenedores permitidos en arenas PVP
+    local allowed_containers = {
+        ["mcl_chests:chest"] = true,
+        ["mcl_chests:chest_left"] = true,
+        ["mcl_chests:chest_right"] = true,
+        ["mcl_chests:ender_chest"] = true,
+        ["mcl_barrels:barrel_closed"] = true,
+        ["mcl_barrels:barrel_open"] = true,
+        ["mcl_furnaces:furnace"] = true,
+        ["mcl_furnaces:furnace_active"] = true,
+        ["mcl_hoppers:hopper"] = true,
+        ["mcl_hoppers:hopper_side"] = true,
+    }
+
+    return allowed_containers[node.name] or false
+end
+
 -- Función principal de protección
-local function is_area_protected(pos, name)
+local function is_area_protected(pos, name, action_type)
     if not validate_pos(pos) or not name then
         return false
+    end
+
+    -- EXCEPCIÓN: Permitir abrir cofres en arenas PVP
+    if action_type == "rightclick" and is_chest_or_container(pos) then
+        -- Verificar si el jugador está en una arena PVP
+        if pvp_arena and pvp_arena.is_player_in_arena then
+            local in_arena = pvp_arena.is_player_in_arena(name)
+            if in_arena then
+                log("info", name .. " accessing chest in PVP arena (allowed)")
+                return false -- Permitir acceso a cofres en arena
+            end
+        end
     end
 
     for area_name, area_data in pairs(protected_areas) do
@@ -550,9 +586,72 @@ protection.add_area = function(name, min_pos, max_pos, owner)
     return true, "Area created successfully"
 end
 
+-- Hook para detectar acceso a cofres/contenedores
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+    -- Este hook se dispara cuando se abre un formspec (inventario de cofre)
+    -- Pero necesitamos interceptar ANTES de que se abra
+end)
+
+-- Override de can_dig para cofres (impedir romper en áreas protegidas)
+local function register_chest_protection()
+    -- Lista de tipos de cofres a proteger
+    local chest_types = {
+        "mcl_chests:chest",
+        "mcl_chests:chest_left",
+        "mcl_chests:chest_right",
+        "mcl_barrels:barrel_closed",
+        "mcl_barrels:barrel_open",
+    }
+
+    for _, chest_name in ipairs(chest_types) do
+        local chest_def = minetest.registered_nodes[chest_name]
+        if chest_def then
+            local old_on_rightclick = chest_def.on_rightclick
+
+            -- Sobrescribir on_rightclick para verificar permisos
+            minetest.override_item(chest_name, {
+                on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
+                    if not clicker or not clicker:is_player() then
+                        return itemstack
+                    end
+
+                    local player_name = clicker:get_player_name()
+
+                    -- Verificar protección con tipo "rightclick"
+                    local protected, area_name = is_area_protected(pos, player_name, "rightclick")
+
+                    if protected then
+                        minetest.chat_send_player(player_name,
+                            S("🛡️ Este cofre está protegido en el área '@1'", area_name or "desconocida"))
+                        return itemstack
+                    end
+
+                    -- Si no está protegido o tiene permisos, permitir abrir
+                    if old_on_rightclick then
+                        return old_on_rightclick(pos, node, clicker, itemstack, pointed_thing)
+                    end
+
+                    return itemstack
+                end
+            })
+
+            log("info", "Registered chest protection for " .. chest_name)
+        end
+    end
+end
+
+-- Registrar protección de cofres después de que todos los mods carguen
+minetest.register_on_mods_loaded(function()
+    minetest.after(0.1, function()
+        register_chest_protection()
+        log("action", "Chest protection hooks installed")
+    end)
+end)
+
 log("action", "VoxeLibre Protection System loaded successfully!")
 log("info", "Loaded " .. (function()
     local count = 0
     for _ in pairs(protected_areas) do count = count + 1 end
     return count
 end)() .. " protected areas")
+log("info", "PVP Arena integration: " .. (pvp_arena and "ENABLED" or "DISABLED"))
