@@ -105,11 +105,14 @@ minetest.register_on_joinplayer(function(player)
         minetest.chat_send_player(name, "")
 
         -- Comandos útiles
-        minetest.chat_send_player(name, "⚡ COMANDOS PRINCIPALES:")
-        minetest.chat_send_player(name, "• /reglas - Ver reglas completas")
-        minetest.chat_send_player(name, "• /filosofia - Conocer nuestra filosofía")
-        minetest.chat_send_player(name, "• /santuario - Aprende sobre santuarios")
-        minetest.chat_send_player(name, "• /back_to_spawn - Volver a tu spawn")
+        minetest.chat_send_player(name, "⚡ COMANDOS ÚTILES:")
+        minetest.chat_send_player(name, "• /ayuda - Información completa del servidor")
+        minetest.chat_send_player(name, "• /back_to_spawn - Volver a tu spawn (cama o spawn principal)")
+        minetest.chat_send_player(name, "• /arena_tp - Ir rápido a Arena Principal (PVP)")
+        minetest.chat_send_player(name, "• /pos1 y /pos2 - Marcar área a proteger")
+        minetest.chat_send_player(name, "• /protect_area - Proteger tu área marcada")
+        minetest.chat_send_player(name, "• /list_areas - Ver todas tus áreas protegidas")
+        minetest.chat_send_player(name, "• Duerme en una cama para establecer tu spawn personal")
         minetest.chat_send_player(name, "")
         minetest.chat_send_player(name, "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas")
     end)
@@ -224,6 +227,57 @@ minetest.register_chatcommand("filosofia", {
     end
 })
 
+-- Comando /ayuda - Unifica reglas, filosofía y santuario
+minetest.register_chatcommand("ayuda", {
+    description = "Información completa sobre Wetlands (reglas, filosofía, comandos)",
+    func = function(name, param)
+        local ayuda = {
+            "🌱 ════════════════════════════════════ 🌱",
+            "       GUÍA COMPLETA DE WETLANDS",
+            "🌱 ════════════════════════════════════ 🌱",
+            "",
+            "📋 REGLAS BÁSICAS:",
+            "1. 🚫 No molestes ni destruyas construcciones ajenas",
+            "2. 👤 Usa un nombre apropiado (no 'guest123')",
+            "3. 🤝 Respeta a todos - ambiente familiar",
+            "4. 💬 Chat limpio (niños 7+)",
+            "5. 🌱 Cuida y respeta a los animales",
+            "",
+            "🎯 NUESTRA MISIÓN:",
+            "Servidor educativo donde niños y familias aprenden",
+            "sobre compasión hacia los animales mientras juegan.",
+            "",
+            "🐾 SANTUARIOS ANIMALES:",
+            "Los animales viven libres y felices. No los lastimes.",
+            "Obsérvalos, construye refugios para ellos, planta cultivos.",
+            "",
+            "⚡ COMANDOS ÚTILES:",
+            "• /back_to_spawn - Volver a tu spawn",
+            "• /arena_tp - Ir a Arena Principal (PVP)",
+            "• /pos1 y /pos2 - Marcar área a proteger",
+            "• /protect_area - Proteger área marcada",
+            "• /list_areas - Ver tus áreas protegidas",
+            "• /reglas - Ver reglas detalladas",
+            "• /filosofia - Nuestra filosofía completa",
+            "• /santuario - Más sobre cuidado animal",
+            "",
+            "🛏️ SISTEMA DE SPAWN:",
+            "Duerme en una cama para establecer tu spawn personal.",
+            "Usa /back_to_spawn para teleportarte allí.",
+            "",
+            "🌐 Web: https://luanti.gabrielpantoja.cl",
+            "💚 ¡Diviértete construyendo un mundo compasivo!",
+            ""
+        }
+
+        for _, linea in ipairs(ayuda) do
+            minetest.chat_send_player(name, linea)
+        end
+
+        return true
+    end
+})
+
 -- Recordatorio periódico más educativo (cada 20 minutos)
 local timer = 0
 minetest.register_globalstep(function(dtime)
@@ -231,8 +285,8 @@ minetest.register_globalstep(function(dtime)
     if timer >= 1200 then -- 20 minutos = 1200 segundos
         timer = 0
         local mensajes_rotativos = {
-            "🌱 Recordatorio: Usa /reglas para las reglas completas",
-            "💚 Descubre nuestra filosofía con /filosofia",
+            "🌱 Usa /ayuda para ver toda la información del servidor",
+            "💚 Recuerda: duerme en una cama para establecer tu spawn",
             "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas",
             "🌐 Visita nuestra página web: https://luanti.gabrielpantoja.cl"
         }
