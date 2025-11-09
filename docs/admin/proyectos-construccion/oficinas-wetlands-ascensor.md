@@ -1,8 +1,8 @@
 # 🏢 Proyecto: Edificio "Oficinas Wetlands" - Ascensor de 13 Pisos
 
 **Fecha de Creación**: 2025-11-09
-**Última Actualización**: 2025-11-09
-**Estado**: En Progreso
+**Última Actualización**: 2025-11-09 (Posiciones verificadas desde logs del servidor)
+**Estado**: En Progreso - Machine en posición incorrecta (Y=69, debe estar en Y=72)
 
 Este documento consolida toda la información, diagnósticos y procedimientos para la construcción e instalación de un ascensor funcional de 13 pisos utilizando el mod `celevator`.
 
@@ -10,9 +10,11 @@ Este documento consolida toda la información, diagnósticos y procedimientos pa
 
 ## 📍 Ubicación Geográfica
 
-- **Pozo del Ascensor (Centro aproximado)**: `(X=88, Z=-43)`
+- **Pozo del Ascensor (Centro)**: `(X=88, Z=-43)`
 - **Rango Vertical**: `Y=14` (fondo) hasta `Y=77+` (sala de máquinas)
 - **Edificio**: Oficinas Wetlands
+- **Altura entre pisos**: 4 bloques
+- **Pisos instalados**: 13 (Y=17 hasta Y=66)
 
 ---
 
@@ -170,11 +172,17 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 1.  Ve a la sala de máquinas: `/teleport gabo 88 71 -43`
 2.  Haz clic derecho en el `celevator:controller`.
 3.  En la interfaz, configura los siguientes parámetros:
-    - **Number of floors**: `13` (o `14` si finalmente son 14 pisos).
-    - **Floor height**: `5` (o `4` si la distancia entre pisos es 4 bloques).
-    - **Bottom floor Y**: `15` (la coordenada Y del suelo del primer piso).
+    - **Number of floors**: `13`
+    - **Floor height**: `4` (distancia confirmada entre pisos)
+    - **Bottom floor Y**: `17` (la coordenada Y del piso 1, donde está la primera puerta)
     - **Speed**: `5` m/s (o la velocidad que prefieras).
 4.  El `controller` ahora debería detectar la `machine` y estar listo para operar.
+
+**⚠️ IMPORTANTE - Configuración basada en datos reales**:
+- Se confirmó que hay **13 pisos** instalados
+- La altura entre pisos es **4 bloques** (no 5)
+- El primer piso está en **Y=17** (no Y=15)
+- Estas coordenadas fueron verificadas desde los logs del servidor
 
 ### **PASO 5: Pruebas Finales**
 
@@ -182,6 +190,68 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 2.  Presiona el botón de llamada. La puerta debería abrirse y la cabina (si no está ya ahí) debería llegar.
 3.  Entra en la cabina y usa los botones internos para viajar a otros pisos.
 4.  Verifica que se detenga correctamente en cada nivel.
+
+---
+
+## 🚨 SOLUCIÓN RÁPIDA AL PROBLEMA ACTUAL
+
+**Problema detectado**: El ascensor no funciona porque la `machine` está en Y=69, que es el límite mínimo absoluto. El mod requiere al menos 3 bloques de margen.
+
+### **Pasos para Solucionar (Orden Crítico)**
+
+```bash
+# PASO 1: Ir a la sala de máquinas
+/teleport gabo 89 69 -43
+
+# PASO 2: Excavar la machine actual (posición incorrecta)
+# Haz clic izquierdo en la machine para excavarla
+
+# PASO 3: Excavar el controller y drive actuales
+/teleport gabo 83 66 -43
+# Excava el controller
+
+/teleport gabo 82 66 -42
+# Excava el drive
+
+# PASO 4: Colocar la machine en la posición CORRECTA (Y=72)
+/teleport gabo 88 72 -43
+# Coloca la machine aquí (CRÍTICO: NO MOVERLA DESPUÉS)
+
+# PASO 5: Colocar el controller justo debajo
+/teleport gabo 88 71 -43
+# Coloca el controller
+
+# PASO 6: Colocar el drive al lado del controller
+/teleport gabo 89 71 -43
+# Coloca el drive
+
+# PASO 7: Verificar que la cabina esté en el piso 1
+/teleport gabo 88 17 -43
+# Debería haber UNA cabina aquí. Si no, colócala.
+
+# PASO 8: Configurar el controller
+/teleport gabo 88 71 -43
+# Clic derecho en el controller y configura:
+# - Number of floors: 13
+# - Floor height: 4
+# - Bottom floor Y: 17
+# - Speed: 5
+
+# PASO 9: Probar el ascensor
+/teleport gabo 88 17 -43
+# Usa el botón de llamada y prueba subir a diferentes pisos
+```
+
+**Verificación Post-Instalación**:
+```bash
+# Ver logs en tiempo real para verificar que no hay errores
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
+```
+
+**Si aún no funciona**:
+1. Verifica que la machine esté exactamente en `(88, 72, -43)`
+2. Verifica que el controller esté conectado (no debe haber mensajes de "machine missing")
+3. Asegúrate de que NO moviste la machine después de configurar el controller
 
 ---
 
@@ -226,10 +296,45 @@ end
 
 **Problema Identificado**: La `machine` se movió de Y=73 (correcto) de vuelta a Y=69 (incorrecto), lo que causó el error porque el sistema espera la machine 3 bloques por encima del último piso.
 
-**Configuración Final Recomendada**:
-- Machine: `(88, 72, -43)` - NO MOVER después de instalada
-- Controller: `(88, 71, -43)`
-- Drive: `(89, 71, -43)`
+**Posiciones ACTUALES en el Servidor** (2025-11-09 - Verificado desde logs):
+- ❌ Machine: `(89, 69, -43)` - **INCORRECTA** (demasiado baja, debe estar en Y=72+)
+- Controller: `(83, 66, -43)` - Última posición registrada
+- Drive: `(82, 66, -42)` - Última posición registrada
+- Cabina: `(88, 17, -43)` - Piso 1 (correcta)
+- Puertas: 13 instaladas desde Y=17 hasta Y=66 (cada 4 bloques)
+
+**Configuración CORRECTA Recomendada**:
+- ✅ Machine: `(88, 72, -43)` - **CRÍTICO**: Debe estar al menos en Y=69 (último piso + 3)
+- ✅ Controller: `(88, 71, -43)` o `(89, 71, -43)`
+- ✅ Drive: `(89, 71, -43)` o `(88, 70, -43)`
+
+**⚠️ ACCIÓN REQUERIDA**: La machine está actualmente en Y=69 (límite mínimo). Se recomienda subirla a Y=72 para funcionamiento óptimo.
+
+### **Detalle de Puertas Instaladas** (Verificado desde logs 2025-11-09)
+
+Las siguientes puertas están instaladas en el pozo principal (X=86-87, Z=-43):
+
+| Piso | Coordenadas Y | Posición Exacta | Estado |
+|------|---------------|-----------------|--------|
+| Piso 1 | Y=17 | (87,17,-43), (86,17,-43) | ✅ Instaladas |
+| Piso 2 | Y=21 | (87,21,-43), (86,21,-43) | ✅ Instaladas |
+| Piso 3 | Y=25 | (87,25,-43), (86,25,-43) | ✅ Instaladas |
+| Piso 4 | Y=29 | (87,29,-43), (86,29,-43) | ✅ Instaladas |
+| Piso 5 | Y=33-34 | (87,33,-43), (86,34,-43) | ✅ Instaladas |
+| Piso 6 | Y=37-38 | (87,37,-43), (86,38,-43) | ✅ Instaladas |
+| Piso 7 | Y=41-42 | (87,41,-43), (86,42,-43) | ✅ Instaladas |
+| Piso 8 | Y=45-46 | (87,45,-43), (86,46,-43) | ✅ Instaladas |
+| Piso 9 | Y=49-50 | (87,49,-43), (86,49,-43) | ✅ Instaladas |
+| Piso 10 | Y=53-54 | (87,53,-43), (86,54,-43) | ✅ Instaladas |
+| Piso 11 | Y=57-58 | (87,57,-43), (86,58,-43) | ✅ Instaladas |
+| Piso 12 | Y=61-62 | (87,61,-43), (86,62,-43) | ✅ Instaladas |
+| Piso 13 | Y=65-66 | (87,65,-43), (86,66,-43) | ✅ Instaladas |
+
+**Notas**:
+- Altura entre pisos: **4 bloques** consistente
+- Último piso (Piso 13): Y=66
+- Machine actual: Y=69 (solo 3 bloques arriba, **en el límite mínimo**)
+- Machine recomendada: Y=72 (6 bloques arriba, **margen seguro**)
 
 ---
 
