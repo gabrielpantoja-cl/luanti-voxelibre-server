@@ -1,0 +1,62 @@
+===============================================
+COMANDOS URGENTES PARA GABO
+===============================================
+
+PASO 1: QUITAR LAS LÍNEAS NEGRAS (MARCADORES DE WORLDEDIT)
+===============================================
+
+Ejecuta este comando:
+//unmark
+
+O el comando corto:
+/umk
+
+¡LISTO! Las líneas negras desaparecerán.
+
+===============================================
+PASO 2: ELIMINAR LAS PUERTAS QUE AÚN QUEDAN
+===============================================
+
+Opción A: Volver a marcar área y eliminar puertas
+--------------------------------------------------
+//pos1
+(ir a la otra esquina)
+//pos2
+
+Luego ejecutar SOLO los comandos de puertas:
+//replace celevator:hwdoor_glass air
+//replace celevator:hwdoor_fast_glass_top air
+//replace celevator:hwdoor_fast_glass_bottom air
+//replace celevator:hwdoor_slow_glass_top air
+//replace celevator:hwdoor_slow_glass_bottom air
+
+Opción B: Eliminar manualmente (MÁS RÁPIDO)
+--------------------------------------------------
+1. Vuela hasta cada puerta que veas
+2. Haz clic izquierdo para romperla
+3. Repite hasta que no queden puertas
+
+Opción C: Usar comando //inspect para ver el nombre exacto
+--------------------------------------------------
+//inspect
+Luego haz clic en la puerta
+Te dirá el nombre exacto, ejemplo: "celevator:hwdoor_glass_top"
+Luego usa:
+//replace [nombre exacto] air
+
+===============================================
+PASO 3: VERIFICAR QUE ESTÉN LIMPIAS
+===============================================
+
+Vuela por todo el pozo del ascensor (de Y=14 a Y=77)
+Verifica que NO haya:
+❌ Cabinas
+❌ Puertas
+
+Deben permanecer:
+✅ Controller
+✅ Drive
+✅ Machine
+✅ Botones de llamada
+
+===============================================
