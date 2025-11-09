@@ -235,32 +235,98 @@ end
 
 ## 🛡️ Protección del Área del Ascensor
 
-### **Comandos WorldEdit para Definir Área**
+### **Sistema de Protección VoxeLibre**
+
+El servidor Wetlands utiliza el mod `voxelibre_protection` para proteger áreas. Este sistema es diferente a WorldEdit o el mod `areas` tradicional.
+
+**⚠️ IMPORTANTE - Diferencia entre comandos**:
+- **WorldEdit**: `//pos1` y `//pos2` (con doble barra) - Solo para edición de bloques
+- **Protección**: `/pos1` y `/pos2` (con una barra) - Para marcar áreas a proteger
+- **No son lo mismo**: WorldEdit y el sistema de protección son independientes
+
+### **Método 1: Protección Manual (Recomendado para el Ascensor)**
 
 ```bash
-# PASO 1: Esquina inferior (incluye fondo del pozo)
+# PASO 1: Ir a la esquina inferior (incluye fondo del pozo)
 /teleport gabo 85 14 -46
-//pos1
+/pos1
 
-# PASO 2: Esquina superior (incluye sala de máquinas)
+# PASO 2: Ir a la esquina superior (incluye sala de máquinas)
 /teleport gabo 91 78 -40
-//pos2
+/pos2
 
-# PASO 3: Verificar volumen seleccionado
-//volume
+# PASO 3: Crear el área protegida
+/protect_area oficinas-wetlands-ascensor
 
-# PASO 4: Crear protección (si tienes mod 'areas')
-/protect oficinas-wetlands-ascensor gabo
+# PASO 4: Verificar que se creó correctamente
+/list_areas
+```
+
+### **Método 2: Protección Rápida desde el Centro**
+
+Si prefieres un método más rápido:
+
+```bash
+# Ir al centro del ascensor (aproximadamente Y=45, centro vertical)
+/teleport gabo 88 45 -43
+
+# Proteger 25 bloques de radio alrededor
+/protect_here 25 oficinas-wetlands-ascensor
+
+# Verificar
+/list_areas
+```
+
+### **Gestión de Miembros (Opcional)**
+
+Si quieres permitir que otros jugadores usen el ascensor:
+
+```bash
+# Añadir un jugador al área protegida
+/area_add_member oficinas-wetlands-ascensor <nombre_jugador>
+
+# Quitar un jugador del área
+/area_remove_member oficinas-wetlands-ascensor <nombre_jugador>
+
+# Ver información del área
+/area_info oficinas-wetlands-ascensor
 ```
 
 ### **Coordenadas del Área Protegida**
 - **Esquina 1**: `(85, 14, -46)`
 - **Esquina 2**: `(91, 78, -40)`
-- **Volumen Total**: `7x65x7 = 3,185 bloques`
+- **Volumen Total**: `7×65×7 = 3,185 bloques`
 - **Incluye**:
   - Pozo completo (Y=14 a Y=72)
   - Sala de máquinas (Y=72 a Y=78)
   - Margen de seguridad de 3 bloques en X y Z
+
+### **Troubleshooting de Protección**
+
+**Problema**: "You don't have permission to protect here"
+- **Solución**: Necesitas el privilegio `protect`. Usa `/privs gabo` para verificar.
+- **Otorgar privilegio**: Un admin debe ejecutar `/grant gabo protect`
+
+**Problema**: "Area already exists with that name"
+- **Solución**: Ya existe un área con ese nombre. Usa `/list_areas` para verla o elige otro nombre.
+
+**Problema**: "Area overlaps with existing protection"
+- **Solución**: El área se superpone con otra protección existente. Usa `/area_info <nombre>` para ver qué área está ahí.
+
+**Verificar privilegios actuales**:
+```bash
+# Ver tus privilegios
+/privs
+
+# Ver privilegios de otro jugador (requiere privs 'privs')
+/privs <jugador>
+```
+
+**Eliminar protección** (si necesitas recrearla):
+```bash
+# Solo el propietario puede eliminar
+/unprotect_area oficinas-wetlands-ascensor
+```
 
 ---
 
