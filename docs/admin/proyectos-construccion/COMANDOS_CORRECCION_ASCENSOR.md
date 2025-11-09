@@ -13,10 +13,10 @@
 - Controller: `(83, 71, -43)` ← **3 nodos muy abajo y 6 bloques separado en X**
 - Drive: `(83, 72, -42)` ← **4 nodos muy abajo y desalineado**
 
-**Edificio**:
-- Último piso (Piso 13): Y=66 (puerta)
-- Techo del último piso: Y=67
-- Sala de máquinas debe estar en: **Y=68**
+**Edificio** (Posiciones Reales Verificadas):
+- Puerta Piso 13 (más alta): **Y=64.5** (verificado visualmente por gabo)
+- Techo del último piso: **Y=68.5** (verificado visualmente por gabo)
+- Sala de máquinas debe estar en: **Y=69** (1 bloque arriba del techo)
 
 ---
 
@@ -26,12 +26,14 @@ En ascensores reales y según el video de YouTube:
 
 **Principio**: Los 3 componentes (machine, controller, drive) van **AL MISMO NIVEL**, justo arriba del techo del último piso.
 
-**Posiciones Correctas**:
+**Posiciones Correctas** (Actualizadas según posiciones reales):
 ```
-Y=68: Machine      (89, 68, -43)  ← Centro del pozo
-Y=68: Controller   (88, 68, -43)  ← Al lado de la machine
-Y=68: Drive        (89, 68, -42)  ← Al lado de la machine
+Y=69: Machine      (89, 69, -43)  ← Centro del pozo
+Y=69: Controller   (88, 69, -43)  ← Al lado de la machine
+Y=69: Drive        (89, 69, -42)  ← Al lado de la machine
 ```
+
+**Nota**: Techo del último piso en Y=68.5, sala de máquinas en Y=69 (justo arriba del techo)
 
 **Razón**: Forman una "sala de máquinas" compacta en el mismo nivel, como en edificios reales.
 
@@ -69,30 +71,30 @@ Y=68: Drive        (89, 68, -42)  ← Al lado de la machine
 
 ```bash
 # Ir al nivel donde debe estar la sala de máquinas
-/teleport gabo 88 68 -43
+/teleport gabo 88 69 -43
 
-# Verificar que hay un piso sólido en Y=67 (un bloque abajo)
-# Si no hay piso, coloca bloques de madera o piedra en Y=67
+# Verificar que hay un piso sólido en Y=68.5 (el techo del último piso)
+# La sala de máquinas estará en Y=69 (justo arriba del techo)
 ```
 
 ---
 
 ### PASO 3: Instalación en Configuración Correcta
 
-**CRÍTICO**: Los 3 componentes van **AL MISMO NIVEL (Y=68)**, formando una sala de máquinas compacta.
+**CRÍTICO**: Los 3 componentes van **AL MISMO NIVEL (Y=69)**, formando una sala de máquinas compacta.
 
 ```bash
-# INSTALAR MACHINE (Centro del pozo, Y=68)
-/teleport gabo 89 68 -43
-# ⚠️ MANUAL: Coloca la machine donde apareces (Y=68)
+# INSTALAR MACHINE (Centro del pozo, Y=69)
+/teleport gabo 89 69 -43
+# ⚠️ MANUAL: Coloca la machine donde apareces (Y=69)
 
-# INSTALAR CONTROLLER (Al lado de la machine, Y=68)
-/teleport gabo 88 68 -43
-# ⚠️ MANUAL: Coloca el controller donde apareces (Y=68)
+# INSTALAR CONTROLLER (Al lado de la machine, Y=69)
+/teleport gabo 88 69 -43
+# ⚠️ MANUAL: Coloca el controller donde apareces (Y=69)
 
-# INSTALAR DRIVE (Al otro lado de la machine, Y=68)
-/teleport gabo 89 68 -42
-# ⚠️ MANUAL: Coloca el drive donde apareces (Y=68)
+# INSTALAR DRIVE (Al otro lado de la machine, Y=69)
+/teleport gabo 89 69 -42
+# ⚠️ MANUAL: Coloca el drive donde apareces (Y=69)
 ```
 
 ---
@@ -118,7 +120,7 @@ Y=68: Drive        (89, 68, -42)  ← Al lado de la machine
 
 ```bash
 # Ir al controller
-/teleport gabo 88 68 -43
+/teleport gabo 88 69 -43
 
 # Haz clic DERECHO en el controller para abrir su interfaz
 # ⚠️ MANUAL: Configura estos parámetros EXACTOS:
@@ -159,11 +161,9 @@ Y=68: Drive        (89, 68, -42)  ← Al lado de la machine
 ## 📐 Esquema Visual de la Configuración
 
 ```
-Y=68: [Machine] [Controller] [Drive]  ← SALA DE MÁQUINAS (mismo nivel)
-Y=67: [Techo del piso 13]
-Y=66: [Puerta Piso 13]
-Y=65: [Espacio habitable Piso 13]
-Y=64: [Espacio habitable Piso 13]
+Y=69: [Machine] [Controller] [Drive]  ← SALA DE MÁQUINAS (mismo nivel)
+Y=68.5: [Techo del piso 13]
+Y=64.5: [Puerta Piso 13]
 ...
 Y=17: [Puerta Piso 1] + [Cabina ÚNICA]
 Y=16: [Espacio habitable Piso 1]
@@ -176,14 +176,14 @@ Y=14: [Buffer]
 ## 🔍 Diferencia con Recomendación Anterior (Incorrecta)
 
 **Mi recomendación anterior (INCORRECTA)**:
-- Machine en Y=73 (7 bloques arriba del último piso) ← **Demasiado alto**
+- Machine en Y=73 (4 bloques arriba del techo) ← **Demasiado alto**
 - Controller en Y=71 (2 bloques bajo la machine) ← **Niveles separados**
 - Drive en Y=71 (mismo nivel que controller) ← **Alejado de machine**
 
-**Configuración correcta según "Builder Dave"**:
-- Machine en Y=68 (1 bloque arriba del techo) ← **Justo arriba del edificio**
-- Controller en Y=68 (mismo nivel que machine) ← **Sala de máquinas compacta**
-- Drive en Y=68 (mismo nivel que machine) ← **Todos juntos**
+**Configuración correcta según "Builder Dave"** (Actualizada con posiciones reales):
+- Machine en Y=69 (justo arriba del techo en Y=68.5) ← **Justo arriba del edificio**
+- Controller en Y=69 (mismo nivel que machine) ← **Sala de máquinas compacta**
+- Drive en Y=69 (mismo nivel que machine) ← **Todos juntos**
 
 **Ventajas de la configuración correcta**:
 1. ✅ Realismo arquitectónico (como edificios reales)
@@ -199,16 +199,16 @@ Y=14: [Buffer]
 
 1. **Verificar posiciones exactas**:
    ```bash
-   # Verificar que machine está en Y=68
-   /teleport gabo 89 68 -43
+   # Verificar que machine está en Y=69
+   /teleport gabo 89 69 -43
    # Deberías ver la machine aquí
 
-   # Verificar que controller está en Y=68
-   /teleport gabo 88 68 -43
+   # Verificar que controller está en Y=69
+   /teleport gabo 88 69 -43
    # Deberías ver el controller aquí
 
-   # Verificar que drive está en Y=68
-   /teleport gabo 89 68 -42
+   # Verificar que drive está en Y=69
+   /teleport gabo 89 69 -42
    # Deberías ver el drive aquí
    ```
 
@@ -221,7 +221,7 @@ Y=14: [Buffer]
 3. **Resetear el controller**:
    ```bash
    # Excavar y volver a colocar el controller
-   /teleport gabo 88 68 -43
+   /teleport gabo 88 69 -43
    # Excavar controller, esperar 5 segundos, volver a colocar
    # Reconfigurar parámetros
    ```
@@ -232,7 +232,7 @@ Y=14: [Buffer]
 
 Después de aplicar estos cambios, deberías ver:
 
-1. ✅ Los 3 componentes visibles en el mismo nivel (Y=68)
+1. ✅ Los 3 componentes visibles en el mismo nivel (Y=69)
 2. ✅ Controller muestra "READY" o "IDLE" (no "FAULT")
 3. ✅ Botones de llamada funcionan
 4. ✅ Cabina se mueve suavemente entre pisos
