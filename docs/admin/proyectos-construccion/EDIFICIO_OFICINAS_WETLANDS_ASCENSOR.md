@@ -393,6 +393,137 @@ Si ya validaste el sistema con 3 pisos, solo necesitas:
 
 ## 🔧 Troubleshooting {#troubleshooting}
 
+### 🚨 CRÍTICO: Cómo Remover Cabinas Duplicadas
+
+**⚠️ IMPORTANTE**: Las cabinas del mod celevator son bloques **3x3x3** (27 nodos). Cuando colocas una cabina, el mod genera automáticamente 27 bloques con nombres como:
+- `celevator:car_glassback` (bloque central)
+- `celevator:car_glassback_000`, `_001`, `_002`, ..., `_122` (bloques adicionales)
+
+#### ❌ Problema Común: Cabinas Duplicadas
+
+**Síntomas**:
+- Múltiples cabinas visibles en el pozo
+- Cabina no responde a comandos
+- Sistema muestra errores intermitentes
+
+**Causa**: Colocar la cabina múltiples veces (cada clic crea una cabina 3x3x3 completa)
+
+#### ✅ Método 1: Remover Cabinas Manualmente (Recomendado para 1-2 cabinas)
+
+```bash
+# PASO 1: Ir a la ubicación de la cabina duplicada
+/teleport gabo 88 17 -43
+
+# PASO 2: Excavar el BLOQUE CENTRAL de la cabina
+# Busca el bloque que dice "celevator:car_glassback" (sin números al final)
+# Haz CLIC IZQUIERDO en ese bloque
+
+# IMPORTANTE: Al excavar el bloque central, los otros 26 bloques
+# se eliminan automáticamente
+```
+
+**Cómo identificar el bloque central**:
+1. Activa el modo debug: Presiona `F5` varias veces hasta ver información de nodos
+2. Apunta a diferentes bloques de la cabina
+3. El bloque central mostrará: `celevator:car_glassback` (sin `_000`, `_001`, etc.)
+4. Excava solo ese bloque
+
+#### ✅ Método 2: Usar WorldEdit (Recomendado para Múltiples Cabinas)
+
+**⚠️ PELIGRO**: Este método elimina TODAS las cabinas en el área seleccionada.
+
+```bash
+# PASO 1: Ir a la esquina inferior del pozo
+/teleport gabo 85 14 -45
+//pos1  # (o /1)
+
+# PASO 2: Ir a la esquina superior del área a limpiar
+# Para limpiar solo los primeros 3 pisos (testeo):
+/teleport gabo 91 30 -41
+//pos2  # (o /2)
+
+# Para limpiar todo el pozo (13 pisos):
+/teleport gabo 91 80 -41
+//pos2
+
+# PASO 3: Eliminar TODAS las variantes de cabinas
+//replace celevator:car_glassback air
+//replace celevator:car_glassback_000 air
+//replace celevator:car_glassback_001 air
+//replace celevator:car_glassback_002 air
+//replace celevator:car_glassback_010 air
+//replace celevator:car_glassback_011 air
+//replace celevator:car_glassback_012 air
+//replace celevator:car_glassback_020 air
+//replace celevator:car_glassback_021 air
+//replace celevator:car_glassback_022 air
+//replace celevator:car_glassback_100 air
+//replace celevator:car_glassback_101 air
+//replace celevator:car_glassback_102 air
+//replace celevator:car_glassback_110 air
+//replace celevator:car_glassback_111 air
+//replace celevator:car_glassback_112 air
+//replace celevator:car_glassback_120 air
+//replace celevator:car_glassback_121 air
+//replace celevator:car_glassback_122 air
+
+# PASO 4: Verificar que el pozo está limpio
+/teleport gabo 88 17 -43
+# Vuela por el pozo - NO deberías ver ninguna cabina
+```
+
+#### ✅ Método 3: Diagnóstico desde VPS (Ver cuántas cabinas hay)
+
+```bash
+# Ejecutar desde tu terminal local
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'places node celevator:car_glassback at' | tail -20"
+
+# Esto muestra las últimas 20 veces que se colocó una cabina
+# Ejemplo de salida:
+# gabo places node celevator:car_glassback at (88,17,-43)  ← Cabina en Y=17
+# gabo places node celevator:car_glassback at (88,17,-43)  ← Duplicada!
+# gabo places node celevator:car_glassback at (84,70,-44)  ← Otra cabina en Y=70 (MAL)
+```
+
+#### 🎯 Estrategia Recomendada para Testeo de 3 Pisos
+
+```bash
+# 1. LIMPIAR COMPLETAMENTE el pozo de los primeros 3 pisos
+//pos1  (en 85,14,-45)
+//pos2  (en 91,30,-41)
+//replace celevator:car_glassback air
+
+# 2. VERIFICAR que no hay cabinas
+/teleport gabo 88 17 -43
+/teleport gabo 88 22 -43
+/teleport gabo 88 27 -43
+# No deberías ver cabinas en ninguno de estos niveles
+
+# 3. COLOCAR UNA SOLA CABINA en el piso 1
+/teleport gabo 88 17 -43
+# Coloca EXACTAMENTE UNA VEZ la cabina (clic derecho una vez)
+# Espera 2 segundos para que el mod genere todos los bloques
+
+# 4. VERIFICAR que solo hay UNA cabina
+# Vuela por el pozo Y=17 a Y=27
+# Debería haber SOLO UNA cabina en Y=17
+```
+
+#### 🐛 Debugging: ¿Por qué se duplican las cabinas?
+
+**Causas comunes**:
+1. **Lag del servidor**: Clic derecho múltiples veces porque el servidor no responde de inmediato
+2. **Doble clic accidental**: Presionar el botón derecho del mouse dos veces
+3. **Reinstalación sin limpiar**: Colocar cabina nueva sin excavar la anterior
+
+**Prevención**:
+- ✅ Espera 2 segundos después de colocar la cabina
+- ✅ Verifica visualmente que la cabina apareció antes de hacer clic de nuevo
+- ✅ Si el servidor tiene lag, espera a que el lag termine
+- ✅ Siempre limpia el área ANTES de colocar una cabina nueva
+
+---
+
 ### Error: "Hoist Machine Missing"
 
 **Síntoma**: Controller muestra "FAULT: Machine Missing"
