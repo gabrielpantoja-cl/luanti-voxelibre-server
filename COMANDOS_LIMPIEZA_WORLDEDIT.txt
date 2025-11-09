@@ -1,0 +1,118 @@
+===============================================
+COMANDOS WORLDEDIT PARA LIMPIAR ASCENSOR
+===============================================
+
+INSTRUCCIONES PARA GABO:
+Copia y pega estos comandos EN ORDEN en el chat del servidor
+
+===============================================
+PASO 1: DEFINIR ÁREA DE LIMPIEZA
+===============================================
+
+Primero, vamos a definir un área grande que cubra todo el pozo del ascensor.
+
+/teleport gabo 85 14 -45
+/1
+
+/teleport gabo 91 77 -41
+/2
+
+===============================================
+PASO 2: ELIMINAR TODAS LAS CABINAS
+===============================================
+
+Ahora vamos a reemplazar TODOS los bloques de cabinas por aire:
+
+//replace celevator:car_glassback air
+//replace celevator:car_glassback_000 air
+//replace celevator:car_glassback_001 air
+//replace celevator:car_glassback_002 air
+//replace celevator:car_glassback_010 air
+//replace celevator:car_glassback_011 air
+//replace celevator:car_glassback_012 air
+//replace celevator:car_glassback_020 air
+//replace celevator:car_glassback_021 air
+//replace celevator:car_glassback_022 air
+//replace celevator:car_glassback_100 air
+//replace celevator:car_glassback_101 air
+//replace celevator:car_glassback_102 air
+//replace celevator:car_glassback_110 air
+//replace celevator:car_glassback_111 air
+//replace celevator:car_glassback_112 air
+//replace celevator:car_glassback_120 air
+//replace celevator:car_glassback_121 air
+//replace celevator:car_glassback_122 air
+
+===============================================
+PASO 3: ELIMINAR TODAS LAS PUERTAS
+===============================================
+
+Ahora eliminamos todas las puertas (top y bottom):
+
+//replace celevator:hwdoor_glass air
+//replace celevator:hwdoor_fast_glass_top air
+//replace celevator:hwdoor_fast_glass_bottom air
+//replace celevator:hwdoor_slow_glass_top air
+//replace celevator:hwdoor_slow_glass_bottom air
+//replace celevator:hwdoor_steel air
+//replace celevator:hwdoor_fast_steel_top air
+//replace celevator:hwdoor_fast_steel_bottom air
+//replace celevator:hwdoor_slow_steel_top air
+//replace celevator:hwdoor_slow_steel_bottom air
+
+===============================================
+PASO 4: VERIFICAR LIMPIEZA
+===============================================
+
+Después de ejecutar todos los comandos anteriores:
+
+1. Vuela por el pozo del ascensor (de Y=14 a Y=77)
+2. Verifica que NO haya ninguna cabina
+3. Verifica que NO haya ninguna puerta
+4. Si ves alguna cabina o puerta, elimínala manualmente
+
+===============================================
+PASO 5: VERIFICAR COMPONENTES QUE DEBEN QUEDAR
+===============================================
+
+Los siguientes componentes DEBEN PERMANECER (NO los borres):
+
+✅ Controller (en Y=69 aproximadamente)
+✅ Drive (en Y=70 aproximadamente)
+✅ Machine (si ya está colocado)
+✅ Botones de llamada (callbutton_both, callbutton_down)
+✅ Buffer oil (en Y=14, fondo del pozo)
+✅ Guide rails (rieles guía en las paredes)
+
+===============================================
+RESUMEN DE LO QUE ESTAMOS BORRANDO
+===============================================
+
+❌ TODAS las cabinas (car_glassback y sus partes)
+❌ TODAS las puertas (hwdoor_glass y sus partes)
+
+===============================================
+RESUMEN DE LO QUE MANTENEMOS
+===============================================
+
+✅ Controller
+✅ Drive
+✅ Machine (si existe)
+✅ Botones de llamada
+✅ Buffer oil
+✅ Guide rails
+
+===============================================
+DESPUÉS DE LA LIMPIEZA
+===============================================
+
+Una vez que TODO esté limpio, vamos a instalar:
+1. Solo 1 cabina en la posición correcta
+2. 13 puertas (una por piso)
+3. Configurar el controller
+
+===============================================
+
+Fecha: 2025-11-09
+Creado por: Claude Code
+Para: gabo
