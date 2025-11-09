@@ -271,45 +271,395 @@ if not (carinfo and carinfo.machinepos and
 end
 ```
 
-**Requisitos Técnicos**:
-1. La `machine` debe estar en `carinfo.machinepos` (posición guardada)
+**Requisitos Técnicos del Mod**:
+1. La `machine` debe estar en `carinfo.machinepos` (posición guardada en metadata)
 2. La `machine` debe estar **al menos 3 bloques por encima** del punto más alto del recorrido
 3. La verificación es: `origin.y + target > (carinfo.machinepos.y - 3)`
+4. El `controller` debe poder "ver" el `drive` (mismo ID de cabina)
+5. El `drive` debe poder "ver" la `machine` (máximo 500 bloques de distancia)
 
-**Solución**:
-1. **NO mover la machine** después de conectar la cabina
-2. Si ya la moviste, debes **reconectar todo el sistema**:
-   ```bash
-   # Excava la cabina actual
-   # Excava el controller y drive
-   # Coloca la machine en la posición final (Y=72 o superior)
-   # Vuelve a colocar controller, drive y cabina
-   # Configura el controller nuevamente
-   ```
+**Solución General**:
+1. **NUNCA mover la machine** después de conectar la cabina
+2. Si ya la moviste, debes **reconectar todo el sistema** siguiendo el protocolo de reinstalación completo
 
-### **Historial de Diagnóstico (2025-11-09)**
+---
 
-**Posiciones Detectadas en Logs**:
-- ❌ Machine inicial: `(89, 69, -43)` - Demasiado baja
-- ✅ Machine subida: `(89, 73, -43)` - Altura correcta
-- ❌ Machine bajada otra vez: `(89, 69, -43)` - Error repetido
-- 🔄 Controller movido múltiples veces: `(82-90, 65-70, -43)`
+### **🔍 DIAGNÓSTICO COMPLETO (2025-11-09 12:30 UTC)**
 
-**Problema Identificado**: La `machine` se movió de Y=73 (correcto) de vuelta a Y=69 (incorrecto), lo que causó el error porque el sistema espera la machine 3 bloques por encima del último piso.
+#### **Análisis de Logs del Servidor**
 
-**Posiciones ACTUALES en el Servidor** (2025-11-09 - Verificado desde logs):
-- ❌ Machine: `(89, 69, -43)` - **INCORRECTA** (demasiado baja, debe estar en Y=72+)
-- Controller: `(83, 66, -43)` - Última posición registrada
-- Drive: `(82, 66, -42)` - Última posición registrada
-- Cabina: `(88, 17, -43)` - Piso 1 (correcta)
-- Puertas: 13 instaladas desde Y=17 hasta Y=66 (cada 4 bloques)
+Ejecuta este comando para ver el historial completo de cambios:
+```bash
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep -E '(celevator|machine|drive|controller)' | tail -30"
+```
 
-**Configuración CORRECTA Recomendada**:
-- ✅ Machine: `(88, 72, -43)` - **CRÍTICO**: Debe estar al menos en Y=69 (último piso + 3)
-- ✅ Controller: `(88, 71, -43)` o `(89, 71, -43)`
-- ✅ Drive: `(89, 71, -43)` o `(88, 70, -43)`
+#### **Historial Cronológico de Cambios (Verificado desde Logs)**
 
-**⚠️ ACCIÓN REQUERIDA**: La machine está actualmente en Y=69 (límite mínimo). Se recomienda subirla a Y=72 para funcionamiento óptimo.
+```
+2025-11-09 04:34:16: gabo digs controller at (84,74,-43)
+2025-11-09 04:34:17: gabo digs drive at (84,75,-42)
+2025-11-09 04:36:01: gabo digs machine at (89,74,-43)
+2025-11-09 04:37:52: gabo places machine at (88,73,-43)    ← ✅ Altura CORRECTA (Y=73)
+2025-11-09 04:38:32: gabo digs machine at (88,73,-43)
+2025-11-09 04:38:34: gabo places machine at (89,73,-43)    ← ✅ Altura CORRECTA (Y=73)
+2025-11-09 04:39:12: gabo places controller at (84,73,-43)
+2025-11-09 04:39:30: gabo places drive at (84,74,-42)
+2025-11-09 04:43:28: gabo digs controller at (84,73,-43)
+2025-11-09 04:43:28: gabo digs drive at (85,74,-43)
+2025-11-09 04:57:11: gabo digs machine at (89,73,-43)
+2025-11-09 04:58:22: gabo places machine at (89,69,-43)    ← ❌ ERROR: Bajó a Y=69 (límite mínimo)
+2025-11-09 04:59:41: gabo places controller at (84,69,-43)
+2025-11-09 04:59:45: gabo places drive at (84,70,-42)
+2025-11-09 05:00:38: gabo places drive at (85,70,-43)
+2025-11-09 05:00:40: gabo digs drive at (85,70,-43)
+```
+
+#### **📊 Posiciones ACTUALES Confirmadas (2025-11-09)**
+
+**Componentes Instalados:**
+- ❌ **Machine**: `(89, 69, -43)` - **CRÍTICO: Demasiado baja**
+  - Altura actual: Y=69
+  - Altura mínima requerida: Y=69 (último piso Y=66 + 3)
+  - Altura recomendada: **Y=72 o superior** (margen seguro de 6 bloques)
+  - Estado: **EN LÍMITE MÍNIMO ABSOLUTO** ⚠️
+
+- ❌ **Controller**: `(84, 69, -43)` - Inconsistente con machine
+  - Debería estar cerca de la machine
+  - Posición actual muy alejada en X (diferencia de 5 bloques)
+
+- ❌ **Drive**: `(84, 70, -42)` - Múltiples problemas
+  - Está POR ENCIMA del controller (Y=70 > Y=69) ← Arquitectura incorrecta
+  - Muy alejado de la machine en X y Z
+  - Última acción: Eliminado drive duplicado en (85, 70, -43)
+
+- ✅ **Puertas**: 13 puertas instaladas correctamente
+  - Rango: Y=17 (piso 1) hasta Y=66 (piso 13)
+  - Separación: 4-5 bloques por piso
+
+#### **🚨 Problemas Identificados**
+
+1. **Machine en altura mínima (Y=69):**
+   - Solo 3 bloques sobre el último piso (Y=66)
+   - Cualquier vibración o error de cálculo puede causar "machine missing"
+   - Recomendación: Subir a **Y=72 mínimo** (margen de 6 bloques)
+
+2. **Componentes desalineados:**
+   - Machine en X=89, Controller/Drive en X=84 (5 bloques de separación)
+   - El mod prefiere componentes cercanos verticalmente
+   - Puede causar problemas de detección de señales
+
+3. **Drive por encima del controller:**
+   - Arquitectura no estándar (drive normalmente va al lado o debajo)
+   - Puede confundir el sistema de verificación
+
+4. **Machine movida después de configuración inicial:**
+   - Machine estuvo en Y=73 (correcto) a las 04:38:34
+   - Machine bajó a Y=69 (incorrecto) a las 04:58:22
+   - El sistema guardó la posición antigua (Y=73) pero la machine está en Y=69
+   - **Esto es la causa raíz del error "Hoist Machine Missing"**
+
+#### **✅ Configuración CORRECTA Recomendada**
+
+**Posiciones ideales (todas en la misma columna vertical X=88, Z=-43):**
+```
+Y=73: Machine (motor) ← 7 bloques sobre último piso
+Y=71: Controller      ← 2 bloques bajo la machine
+Y=72: Drive          ← Entre machine y controller, o al lado
+```
+
+**Alternativa con separación lateral:**
+```
+Y=73: Machine at (88, 73, -43)
+Y=71: Controller at (88, 71, -43) o (89, 71, -43)
+Y=71: Drive at (89, 71, -43) o (88, 71, -42)
+```
+
+**Ventajas de esta configuración:**
+- Machine a 7 bloques sobre último piso (margen doble del mínimo)
+- Componentes alineados verticalmente
+- Drive al mismo nivel del controller (arquitectura estándar)
+- Fácil mantenimiento y diagnóstico
+
+---
+
+### **🛠️ COMANDOS DE SOLUCIÓN PASO A PASO**
+
+**IMPORTANTE**: Ejecuta estos comandos **UNO POR UNO** en el chat del juego. No copies todo de una vez.
+
+#### **FASE 1: Verificación de Estado Actual**
+
+```bash
+# Ver si tienes privilegios de admin
+/privs
+
+# Verificar que tienes fly y noclip (necesarios para trabajar en altura)
+/grant gabo fly
+/grant gabo noclip
+
+# Activar fly mode
+/fly 1
+
+# Ir a la posición actual de la machine
+/teleport gabo 89 69 -43
+```
+
+**🔍 Verifica visualmente:**
+- ¿Hay una machine en (89, 69, -43)?
+- ¿Puedes ver el controller y drive desde aquí?
+- Anota cualquier diferencia con lo documentado
+
+#### **FASE 2: Excavación de Componentes Incorrectos**
+
+```bash
+# PASO 1: Ir a la machine actual (posición incorrecta)
+/teleport gabo 89 69 -43
+# Haz clic izquierdo (excavar) en la machine
+# Confirma que la excavaste (deberías tener el item en tu inventario)
+
+# PASO 2: Ir al controller actual
+/teleport gabo 84 69 -43
+# Haz clic izquierdo (excavar) en el controller
+# Confirma que lo excavaste
+
+# PASO 3: Ir al drive actual
+/teleport gabo 84 70 -42
+# Haz clic izquierdo (excavar) en el drive
+# Confirma que lo excavaste
+
+# PASO 4: Verificar que todo está limpio
+/teleport gabo 88 71 -43
+# Mira alrededor - no debería haber machine, controller ni drive visibles
+```
+
+#### **FASE 3: Preparación del Área (Opcional pero Recomendado)**
+
+```bash
+# Crear un piso sólido para la sala de máquinas si no existe
+/teleport gabo 88 72 -43
+# Verifica que hay un bloque sólido en Y=72 (usa //inspect si es necesario)
+# Si no hay piso, coloca bloques de madera o piedra en Y=72
+
+# Crear espacio libre arriba para trabajar
+/teleport gabo 88 74 -43
+# Deberías aparecer en aire libre - este es tu espacio de trabajo
+```
+
+#### **FASE 4: Instalación en Posiciones CORRECTAS**
+
+```bash
+# PASO 1: Instalar la MACHINE en posición CORRECTA (Y=73)
+/teleport gabo 88 74 -43
+# Apunta HACIA ABAJO (mira al suelo)
+# Haz clic derecho (colocar) con la machine seleccionada
+# La machine se colocará en Y=73 (un bloque abajo de ti)
+# ⚠️ CRÍTICO: Verifica que está en Y=73, NO en Y=72
+
+# PASO 2: Instalar el CONTROLLER (Y=71)
+/teleport gabo 88 71 -43
+# Coloca el controller en el bloque de aire donde apareces
+# Confirma que está en Y=71
+
+# PASO 3: Instalar el DRIVE (Y=71, al lado del controller)
+/teleport gabo 89 71 -43
+# Coloca el drive aquí (misma altura que el controller)
+# Confirma que está en Y=71
+
+# PASO 4: Verificar posiciones finales
+/teleport gabo 88 74 -43
+# Desde aquí puedes ver los 3 componentes:
+# - Machine abajo en Y=73 (centro del pozo)
+# - Controller en Y=71 (2 bloques más abajo)
+# - Drive en Y=71 (al lado del controller)
+```
+
+#### **FASE 5: Verificación de la Cabina**
+
+```bash
+# Ir al piso 1 donde debe estar la cabina
+/teleport gabo 88 17 -43
+
+# Verificar que hay UNA cabina (car_glassback)
+# Si NO hay cabina, coloca una nueva:
+/give gabo celevator:car_glassback 1
+# Coloca la cabina en (88, 17, -43)
+
+# Si hay MÚLTIPLES cabinas (error común), elimina las extras
+# Deja solo UNA cabina en el piso 1
+```
+
+#### **FASE 6: Configuración del Controller**
+
+```bash
+# Ir al controller
+/teleport gabo 88 71 -43
+
+# Haz clic DERECHO en el controller para abrir su interfaz
+# Configura estos parámetros EXACTOS:
+# - Car ID: 1 (o el ID que prefieras, debe ser único)
+# - Number of floors: 13
+# - Floor height: 5 (altura total por piso)
+# - Bottom floor Y: 17 (coordenada Y del piso 1)
+# - Speed: 5 (m/s, recomendado)
+
+# IMPORTANTE: Después de guardar la configuración
+# El controller debería mostrar "READY" o "IDLE"
+# Si muestra "FAULT: Machine Missing", espera 10 segundos y verifica de nuevo
+# El sistema tarda unos segundos en detectar componentes
+```
+
+#### **FASE 7: Pruebas del Sistema**
+
+```bash
+# PRUEBA 1: Ir al piso 1
+/teleport gabo 88 17 -43
+
+# Busca el botón de llamada (callbutton_up)
+# Si no hay botón, coloca uno:
+/give gabo celevator:callbutton_up 1
+# Coloca el botón al lado de la puerta
+
+# Presiona el botón de llamada
+# La puerta debería abrirse
+# La cabina debería aparecer (si no está ya ahí)
+
+# PRUEBA 2: Entrar a la cabina
+# Haz clic derecho dentro de la cabina
+# Deberías ver el panel de control con botones 1-13
+
+# PRUEBA 3: Viajar a otro piso
+# Presiona el botón "7" (piso intermedio)
+# La cabina debería moverse suavemente hacia arriba
+# Debería detenerse en Y=41-42 (piso 7)
+# La puerta del piso 7 debería abrirse
+
+# PRUEBA 4: Viajar al último piso
+# Dentro de la cabina, presiona el botón "13"
+# La cabina debería subir hasta Y=65-66
+# Verifica que no hay errores de "machine missing"
+
+# PRUEBA 5: Regresar al piso 1
+# Presiona el botón "1"
+# La cabina debería bajar correctamente
+```
+
+#### **FASE 8: Verificación desde VPS (Opcional)**
+
+Si quieres ver los logs en tiempo real durante las pruebas:
+
+```bash
+# Ejecutar en tu terminal local (fuera del juego)
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
+
+# Verás mensajes como:
+# - "Controller scanning for drive..."
+# - "Drive found at (89, 71, -43)"
+# - "Machine found at (88, 73, -43)"
+# - "Elevator moving to floor 7"
+
+# Para salir de los logs: Ctrl+C
+```
+
+---
+
+### **🐛 Troubleshooting Post-Instalación**
+
+#### **Error: "Machine Missing" persiste después de la instalación**
+
+**Verificar posición exacta de la machine:**
+```bash
+# Ir a donde DEBERÍA estar la machine
+/teleport gabo 88 74 -43
+# Mira hacia abajo - ¿ves la machine en Y=73?
+
+# Verificar con inspect (si tienes WorldEdit)
+//inspect
+# Haz clic en el bloque donde debería estar la machine
+# Debería decir "celevator:machine"
+```
+
+**Verificar que la machine NO está en posición antigua:**
+```bash
+# Ir a la posición antigua (Y=69)
+/teleport gabo 89 69 -43
+# ¿Hay una machine aquí? Si SÍ, excavarla
+```
+
+**Resetear el controller:**
+```bash
+# Excavar el controller
+/teleport gabo 88 71 -43
+# Excavar controller
+
+# Esperar 5 segundos
+
+# Volver a colocar el controller
+# Colocar controller nuevamente
+
+# Reconfigurar desde cero
+# Clic derecho → Configurar parámetros de nuevo
+```
+
+#### **Error: Cabina no se mueve**
+
+**Verificar conexión drive-machine:**
+```bash
+# El drive debe poder "ver" la machine
+# Distancia máxima: 500 bloques (en este caso, solo 2 bloques)
+# Verificar que ambos existen:
+/teleport gabo 88 73 -43  # Machine
+/teleport gabo 89 71 -43  # Drive
+```
+
+**Verificar que hay UNA SOLA cabina:**
+```bash
+# Buscar cabinas duplicadas en el pozo
+/teleport gabo 88 25 -43  # Piso intermedio
+# Mira alrededor - no debería haber cabinas flotando
+
+# Si hay cabinas extra, eliminarlas con WorldEdit:
+//pos1
+//pos2
+//replace celevator:car_glassback air
+```
+
+#### **Error: Cabina se queda atascada entre pisos**
+
+**Causa común**: Obstáculos en el pozo (bloques, items, entities)
+
+```bash
+# Limpiar el pozo completamente
+//pos1  (en esquina inferior)
+//pos2  (en esquina superior)
+//replace celevator:car_glassback air  (eliminar cabinas)
+//replace celevator:hwdoor_glass air   (eliminar puertas si es necesario)
+
+# Verificar que el pozo está despejado
+/teleport gabo 88 35 -43
+# Vuela por el centro del pozo de Y=15 a Y=70
+# No debería haber NADA en el camino excepto las puertas
+```
+
+#### **Éxito confirmado: ¿Cómo sé que funciona?**
+
+**Indicadores de sistema funcionando:**
+1. ✅ Controller muestra "READY" o "IDLE" (no "FAULT")
+2. ✅ Botones de llamada abren las puertas
+3. ✅ Cabina responde a comandos del panel interno
+4. ✅ Cabina se mueve suavemente entre pisos (sin caídas bruscas)
+5. ✅ Puertas se abren/cierran automáticamente
+6. ✅ No hay mensajes de error en chat
+
+**Si TODOS los indicadores están ✅, tu ascensor está FUNCIONANDO CORRECTAMENTE.**
+
+---
+
+### **⚠️ ACCIÓN REQUERIDA URGENTE**
+
+**Estado Actual**: La machine está en Y=69 (límite mínimo absoluto)
+**Riesgo**: Alta probabilidad de falla por margen insuficiente
+**Solución**: Seguir FASE 2-6 de los comandos arriba para reubicar a Y=73
+**Tiempo estimado**: 10-15 minutos
+**Dificultad**: Media (requiere privilegios de admin y volar)
 
 ### **Detalle de Puertas Instaladas** (Verificado desde logs 2025-11-09)
 
