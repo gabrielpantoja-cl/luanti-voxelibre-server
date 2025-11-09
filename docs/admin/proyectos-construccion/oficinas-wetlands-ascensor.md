@@ -185,11 +185,93 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 
 ---
 
+## 🔬 Diagnóstico Técnico y Solución de Problemas
+
+### **Error: "Hoist Machine Missing"**
+
+**Causa Raíz**: El mod `celevator` guarda la posición de la `machine` cuando conectas la cabina. Si mueves la `machine` después, el sistema sigue buscándola en la posición antigua.
+
+**Código de Verificación** (de `drive_entity.lua:659`):
+```lua
+if not (carinfo and carinfo.machinepos and
+        celevator.get_node(carinfo.machinepos).name == "celevator:machine") then
+    meta:set_string("fault","nomachine")
+    return
+end
+```
+
+**Requisitos Técnicos**:
+1. La `machine` debe estar en `carinfo.machinepos` (posición guardada)
+2. La `machine` debe estar **al menos 3 bloques por encima** del punto más alto del recorrido
+3. La verificación es: `origin.y + target > (carinfo.machinepos.y - 3)`
+
+**Solución**:
+1. **NO mover la machine** después de conectar la cabina
+2. Si ya la moviste, debes **reconectar todo el sistema**:
+   ```bash
+   # Excava la cabina actual
+   # Excava el controller y drive
+   # Coloca la machine en la posición final (Y=72 o superior)
+   # Vuelve a colocar controller, drive y cabina
+   # Configura el controller nuevamente
+   ```
+
+### **Historial de Diagnóstico (2025-11-09)**
+
+**Posiciones Detectadas en Logs**:
+- ❌ Machine inicial: `(89, 69, -43)` - Demasiado baja
+- ✅ Machine subida: `(89, 73, -43)` - Altura correcta
+- ❌ Machine bajada otra vez: `(89, 69, -43)` - Error repetido
+- 🔄 Controller movido múltiples veces: `(82-90, 65-70, -43)`
+
+**Problema Identificado**: La `machine` se movió de Y=73 (correcto) de vuelta a Y=69 (incorrecto), lo que causó el error porque el sistema espera la machine 3 bloques por encima del último piso.
+
+**Configuración Final Recomendada**:
+- Machine: `(88, 72, -43)` - NO MOVER después de instalada
+- Controller: `(88, 71, -43)`
+- Drive: `(89, 71, -43)`
+
+---
+
+## 🛡️ Protección del Área del Ascensor
+
+### **Comandos WorldEdit para Definir Área**
+
+```bash
+# PASO 1: Esquina inferior (incluye fondo del pozo)
+/teleport gabo 85 14 -46
+//pos1
+
+# PASO 2: Esquina superior (incluye sala de máquinas)
+/teleport gabo 91 78 -40
+//pos2
+
+# PASO 3: Verificar volumen seleccionado
+//volume
+
+# PASO 4: Crear protección (si tienes mod 'areas')
+/protect oficinas-wetlands-ascensor gabo
+```
+
+### **Coordenadas del Área Protegida**
+- **Esquina 1**: `(85, 14, -46)`
+- **Esquina 2**: `(91, 78, -40)`
+- **Volumen Total**: `7x65x7 = 3,185 bloques`
+- **Incluye**:
+  - Pozo completo (Y=14 a Y=72)
+  - Sala de máquinas (Y=72 a Y=78)
+  - Margen de seguridad de 3 bloques en X y Z
+
+---
+
 ## 📚 Apéndice: Comandos de Referencia Rápida
 
 ### Limpieza Urgente
 - `//unmark` o `/umk`: Oculta las líneas de selección de WorldEdit.
 - `//inspect`: Permite hacer clic en un bloque para saber su nombre exacto.
+- `//pos1` o `/1`: Marca primera esquina de selección.
+- `//pos2` o `/2`: Marca segunda esquina de selección.
+- `//volume` o `/v`: Muestra el volumen seleccionado.
 
 ### Items de Ascensor
 - `/give gabo celevator:car_glassback 1`
@@ -197,9 +279,24 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 - `/give gabo celevator:controller 1`
 - `/give gabo celevator:hwdoor_glass 13`
 - `/give gabo celevator:guide_rail 99`
+- `/give gabo celevator:buffer_oil 2`
 
 ### Teleportaciones Clave
 - Pozo (centro, piso 1): `/teleport gabo 88 15 -43`
-- Sala de Máquinas (centro): `/teleport gabo 88 72 -43`
+- Sala de Máquinas (machine position): `/teleport gabo 88 72 -43`
 - Esquina de limpieza 1: `/teleport gabo 85 14 -45`
 - Esquina de limpieza 2: `/teleport gabo 91 77 -41`
+- Esquina protección 1: `/teleport gabo 85 14 -46`
+- Esquina protección 2: `/teleport gabo 91 78 -40`
+
+### Depuración del Sistema
+```bash
+# Ver logs del servidor en tiempo real
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server"
+
+# Buscar acciones específicas del ascensor
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep celevator | tail -50"
+
+# Verificar última posición de la machine
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
+```
