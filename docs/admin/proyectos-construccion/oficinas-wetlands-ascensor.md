@@ -1,10 +1,41 @@
 # 🏢 Proyecto: Edificio "Oficinas Wetlands" - Ascensor de 13 Pisos
 
 **Fecha de Creación**: 2025-11-09
-**Última Actualización**: 2025-11-09 (Posiciones verificadas desde logs del servidor)
-**Estado**: En Progreso - Machine en posición incorrecta (Y=69, debe estar en Y=72)
+**Última Actualización**: 2025-11-09 14:00 UTC (CORRECCIÓN CRÍTICA - Configuración "Builder Dave")
+**Estado**: 🚨 **CORRIGIENDO** - Aplicando configuración correcta según video de Luanti Builder Dave
 
 Este documento consolida toda la información, diagnósticos y procedimientos para la construcción e instalación de un ascensor funcional de 13 pisos utilizando el mod `celevator`.
+
+---
+
+## 🚨 CORRECCIÓN CRÍTICA (2025-11-09 14:00 UTC)
+
+**⚠️ DESCUBRIMIENTO IMPORTANTE**: La configuración recomendada anteriormente era **INCORRECTA**.
+
+### ❌ Configuración Anterior (INCORRECTA)
+- Machine en Y=72-73 (varios bloques arriba del último piso)
+- Controller en Y=71 (2 bloques bajo la machine)
+- Drive en Y=71 (mismo nivel que controller)
+- **Problema**: Componentes en niveles separados, machine muy arriba
+
+### ✅ Configuración Correcta (según "Luanti Builder Dave")
+Basado en video de YouTube de Luanti Builder Dave (hace 2 meses):
+
+**PRINCIPIO FUNDAMENTAL**: Los 3 componentes (machine, controller, drive) van **AL MISMO NIVEL**, justo arriba del techo del último piso, formando una "sala de máquinas" compacta.
+
+**Posiciones Correctas para Oficinas Wetlands**:
+```
+Y=68: Machine      (89, 68, -43)  ← Centro del pozo
+Y=68: Controller   (88, 68, -43)  ← Al lado de la machine
+Y=68: Drive        (89, 68, -42)  ← Al lado de la machine
+```
+
+**Referencia**:
+- Techo del último piso: Y=67
+- Sala de máquinas: Y=68 (1 bloque arriba del techo)
+- **TODOS los componentes en el MISMO nivel**
+
+**Archivo de corrección**: Ver `COMANDOS_CORRECCION_ASCENSOR.md` en la raíz del proyecto para instrucciones paso a paso.
 
 ---
 
@@ -40,8 +71,17 @@ Tras varios análisis, se identificaron los siguientes puntos clave:
 Es **CRÍTICO** entender cómo funciona el mod `celevator`:
 
 - **Una Única Cabina Móvil**: No se colocan 13 cabinas. Se instala **UNA SOLA** cabina (`celevator:car_glassback`) en el piso inferior. El `controller` la mueve programáticamente.
-- **La `Machine` Arriba de Todo**: El motor (`celevator:machine`) debe estar en la parte más alta del pozo, por encima del último piso.
+- **Sala de Máquinas Compacta**: Los 3 componentes (machine, controller, drive) van **AL MISMO NIVEL**, justo arriba del techo del último piso, formando una "sala de máquinas" compacta (como en edificios reales).
 - **El `Controller` es el Cerebro**: Toda la lógica (pisos, altura, velocidad) se configura en el `controller`.
+
+**🎯 Configuración Correcta Validada**:
+```
+Y=68: [Machine] [Controller] [Drive]  ← Sala de máquinas (mismo nivel)
+Y=67: [Techo del piso 13]
+Y=66: [Puerta Piso 13]
+```
+
+**Fuente**: Basado en video de "Luanti Builder Dave" y arquitectura de ascensores reales.
 
 ---
 
