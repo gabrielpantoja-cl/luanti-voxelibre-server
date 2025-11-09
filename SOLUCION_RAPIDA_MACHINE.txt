@@ -1,0 +1,66 @@
+===============================================
+SOLUCIÓN RÁPIDA - MACHINE NO DETECTADA
+===============================================
+
+PROBLEMA: Controller dice "no hoist machine"
+CAUSA: La machine está DEMASIADO BAJA (Y=69)
+
+===============================================
+SOLUCIÓN EN 4 PASOS
+===============================================
+
+PASO 1: Remover la machine actual
+----------------------------------
+/teleport gabo 89 69 -43
+Romper la machine (clic izquierdo)
+
+PASO 2: Colocar machine MÁS ARRIBA
+----------------------------------
+/teleport gabo 88 72 -43
+Colocar celevator:machine aquí
+
+IMPORTANTE: La machine DEBE estar en la parte MÁS ALTA
+del pozo, ARRIBA del último piso.
+
+PASO 3: Verificar los otros componentes
+----------------------------------
+# Controller (debe estar DEBAJO de la machine)
+/teleport gabo 84 69 -43
+(Verificar que está ahí el controller)
+
+# Drive (debe estar cerca del controller)
+/teleport gabo 85 70 -43
+(Verificar que está ahí el drive)
+
+PASO 4: Abrir controller y verificar
+----------------------------------
+/teleport gabo 84 69 -43
+Clic derecho en el controller
+Verificar que AHORA SÍ detecte la machine
+
+===============================================
+IMPORTANTE: ELIMINAR CABINA EN SALA DE MÁQUINAS
+===============================================
+
+Hay una cabina mal ubicada en la sala de máquinas:
+/teleport gabo 84 70 -44
+Romper esa cabina (NO debe estar ahí)
+
+Solo debe haber 1 cabina en el PISO INICIAL (abajo).
+
+===============================================
+CONFIGURACIÓN CORRECTA
+===============================================
+
+Y=72: [ Machine ]      ← Motor (ARRIBA de todo)
+Y=71: (vacío)
+Y=70: [ Drive ]        ← Unidad de control
+Y=69: [ Controller ]   ← Controlador
+Y=68: (vacío o techo del edificio)
+Y=67: (último piso)
+Y=66: [Piso 13]
+...
+Y=18: [Piso 1]         ← Cabina aquí
+Y=17: (fondo del pozo)
+
+===============================================
