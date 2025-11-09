@@ -13,8 +13,8 @@ Este documento consolida toda la información, diagnósticos y procedimientos pa
 - **Pozo del Ascensor (Centro)**: `(X=88, Z=-43)`
 - **Rango Vertical**: `Y=14` (fondo) hasta `Y=77+` (sala de máquinas)
 - **Edificio**: Oficinas Wetlands
-- **Altura entre pisos**: 4 bloques
-- **Pisos instalados**: 13 (Y=17 hasta Y=66)
+- **Altura total por piso**: 5 bloques (3 altura + 1 piso + 1 techo)
+- **Pisos instalados**: 13 (puertas desde Y=17 hasta Y=66, separadas cada 4-5 bloques)
 
 ---
 
@@ -24,7 +24,8 @@ Tras varios análisis, se identificaron los siguientes puntos clave:
 
 ### ✅ Componentes Instalados Correctamente
 - **Maquinaria Principal**: `Machine`, `Controller`, y `Drive` están instalados, aunque su posición inicial era incorrecta.
-- **Botones de Llamada**: Se han instalado 9 de 13 botones necesarios, sugiriendo una altura de 4 bloques por piso.
+- **Puertas**: 13 puertas instaladas (Y=17 hasta Y=66).
+- **Altura por piso**: 5 bloques totales (3 bloques de espacio habitable + 1 piso + 1 techo).
 
 ### ❌ Problemas Críticos Detectados
 1.  **Posición de la `Machine` (Motor)**: El problema principal era que la `machine` estaba al mismo nivel o por debajo del `controller` (`Y=69`), cuando **debe estar en el punto más alto del pozo** (`Y=72` o superior).
@@ -173,15 +174,15 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 2.  Haz clic derecho en el `celevator:controller`.
 3.  En la interfaz, configura los siguientes parámetros:
     - **Number of floors**: `13`
-    - **Floor height**: `4` (distancia confirmada entre pisos)
+    - **Floor height**: `5` (altura total: 3 bloques habitables + 1 piso + 1 techo)
     - **Bottom floor Y**: `17` (la coordenada Y del piso 1, donde está la primera puerta)
     - **Speed**: `5` m/s (o la velocidad que prefieras).
 4.  El `controller` ahora debería detectar la `machine` y estar listo para operar.
 
-**⚠️ IMPORTANTE - Configuración basada en datos reales**:
+**⚠️ IMPORTANTE - Configuración basada en arquitectura real**:
 - Se confirmó que hay **13 pisos** instalados
-- La altura entre pisos es **4 bloques** (no 5)
-- El primer piso está en **Y=17** (no Y=15)
+- La altura por piso es **5 bloques totales** (3 altura + 1 piso + 1 techo)
+- El primer piso está en **Y=17** (coordenada de la primera puerta)
 - Estas coordenadas fueron verificadas desde los logs del servidor
 
 ### **PASO 5: Pruebas Finales**
@@ -233,7 +234,7 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 /teleport gabo 88 71 -43
 # Clic derecho en el controller y configura:
 # - Number of floors: 13
-# - Floor height: 4
+# - Floor height: 5
 # - Bottom floor Y: 17
 # - Speed: 5
 
@@ -331,7 +332,8 @@ Las siguientes puertas están instaladas en el pozo principal (X=86-87, Z=-43):
 | Piso 13 | Y=65-66 | (87,65,-43), (86,66,-43) | ✅ Instaladas |
 
 **Notas**:
-- Altura entre pisos: **4 bloques** consistente
+- Altura total por piso: **5 bloques** (3 habitables + 1 piso + 1 techo)
+- Separación entre puertas: 4-5 bloques (dependiendo de la construcción)
 - Último piso (Piso 13): Y=66
 - Machine actual: Y=69 (solo 3 bloques arriba, **en el límite mínimo**)
 - Machine recomendada: Y=72 (6 bloques arriba, **margen seguro**)
