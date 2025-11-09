@@ -308,7 +308,7 @@ Speed: 5
 # La cabina debe aparecer (si no está ya ahí)
 
 # TEST 3: Viajar a piso 2
-# Entrar a cabina
+# Entrar a cabina 
 # Clic derecho dentro de cabina
 # Presionar botón "2"
 # La cabina debe moverse suavemente a Y=22
