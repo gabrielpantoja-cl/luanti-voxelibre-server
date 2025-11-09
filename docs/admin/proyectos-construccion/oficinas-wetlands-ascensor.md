@@ -149,8 +149,8 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 **3. Sala de Máquinas (Nivel Superior, Y > 70):**
    - **CRÍTICO**: La `machine` debe estar en el punto más alto y centrada en el pozo.
    - **Instalar Machine (Motor)**:
-     - `/teleport gabo 88 72 -43`
-     - Coloca la `celevator:machine` aquí.
+     - `/teleport gabo 88 74 -43` (aire libre, piso sólido en Y=72)
+     - Coloca la `celevator:machine` en Y=73 (un bloque abajo de donde apareces).
    - **Instalar Controller**:
      - `/teleport gabo 88 71 -43` (o al lado de la machine)
      - Coloca el `celevator:controller`.
@@ -214,9 +214,9 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 /teleport gabo 82 66 -42
 # Excava el drive
 
-# PASO 4: Colocar la machine en la posición CORRECTA (Y=72)
-/teleport gabo 88 72 -43
-# Coloca la machine aquí (CRÍTICO: NO MOVERLA DESPUÉS)
+# PASO 4: Colocar la machine en la posición CORRECTA (Y=73)
+/teleport gabo 88 74 -43
+# Coloca la machine en Y=73 (un bloque abajo, CRÍTICO: NO MOVERLA DESPUÉS)
 
 # PASO 5: Colocar el controller justo debajo
 /teleport gabo 88 71 -43
@@ -456,7 +456,8 @@ Si quieres permitir que otros jugadores usen el ascensor:
 
 ### Teleportaciones Clave
 - Pozo (centro, piso 1): `/teleport gabo 88 15 -43`
-- Sala de Máquinas (machine position): `/teleport gabo 88 72 -43`
+- Sala de Máquinas (aire libre): `/teleport gabo 88 74 -43`
+- Sala de Máquinas (controller): `/teleport gabo 88 71 -43`
 - Esquina de limpieza 1: `/teleport gabo 85 14 -45`
 - Esquina de limpieza 2: `/teleport gabo 91 77 -41`
 - Esquina protección 1: `/teleport gabo 85 14 -46`
@@ -472,4 +473,49 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-c
 
 # Verificar última posición de la machine
 ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
+
+# Verificar posición de jugador en base de datos
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \"SELECT name, posX, posY, posZ FROM player WHERE name='gabo';\""
 ```
+
+---
+
+## 🐛 Problema Diagnosticado: Caída al Teleportarse
+
+### Descripción del Problema
+Cuando se usa `/teleport gabo 88 72 -43`, el personaje cae aproximadamente 3-4 bloques después de aparecer.
+
+### Causa Raíz (Diagnosticado 2025-11-09)
+
+**Estructura vertical en X=88, Z=-43:**
+- Y=73: `celevator:machine` (bloque sólido)
+- Y=72: `mcl_core:junglewood` (bloque sólido de madera)
+- Y=71: aire
+- Y=70: aire
+- Y=69: `celevator:controller` (bloque sólido)
+- Y=68: `mcl_core:junglewood` (donde termina gabo después de caer)
+
+**El problema:**
+1. El comando teleporta a **Y=72** donde hay un **bloque sólido** de madera
+2. El personaje aparece **DENTRO** del bloque
+3. Sin `fly` o `noclip`, Luanti expulsa al personaje del bloque sólido
+4. El personaje cae hasta Y=68 (aproximadamente 4 bloques)
+
+### Solución
+**Usar comandos corregidos:**
+```bash
+# Para ir a la sala de máquinas (RECOMENDADO)
+/teleport gabo 88 74 -43
+
+# Alternativa: un nivel más arriba
+/teleport gabo 88 75 -43
+
+# Para trabajar en el nivel del controller
+/teleport gabo 88 71 -43
+```
+
+**Por qué funciona:**
+- Y=74 y Y=75 son **aire libre**
+- El piso sólido está en Y=72 (2-3 bloques abajo)
+- El personaje aparece de pie sin obstrucciones
+- No hay caída porque hay espacio libre con soporte sólido debajo
