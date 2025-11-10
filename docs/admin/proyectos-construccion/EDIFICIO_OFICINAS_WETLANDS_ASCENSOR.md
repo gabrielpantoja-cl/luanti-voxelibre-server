@@ -550,6 +550,60 @@ ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose
 
 ---
 
+### 🎨 Texturas Persistentes (Panel Negro Después de Eliminar)
+
+**Síntoma**: Después de eliminar cabinas con WorldEdit (0 nodos reemplazados), aún se ve un panel negro o textura de cabina en el piso 1.
+
+**Causa**: **Caché de texturas del servidor** no actualizado. Los bloques ya fueron eliminados en el mundo, pero el servidor mantiene la textura en memoria.
+
+**Solución INMEDIATA**:
+
+```bash
+# PASO 1: Reiniciar el servidor (MÉTODO RECOMENDADO)
+ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+
+# PASO 2: Esperar 10 segundos para que el servidor reinicie
+# PASO 3: Reconectar al servidor desde el cliente Luanti
+# PASO 4: El panel negro debería desaparecer
+```
+
+**Soluciones Alternativas (si el panel persiste)**:
+
+**Opción 1: Reconectar Cliente**
+```bash
+# 1. Desconectar del servidor (en el juego)
+# 2. Cerrar completamente el cliente Luanti
+# 3. Reabrir Luanti y reconectar
+# 4. El caché del cliente se limpiará
+```
+
+**Opción 2: Limpiar Caché de Texturas del Cliente**
+```bash
+# En Linux (cliente local):
+rm -rf ~/.minetest/cache/media/*
+
+# En Windows:
+# Eliminar: C:\Users\<tu_usuario>\AppData\Roaming\Minetest\cache\media\
+```
+
+**Opción 3: Forzar Actualización del Área**
+```bash
+# En el juego, como admin:
+/teleport gabo 88 17 -43
+
+# Colocar y excavar un bloque temporal para forzar actualización
+# 1. Coloca un bloque de piedra en el área del panel negro
+# 2. Excávalo inmediatamente
+# 3. Esto fuerza al servidor a actualizar esa región
+```
+
+**🔑 Lección Aprendida**:
+- ✅ **Siempre reinicia el servidor** después de usar WorldEdit para eliminar estructuras grandes (como cabinas 3x3x3)
+- ✅ Las texturas persistentes NO significan que los bloques siguen ahí
+- ✅ Es un problema de caché, no de datos del mundo
+
+---
+
 ### Error: "Hoist Machine Missing"
 
 **Síntoma**: Controller muestra "FAULT: Machine Missing"
