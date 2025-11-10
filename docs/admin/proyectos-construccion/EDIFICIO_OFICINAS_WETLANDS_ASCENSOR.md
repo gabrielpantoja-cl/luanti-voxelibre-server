@@ -676,6 +676,71 @@ rm -rf ~/.minetest/cache/media/*
 
 ---
 
+### Error: Cabina Llega 1 Bloque Abajo/Arriba (Puerta No Se Abre)
+
+**🚨 PROBLEMA CRÍTICO**: Ascensor llega desalineado con la puerta
+
+**Síntoma**:
+- Cabina se detiene 1 bloque ABAJO de la puerta (ej. Y=21 en vez de Y=22)
+- Puerta no se abre porque la cabina no está alineada
+- Jugadores quedan atrapados entre pisos
+
+**Causa Real**: **Floor Table del controller tiene coordenadas Y incorrectas**
+
+**✅ SOLUCIÓN (Sin Reiniciar Servidor)**:
+
+```bash
+# PASO 1: Ir al controller
+/teleport gabo 87 68 -43
+
+# PASO 2: Abrir controller
+# Clic derecho en controller
+
+# PASO 3: Editar Floor Table
+# Clic en botón "Edit Floor Table"
+
+# PASO 4: Corregir TODAS las coordenadas Y manualmente
+# La tabla debe tener EXACTAMENTE estos valores:
+```
+
+**Floor Table Correcta** (copiar estos valores exactos):
+```
+Floor 1:  Y = 17
+Floor 2:  Y = 22
+Floor 3:  Y = 27
+Floor 4:  Y = 32
+Floor 5:  Y = 37
+Floor 6:  Y = 42
+Floor 7:  Y = 47
+Floor 8:  Y = 52
+Floor 9:  Y = 57
+Floor 10: Y = 62
+Floor 11: Y = 67
+Floor 12: Y = 72
+Floor 13: Y = 77
+```
+
+**PASO 5: Guardar**:
+1. Clic en "Save" en la ventana de Floor Table
+2. Esperar 5 segundos
+3. Controller debe mostrar "READY"
+
+**PASO 6: Probar**:
+```bash
+/teleport gabo 88 17 -43
+# Entrar al ascensor
+# Ir a cualquier piso
+# Verificar que la cabina llegue EXACTAMENTE al nivel de la puerta
+```
+
+**🔑 Lección Crítica**:
+- ✅ El controller tiene una **Floor Table interna** que sobrescribe los cálculos automáticos
+- ✅ Esta tabla se configura solo una vez y persiste en el mundo
+- ✅ Si la tabla tiene valores incorrectos, el ascensor NUNCA funcionará bien
+- ✅ La tabla debe editarse **manualmente piso por piso**
+
+---
+
 ### Error: Cabina Se Queda Atascada Entre Pisos
 
 **Síntoma**: Cabina se detiene en Y intermedia (ej. Y=20 en vez de Y=22)
