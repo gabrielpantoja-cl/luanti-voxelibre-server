@@ -449,6 +449,8 @@ Si ya validaste el sistema con 3 pisos, solo necesitas:
 //pos2
 
 # PASO 3: Eliminar TODAS las variantes de cabinas
+
+# 3A. Eliminar Glass-Back Elevator Car (19 variantes)
 //replace celevator:car_glassback air
 //replace celevator:car_glassback_000 air
 //replace celevator:car_glassback_001 air
@@ -468,6 +470,28 @@ Si ya validaste el sistema con 3 pisos, solo necesitas:
 //replace celevator:car_glassback_120 air
 //replace celevator:car_glassback_121 air
 //replace celevator:car_glassback_122 air
+
+# 3B. Eliminar Basic Elevator Car (19 variantes)
+# IMPORTANTE: Si el panel negro persiste, es probable que sea una cabina básica
+//replace celevator:car_basic air
+//replace celevator:car_basic_000 air
+//replace celevator:car_basic_001 air
+//replace celevator:car_basic_002 air
+//replace celevator:car_basic_010 air
+//replace celevator:car_basic_011 air
+//replace celevator:car_basic_012 air
+//replace celevator:car_basic_020 air
+//replace celevator:car_basic_021 air
+//replace celevator:car_basic_022 air
+//replace celevator:car_basic_100 air
+//replace celevator:car_basic_101 air
+//replace celevator:car_basic_102 air
+//replace celevator:car_basic_110 air
+//replace celevator:car_basic_111 air
+//replace celevator:car_basic_112 air
+//replace celevator:car_basic_120 air
+//replace celevator:car_basic_121 air
+//replace celevator:car_basic_122 air
 
 # PASO 4: Verificar que el pozo está limpio
 /teleport gabo 88 17 -43
