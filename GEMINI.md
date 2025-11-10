@@ -140,14 +140,16 @@ Luanti 5.13+ uses an **SQLite database (`auth.sqlite`)** for authentication, not
 **Location**: `server/worlds/world/auth.sqlite`
 
 ### Useful Database Commands
+These commands are designed for non-interactive execution with `docker-compose exec -T`.
+
 ```bash
 # List all registered users
 docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
 
-# Get the ID of a specific user
+# Get the ID of a specific user (replace USERNAME)
 docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT id FROM auth WHERE name="USERNAME";'
 
-# View the privileges of a specific user (replace ID)
+# View the privileges of a specific user (replace USER_ID)
 docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT * FROM user_privileges WHERE id=USER_ID;'
 
 # Grant all admin privileges to a user (replace USER_ID)
@@ -231,7 +233,7 @@ This document previously detailed the investigation process Gemini undertook to 
 ### Key Discovery
 - **Problem**: Users were not appearing in the expected `auth.txt` file.
 - **Solution**: The server uses a modern **SQLite database (`auth.sqlite`)** for authentication, not flat text files.
-- **Source**: This was confirmed by inspecting the `docs/NUCLEAR_CONFIG_OVERRIDE.md` file and observing the server's runtime behavior.
+- **Source**: This was confirmed by inspecting the `docs/config/nuclear-config.md` file and observing the server's runtime behavior.
 - **Outcome**: The modern SQLite-based authentication system was correctly identified and documented.
 
 This historical knowledge has been integrated into the main documentation above.
