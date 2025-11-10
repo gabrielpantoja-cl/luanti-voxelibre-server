@@ -37,15 +37,6 @@ minetest.register_privilege("protect", {
 })
 
 -- Funciones de utilidad
-local function is_interactive_node(pos)
-    local node = minetest.get_node(pos)
-    if not node or not node.name then return false end
-    if minetest.get_item_group(node.name, "_celevator_callbutton") == 1 then
-        return true
-    end
-    return false
-end
-
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
 end
@@ -128,6 +119,24 @@ local function is_chest_or_container(pos)
     }
 
     return allowed_containers[node.name] or false
+end
+
+-- Detectar si un nodo es interactivo (botones, cofres, etc.)
+local function is_interactive_node(pos)
+    local node = minetest.get_node(pos)
+    if not node or not node.name then return false end
+
+    -- Excepción para botones de ascensor
+    if minetest.get_item_group(node.name, "_celevator_callbutton") == 1 then
+        return true
+    end
+
+    -- Excepción para cofres y contenedores
+    if is_chest_or_container(pos) then
+        return true
+    end
+
+    return false
 end
 
 -- Función principal de protección
