@@ -37,6 +37,15 @@ minetest.register_privilege("protect", {
 })
 
 -- Funciones de utilidad
+local function is_interactive_node(pos)
+    local node = minetest.get_node(pos)
+    if not node or not node.name then return false end
+    if minetest.get_item_group(node.name, "_celevator_callbutton") == 1 then
+        return true
+    end
+    return false
+end
+
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
 end
@@ -204,6 +213,18 @@ end)
 -- Sobrescribir verificación de protección por defecto
 local old_is_protected = minetest.is_protected
 minetest.is_protected = function(pos, name)
+    -- Permitir interacción con nodos especiales (ej. botones de ascensor)
+    local player = minetest.get_player_by_name(name)
+    if player then
+        local item = player:get_wielded_item()
+        -- Heurística: si el jugador usa la mano vacía, es probable que sea un clic derecho
+        if item and item:is_empty() then
+            if is_interactive_node(pos) then
+                return false -- Permitir clic derecho en nodos interactivos
+            end
+        end
+    end
+
     -- Primero verificar nuestras áreas
     local protected = is_area_protected(pos, name)
     if protected then
