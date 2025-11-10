@@ -15,6 +15,8 @@
 5. [Troubleshooting](#troubleshooting)
 6. [Protección del Área](#protección-del-área)
 
+**🚨 REGLA DE ORO**: La cabina SIEMPRE se coloca AL FINAL, después de machine, controller, drive, puertas y botones.
+
 ---
 
 ## 🎯 Principios Fundamentales del Mod celevator {#principios-fundamentales}
