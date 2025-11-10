@@ -12,11 +12,18 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# Configuración del ascensor
-BOTTOM_FLOOR_Y=17
+# Configuración del ascensor (SISTEMA ACTUAL - Basado en diagnóstico real)
+# NOTA: El sistema usa coordenadas base diferentes al estándar documentado
+# Piso 1 está en Y=16.5/17 (no en Y=17 como el estándar)
+BOTTOM_FLOOR_Y=17  # Coordenada Y del piso 1 (ajustar según donde realmente llega la cabina)
 FLOOR_HEIGHT=5
 NUMBER_OF_FLOORS=13
 CAR_ID=73  # ID del controller (debe coincidir en machine, controller y todos los botones)
+
+echo "⚠️  IMPORTANTE: Este script muestra coordenadas TEÓRICAS."
+echo "    Tu sistema actual tiene un offset. Usa estos valores como GUÍA"
+echo "    y ajusta según donde REALMENTE llega la cabina en tu servidor."
+echo ""
 
 echo "🏢 Validador de Coordenadas del Ascensor - Oficinas Wetlands"
 echo "=============================================================="
