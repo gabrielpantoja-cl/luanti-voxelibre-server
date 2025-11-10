@@ -247,12 +247,21 @@ Speed: 5
 2. Verificar que hay solo UNA cabina en el pozo
 3. Verificar que Controller muestra "READY"
 
+### Error: Texturas de la Cabina con Glitch Visual
+
+**Causa**: Al colocar o mover la cabina, a veces sus texturas no cargan bien y se ven negras o incorrectas.
+**Solución**: Reiniciar el servidor y reconectar al juego arregla el problema.
+```bash
+# Reiniciar el servidor
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+```
+
 ### Panel Negro Persistente
 
 **Solución**:
 ```bash
 # Reiniciar el servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # Reconectar al juego
 # El panel debe desaparecer
