@@ -297,25 +297,101 @@ Una vez que el sistema de 3 pisos funciona correctamente:
 
 ## 📝 Registro de Coordenadas
 
-**Completar durante la instalación**:
+**✅ EDIFICIOS DETECTADOS EN EL SERVIDOR**:
+
+---
+
+## 🏢 EDIFICIO #1 - Torre Principal (Edificio Original)
+
+### 🏗️ Estructura Completa del Edificio
+
+**Análisis de Base de Datos (map.sqlite)**:
+```
+Rango de construcción detectado:
+- Eje X: 0 a 3 (4 bloques de ancho)
+- Eje Z: 14 a 18 (5 bloques de profundidad)
+- Eje Y: -1 a 88 (89 bloques de altura total)
+- Material: Construcción mixta
+```
+
+### 🎯 Componentes Identificados
+
+**SALA DE MÁQUINAS (Techo del Edificio)**:
+```
+Nivel Y = 73 (identificado por bloques con data_size=147 en Z=18)
+Pozo del ascensor: X=2, Z=14
+```
+
+**Coordenadas Específicas**:
+- **Machine**: (X=2, Y=73, Z=18) - [Bloque especial detectado]
+- **Controller**: (X=1 o 3, Y=73, Z=18) - [Adyacente a machine]
+- **Drive**: (X=1 o 3, Y=73, Z=18) - [Adyacente a machine]
+
+**POZO DEL ASCENSOR (Columna Central)**:
+```
+Columna principal: X=2, Z=14 (vertical desde Y=-1 hasta Y=88)
+```
+
+**PISOS PRINCIPALES (Bloques especiales en X=2, Z=14)**:
+
+Bloques con data_size diferente a 48 (normales) indican componentes especiales:
+
+- **Y=65**: data_size=145 → Posible botón/puerta
+- **Y=47**: data_size=145 → Posible botón/puerta
+- **Y=46**: data_size=197 → Componente especial
+- **Y=45**: data_size=198 → Componente especial
+- **Y=42**: data_size=145 → Posible botón/puerta
+- **Y=41**: data_size=202 → Componente especial (posible cabina o controlador)
+- **Y=37**: data_size=145 → Posible botón/puerta
+- **Y=36**: data_size=150 → Componente especial
+- **Y=35**: data_size=145 → Posible botón/puerta
+- **Y=33**: data_size=145 → Posible botón/puerta
+- **Y=32**: data_size=172 → Componente especial
+- **Y=30**: data_size=145 → Posible botón/puerta
+- **Y=29**: data_size=152 → Componente especial
+- **Y=28**: data_size=145 → Posible botón/puerta
+- **Y=27**: data_size=168 → Componente especial
+- **Y=23**: data_size=202 → Componente especial (similar a Y=41)
+- **Y=20**: data_size=201 → Componente especial
+
+### 📐 Configuración Calculada
+
+**Análisis de Separación de Pisos**:
+
+Basándome en los bloques especiales detectados en el pozo (X=2, Z=14):
+
+**Piso 3 (Más Alto)**: Y=65
+- Botón/puerta: (X=2, Y=65, Z=14)
+
+**Piso 2 (Medio)**: Y=47 o Y=42
+- Separación desde Piso 3: ~18-23 bloques
+- Botón/puerta: (X=2, Y=47, Z=14) o (X=2, Y=42, Z=14)
+
+**Piso 1 (Más Bajo)**: Y=20 o Y=23
+- Separación desde Piso 2: ~19-27 bloques
+- Botón/puerta: (X=2, Y=20, Z=14) o (X=2, Y=23, Z=14)
+
+### ⚙️ CONFIGURACIÓN ESTIMADA DEL CONTROLLER
 
 ```
-SALA DE MÁQUINAS:
-- Machine: (X=___, Y=___, Z=___)
-- Controller: (X=___, Y=___, Z=___)
-- Drive: (X=___, Y=___, Z=___)
+Car ID: 1
+Number of floors: 3
+Floor height: 20-23 (altura irregular entre pisos)
+Bottom floor Y: 20 (nivel más bajo con componente especial)
+Speed: 5
+```
 
-PISOS:
-- Piso 3: (X=___, Y=___, Z=___)
-- Piso 2: (X=___, Y=___, Z=___)
-- Piso 1: (X=___, Y=___, Z=___)
+### 🚨 OBSERVACIÓN IMPORTANTE
 
-CONFIGURACIÓN:
-- Car ID: 1
-- Number of floors: 3
-- Floor height: 5
-- Bottom floor Y: ___
-- Speed: 5
+**⚠️ La separación entre pisos NO es estándar (5 bloques)**:
+- La distancia entre pisos varía entre 18-27 bloques
+- Esto sugiere que el edificio fue construido manualmente sin seguir la convención del mod
+- Puede requerir ajuste manual del parámetro `Floor height` en el Controller
+
+### 📊 Techo del Edificio
+```
+Nivel más alto: Y=88 (techo de vidrio/estructura)
+Sala de máquinas: Y=73 (15 bloques debajo del techo)
 ```
 
 ---
