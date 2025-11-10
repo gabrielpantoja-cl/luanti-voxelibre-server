@@ -368,28 +368,30 @@ Si ya validaste el sistema con 3 pisos, solo necesitas:
 /teleport gabo 88 37 -43
 # Puerta + callbutton_both (Car ID = 1)
 
-# ... repetir hasta Piso 13 (Y=66)
+# ... repetir hasta Piso 13 (Y=77)
 ```
 
 ### Tabla de Coordenadas Y (13 Pisos)
 
-| Piso | Y | Tipo de Botón |
-|------|---|---------------|
-| 1 | 17 | UP |
-| 2 | 22 | BOTH |
-| 3 | 27 | BOTH |
-| 4 | 32 | BOTH |
-| 5 | 37 | BOTH |
-| 6 | 42 | BOTH |
-| 7 | 47 | BOTH |
-| 8 | 52 | BOTH |
-| 9 | 57 | BOTH |
-| 10 | 62 | BOTH |
-| 11 | 66 | BOTH |
-| 12 | 71 | BOTH |
-| 13 | 76 | DOWN |
+| Piso | Y | Tipo de Botón | Cálculo |
+|------|---|---------------|---------|
+| 1 | 17 | UP | 17 + 0×5 = 17 |
+| 2 | 22 | BOTH | 17 + 1×5 = 22 |
+| 3 | 27 | BOTH | 17 + 2×5 = 27 |
+| 4 | 32 | BOTH | 17 + 3×5 = 32 |
+| 5 | 37 | BOTH | 17 + 4×5 = 37 |
+| 6 | 42 | BOTH | 17 + 5×5 = 42 |
+| 7 | 47 | BOTH | 17 + 6×5 = 47 |
+| 8 | 52 | BOTH | 17 + 7×5 = 52 |
+| 9 | 57 | BOTH | 17 + 8×5 = 57 |
+| 10 | 62 | BOTH | 17 + 9×5 = 62 |
+| 11 | **67** | BOTH | 17 + 10×5 = **67** |
+| 12 | **72** | BOTH | 17 + 11×5 = **72** |
+| 13 | **77** | DOWN | 17 + 12×5 = **77** |
 
+**Fórmula**: `Y_piso = Bottom_floor_Y + (piso - 1) × floor_height`
 **Nota**: Altura por piso = 5 bloques (3 habitables + 1 piso + 1 techo)
+**🚨 IMPORTANTE**: Coordenadas corregidas (pisos 11-13 estaban incorrectos)
 
 ---
 
@@ -751,7 +753,7 @@ rm -rf ~/.minetest/cache/media/*
 
 - [ ] Testeo de 3 pisos completado exitosamente
 - [ ] Controller actualizado a Floors = 13
-- [ ] 13 puertas instaladas (Y=17 hasta Y=76)
+- [ ] 13 puertas instaladas (Y=17 hasta Y=**77**)
 - [ ] 13 botones instalados (todos Car ID = 1)
 - [ ] Área protegida creada
 - [ ] Pruebas de piso 1 → 13 exitosas
@@ -793,7 +795,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-c
 /teleport gabo 88 27 -43
 
 # Piso 13 (production)
-/teleport gabo 88 76 -43
+/teleport gabo 88 77 -43
 ```
 
 ---
