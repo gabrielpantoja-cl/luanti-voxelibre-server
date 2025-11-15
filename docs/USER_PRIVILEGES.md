@@ -383,16 +383,91 @@ docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth
 
 ---
 
+## ✅ SOLUCIÓN APLICADA (2025-11-15)
+
+### Acción Tomada
+
+Se revocaron **TODOS** los privilegios de bypass (`areas`, `server`, `protection_bypass`) a **TODOS** los usuarios excepto `gabo`.
+
+### Usuarios Afectados
+
+**14 usuarios** tuvieron privilegios de bypass revocados:
+- Gapi
+- gabo2
+- gaelsin
+- julii
+- jutaro
+- jutaro2010
+- loxos
+- lulu
+- lulu81
+- lulululuo
+- lulululuo0000
+- pepelomo
+- pepelomoomomomo
+- veight
+
+### Comandos SQL Ejecutados
+
+```sql
+DELETE FROM user_privileges WHERE privilege = 'areas' AND id != (SELECT id FROM auth WHERE name = 'gabo');
+DELETE FROM user_privileges WHERE privilege = 'server' AND id != (SELECT id FROM auth WHERE name = 'gabo');
+DELETE FROM user_privileges WHERE privilege = 'protection_bypass' AND id != (SELECT id FROM auth WHERE name = 'gabo');
+```
+
+### Estado Final
+
+**✅ Solo `gabo` tiene privilegios de bypass**:
+- `areas` ✅
+- `server` ✅
+- `protection_bypass` ✅
+- `worldedit` ✅
+
+**✅ Admins mantienen privilegios seguros**:
+- `ban`, `kick`, `mute` (moderación)
+- `privs` (gestión de usuarios)
+- `creative`, `fly`, `teleport` (gameplay)
+- `protect` (crear sus propias áreas)
+- **NO tienen**: `areas`, `server`, `protection_bypass`
+
+### Verificación
+
+```bash
+# Verificar que solo gabo tiene bypass
+SELECT DISTINCT a.name FROM auth a
+JOIN user_privileges up ON a.id = up.id
+WHERE up.privilege IN ("areas", "server", "protection_bypass");
+
+# Resultado: gabo
+```
+
+### Servidor Reiniciado
+
+- **Fecha**: 2025-11-15 17:32 UTC
+- **Estado**: ✅ Funcionando correctamente (healthy)
+- **Puerto**: 30000/UDP activo
+- **Proceso**: luantiserver corriendo normalmente
+
+### Impacto
+
+**✅ Las protecciones de áreas ahora funcionan correctamente**:
+- Solo propietarios y miembros autorizados pueden modificar áreas protegidas
+- Los admins NO pueden bypasear protecciones
+- "casaloxos" solo editable por gabo y loxos (como miembro)
+
 ## Próximos Pasos Sugeridos
 
-1. **Crear rol de Moderador** (privilegios intermedios):
-   - `kick`, `mute`, `rollback_check` (sin `ban` ni `shutdown`)
+1. ✅ **Privilegios de bypass corregidos** - COMPLETADO
 
-2. **Revisar necesidad de `shutdown`** para los 4 admins recientes
+2. **Documentar áreas protegidas importantes**:
+   - casaloxos: gabo (propietario), loxos (miembro)
+   - Otras áreas existentes
 
-3. **Documentar procedimiento de escalación**:
+3. **Entrenar admins en sistema de protección**:
+   - Cómo crear áreas con `/protect_here`
+   - Cómo agregar miembros con `/area_add_member`
+   - Limitaciones sin privilegios de bypass
+
+4. **Establecer política de privilegios**:
    - Jugador → Creative → Moderador → Admin → Super Admin
-
-4. **Implementar sistema de auditoría**:
-   - Logs de uso de privilegios administrativos
-   - Registro de cambios de privilegios
+   - Documentar qué privilegios tiene cada rol
