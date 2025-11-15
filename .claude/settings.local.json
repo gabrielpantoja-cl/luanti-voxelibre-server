@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ssh gabriel@167.172.251.27:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
