@@ -53,7 +53,6 @@ minetest.register_tool("automobiles_motorcycle:motorcycle", {
 --
 -- crafting
 --
--- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_motorcycle:motorcycle",
@@ -75,32 +74,6 @@ if minetest.get_modpath("default") then
 			{"default:steel_ingot", "default:tin_ingot", "default:steel_ingot"},
 			{"default:steel_ingot","default:steelblock",  "default:steel_ingot"},
             {"default:steel_ingot", "default:tin_ingot", "default:steel_ingot"},
-		}
-	})
-end
-
--- VoxeLibre/MineClone2 recipes (Wetlands Server)
-if automobiles_lib.is_mcl then
-	minetest.register_craft({
-		output = "automobiles_motorcycle:motorcycle",
-		recipe = {
-			{"automobiles_motorcycle:wheel", "automobiles_motorcycle:body", "automobiles_motorcycle:wheel"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_motorcycle:body",
-		recipe = {
-            {"mcl_core:glass" ,"","mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","","mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","automobiles_lib:engine", "mcl_core:iron_ingot"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_motorcycle:wheel",
-		recipe = {
-			{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","mcl_core:ironblock",  "mcl_core:iron_ingot"},
-            {"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"},
 		}
 	})
 end

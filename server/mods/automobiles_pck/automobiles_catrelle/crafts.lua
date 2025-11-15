@@ -89,6 +89,7 @@ minetest.register_tool("automobiles_catrelle:catrelle_4f", {
 --
 -- crafting
 --
+-- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_catrelle:catrelle_4f",
@@ -109,6 +110,31 @@ if minetest.get_modpath("default") then
             {"default:glass" ,"default:steel_ingot","default:steel_ingot"},
 			{"default:steel_ingot","default:steel_ingot","default:steel_ingot"},
 			{"default:steelblock","default:steelblock", "default:steelblock"},
+		}
+	})
+end
+
+-- VoxeLibre/MineClone2 recipes (Wetlands Server)
+if automobiles_lib.is_mcl then
+	minetest.register_craft({
+		output = "automobiles_catrelle:catrelle_4f",
+		recipe = {
+			{"automobiles_catrelle:catrelle", "mcl_core:glass", "mcl_core:ironblock"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_catrelle:catrelle",
+		recipe = {
+			{"automobiles_lib:wheel", "automobiles_lib:engine", "automobiles_lib:wheel"},
+			{"automobiles_lib:wheel","automobiles_catrelle:catrelle_body",  "automobiles_lib:wheel"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_catrelle:catrelle_body",
+		recipe = {
+            {"mcl_core:glass" ,"mcl_core:iron_ingot","mcl_core:iron_ingot"},
+			{"mcl_core:iron_ingot","mcl_core:iron_ingot","mcl_core:iron_ingot"},
+			{"mcl_core:ironblock","mcl_core:ironblock", "mcl_core:ironblock"},
 		}
 	})
 end

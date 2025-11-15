@@ -87,6 +87,7 @@ minetest.register_tool("automobiles_beetle:beetle_conv", {
 --
 -- crafting
 --
+-- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_beetle:beetle",
@@ -109,6 +110,33 @@ if minetest.get_modpath("default") then
             {"default:glass" ,"default:steel_ingot","default:glass"},
 			{"default:steel_ingot","default:steel_ingot","default:steel_ingot"},
 			{"default:steelblock","default:steelblock", "default:steelblock"},
+		}
+	})
+end
+
+-- VoxeLibre/MineClone2 recipes (Wetlands Server)
+if automobiles_lib.is_mcl then
+	minetest.register_craft({
+		output = "automobiles_beetle:beetle",
+		recipe = {
+			{"automobiles_lib:wheel", "automobiles_lib:engine", "automobiles_lib:wheel"},
+			{"automobiles_lib:wheel","automobiles_beetle:beetle_body",  "automobiles_lib:wheel"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_beetle:beetle_conv",
+		recipe = {
+            {"mcl_wool:white","mcl_wool:black","mcl_wool:black"},
+			{"automobiles_lib:wheel", "automobiles_lib:engine", "automobiles_lib:wheel"},
+			{"automobiles_lib:wheel","automobiles_beetle:beetle_body",  "automobiles_lib:wheel"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_beetle:beetle_body",
+		recipe = {
+            {"mcl_core:glass" ,"mcl_core:iron_ingot","mcl_core:glass"},
+			{"mcl_core:iron_ingot","mcl_core:iron_ingot","mcl_core:iron_ingot"},
+			{"mcl_core:ironblock","mcl_core:ironblock", "mcl_core:ironblock"},
 		}
 	})
 end

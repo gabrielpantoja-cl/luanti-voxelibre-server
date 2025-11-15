@@ -54,7 +54,6 @@ minetest.register_tool("automobiles_roadster:roadster", {
 --
 -- crafting
 --
--- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_roadster:roadster",
@@ -68,33 +67,6 @@ if minetest.get_modpath("default") then
 		recipe = {
             {"default:glass" ,"","default:steel_ingot"},
 			{"default:steel_ingot","default:steelblock","default:steel_ingot"},
-			{"group:wood","group:wood", "group:wood"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_roadster:wheel",
-		recipe = {
-			{"group:wood", "default:stick", "group:wood"},
-			{"default:stick","group:wood",  "default:stick"},
-            {"group:wood", "default:stick", "group:wood"},
-		}
-	})
-end
-
--- VoxeLibre/MineClone2 recipes (Wetlands Server)
-if automobiles_lib.is_mcl then
-	minetest.register_craft({
-		output = "automobiles_roadster:roadster",
-		recipe = {
-			{"automobiles_roadster:wheel", "automobiles_lib:engine", "automobiles_roadster:wheel"},
-			{"automobiles_roadster:wheel","automobiles_roadster:roadster_body",  "automobiles_roadster:wheel"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_roadster:roadster_body",
-		recipe = {
-            {"mcl_core:glass" ,"","mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","mcl_core:ironblock","mcl_core:iron_ingot"},
 			{"group:wood","group:wood", "group:wood"},
 		}
 	})
