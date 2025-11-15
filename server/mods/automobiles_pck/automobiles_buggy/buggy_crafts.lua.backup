@@ -54,7 +54,6 @@ minetest.register_tool("automobiles_buggy:buggy", {
 --
 -- crafting
 --
--- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_buggy:buggy",
@@ -77,33 +76,6 @@ if minetest.get_modpath("default") then
 			{"default:steel_ingot", "default:tin_ingot", "default:steel_ingot"},
 			{"default:tin_ingot","default:steelblock",  "default:tin_ingot"},
             {"default:steel_ingot", "default:tin_ingot", "default:steel_ingot"},
-		}
-	})
-end
-
--- VoxeLibre/MineClone2 recipes (Wetlands Server)
-if automobiles_lib.is_mcl then
-	minetest.register_craft({
-		output = "automobiles_buggy:buggy",
-		recipe = {
-			{"automobiles_buggy:wheel", "automobiles_lib:engine", "automobiles_buggy:wheel"},
-			{"automobiles_buggy:wheel","automobiles_buggy:buggy_body",  "automobiles_buggy:wheel"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_buggy:buggy_body",
-		recipe = {
-            {"mcl_core:glass" ,"","mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","","mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","mcl_core:iron_ingot", "mcl_core:iron_ingot"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_buggy:wheel",
-		recipe = {
-			{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","mcl_core:ironblock",  "mcl_core:iron_ingot"},
-            {"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"},
 		}
 	})
 end

@@ -30,12 +30,19 @@ function automobiles_lib.loadFuel(self, player_name, free, max_fuel)
             if free == false then inv:remove_item("main", itmstck) end
             if fuel then
                 self._energy = self._energy + fuel
+                -- Wetlands Educational Message System
+                if automobiles_lib.educational and automobiles_lib.educational.get_fuel_message then
+                    local fuel_msg = automobiles_lib.educational.get_fuel_message(item_name)
+                    minetest.chat_send_player(player_name, fuel_msg)
+                end
             end
             if self._energy > max_fuel then self._energy = max_fuel end
             automobiles_lib.last_fuel_display = 0
-            if self._energy == max_fuel then minetest.chat_send_player(player_name, "Full tank!") end
+            if self._energy == max_fuel then
+                minetest.chat_send_player(player_name, "🔋 ¡Tanque lleno! Listo para la aventura")
+            end
         end
-        
+
         return true
     end
 

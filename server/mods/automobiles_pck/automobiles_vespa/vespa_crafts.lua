@@ -54,6 +54,7 @@ minetest.register_tool("automobiles_vespa:vespa", {
 --
 -- crafting
 --
+-- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_vespa:vespa",
@@ -75,6 +76,32 @@ if minetest.get_modpath("default") then
 			{"default:tin_ingot", "", "default:tin_ingot"},
 			{"","default:steelblock",  ""},
             {"default:tin_ingot", "", "default:tin_ingot"},
+		}
+	})
+end
+
+-- VoxeLibre/MineClone2 recipes (Wetlands Server)
+if automobiles_lib.is_mcl then
+	minetest.register_craft({
+		output = "automobiles_vespa:vespa",
+		recipe = {
+			{"automobiles_vespa:wheel", "automobiles_vespa:body", "automobiles_vespa:wheel"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_vespa:body",
+		recipe = {
+            {"mcl_core:iron_ingot","",""},
+			{"mcl_core:iron_ingot","","mcl_core:iron_ingot"},
+			{"mcl_core:iron_ingot","automobiles_lib:engine", "mcl_core:iron_ingot"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_vespa:wheel",
+		recipe = {
+			{"mcl_core:iron_ingot", "", "mcl_core:iron_ingot"},
+			{"","mcl_core:ironblock",  ""},
+            {"mcl_core:iron_ingot", "", "mcl_core:iron_ingot"},
 		}
 	})
 end

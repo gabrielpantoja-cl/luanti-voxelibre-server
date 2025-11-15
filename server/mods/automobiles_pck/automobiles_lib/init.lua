@@ -21,9 +21,29 @@ automobiles_lib.is_minetest = core.get_modpath("player_api")
 automobiles_lib.is_mcl = core.get_modpath("mcl_player")
 automobiles_lib.is_repixture = core.get_modpath("rp_player")
 
-automobiles_lib.fuel = {['biofuel:biofuel'] = 1,['biofuel:bottle_fuel'] = 1,
-                ['biofuel:phial_fuel'] = 0.25, ['biofuel:fuel_can'] = 10,
-                ['airutils:biofuel'] = 1,}
+-- Wetlands Vegan Fuel System - Compatible with VoxeLibre
+-- Educational: Teaching sustainable, plant-based energy sources
+automobiles_lib.fuel = {
+    -- Plant-based oils (main fuel - best efficiency)
+    ['vegan_food:cooking_oil'] = 2.0,           -- Cooking oil (if available from vegan_food mod)
+
+    -- Seeds and crops (medium efficiency - renewable energy education)
+    ['mcl_farming:wheat_item'] = 0.3,           -- Wheat (biodiesel concept)
+    ['mcl_farming:carrot_item'] = 0.25,         -- Carrots (ethanol)
+    ['mcl_farming:potato_item'] = 0.25,         -- Potatoes (ethanol)
+    ['mcl_farming:beetroot_item'] = 0.3,        -- Beetroot (biodiesel)
+    ['mcl_farming:pumpkin'] = 0.5,              -- Pumpkin (biofuel)
+    ['mcl_farming:melon'] = 0.4,                -- Melon (liquid fuel)
+
+    -- Advanced plant materials (high efficiency)
+    ['mcl_farming:hay_block'] = 1.5,            -- Compressed biomass
+    ['mcl_core:coalblock'] = 3.0,               -- Charcoal block (sustainable if replanted)
+    ['mcl_core:coal_lump'] = 0.5,               -- Charcoal (renewable from trees)
+
+    -- Educational: Solar/renewable energy items (creative mode friendly)
+    ['mcl_core:gold_ingot'] = 5.0,              -- "Solar panels" (symbolic - golden = sun)
+    ['mcl_core:emerald'] = 10.0,                -- "Electric battery" (symbolic - clean energy)
+}
 
 automobiles_lib.gravity = 9.8
 automobiles_lib.ideal_step = 0.2
@@ -754,6 +774,7 @@ dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "physics_lib.lua"
 dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "custom_physics.lua")
 dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "control.lua")
 dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "fuel_management.lua")
+dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "educational_messages.lua")
 dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "ground_detection.lua")
 dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "painter.lua")
 dofile(minetest.get_modpath("automobiles_lib") .. DIR_DELIM .. "inventory_management.lua")
@@ -772,6 +793,7 @@ minetest.register_craftitem("automobiles_lib:wheel",{
 	inventory_image = "automobiles_wheel_icon.png",
 })
 
+-- Minetest vanilla recipes
 if minetest.get_modpath("default") then
     minetest.register_craft({
 		output = "automobiles_lib:engine",
@@ -786,6 +808,25 @@ if minetest.get_modpath("default") then
 			{"default:tin_ingot", "default:steel_ingot", "default:tin_ingot"},
 			{"default:steel_ingot","default:steelblock",  "default:steel_ingot"},
             {"default:tin_ingot", "default:steel_ingot", "default:tin_ingot"},
+		}
+	})
+end
+
+-- VoxeLibre/MineClone2 compatible recipes (Wetlands Server)
+if automobiles_lib.is_mcl then
+    minetest.register_craft({
+		output = "automobiles_lib:engine",
+		recipe = {
+			{"mcl_core:iron_ingot","mcl_core:iron_ingot","mcl_core:iron_ingot"},
+			{"mcl_core:ironblock","mcl_core:diamondblock", "mcl_core:ironblock"},
+		}
+	})
+	minetest.register_craft({
+		output = "automobiles_lib:wheel",
+		recipe = {
+			{"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"},
+			{"mcl_core:iron_ingot","mcl_core:ironblock",  "mcl_core:iron_ingot"},
+            {"mcl_core:iron_ingot", "mcl_core:iron_ingot", "mcl_core:iron_ingot"},
 		}
 	})
 end

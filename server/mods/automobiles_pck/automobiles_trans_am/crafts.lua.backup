@@ -52,7 +52,6 @@ minetest.register_tool("automobiles_trans_am:trans_am", {
 --
 -- crafting
 --
--- Minetest vanilla recipes
 if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = "automobiles_trans_am:trans_am",
@@ -67,25 +66,6 @@ if minetest.get_modpath("default") then
             {"default:glass","default:mese","default:steel_ingot"},
 			{"default:steel_ingot","default:steelblock","default:steel_ingot"},
 			{"default:steelblock","default:steelblock", "default:steelblock"},
-		}
-	})
-end
-
--- VoxeLibre/MineClone2 recipes (Wetlands Server)
-if automobiles_lib.is_mcl then
-	minetest.register_craft({
-		output = "automobiles_trans_am:trans_am",
-		recipe = {
-			{"automobiles_lib:wheel", "automobiles_lib:engine", "automobiles_lib:wheel"},
-			{"automobiles_lib:wheel","automobiles_trans_am:trans_am_body",  "automobiles_lib:wheel"},
-		}
-	})
-	minetest.register_craft({
-		output = "automobiles_trans_am:trans_am_body",
-		recipe = {
-            {"mcl_core:glass","default:mese","mcl_core:iron_ingot"},
-			{"mcl_core:iron_ingot","mcl_core:ironblock","mcl_core:iron_ingot"},
-			{"mcl_core:ironblock","mcl_core:ironblock", "mcl_core:ironblock"},
 		}
 	})
 end

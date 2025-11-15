@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ssh gabriel@167.172.251.27:*)"
+      "Bash(ssh gabriel@167.172.251.27:*)",
+      "Bash(docker-compose restart:*)"
     ],
     "deny": [],
     "ask": []
