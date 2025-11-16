@@ -137,7 +137,11 @@ Todas las recetas han sido adaptadas a **VoxeLibre (MineClone2)**.
 
 Para desarrolladores, consulta:
 - `docs/WETLANDS_ADAPTATION.md` - Documentación completa de cambios técnicos
+- `docs/VOXELIBRE_COMPATIBILITY_FIX.md` - **FIX CRÍTICO:** Solución a crashes del servidor
 - `scripts/convert_crafts_voxelibre.py` - Script de conversión automática
+
+### ⚠️ IMPORTANTE: Fix de Crashes con Vehículos
+Si experimentas crashes al subir a vehículos, consulta `docs/VOXELIBRE_COMPATIBILITY_FIX.md` para la solución completa del problema con referencias a `airutils`.
 
 ---
 
