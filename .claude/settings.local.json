@@ -5,7 +5,9 @@
       "Bash(docker-compose restart:*)",
       "WebFetch(domain:content.luanti.org)",
       "Bash(wget:*)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:forum.luanti.org)",
+      "Bash(unzip:*)"
     ],
     "deny": [],
     "ask": []
