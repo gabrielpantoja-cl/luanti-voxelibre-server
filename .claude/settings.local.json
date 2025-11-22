@@ -11,7 +11,8 @@
       "Bash(mv:*)",
       "Bash(docker-compose down:*)",
       "Bash(docker compose:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(rsync:*)"
     ],
     "deny": [],
     "ask": []
