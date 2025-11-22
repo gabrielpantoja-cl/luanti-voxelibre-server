@@ -12,6 +12,9 @@ debug.txt
 .env
 .env.local
 
+# Claude Code configuración local
+.claude/settings.local.json
+
 # Sistema
 .DS_Store
 Thumbs.db
