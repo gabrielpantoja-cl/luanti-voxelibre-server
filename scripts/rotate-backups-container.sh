@@ -9,7 +9,7 @@ set -e
 
 # Configuración (rutas del contenedor)
 BACKUP_DIR="/backups"
-RETENTION_DAYS=10
+RETENTION_DAYS=7
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🌱 Iniciando rotación de backups de Vegan Wetlands..."
 

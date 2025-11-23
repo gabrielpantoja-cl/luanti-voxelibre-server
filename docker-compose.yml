@@ -40,7 +40,7 @@ services:
     command: >
       sh -c "
         apk add --no-cache dcron tar gzip findutils &&
-        echo '0 */6 * * * sh /scripts/backup.sh' > /tmp/crontab.txt &&
+        echo '0 */12 * * * sh /scripts/backup.sh' > /tmp/crontab.txt &&
         echo '0 3 * * * sh /scripts/rotate-backups-container.sh' >> /tmp/crontab.txt &&
         crontab /tmp/crontab.txt &&
         crond -f -d 8
