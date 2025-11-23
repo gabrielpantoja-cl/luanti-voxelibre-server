@@ -93,9 +93,20 @@ docker-compose ps
 # Manual backup
 ./scripts/backup.sh
 
-# Automatic backups run every 6 hours via cron container
+# Automatic backups run every 12 hours via cron container (00:00 and 12:00 UTC)
 # Location: server/backups/
-# Retention: 10 latest backups
+# Retention: 7 days (~14 backups total)
+```
+
+### VPS Synchronization
+```bash
+# Check for configuration drift between VPS and local
+./scripts/sync-from-vps.sh --dry-run
+
+# Sync VPS changes to local repository
+./scripts/sync-from-vps.sh
+
+# Full documentation: docs/VPS_SYNC_WORKFLOW.md
 ```
 
 ### Discord Notifications
@@ -206,10 +217,24 @@ All Luanti-related development must happen in this repository (`luanti-voxelibre
 3. **Automatic Deployment**: GitHub Actions handles VPS deployment
 4. **Verification**: Check server status and logs
 
+### VPS to Local Synchronization
+When configuration changes are made directly on the VPS (e.g., emergency fixes, performance tuning):
+
+1. **Check for drift**: `./scripts/sync-from-vps.sh --dry-run`
+2. **Review changes**: Script shows diff of modified files
+3. **Apply sync**: `./scripts/sync-from-vps.sh` (interactive confirmation)
+4. **Commit**: Create descriptive commit explaining VPS changes
+5. **Push**: `git push origin main` to maintain single source of truth
+
+**Philosophy**: This repository is the **source of truth** for all Luanti configuration. Any VPS changes should be synchronized back within 24 hours.
+
+Full documentation: `docs/VPS_SYNC_WORKFLOW.md`
+
 ### Backup and Recovery
 - Backups are compressed tar.gz files of the worlds directory
 - Manual restoration: extract backup to `server/worlds/`
-- Automated cleanup retains only the 10 most recent backups
+- Automated cleanup retains backups for 7 days (~14 total backups)
+- Backup frequency: Every 12 hours (00:00 and 12:00 UTC)
 - **Backup location**: Managed within this repository's deployment pipeline
 
 ## Important Commands and Chat Features
