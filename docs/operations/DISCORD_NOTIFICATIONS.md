@@ -1,4 +1,4 @@
-# 🔔 Sistema de Notificaciones Discord - Luanti Vegan Wetlands
+# 🔔 Sistema de Notificaciones Discord - Luanti Wetlands
 
 ## Descripción
 
@@ -114,17 +114,17 @@ docker-compose down
 
 ### Conexión de Jugador
 ```
-🟢 Jugador Conectado: gabrielpantoja se ha conectado al servidor 🎮 | Servidor: Vegan Wetlands 🌱
+🟢 Jugador Conectado: gabrielpantoja se ha conectado al servidor 🎮 | Servidor: Wetlands 🌱
 ```
 
 ### Desconexión de Jugador
 ```
-🔴 Jugador Desconectado: gabrielpantoja se ha desconectado del servidor 👋 | Servidor: Vegan Wetlands 🌱
+🔴 Jugador Desconectado: gabrielpantoja se ha desconectado del servidor 👋 | Servidor: Wetlands 🌱
 ```
 
 ### Monitor Iniciado
 ```
-🤖 Monitor Iniciado: Sistema de notificaciones activado correctamente ✅ | Servidor: Vegan Wetlands 🌱
+🤖 Monitor Iniciado: Sistema de notificaciones activado correctamente ✅ | Servidor: Wetlands 🌱
 ```
 
 ## Scripts Disponibles
