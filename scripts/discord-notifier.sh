@@ -62,7 +62,7 @@ send_discord_notification() {
     local emoji="$2"  # Emoji para el mensaje (🟢, 🔴, 🤖)
 
     # Crear mensaje simple (sin saltos de línea complicados)
-    local full_message="${emoji} ${message} | **Servidor:** Vegan Wetlands 🌱"
+    local full_message="${emoji} ${message} | **Servidor:** Wetlands 🌱"
 
     # Enviar a Discord
     local response=$(curl -s -w "%{http_code}" -o /dev/null \
