@@ -260,17 +260,54 @@ minetest.register_chatcommand("ayuda", {
             "• /reglas - Ver reglas detalladas",
             "• /filosofia - Nuestra filosofía completa",
             "• /santuario - Más sobre cuidado animal",
+            "• /discord - Únete a nuestra comunidad Discord",
             "",
             "🛏️ SISTEMA DE SPAWN:",
             "Duerme en una cama para establecer tu spawn personal.",
             "Usa /back_to_spawn para teleportarte allí.",
             "",
             "🌐 Web: https://luanti.gabrielpantoja.cl",
+            "💬 Discord: /discord",
             "💚 ¡Diviértete construyendo un mundo compasivo!",
             ""
         }
 
         for _, linea in ipairs(ayuda) do
+            minetest.chat_send_player(name, linea)
+        end
+
+        return true
+    end
+})
+
+-- Comando /discord para información del servidor de Discord
+minetest.register_chatcommand("discord", {
+    description = "Información del servidor Discord de Wetlands",
+    func = function(name, param)
+        local discord_info = {
+            "💬 ════════════════════════════════════ 💬",
+            "       SERVIDOR DISCORD DE WETLANDS",
+            "💬 ════════════════════════════════════ 💬",
+            "",
+            "🌱 ¡Únete a nuestra comunidad!",
+            "",
+            "📱 ¿Qué encontrarás en Discord?",
+            "• 💬 Chat con otros jugadores",
+            "• 🔔 Notificaciones cuando alguien se conecta",
+            "• 📢 Anuncios de eventos y novedades",
+            "• 🎮 Coordinación para jugar juntos",
+            "• 🤝 Ayuda y soporte de la comunidad",
+            "• 🏗️ Comparte tus construcciones",
+            "",
+            "🔗 ENLACE DE INVITACIÓN:",
+            "https://discord.gg/JDmZ5uhKM",
+            "",
+            "📝 Recuerda seguir las mismas reglas del servidor:",
+            "Respeto, amabilidad y espíritu compasivo 💚",
+            ""
+        }
+
+        for _, linea in ipairs(discord_info) do
             minetest.chat_send_player(name, linea)
         end
 
@@ -288,7 +325,8 @@ minetest.register_globalstep(function(dtime)
             "🌱 Usa /ayuda para ver toda la información del servidor",
             "💚 Recuerda: duerme en una cama para establecer tu spawn",
             "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas",
-            "🌐 Visita nuestra página web: https://luanti.gabrielpantoja.cl"
+            "🌐 Visita nuestra página web: https://luanti.gabrielpantoja.cl",
+            "💬 ¡Únete a nuestra comunidad Discord! Usa /discord para más info"
         }
         local mensaje = mensajes_rotativos[math.random(1, #mensajes_rotativos)]
         minetest.chat_send_all(mensaje)
