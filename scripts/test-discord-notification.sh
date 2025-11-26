@@ -40,7 +40,7 @@ echo -e "${BLUE}Enviando notificación de prueba...${NC}"
 
 RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/discord_response.txt \
     -H "Content-Type: application/json" \
-    -d '{"content":"🧪 **Test de Notificaciones** - Esta es una notificación de prueba del sistema de monitoreo de Luanti. ✅ El sistema está funcionando correctamente. **Servidor:** Vegan Wetlands 🌱"}' \
+    -d '{"content":"🧪 **Test de Notificaciones** - Esta es una notificación de prueba del sistema de monitoreo de Luanti. ✅ El sistema está funcionando correctamente. **Servidor:** Wetlands 🌱"}' \
     "$DISCORD_WEBHOOK_URL")
 
 if [ "$RESPONSE" = "204" ] || [ "$RESPONSE" = "200" ]; then
