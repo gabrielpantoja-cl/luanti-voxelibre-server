@@ -19,7 +19,10 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(scp:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(./scripts/deploy-landing.sh:*)",
+      "Bash(curl -I https://luanti.gabrielpantoja.cl)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
