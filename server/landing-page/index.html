@@ -110,65 +110,18 @@
             </p>
 
             <div class="gallery-grid latest-grid" id="gallery-grid">
-                <!-- NEWEST: Vehicles Mod -->
-                <div class="gallery-item featured-main" onclick="openGalleryModal('assets/images/AUTO-AMARILLO.png', '🚗 ¡Nuevos Vehículos Disponibles! - Maneja autos y explora')">
-                    <img src="assets/images/AUTO-AMARILLO.png"
-                         alt="Nuevos Vehículos - Mod Automobiles"
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <div class="gallery-badge new">🆕 ¡NUEVA ACTUALIZACIÓN!</div>
-                            <h4>🚗 Vehículos Disponibles</h4>
-                            <p>¡Ahora puedes manejar autos en Wetlands! Explora el mundo sobre ruedas con nuestros nuevos vehículos. ¡Conduce, viaja y diviértete!</p>
-                            <span class="gallery-date">Noviembre 2025</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Latest Image: Bathroom Kit -->
-                <div class="gallery-item" onclick="openGalleryModal('assets/images/baño.png', '🚿 ¡Nuevo Kit de Baño Disponible! - Construye baños completos')">
-                    <img src="assets/images/baño.png"
-                         alt="Nuevo Kit de Baño - Mod 3dforniture"
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <div class="gallery-badge new">🔥 ACTUALIZACIÓN RECIENTE</div>
-                            <h4>🚿 Kit de Baño Completo</h4>
-                            <p>¡Nuevos items para construir baños increíbles! Incluye toilets, lavamanos, duchas, grifos y carteles de "Baño $500". ¡Decora tu casa como un pro!</p>
-                            <span class="gallery-date">Octubre 2025</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Image: Halloween Event -->
-                <div class="gallery-item" onclick="openGalleryModal('assets/images/halloween_ghost.png', '🎃 ¡Evento de Halloween 2025! - Fantasmas amigables y sorpresas')">
-                    <img src="assets/images/halloween_ghost.png"
-                         alt="Evento de Halloween 2025 - Fantasmas Amigables"
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <div class="gallery-badge new">👻 ¡EVENTO ACTIVO!</div>
-                            <h4>🎃 Halloween 2025</h4>
-                            <p>¡Nuevo mod de fantasmas amigables! Encuéntralos, recoge dulces y descubre calabazas mágicas. ¡Sin sustos, solo diversión!</p>
-                            <span class="gallery-date">Octubre 2025</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Image: Area Protection System -->
-                <div class="gallery-item" onclick="openGalleryModal('assets/images/protect_area.jpeg', '¡Sistema de Protección de Áreas Disponible! - Protege tu casa')">
-                    <img src="assets/images/protect_area.jpeg"
-                         alt="Sistema de Protección de Áreas Activado"
-                         class="gallery-image">
-                    <div class="gallery-overlay">
-                        <div class="gallery-info">
-                            <h4>🛡️ Protege Tu Casa</h4>
-                            <p>¡Todos los jugadores pueden proteger sus construcciones! Usa /area_pos1 y /area_pos2</p>
-                            <span class="gallery-date">Oct 2025</span>
-                        </div>
-                    </div>
+                <!-- Gallery items loaded dynamically from assets/data/gallery-data.json -->
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #666;">
+                    <div class="loading-spinner" style="margin: 0 auto 1rem; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #4CAF50; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <p>Cargando galería...</p>
                 </div>
             </div>
+            <style>
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            </style>
 
             <div class="gallery-cta">
                 <a href="galeria.html" class="gallery-view-all-btn">
