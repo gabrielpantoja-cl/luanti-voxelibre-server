@@ -270,21 +270,83 @@ document.querySelectorAll('.mobile-nav-link').forEach(link => {
 });
 ```
 
-## 📸 Sistema de Galería de Novedades
+## 📸 Sistema de Galería de Novedades (ACTUALIZADO NOV 2025)
 
-### Estructura de Actualización
-```html
-<div class="gallery-item featured-main">
-    <img src="assets/images/NUEVA-FEATURE.png" alt="Descripción">
-    <div class="gallery-overlay">
-        <div class="gallery-info">
-            <div class="gallery-badge new">🆕 ¡NUEVA ACTUALIZACIÓN!</div>
-            <h4>🎯 Título de la Feature</h4>
-            <p>Descripción child-friendly de la novedad</p>
-            <span class="gallery-date">Noviembre 2025</span>
-        </div>
-    </div>
-</div>
+### ⚡ Sistema Centralizado con JSON
+
+**ARQUITECTURA ACTUAL**: La galería usa un **sistema centralizado basado en JSON** implementado en Nov 2025.
+
+**Características**:
+- ✅ **Fuente única de verdad**: `assets/data/gallery-data.json`
+- ✅ **Renderizado dinámico**: JavaScript carga y renderiza desde JSON
+- ✅ **Consistencia garantizada**: `index.html` y `galeria.html` usan misma fuente
+- ✅ **index.html**: Muestra últimas 4 imágenes (priority 1-4)
+- ✅ **galeria.html**: Muestra todas las imágenes (9 actualmente)
+- ✅ **Ordenamiento automático**: Por campo `priority` (menor = más reciente)
+
+### Estructura de Datos (gallery-data.json)
+
+```json
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-11-26",
+  "images": [
+    {
+      "id": "vehicles-2025-11",
+      "filename": "AUTO-AMARILLO.png",
+      "title": "Vehiculos Disponibles",
+      "emoji": "🚗",
+      "description": "Ahora puedes manejar autos en Wetlands!",
+      "date": "2025-11",
+      "dateLabel": "Noviembre 2025",
+      "badge": {
+        "text": "NUEVA ACTUALIZACION!",
+        "emoji": "🆕",
+        "type": "new"
+      },
+      "category": "updates",
+      "featured": true,
+      "priority": 1  // Menor número = mayor prioridad
+    }
+  ]
+}
+```
+
+### Renderizado Dinámico (gallery.js)
+
+```javascript
+// Carga automática desde JSON
+async function loadGalleryData() {
+    const response = await fetch('assets/data/gallery-data.json');
+    const data = await response.json();
+
+    // Ordenar por priority (ascendente)
+    galleryData = data.images.sort((a, b) => a.priority - b.priority);
+
+    // Renderizar según página
+    if (isIndexPage) {
+        renderLatestGallery();  // Últimas 4
+    } else {
+        renderFullGallery();     // Todas
+    }
+}
+
+// index.html - Últimas 4 imágenes
+function renderLatestGallery() {
+    const latestImages = galleryData.slice(0, 4);
+    latestImages.forEach((image, index) => {
+        const galleryItem = createGalleryItem(image, index === 0);
+        container.appendChild(galleryItem);
+    });
+}
+
+// galeria.html - Todas las imágenes
+function renderFullGallery() {
+    galleryData.forEach((image, index) => {
+        const galleryItem = createGalleryItemFull(image, index === 0);
+        container.appendChild(galleryItem);
+    });
+}
 ```
 
 ### Badges de Estado
@@ -302,18 +364,21 @@ document.querySelectorAll('.mobile-nav-link').forEach(link => {
 }
 ```
 
-### Prioridades Visuales
-1. **Featured Main** (1 columna completa): Última actualización más importante
-2. **Gallery Item** (items normales): Actualizaciones recientes
-3. **Orden cronológico**: Más nuevo primero
+### Prioridades y Ordenamiento
+1. **priority: 1** → Imagen más reciente (featured en index.html)
+2. **priority: 2-4** → Imágenes recientes (visibles en index.html)
+3. **priority: 5+** → Imágenes antiguas (solo en galeria.html)
 
-## 🚀 Workflow de Deployment
+**IMPORTANTE**: Las imágenes se ordenan por `priority` (ascendente), NO por fecha. Menor número = más alta prioridad.
+
+## 🚀 Workflow de Deployment (ACTUALIZADO NOV 2025)
 
 ### Desarrollo Local
 ```bash
 # 1. Editar archivos en server/landing-page/
 vim server/landing-page/index.html
 vim server/landing-page/assets/css/style.css
+vim server/landing-page/assets/data/gallery-data.json  # Sistema centralizado
 
 # 2. Test local (abrir en navegador)
 xdg-open server/landing-page/index.html
@@ -326,39 +391,79 @@ xdg-open server/landing-page/index.html
 
 ### Deployment a Producción
 
-#### Opción A: GitHub → VPS (Recomendado)
+#### ⚡ Método Principal: GitHub Actions (AUTOMÁTICO)
+
+**IMPORTANTE**: El deployment se hace **automáticamente vía GitHub Actions**, NO se requiere script manual.
+
 ```bash
-# 1. Commit cambios
+# 1. Commit cambios localmente
 git add server/landing-page/
 git commit -m "🌐 Actualizar landing page: [descripción]"
+
+# 2. Push a main branch
 git push origin main
 
-# 2. En VPS
-ssh gabriel@<VPS_IP>
-cd /home/gabriel/luanti-voxelibre-server
-git pull origin main
+# 3. GitHub Actions hace el resto automáticamente:
+# - Clona repositorio en VPS
+# - Actualiza archivos en /home/gabriel/luanti-voxelibre-server
+# - Nginx sirve automáticamente (volume mapping)
+# - No requiere reinicio de servicios
 
-# 3. Nginx sirve automáticamente (volume mapping)
-# Mapeo en vps-do/docker-compose.yml:
-# - /home/gabriel/luanti-voxelibre-server/server/landing-page:/var/www/luanti-landing:ro
+# 4. Esperar ~30-60 segundos para propagación
 ```
 
-#### Opción B: Deploy Script
-```bash
-# Si existe script de deployment
-./scripts/deploy-landing.sh
-
-# El script hace:
-# 1. Sync de archivos vía rsync
-# 2. Configuración de nginx
-# 3. Reload de nginx
-# 4. Verificación de deployment
+**Mapeo de Nginx**:
+```yaml
+# En vps-do/docker-compose.yml:
+nginx-proxy:
+  volumes:
+    - /home/gabriel/luanti-voxelibre-server/server/landing-page:/var/www/luanti-landing:ro
 ```
+
+**Flujo Completo**:
+```
+Local Machine → git push → GitHub → VPS (auto-pull) → Nginx (auto-serve)
+     ↓              ↓          ↓           ↓              ↓
+  Commit        Actions    Webhook    git pull      Sirve archivos
+```
+
+### Headers de Cache (OPTIMIZADOS NOV 2025)
+
+**Configuración Actual de nginx**:
+```nginx
+# JavaScript y CSS: Cache 1 hora (antes: 1 año)
+location ~* \.(js|css)$ {
+    expires 1h;
+    add_header Cache-Control "public, max-age=3600";
+}
+
+# JSON: Cache 5 minutos (antes: 1 año)
+location ~* \.json$ {
+    expires 5m;
+    add_header Cache-Control "public, max-age=300";
+}
+
+# Imágenes: Cache 1 año (OK)
+location ~* \.(png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+    expires 1y;
+    add_header Cache-Control "public, immutable";
+}
+```
+
+**Por qué este cambio fue crítico**:
+- ✅ Las actualizaciones de galería ahora se ven inmediatamente
+- ✅ JSON se refresca cada 5 minutos automáticamente
+- ✅ JavaScript/CSS se actualiza cada hora
+- ✅ Imágenes mantienen cache largo (no cambian frecuentemente)
 
 ### Verificación de Deployment
+
 ```bash
 # Test HTTP status
 curl -I https://luanti.gabrielpantoja.cl
+
+# Verificar que JSON esté actualizado
+curl -s https://luanti.gabrielpantoja.cl/assets/data/gallery-data.json | python3 -c "import sys, json; data = json.load(sys.stdin); print(f'Versión: {data[\"version\"]}, Última actualización: {data[\"lastUpdated\"]}, Imágenes: {len(data[\"images\"])}')"
 
 # Verificar contenido específico
 curl -s https://luanti.gabrielpantoja.cl | grep -i "título-feature"
@@ -367,6 +472,14 @@ curl -s https://luanti.gabrielpantoja.cl | grep -i "título-feature"
 # - DevTools > Lighthouse (Performance, SEO, Accessibility)
 # - GTmetrix.com
 # - PageSpeed Insights
+```
+
+### Limpiar Cache del Navegador (Usuarios)
+
+Si los usuarios no ven cambios:
+```
+Chrome/Firefox: Ctrl + Shift + R (hard reload)
+Safari: Cmd + Option + R
 ```
 
 ## 🎯 Tareas Comunes
