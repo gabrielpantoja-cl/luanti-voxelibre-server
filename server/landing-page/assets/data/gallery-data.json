@@ -1,0 +1,153 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-11-26",
+  "images": [
+    {
+      "id": "vehicles-2025-11",
+      "filename": "AUTO-AMARILLO.png",
+      "title": "Vehiculos Disponibles",
+      "emoji": "🚗",
+      "description": "Ahora puedes manejar autos en Wetlands! Explora el mundo sobre ruedas con nuestros nuevos vehiculos. Conduce, viaja y diviertete!",
+      "date": "2025-11",
+      "dateLabel": "Noviembre 2025",
+      "badge": {
+        "text": "NUEVA ACTUALIZACION!",
+        "emoji": "🆕",
+        "type": "new"
+      },
+      "category": "updates",
+      "featured": true,
+      "priority": 1
+    },
+    {
+      "id": "bathroom-kit-2025-10",
+      "filename": "baño.png",
+      "title": "Kit de Baño Completo",
+      "emoji": "🚿",
+      "description": "Nuevos items para construir baños increibles! Incluye toilets, lavamanos, duchas, grifos y carteles de 'Baño $500'. Decora tu casa como un pro!",
+      "date": "2025-10",
+      "dateLabel": "Octubre 2025",
+      "badge": {
+        "text": "ACTUALIZACION RECIENTE",
+        "emoji": "🔥",
+        "type": "new"
+      },
+      "category": "updates",
+      "featured": false,
+      "priority": 2
+    },
+    {
+      "id": "halloween-2025",
+      "filename": "halloween_ghost.png",
+      "title": "Halloween 2025",
+      "emoji": "🎃",
+      "description": "Nuevo mod de fantasmas amigables! Encuentralos flotando, tocalos para recibir dulces y descubre las calabazas magicas. Sin sustos, solo diversion de Halloween!",
+      "date": "2025-10",
+      "dateLabel": "Octubre 2025",
+      "badge": {
+        "text": "EVENTO ACTIVO!",
+        "emoji": "👻",
+        "type": "event"
+      },
+      "category": "updates",
+      "featured": false,
+      "priority": 3
+    },
+    {
+      "id": "area-protection-2025-10",
+      "filename": "protect_area.jpeg",
+      "title": "Protege Tu Casa",
+      "emoji": "🛡️",
+      "description": "Todos los jugadores pueden proteger sus construcciones! Usa /area_pos1 y /area_pos2 para marcar tu area y /protect [nombre] para protegerla.",
+      "date": "2025-10",
+      "dateLabel": "Oct 2025",
+      "badge": null,
+      "category": "updates",
+      "featured": false,
+      "priority": 4
+    },
+    {
+      "id": "tv-mod-2025-10",
+      "filename": "tele.png",
+      "title": "Televisor con Canales",
+      "emoji": "📺",
+      "description": "Nuevo mod que agrega televisores funcionales con canales! Decora tu casa y disfruta de entretenimiento virtual mientras juegas.",
+      "date": "2025-10",
+      "dateLabel": "Oct 2025",
+      "badge": null,
+      "category": "updates",
+      "featured": false,
+      "priority": 5
+    },
+    {
+      "id": "server-rules-2025-09",
+      "filename": "reglas.png",
+      "title": "Reglas del Servidor",
+      "emoji": "📋",
+      "description": "Nueva guia visual con las reglas basicas de convivencia en Wetlands. Respeto, amabilidad y diversion para todos!",
+      "date": "2025-09",
+      "dateLabel": "Sep 2025",
+      "badge": null,
+      "category": "updates",
+      "featured": false,
+      "priority": 6
+    },
+    {
+      "id": "pool-gameplay-2025-09",
+      "filename": "wetlands-gameplay-2025-09-13.png",
+      "title": "Momentos de Relajacion",
+      "emoji": "😎",
+      "description": "Disfruta de momentos tranquilos en la piscina con amigos y aldeanos en tu ciudad personalizada. El modo creativo permite construir lugares increibles!",
+      "date": "2025-09-13",
+      "dateLabel": "Sep 2025",
+      "badge": null,
+      "category": "gameplay",
+      "featured": false,
+      "priority": 7
+    },
+    {
+      "id": "community-pepe-gabo-2025-09",
+      "filename": "pepe-gabo.jpeg",
+      "title": "Nuestra Comunidad",
+      "emoji": "👥",
+      "description": "Pepe y Gabo, miembros activos de la comunidad, disfrutando de aventuras juntos en el servidor. Haz nuevos amigos en Wetlands!",
+      "date": "2025-09",
+      "dateLabel": "Sep 2025",
+      "badge": null,
+      "category": "community",
+      "featured": false,
+      "priority": 8
+    },
+    {
+      "id": "epic-adventure-2025-08",
+      "filename": "Captura de pantalla de 2025-08-31 02-48-20.png",
+      "title": "Aventura Epica",
+      "emoji": "🏞️",
+      "description": "Explora vastos mundos llenos de vida, construcciones increibles y diversion sin limites en el servidor Wetlands.",
+      "date": "2025-08-31",
+      "dateLabel": "Ago 2025",
+      "badge": null,
+      "category": "gameplay",
+      "featured": false,
+      "priority": 9
+    }
+  ],
+  "categories": {
+    "all": {
+      "label": "Todas las Imagenes",
+      "emoji": "🖼️"
+    },
+    "updates": {
+      "label": "Actualizaciones",
+      "emoji": "🆕"
+    },
+    "gameplay": {
+      "label": "Gameplay",
+      "emoji": "🎮"
+    },
+    "community": {
+      "label": "Comunidad",
+      "emoji": "👥"
+    }
+  }
+}

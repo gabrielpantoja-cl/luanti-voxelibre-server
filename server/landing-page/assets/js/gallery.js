@@ -1,50 +1,178 @@
-// ===== ENHANCED GALLERY FUNCTIONALITY =====
-// Additional JavaScript for gallery page functionality
+// ===== CENTRALIZED GALLERY SYSTEM =====
+// Dynamic gallery loading from JSON data source
+// Supports both index.html (latest 3-4 images) and galeria.html (all images)
 
 // Gallery data and state
 let galleryData = [];
+let galleryConfig = {};
 let currentImageIndex = 0;
 let currentFilter = 'all';
+let isIndexPage = false;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initializeGallery();
-    initializeFilters();
-    setupGalleryNavigation();
+    // Detect which page we're on
+    isIndexPage = window.location.pathname.includes('index.html') || window.location.pathname === '/';
+
+    // Load gallery data from JSON
+    loadGalleryData();
 });
 
-// Initialize gallery system
-function initializeGallery() {
-    // Collect all gallery items
-    collectGalleryData();
+// Load gallery data from JSON file
+async function loadGalleryData() {
+    try {
+        const response = await fetch('assets/data/gallery-data.json');
 
-    // Setup initial filter
-    applyFilter(currentFilter);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    // Initialize modal navigation
-    setupModalNavigation();
+        const data = await response.json();
+        galleryConfig = data;
+
+        // Sort images by priority (lower number = higher priority)
+        galleryData = data.images.sort((a, b) => a.priority - b.priority);
+
+        console.log(`🖼️ Gallery data loaded: ${galleryData.length} images`);
+
+        // Render gallery based on page type
+        if (isIndexPage) {
+            renderLatestGallery();
+        } else {
+            renderFullGallery();
+        }
+
+        // Initialize gallery features
+        initializeGalleryFeatures();
+
+    } catch (error) {
+        console.error('❌ Error loading gallery data:', error);
+        showGalleryError();
+    }
 }
 
-// Collect gallery data for navigation
-function collectGalleryData() {
-    const galleryItems = document.querySelectorAll('.gallery-item-full, .gallery-item');
+// Render latest gallery (for index.html - shows 3-4 latest images)
+function renderLatestGallery() {
+    const container = document.getElementById('gallery-grid');
+    if (!container) return;
 
-    galleryData = Array.from(galleryItems).map((item, index) => {
-        const img = item.querySelector('img');
-        const title = item.querySelector('h4')?.textContent || 'Imagen sin título';
+    // Clear existing content
+    container.innerHTML = '';
 
-        return {
-            index: index,
-            src: img?.src || '',
-            alt: img?.alt || title,
-            title: title,
-            description: item.querySelector('p')?.textContent || '',
-            category: item.dataset.category || 'all',
-            element: item
-        };
+    // Get latest 4 images
+    const latestImages = galleryData.slice(0, 4);
+
+    latestImages.forEach((image, index) => {
+        const galleryItem = createGalleryItem(image, index === 0);
+        container.appendChild(galleryItem);
     });
 
-    console.log(`🖼️ Gallery initialized with ${galleryData.length} images`);
+    console.log(`✅ Rendered ${latestImages.length} latest images for index page`);
+}
+
+// Render full gallery (for galeria.html - shows all images)
+function renderFullGallery() {
+    const container = document.getElementById('gallery-full-grid');
+    if (!container) return;
+
+    // Clear existing content
+    container.innerHTML = '';
+
+    galleryData.forEach((image, index) => {
+        const galleryItem = createGalleryItemFull(image, index === 0);
+        container.appendChild(galleryItem);
+    });
+
+    // Update stats
+    updateGalleryStats();
+
+    console.log(`✅ Rendered ${galleryData.length} images for full gallery page`);
+}
+
+// Create gallery item for index page
+function createGalleryItem(image, isFeatured = false) {
+    const div = document.createElement('div');
+    div.className = isFeatured ? 'gallery-item featured-main' : 'gallery-item';
+    div.dataset.category = image.category;
+    div.onclick = () => openGalleryModal(
+        `assets/images/${image.filename}`,
+        `${image.emoji} ${image.title} - ${image.description}`
+    );
+
+    // Build HTML
+    div.innerHTML = `
+        <img src="assets/images/${image.filename}"
+             alt="${image.title} - ${image.description}"
+             class="gallery-image">
+        <div class="gallery-overlay">
+            <div class="gallery-info">
+                ${image.badge ? `<div class="gallery-badge ${image.badge.type}">${image.badge.emoji} ${image.badge.text}</div>` : ''}
+                <h4>${image.emoji} ${image.title}</h4>
+                <p>${image.description}</p>
+                <span class="gallery-date">${image.dateLabel}</span>
+            </div>
+        </div>
+    `;
+
+    return div;
+}
+
+// Create gallery item for full gallery page
+function createGalleryItemFull(image, isFeatured = false) {
+    const div = document.createElement('div');
+    div.className = isFeatured ? 'gallery-item-full featured-full' : 'gallery-item-full';
+    div.dataset.category = image.category;
+    div.onclick = () => openGalleryModal(
+        `assets/images/${image.filename}`,
+        `${image.emoji} ${image.title} - ${image.description}`
+    );
+
+    // Build HTML
+    div.innerHTML = `
+        <img src="assets/images/${image.filename}"
+             alt="${image.title} - ${image.description}"
+             class="gallery-image-full">
+        <div class="gallery-overlay-full">
+            <div class="gallery-info-full">
+                ${image.badge ? `<div class="gallery-badge ${image.badge.type}">${image.badge.emoji} ${image.badge.text}</div>` : ''}
+                <h4>${image.emoji} ${image.title}</h4>
+                <p>${image.description}</p>
+                <div class="image-meta">
+                    <span class="date-tag">${image.dateLabel}</span>
+                </div>
+            </div>
+        </div>
+    `;
+
+    return div;
+}
+
+// Update gallery statistics (for galeria.html)
+function updateGalleryStats() {
+    const statsContainer = document.querySelector('.gallery-stats');
+    if (!statsContainer) return;
+
+    const totalImages = galleryData.length;
+    const latestMonth = galleryData[0]?.dateLabel || 'N/A';
+
+    // Update stat numbers
+    const statNumbers = statsContainer.querySelectorAll('.stat-number');
+    if (statNumbers[0]) statNumbers[0].textContent = totalImages;
+    if (statNumbers[1]) statNumbers[1].textContent = 'Actualizado';
+
+    console.log(`📊 Gallery stats updated: ${totalImages} images, latest: ${latestMonth}`);
+}
+
+// Initialize gallery features (modal, navigation, filters)
+function initializeGalleryFeatures() {
+    setupModalNavigation();
+    initializeFilters();
+    GalleryUtils.injectStyles();
+
+    // Preload images after a short delay
+    setTimeout(() => {
+        GalleryUtils.preloadImages();
+    }, 1000);
 }
 
 // Filter functionality
@@ -89,34 +217,15 @@ function applyFilter(filter) {
     });
 
     console.log(`🔍 Filter '${filter}' applied - showing ${visibleCount} items`);
-
-    // Update visible gallery data
-    updateVisibleGalleryData();
-}
-
-// Update visible gallery data for navigation
-function updateVisibleGalleryData() {
-    const visibleItems = galleryData.filter(item => {
-        return currentFilter === 'all' || item.category === currentFilter;
-    });
-
-    // Update indices for visible items
-    visibleItems.forEach((item, index) => {
-        item.visibleIndex = index;
-    });
-
-    return visibleItems;
 }
 
 // Enhanced modal functionality
 function setupModalNavigation() {
     const modal = document.getElementById('gallery-modal');
-    const modalImage = document.getElementById('gallery-modal-image');
-    const modalCaption = document.getElementById('gallery-modal-caption');
     const prevBtn = document.getElementById('modal-prev');
     const nextBtn = document.getElementById('modal-next');
 
-    if (!modal || !modalImage || !modalCaption) return;
+    if (!modal) return;
 
     // Setup navigation buttons
     if (prevBtn && nextBtn) {
@@ -154,58 +263,28 @@ function setupModalNavigation() {
 
 // Navigate gallery images in modal
 function navigateGallery(direction) {
-    const visibleItems = updateVisibleGalleryData();
+    if (galleryData.length <= 1) return;
 
-    if (visibleItems.length <= 1) return; // No navigation needed
-
-    // Find current image index in visible items
-    let currentVisibleIndex = visibleItems.findIndex(item => item.index === currentImageIndex);
-
-    // Calculate new index
-    currentVisibleIndex = (currentVisibleIndex + direction + visibleItems.length) % visibleItems.length;
-    const newItem = visibleItems[currentVisibleIndex];
+    // Calculate new index (circular navigation)
+    currentImageIndex = (currentImageIndex + direction + galleryData.length) % galleryData.length;
+    const newImage = galleryData[currentImageIndex];
 
     // Update modal
-    if (newItem) {
-        updateModalContent(newItem.src, newItem.title, newItem.description);
-        currentImageIndex = newItem.index;
+    if (newImage) {
+        const modalImage = document.getElementById('gallery-modal-image');
+        const modalCaption = document.getElementById('gallery-modal-caption');
 
-        // Update navigation buttons
-        updateNavigationButtons(currentVisibleIndex, visibleItems.length);
-    }
-}
+        if (modalImage && modalCaption) {
+            modalImage.src = `assets/images/${newImage.filename}`;
+            modalImage.alt = newImage.title;
+            modalCaption.textContent = `${newImage.emoji} ${newImage.title} - ${newImage.description}`;
 
-// Update modal content
-function updateModalContent(src, title, description) {
-    const modalImage = document.getElementById('gallery-modal-image');
-    const modalCaption = document.getElementById('gallery-modal-caption');
-
-    if (modalImage && modalCaption) {
-        modalImage.src = src;
-        modalImage.alt = title;
-        modalCaption.textContent = `${title} - ${description}`;
-
-        // Add loading effect
-        modalImage.style.opacity = '0.5';
-        modalImage.onload = () => {
-            modalImage.style.opacity = '1';
-        };
-    }
-}
-
-// Update navigation button states
-function updateNavigationButtons(currentIndex, totalItems) {
-    const prevBtn = document.getElementById('modal-prev');
-    const nextBtn = document.getElementById('modal-next');
-
-    if (prevBtn && nextBtn) {
-        // In a circular navigation, buttons are never disabled
-        prevBtn.disabled = false;
-        nextBtn.disabled = false;
-
-        // Update button text with context
-        prevBtn.textContent = `← Anterior (${currentIndex + 1}/${totalItems})`;
-        nextBtn.textContent = `Siguiente (${((currentIndex + 1) % totalItems) + 1}/${totalItems}) →`;
+            // Add loading effect
+            modalImage.style.opacity = '0.5';
+            modalImage.onload = () => {
+                modalImage.style.opacity = '1';
+            };
+        }
     }
 }
 
@@ -216,18 +295,15 @@ function openGalleryModal(imageSrc, caption) {
     const modalCaption = document.getElementById('gallery-modal-caption');
 
     if (modal && modalImage && modalCaption) {
-        // Find the current image index
-        currentImageIndex = galleryData.findIndex(item => item.src === imageSrc) || 0;
+        // Find the current image index from filename
+        const filename = imageSrc.split('/').pop();
+        currentImageIndex = galleryData.findIndex(item => item.filename === filename);
+        if (currentImageIndex === -1) currentImageIndex = 0;
 
         // Update modal content
         modal.classList.add('active');
         modalImage.src = imageSrc;
         modalCaption.textContent = caption;
-
-        // Setup navigation for this specific image
-        const visibleItems = updateVisibleGalleryData();
-        const currentVisibleIndex = visibleItems.findIndex(item => item.src === imageSrc) || 0;
-        updateNavigationButtons(currentVisibleIndex, visibleItems.length);
 
         // Prevent body scroll
         document.body.style.overflow = 'hidden';
@@ -253,6 +329,26 @@ function closeGalleryModal() {
             document.body.style.overflow = '';
         }, 200);
     }
+}
+
+// Show error message if gallery fails to load
+function showGalleryError() {
+    const containers = [
+        document.getElementById('gallery-grid'),
+        document.getElementById('gallery-full-grid')
+    ];
+
+    containers.forEach(container => {
+        if (container) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">😢</div>
+                    <h3>Error al cargar la galeria</h3>
+                    <p>Por favor, recarga la pagina o contacta a los administradores.</p>
+                </div>
+            `;
+        }
+    });
 }
 
 // Gallery utilities
@@ -320,7 +416,7 @@ const GalleryUtils = {
     preloadImages: function() {
         galleryData.forEach(item => {
             const img = new Image();
-            img.src = item.src;
+            img.src = `assets/images/${item.filename}`;
         });
         console.log('🚀 Gallery images preloaded');
     },
@@ -339,49 +435,6 @@ const GalleryUtils = {
     }
 };
 
-// Navigation setup for header links
-function setupGalleryNavigation() {
-    // Update active nav link
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        if (link.textContent.includes('Galería Completa')) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-    });
-}
-
-// Initialize additional features when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Inject additional styles
-    GalleryUtils.injectStyles();
-
-    // Preload images after a short delay
-    setTimeout(() => {
-        GalleryUtils.preloadImages();
-    }, 1000);
-
-    // Log gallery statistics
-    setTimeout(() => {
-        GalleryUtils.getStats();
-    }, 500);
-
-    // Setup smooth scrolling for any anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-});
-
 // Make functions available globally for onclick handlers
 window.openGalleryModal = openGalleryModal;
 window.closeGalleryModal = closeGalleryModal;
@@ -390,7 +443,7 @@ window.navigateGallery = navigateGallery;
 // Export for potential module usage
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        initializeGallery,
+        loadGalleryData,
         applyFilter,
         navigateGallery,
         GalleryUtils
