@@ -20,6 +20,15 @@
 - **Comando de teleportación**: `/teleport gabo 0 15 0`                            
 - **Comando alternativo**: `/back_to_spawn` (si no tienes cama personal)           
                                                                                    
+
+### 🏙️ **NUEVA CIUDAD - EXPANSIÓN OESTE** ⭐⭐
+- **Coordenadas**: `-1770, 3, 902` (teleportación aérea)
+- **Coordenadas exactas**: `-1770.3, 2.5, 901.9`
+- **Descripción**: Nueva ciudad fundada cerca de la ciudad principal - Terreno plano ideal para expansión urbana
+- **Comando de teleportación**: `/teleport gabo -1770 3 902`
+- **Distancia desde Ciudad Principal**: ~1750 bloques al oeste-suroeste
+- **Estado**: ✅ **CONFIRMADO ACTIVO** (Nov 27, 2025)
+- **Características**: Terreno plano perfecto para calles y desarrollo urbano planificado
 ### 🏘️ **SEGUNDA CIUDAD - ALDEA** ⭐⭐                                                
 - **Coordenadas**: `57, 33, -3082` (teleportación aérea)                           
 - **Coordenadas exactas**: `57.1, 32.5, -3081.7`                                   
@@ -58,6 +67,10 @@
 # Zona Secundaria (por explorar)                                                   
 /teleport gabo 32 80 -80                                                           
                                                                                    
+# Nueva Ciudad - Expansiu00f3n Oeste (CONFIRMADA)
+/teleport gabo -1770 3 902
+
+
 # Segunda Ciudad - Aldea (CONFIRMADA)                                              
 /teleport gabo 57 33 -3082                                                         
                                                                                    
@@ -143,6 +156,13 @@ Si necesitas acceso completo de administrador:
 ```                                                                                
                                                                                    
 ## 📝 REGISTRO DE CAMBIOS                                                           
+
+### **27 de Noviembre, 2025**
+- ✅ **CONFIRMADO**: Nueva Ciudad - Expansión Oeste en coordenadas (-1770, 3, 902)
+- ✅ Registrada como segunda ubicación importante del servidor - Terreno plano ideal
+- ✅ Comando de teleportación agregado al sistema de navegación
+- 🏙️ Ubicación perfecta para desarrollo urbano planificado con calles
+
                                                                                    
 ### **16 de Septiembre, 2025**                                                     
 - ✅ **CONFIRMADO**: Refugio en la Nieve en coordenadas (38, 99, 1695)              
