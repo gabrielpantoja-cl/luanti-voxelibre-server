@@ -67,9 +67,8 @@
 # Zona Secundaria (por explorar)                                                   
 /teleport gabo 32 80 -80                                                           
                                                                                    
-# Nueva Ciudad - Expansiu00f3n Oeste (CONFIRMADA)
+# Nueva Ciudad - Expansión Oeste (CONFIRMADA)
 /teleport gabo -1770 3 902
-
 
 # Segunda Ciudad - Aldea (CONFIRMADA)                                              
 /teleport gabo 57 33 -3082                                                         
