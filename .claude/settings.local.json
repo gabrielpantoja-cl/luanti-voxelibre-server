@@ -24,7 +24,8 @@
       "Bash(curl -I https://luanti.gabrielpantoja.cl)",
       "Bash(curl:*)",
       "Bash(/home/gabriel/Documentos/luanti-voxelibre-server/server/landing-page/scripts/validate-gallery.sh:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []
