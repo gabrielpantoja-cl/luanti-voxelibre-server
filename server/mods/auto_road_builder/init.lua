@@ -2,7 +2,14 @@
     Auto Road Builder - Automated Road Construction for Luanti/VoxeLibre
     Copyright (C) 2025 Gabriel Pantoja (with Claude Code)
     License: GPLv3
-    Version: 1.1.0
+    Version: 1.2.0
+
+    Changelog v1.2.0:
+    - Fixed: Cardinal alignment - roads now follow VoxeLibre grid (N-S or E-W)
+    - Fixed: Independent tunnel clearing - no more vertical columns
+    - Added: Detection of existing roads to prevent duplicates
+    - Improved: Tunnel clearing now sweeps entire area independently
+    - Improved: Width applied only on perpendicular cardinal axis
 
     Changelog v1.1.0:
     - Fixed: Holes in roads (improved placement algorithm with verification)
@@ -28,31 +35,97 @@ local function is_valid_node(nodename)
     return minetest.registered_nodes[nodename] ~= nil
 end
 
--- Helper function to clear airspace above road (for tunnels)
-local function clear_airspace(road_pos, clearance_height, player_name)
+-- NEW v1.2.0: Detect primary cardinal direction of road
+local function get_cardinal_direction(start_pos, end_pos)
+    local dx = math.abs(end_pos.x - start_pos.x)
+    local dz = math.abs(end_pos.z - start_pos.z)
+
+    -- Determine if road is primarily North-South or East-West
+    if dx > dz then
+        return "east-west", dx
+    else
+        return "north-south", dz
+    end
+end
+
+-- NEW v1.2.0: Detect existing roads in area to prevent duplicates
+local function detect_existing_road(start_pos, end_pos, material)
+    local sample_count = 0
+    local found_count = 0
+    local samples = 5  -- Check 5 positions along the route
+
+    for i = 0, samples do
+        local progress = i / samples
+        local check_x = start_pos.x + (end_pos.x - start_pos.x) * progress
+        local check_y = start_pos.y + (end_pos.y - start_pos.y) * progress
+        local check_z = start_pos.z + (end_pos.z - start_pos.z) * progress
+
+        local check_pos = {
+            x = math.floor(check_x + 0.5),
+            y = math.floor(check_y + 0.5),
+            z = math.floor(check_z + 0.5)
+        }
+
+        local node = minetest.get_node(check_pos)
+        sample_count = sample_count + 1
+
+        if node.name == material then
+            found_count = found_count + 1
+        end
+    end
+
+    -- If more than 50% of samples are already road material, road exists
+    return (found_count / sample_count) > 0.5, found_count, sample_count
+end
+
+-- IMPROVED v1.2.0: Clear entire tunnel area independently (no more columns!)
+local function clear_tunnel_area(start_pos, end_pos, width, clearance_height, direction, player_name)
     if clearance_height <= 0 then
         return 0  -- No clearance requested
     end
 
     local blocks_cleared = 0
+    local half_width = math.floor(width / 2)
 
-    for h = 1, clearance_height do
-        local air_pos = {
-            x = road_pos.x,
-            y = road_pos.y + h,
-            z = road_pos.z
-        }
+    minetest.chat_send_player(player_name, "[Auto Road Builder v1.2] Clearing tunnel (independent sweep)...")
 
-        local node = minetest.get_node(air_pos)
+    -- Calculate bounds based on cardinal direction
+    local min_x, max_x, min_z, max_z
 
-        -- Only clear solid blocks, preserve air and liquids
-        if node.name ~= "air" and
-           node.name ~= "ignore" and
-           not node.name:find("water") and
-           not node.name:find("lava") and
-           not node.name:find("river_water") then
-            minetest.set_node(air_pos, {name = "air"})
-            blocks_cleared = blocks_cleared + 1
+    if direction == "east-west" then
+        -- Road runs E-W, width is N-S
+        min_x = math.min(start_pos.x, end_pos.x)
+        max_x = math.max(start_pos.x, end_pos.x)
+        min_z = math.min(start_pos.z, end_pos.z) - half_width
+        max_z = math.max(start_pos.z, end_pos.z) + half_width
+    else
+        -- Road runs N-S, width is E-W
+        min_x = math.min(start_pos.x, end_pos.x) - half_width
+        max_x = math.max(start_pos.x, end_pos.x) + half_width
+        min_z = math.min(start_pos.z, end_pos.z)
+        max_z = math.max(start_pos.z, end_pos.z)
+    end
+
+    local min_y = math.min(start_pos.y, end_pos.y)
+    local max_y = math.max(start_pos.y, end_pos.y)
+
+    -- Sweep entire tunnel volume
+    for x = min_x, max_x do
+        for z = min_z, max_z do
+            for y = min_y + 1, min_y + clearance_height do
+                local air_pos = {x = x, y = y, z = z}
+                local node = minetest.get_node(air_pos)
+
+                -- Only clear solid blocks, preserve air and liquids
+                if node.name ~= "air" and
+                   node.name ~= "ignore" and
+                   not node.name:find("water") and
+                   not node.name:find("lava") and
+                   not node.name:find("river_water") then
+                    minetest.set_node(air_pos, {name = "air"})
+                    blocks_cleared = blocks_cleared + 1
+                end
+            end
         end
     end
 
@@ -75,7 +148,7 @@ local function place_road_block(pos, material)
     return true
 end
 
--- Main road building function (improved v1.1.0)
+-- REWRITTEN v1.2.0: Main road building function with cardinal alignment
 function auto_road_builder.build_road(start_pos, end_pos, width, material, clearance_height, player_name)
     -- Validate inputs
     if not start_pos or not end_pos then
@@ -87,6 +160,15 @@ function auto_road_builder.build_road(start_pos, end_pos, width, material, clear
     end
 
     clearance_height = clearance_height or 0
+
+    -- NEW v1.2.0: Detect existing road
+    local exists, found, total = detect_existing_road(start_pos, end_pos, material)
+    if exists then
+        minetest.chat_send_player(player_name, "[Auto Road Builder v1.2] ⚠️ WARNING: Road already exists!")
+        minetest.chat_send_player(player_name, "Found " .. found .. "/" .. total .. " sample points with road material")
+        minetest.chat_send_player(player_name, "Use /repair_road to fix holes, or continue to overwrite.")
+        -- Continue anyway (allow overwrites for repairs)
+    end
 
     -- Calculate distance
     local dx = end_pos.x - start_pos.x
@@ -102,70 +184,76 @@ function auto_road_builder.build_road(start_pos, end_pos, width, material, clear
         return false, "Distance too small"
     end
 
-    -- Calculate perpendicular vector (for road width)
-    local length_xz = math.sqrt(dx*dx + dz*dz)
-    local perp_x = -dz / length_xz
-    local perp_z = dx / length_xz
+    -- NEW v1.2.0: Detect cardinal direction
+    local direction, primary_distance = get_cardinal_direction(start_pos, end_pos)
+    local half_width = math.floor(width / 2)
+
+    minetest.chat_send_player(player_name, "[Auto Road Builder v1.2] Starting construction...")
+    minetest.chat_send_player(player_name, "Direction: " .. direction .. " (cardinal aligned)")
+    minetest.chat_send_player(player_name, "Distance: " .. math.floor(distance) .. " blocks")
+    minetest.chat_send_player(player_name, "Width: " .. width .. " blocks")
+    minetest.chat_send_player(player_name, "Material: " .. material)
+
+    -- NEW v1.2.0: Clear tunnel FIRST (independent sweep, no columns!)
+    local blocks_cleared = 0
+    if clearance_height > 0 then
+        blocks_cleared = clear_tunnel_area(start_pos, end_pos, width, clearance_height, direction, player_name)
+        minetest.chat_send_player(player_name, "Tunnel cleared: " .. blocks_cleared .. " blocks removed")
+    end
 
     -- Calculate number of steps (increased for better coverage)
     local steps = math.ceil(distance * 1.5)  -- 50% more steps for overlap
     local blocks_placed = 0
-    local blocks_cleared = 0
-    local half_width = math.floor(width / 2)
-
-    minetest.chat_send_player(player_name, "[Auto Road Builder v1.1] Starting construction...")
-    minetest.chat_send_player(player_name, "Distance: " .. math.floor(distance) .. " blocks")
-    minetest.chat_send_player(player_name, "Width: " .. width .. " blocks")
-    minetest.chat_send_player(player_name, "Material: " .. material)
-    if clearance_height > 0 then
-        minetest.chat_send_player(player_name, "Tunnel mode: Clearing " .. clearance_height .. " blocks above road")
-    end
 
     -- Multi-pass construction for complete coverage
     for pass = 1, auto_road_builder.config.placement_passes do
         if pass > 1 then
-            minetest.chat_send_player(player_name, "[Auto Road Builder] Pass " .. pass .. "/" .. auto_road_builder.config.placement_passes .. " (filling gaps)...")
+            minetest.chat_send_player(player_name, "[Auto Road Builder v1.2] Pass " .. pass .. "/" .. auto_road_builder.config.placement_passes .. " (filling gaps)...")
         end
 
         for i = 0, steps do
             local progress = i / steps
-            local current_x = start_pos.x + dx * progress
-            local current_z = start_pos.z + dz * progress
-            local current_y = start_pos.y + dy * progress
+            local center_x = start_pos.x + dx * progress
+            local center_z = start_pos.z + dz * progress
+            local center_y = start_pos.y + dy * progress
 
-            -- Build width of road
+            -- NEW v1.2.0: Apply width based on cardinal direction
             for w = -half_width, half_width do
-                local road_x = current_x + perp_x * w
-                local road_z = current_z + perp_z * w
+                local road_pos
 
-                local road_pos = {
-                    x = math.floor(road_x + 0.5),
-                    y = math.floor(current_y + 0.5),
-                    z = math.floor(road_z + 0.5)
-                }
+                if direction == "east-west" then
+                    -- Road runs E-W, width is N-S (vary Z only)
+                    road_pos = {
+                        x = math.floor(center_x + 0.5),
+                        y = math.floor(center_y + 0.5),
+                        z = math.floor(center_z + 0.5) + w  -- Cardinal Z offset
+                    }
+                else
+                    -- Road runs N-S, width is E-W (vary X only)
+                    road_pos = {
+                        x = math.floor(center_x + 0.5) + w,  -- Cardinal X offset
+                        y = math.floor(center_y + 0.5),
+                        z = math.floor(center_z + 0.5)
+                    }
+                end
 
                 -- Place road block (with verification)
                 place_road_block(road_pos, material)
                 blocks_placed = blocks_placed + 1
-
-                -- Clear airspace if tunnel mode enabled (only on first pass)
-                if pass == 1 and clearance_height > 0 then
-                    blocks_cleared = blocks_cleared + clear_airspace(road_pos, clearance_height, player_name)
-                end
             end
 
             -- Report progress (only on first pass)
             if pass == 1 and i % auto_road_builder.config.progress_interval == 0 and i > 0 then
                 local percent = math.floor(progress * 100)
-                minetest.chat_send_player(player_name, "[Auto Road Builder] Progress: " .. percent .. "% (" .. i .. "/" .. steps .. " steps)")
+                minetest.chat_send_player(player_name, "[Auto Road Builder v1.2] Progress: " .. percent .. "% (" .. i .. "/" .. steps .. " steps)")
             end
         end
     end
 
-    minetest.chat_send_player(player_name, "[Auto Road Builder] ✅ Road completed!")
+    minetest.chat_send_player(player_name, "[Auto Road Builder v1.2] ✅ Road completed!")
     minetest.chat_send_player(player_name, "Blocks placed: " .. blocks_placed .. " (in " .. auto_road_builder.config.placement_passes .. " passes)")
     if clearance_height > 0 then
-        minetest.chat_send_player(player_name, "Blocks cleared: " .. blocks_cleared .. " (tunnel created)")
+        minetest.chat_send_player(player_name, "Tunnel created: " .. blocks_cleared .. " blocks cleared")
     end
 
     return true, "Road built successfully"
@@ -358,4 +446,4 @@ auto_road_builder.build_road = function(start_pos, end_pos, width, material, cle
     return success, msg
 end
 
-minetest.log("action", "[Auto Road Builder] Mod v1.1.0 loaded successfully")
+minetest.log("action", "[Auto Road Builder] Mod v1.2.0 loaded successfully - Cardinal alignment + Perfect tunnels")
