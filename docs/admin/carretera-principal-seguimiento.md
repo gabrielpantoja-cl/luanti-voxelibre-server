@@ -650,6 +650,39 @@ end
 
 ---
 
-**Última actualización:** 27 de Noviembre, 2025 - 22:35 hrs
-**Próxima revisión:** Después de limpieza manual o decisión de v1.2.0
+---
+
+## 🚀 ACTUALIZACIÓN: v1.2.0 DESPLEGADO - 27 Nov 2025 22:33 hrs
+
+### ✅ Auto Road Builder v1.2.0 Instalado en Producción
+
+**Estado de deployment:**
+- ✅ Código actualizado en VPS
+- ✅ Servidor reiniciado exitosamente
+- ✅ Mod v1.2.0 cargado: "Cardinal alignment + Perfect tunnels"
+- ✅ Disponible para uso inmediato
+
+**Mejoras disponibles en v1.2.0:**
+1. ✅ Alineación cardinal automática (N-S o E-W)
+2. ✅ Túneles sin columnas (barrido independiente)
+3. ✅ Detección de carreteras existentes
+4. ✅ Prevención de duplicados
+
+**Log de verificación:**
+```
+2025-11-27 22:33:58: ACTION[Main]: [Auto Road Builder] Mod v1.2.0 loaded
+successfully - Cardinal alignment + Perfect tunnels
+```
+
+**Recomendación para usuario:**
+- Continuar limpieza manual de carretera actual (v1.1.0)
+- Para **próximas carreteras**, usar v1.2.0 desde el inicio
+- Comandos funcionan igual, pero resultados serán perfectos
+
+**Changelog completo:** `docs/admin/auto-road-builder-v1.2.0-changelog.md`
+
+---
+
+**Última actualización:** 27 de Noviembre, 2025 - 22:40 hrs
+**Estado:** v1.2.0 en producción | Carretera actual en limpieza manual
 **Responsable:** gabo + Claude Code
