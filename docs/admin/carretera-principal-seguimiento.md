@@ -683,6 +683,126 @@ successfully - Cardinal alignment + Perfect tunnels
 
 ---
 
-**Última actualización:** 27 de Noviembre, 2025 - 22:40 hrs
-**Estado:** v1.2.0 en producción | Carretera actual en limpieza manual
+---
+
+## 🚨 PROBLEMA DETECTADO: Túnel Muy Bajo - 27 Nov 2025 22:45 hrs
+
+### Ubicación del Problema
+
+**Posición reportada:** -1129.8, 13.5, 579.8
+**Zona:** Tramo este de la carretera (hacia Expansión Oeste)
+**Problema:** Túnel con altura insuficiente - "ni siquiera quepo yo"
+
+### Análisis de la Causa
+
+**Parámetro usado en v1.1.0:**
+```bash
+/build_road -124 30 73 -1770 3 902 10 mcl_stairs:slab_concrete_grey 5
+                                                                    ↑
+                                                              clearance=5
+```
+
+**Problema identificado:**
+- `clearance_height = 5` limpia 5 bloques **sobre la carretera**
+- Si la carretera está en Y=13, el túnel va de Y=14 a Y=18
+- El jugador necesita ~2 bloques de altura mínimo
+- **Pero:** Si el terreno tiene elevaciones, el túnel puede quedar desnivelado
+
+**Causa raíz:**
+La carretera tiene cambios de altura (Y=30 en inicio, Y=3 en destino). En la zona intermedia (Y=13), el clearance de 5 bloques puede ser insuficiente si hay montaña encima.
+
+### Opciones de Solución
+
+#### OPCIÓN A: Limpiar manualmente esa sección con WorldEdit (RÁPIDO)
+
+```bash
+# Ubicarte en -1129, 13, 579
+# Seleccionar área del túnel bajo (ajustar coordenadas según zona real)
+//pos1 -1200 14 570
+//pos2 -1100 22 590
+
+# Limpiar bloques sólidos
+//replace mcl_core:stone air
+//replace mcl_core:dirt air
+//replace mcl_core:cobble air
+//replace mcl_core:gravel air
+```
+
+**Tiempo:** 5-10 minutos
+**Ventaja:** Solución inmediata para esa sección
+**Desventaja:** Manual, solo arregla ese tramo
+
+---
+
+#### OPCIÓN B: Usar v1.2.0 para reconstruir SOLO ese tramo (MEJOR)
+
+```bash
+# Construir desde tu posición actual hacia el este con clearance mayor
+/build_road_here -1770 3 902 10 mcl_stairs:slab_concrete_grey 8
+                                                              ↑
+                                                        clearance=8 (más alto)
+```
+
+**Ventaja:**
+- v1.2.0 limpiará túnel completo sin columnas
+- Clearance de 8 bloques garantiza altura suficiente
+- Sobrescribirá carretera existente mejorándola
+
+**Desventaja:**
+- Sobrescribe todo el tramo desde tu posición hasta destino
+- Puede crear carretera paralela si coordenadas no coinciden exactamente
+
+---
+
+#### OPCIÓN C: Usar v1.2.0 con reconstrucción completa de toda la ruta (ÓPTIMO)
+
+```bash
+# PRIMERO: Eliminar todas las carreteras actuales con WorldEdit
+//pos1 -124 25 65
+//pos2 -1770 35 910
+//replace mcl_stairs:slab_concrete_grey air
+
+# SEGUNDO: Reconstruir con v1.2.0 desde cero
+/build_road -124 30 73 -1770 3 902 10 mcl_stairs:slab_concrete_grey 8
+                                                                    ↑
+                                                              clearance=8
+```
+
+**Ventaja:**
+- Carretera perfecta de punta a punta
+- Sin columnas, sin hoyos, sin túneles bajos
+- Alineación cardinal
+- Resultado profesional
+
+**Desventaja:**
+- Pierdes el trabajo manual de limpieza ya hecho
+- Requiere tiempo de construcción completa (~5 min)
+
+---
+
+### Recomendación Inmediata
+
+**OPCIÓN A (WorldEdit manual)** para la zona actual:
+
+1. Ubicarte en la zona del túnel bajo (-1129, 13, 579)
+2. Identificar el área exacta que necesita más altura
+3. Usar WorldEdit para limpiar 3-4 bloques adicionales arriba del túnel
+
+**Comandos sugeridos:**
+```bash
+# Seleccionar zona problemática
+//pos1 -1150 14 570
+//pos2 -1100 20 590
+
+# Limpiar
+//replace mcl_core:stone air
+//replace mcl_core:dirt air
+```
+
+Esto te permite continuar con la limpieza manual sin reconstruir todo.
+
+---
+
+**Última actualización:** 27 de Noviembre, 2025 - 22:45 hrs
+**Estado:** v1.2.0 en producción | Túnel bajo detectado en -1129, 13, 579
 **Responsable:** gabo + Claude Code
