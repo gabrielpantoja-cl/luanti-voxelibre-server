@@ -78,9 +78,42 @@ Vuela hacia arriba 400 bloques (100 pisos × 4 bloques por piso) y muévete a la
 //2
 ```
 
-#### 2.2 Crear paredes exteriores de cristal
+#### 2.2 Crear estructura hueca con paredes de cristal
+**Opción A - Comando hollow (recomendado):**
 ```
-//walls mcl_core:glass
+//hollowcube mcl_core:glass
+```
+
+**Opción B - Si hollowcube no funciona, usar este método:**
+```
+//set mcl_core:glass
+//1
+```
+(Marca esquina interior, 1 bloque hacia adentro y arriba desde la esquina exterior)
+```
+//2
+```
+(Marca esquina interior opuesta, 1 bloque hacia adentro y abajo desde la esquina exterior)
+```
+//set air
+```
+
+**Opción C - Método manual más seguro:**
+Primero llena todo de cristal, luego vacía el interior:
+```
+//set mcl_core:glass
+```
+Luego selecciona el interior (1 bloque hacia adentro en todas las direcciones):
+```
+//1
+```
+(Posición: 41, 23, 12)
+```
+//2
+```
+(Posición: 59, 421, 30)
+```
+//set air
 ```
 
 #### 2.3 Crear pisos internos (cada 4 bloques)
@@ -231,13 +264,22 @@ Añadir antorchas en cada piso automáticamente:
 //set mcl_core:glass
 
 // ESTRUCTURA VERTICAL DE CRISTAL (400 bloques alto = 100 pisos)
-// Esquina suroeste inferior
+// MÉTODO: Primero llenar todo de cristal, luego vaciar el interior
+
+// Paso 1: Crear bloque sólido de cristal
 /teleport 40 22 11
 //1
-// Esquina noreste superior (100 pisos × 4 = 400 bloques)
 /teleport 60 422 31
 //2
-//walls mcl_core:glass
+//set mcl_core:glass
+
+// Paso 2: Vaciar el interior (dejar solo las paredes)
+// Interior: 1 bloque hacia adentro en todas las direcciones
+/teleport 41 23 12
+//1
+/teleport 59 421 30
+//2
+//set air
 
 // PISOS INTERNOS DE CRISTAL
 // Primer piso (Y=26, que es base+4)
