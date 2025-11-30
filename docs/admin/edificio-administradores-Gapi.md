@@ -2,9 +2,11 @@
 
 ## 📋 Información del Proyecto
 - **Altura**: 100 pisos
-- **Ascensor**: Cristal 3x2 (pozo central)
+- **Material**: 🔮 **100% CRISTAL** (paredes, pisos, base, techo)
+- **Ascensor**: Cristal 3x2 (pozo central transparente)
 - **Herramienta**: WorldEdit commands
 - **Usuario**: Gapi (admin)
+- **Estilo**: Edificio completamente transparente y futurista
 
 ---
 
@@ -40,9 +42,9 @@ Muévete 20 bloques al frente y 20 bloques al lado (edificio 20x20), luego:
 //2
 ```
 
-#### 1.3 Crear la base de piedra
+#### 1.3 Crear la base de cristal
 ```
-//set mcl_core:stone
+//set mcl_core:glass
 ```
 
 ---
@@ -60,9 +62,9 @@ Vuela hacia arriba 400 bloques (100 pisos × 4 bloques por piso) y muévete a la
 //2
 ```
 
-#### 2.2 Crear paredes exteriores
+#### 2.2 Crear paredes exteriores de cristal
 ```
-//walls mcl_core:stonebrick
+//walls mcl_core:glass
 ```
 
 #### 2.3 Crear pisos internos (cada 4 bloques)
@@ -78,7 +80,7 @@ Para cada piso, necesitas repetir este patrón. Ejemplo para piso 1:
 (Marca la esquina opuesta en Y=4)
 
 ```
-//set mcl_core:wood
+//set mcl_core:glass
 ```
 
 **Automatización con WorldEdit Stack** (más eficiente):
@@ -95,7 +97,7 @@ Primero crea un piso modelo:
 (Esquina superior del primer piso en Y=4)
 
 ```
-//set mcl_core:wood
+//set mcl_core:glass
 ```
 
 Ahora copia y pega hacia arriba 100 veces:
@@ -159,14 +161,10 @@ Repite con stack:
 
 ### FASE 4: DETALLES Y ACABADOS
 
-#### 4.1 Ventanas en cada piso
-Para cada piso, selecciona la pared exterior y reemplaza algunos bloques:
-```
-//replace mcl_core:stonebrick mcl_core:glass 30%
-```
-Esto reemplaza 30% de las paredes con ventanas.
+#### 4.1 ~~Ventanas en cada piso~~ (No necesario - todo es cristal)
+**NOTA**: Este paso se omite porque todo el edificio ya es de cristal transparente.
 
-#### 4.2 Techo del edificio
+#### 4.2 Techo del edificio (cristal)
 Sube al piso 100 (Y=400):
 ```
 //1
@@ -179,7 +177,7 @@ Sube al piso 100 (Y=400):
 (Marca la esquina opuesta)
 
 ```
-//set mcl_core:stonebrick
+//set mcl_core:glass
 ```
 
 #### 4.3 Iluminación interior
@@ -200,24 +198,24 @@ Añadir antorchas en cada piso automáticamente:
 /noclip
 /tp 0 100 0
 
-// BASE (20x20)
+// BASE DE CRISTAL (20x20)
 //1
 // Muévete manualmente a +20,+0,+20
 //2
-//set mcl_core:stone
+//set mcl_core:glass
 
-// ESTRUCTURA VERTICAL (400 bloques alto = 100 pisos)
+// ESTRUCTURA VERTICAL DE CRISTAL (400 bloques alto = 100 pisos)
 //1
 // Muévete a +20,+400,+20
 //2
-//walls mcl_core:stonebrick
+//walls mcl_core:glass
 
-// PISOS INTERNOS
+// PISOS INTERNOS DE CRISTAL
 // Crea primer piso en Y=4
 //1
 // Muévete a +20,+4,+20
 //2
-//set mcl_core:wood
+//set mcl_core:glass
 //copy
 //stack 99 up 4
 
@@ -238,18 +236,12 @@ Añadir antorchas en cada piso automáticamente:
 //copy
 //stack 99 up 4
 
-// VENTANAS (30% de paredes)
-//1
-// Selecciona todo el edificio nuevamente
-//2
-//replace mcl_core:stonebrick mcl_core:glass 30%
-
-// TECHO
+// TECHO DE CRISTAL
 // Párate en +0,400,+0
 //1
 // Muévete a +20,400,+20
 //2
-//set mcl_core:stonebrick
+//set mcl_core:glass
 
 // ILUMINACIÓN
 //1
@@ -262,13 +254,14 @@ Añadir antorchas en cada piso automáticamente:
 
 ## 📐 Dimensiones Finales
 
-- **Base**: 20×20 bloques
+- **Base**: 20×20 bloques de cristal
 - **Altura total**: 400 bloques (100 pisos × 4 bloques/piso)
-- **Ascensor**: 3×2 bloques, cristal transparente
-- **Ventanas**: 30% de las paredes exteriores
-- **Material principal**: Ladrillos de piedra (mcl_core:stonebrick)
-- **Pisos**: Madera (mcl_core:wood)
-- **Ascensor**: Cristal (mcl_core:glass)
+- **Ascensor**: 3×2 bloques, cristal transparente (se integra con la estructura)
+- **Material**: 🔮 **100% CRISTAL** (mcl_core:glass)
+- **Paredes**: Cristal transparente
+- **Pisos**: Cristal transparente
+- **Techo**: Cristal transparente
+- **Estilo**: Edificio completamente transparente y futurista
 
 ---
 
@@ -279,6 +272,7 @@ Añadir antorchas en cada piso automáticamente:
 3. **Comandos cortos**: Puedes usar `/1` y `/2` en lugar de `//1` y `//2` si worldedit_shortcommands está activo
 4. **Correcciones**: Usa `//undo` para deshacer el último comando
 5. **Guardar progreso**: El servidor guarda automáticamente cada 5 minutos
+6. **🔮 Edificio de cristal**: Todo el edificio es transparente, por lo que verás a través de todas las paredes y pisos. ¡Efecto visual espectacular!
 
 ---
 
@@ -293,9 +287,13 @@ Cambia `//stack 99 up 4` a `//stack 99 up 5`
 ### Ascensor más grande (5×5):
 Cambia las dimensiones del pozo de 3×2 a 5×5
 
-### Paredes de cristal completo:
+### Cristal de colores (opcional):
+Puedes usar variantes de cristal coloreado:
 ```
-//replace mcl_core:stonebrick mcl_core:glass
+//set mcl_core:glass_cyan        # Cristal cian
+//set mcl_core:glass_light_blue  # Cristal azul claro
+//set mcl_core:glass_blue        # Cristal azul
+//set mcl_core:glass_white       # Cristal blanco
 ```
 
 ---
@@ -326,17 +324,16 @@ Cambia las dimensiones del pozo de 3×2 a 5×5
 
 - [ ] Verificar privilegios WorldEdit
 - [ ] Activar `/fly` y `/noclip`
-- [ ] Crear base 20×20
-- [ ] Construir paredes exteriores (400 bloques alto)
-- [ ] Crear pisos internos (stack ×100)
+- [ ] Crear base de cristal 20×20
+- [ ] Construir paredes exteriores de cristal (400 bloques alto)
+- [ ] Crear pisos internos de cristal (stack ×100)
 - [ ] Vaciar pozo del ascensor (3×2)
 - [ ] Instalar paredes de cristal en ascensor
-- [ ] Crear plataformas de cristal (stack ×100)
-- [ ] Añadir ventanas (30%)
-- [ ] Construir techo
-- [ ] Iluminación interior
-- [ ] Verificar estructura completa
-- [ ] Tomar screenshot del edificio terminado
+- [ ] Crear plataformas de cristal en ascensor (stack ×100)
+- [ ] Construir techo de cristal
+- [ ] Iluminación interior (antorchas)
+- [ ] Verificar estructura completamente transparente
+- [ ] Tomar screenshot del edificio de cristal terminado (¡se verá espectacular!)
 
 ---
 
