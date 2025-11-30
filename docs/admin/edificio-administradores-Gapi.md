@@ -20,6 +20,12 @@
 ```
 Esta posición te coloca **mirando directamente a la puerta del ascensor**.
 
+**🔷 LAS 4 ESQUINAS EXACTAS DEL PISO BASE (Y=22.5):**
+1. **Esquina Noreste (NE)**: `60.1, 22.5, 31`
+2. **Esquina Noroeste (NO)**: `40, 22.5, 31`
+3. **Esquina Suroeste (SO)**: `40.2, 22.5, 11.2`
+4. **Esquina Sureste (SE)**: `59.8, 22.5, 11.1`
+
 **Coordenadas de referencia:**
 - **Entrada del ascensor**: X=50.7, Y=22.5, Z=21.8
 - **Orientación**: Mirando hacia la puerta del ascensor
@@ -37,84 +43,74 @@ Debes tener: `worldedit`, `server`, `creative`, `fly`, `noclip`
 
 ### FASE 1: BASE DEL EDIFICIO (Planta Baja)
 
-#### 1.1 Posicionarse en la base del edificio
-Desde la entrada del ascensor (50.7, 22.5, 21.8), calcula la esquina inferior del edificio.
-
-**Opción A - Usar coordenadas exactas:**
+#### 1.1 Marcar primera esquina (Suroeste)
 ```
-/teleport 40 22 11
+/teleport 40.2 22.5 11.2
 //1
 ```
-(Esquina suroeste de la base)
+Esta es la **esquina SUROESTE** del edificio.
 
-**Opción B - Desde la puerta del ascensor:**
-Desde (50.7, 22.5, 21.8), muévete 10 bloques al oeste y 10 bloques al sur para llegar a la esquina.
-
-#### 1.2 Marcar posición final (esquina superior de la base)
-Edificio 20x20, muévete a la esquina opuesta:
+#### 1.2 Marcar segunda esquina (Noreste)
 ```
-/teleport 60 22 31
+/teleport 60.1 22.5 31
 //2
 ```
-(Esquina noreste de la base)
+Esta es la **esquina NORESTE** del edificio.
 
 #### 1.3 Crear la base de cristal
 ```
 //set mcl_core:glass
 ```
+Esto crea el piso base completo de cristal.
 
 ---
 
-### FASE 2: ESTRUCTURA PRINCIPAL (100 pisos)
+### FASE 2: PAREDES DE CRISTAL (100 pisos = 400 bloques altura)
 
-#### 2.1 Marcar área vertical completa
-Párate en una esquina de la base:
+#### 2.1 PASO 1: Crear cubo SÓLIDO de cristal (todo lleno)
+
+**Marcar esquina SUROESTE inferior:**
 ```
+/teleport 40.2 22.5 11.2
 //1
 ```
 
-Vuela hacia arriba 400 bloques (100 pisos × 4 bloques por piso) y muévete a la esquina opuesta:
+**Marcar esquina NORESTE superior (400 bloques arriba):**
 ```
+/teleport 60.1 422.5 31
 //2
 ```
+*Nota: 422.5 = 22.5 (base) + 400 (altura de 100 pisos)*
 
-#### 2.2 Crear estructura hueca con paredes de cristal
-**Opción A - Comando hollow (recomendado):**
-```
-//hollowcube mcl_core:glass
-```
-
-**Opción B - Si hollowcube no funciona, usar este método:**
-```
-//set mcl_core:glass
-//1
-```
-(Marca esquina interior, 1 bloque hacia adentro y arriba desde la esquina exterior)
-```
-//2
-```
-(Marca esquina interior opuesta, 1 bloque hacia adentro y abajo desde la esquina exterior)
-```
-//set air
-```
-
-**Opción C - Método manual más seguro:**
-Primero llena todo de cristal, luego vacía el interior:
+**Llenar TODO de cristal:**
 ```
 //set mcl_core:glass
 ```
-Luego selecciona el interior (1 bloque hacia adentro en todas las direcciones):
+⏳ *Esto puede tomar 30-60 segundos. Espera a que termine.*
+
+---
+
+#### 2.2 PASO 2: Vaciar el interior (dejar solo las paredes)
+
+**Marcar esquina SUROESTE interior (1 bloque hacia adentro):**
 ```
+/teleport 41.2 23.5 12.2
 //1
 ```
-(Posición: 41, 23, 12)
+
+**Marcar esquina NORESTE interior (1 bloque hacia adentro):**
 ```
+/teleport 59.1 421.5 30
 //2
 ```
-(Posición: 59, 421, 30)
+
+**Vaciar el interior:**
 ```
 //set air
 ```
+⏳ *Esto puede tomar 30-60 segundos. Espera a que termine.*
+
+✅ **¡Ahora tienes un edificio hueco con paredes de cristal de 1 bloque de grosor!**
 
 #### 2.3 Crear pisos internos (cada 4 bloques)
 Para cada piso, necesitas repetir este patrón. Ejemplo para piso 1:
@@ -254,30 +250,38 @@ Añadir antorchas en cada piso automáticamente:
 // Entrada del ascensor: 50.7, 22.5, 21.8
 /teleport 50.7 22.5 21.8
 
-// BASE DE CRISTAL (20x20)
-// Esquina suroeste
-/teleport 40 22 11
+// ====== ESQUINAS REALES DEL EDIFICIO ======
+// NE: 60.1, 22.5, 31
+// NO: 40, 22.5, 31
+// SO: 40.2, 22.5, 11.2
+// SE: 59.8, 22.5, 11.1
+
+// BASE DE CRISTAL
+// Esquina SUROESTE
+/teleport 40.2 22.5 11.2
 //1
-// Esquina noreste
-/teleport 60 22 31
+// Esquina NORESTE
+/teleport 60.1 22.5 31
 //2
 //set mcl_core:glass
 
-// ESTRUCTURA VERTICAL DE CRISTAL (400 bloques alto = 100 pisos)
-// MÉTODO: Primero llenar todo de cristal, luego vaciar el interior
+// ====== PAREDES DE CRISTAL (400 bloques altura) ======
 
-// Paso 1: Crear bloque sólido de cristal
-/teleport 40 22 11
+// PASO 1: Crear cubo SÓLIDO de cristal
+// Esquina SUROESTE inferior
+/teleport 40.2 22.5 11.2
 //1
-/teleport 60 422 31
+// Esquina NORESTE superior (400 bloques arriba)
+/teleport 60.1 422.5 31
 //2
 //set mcl_core:glass
 
-// Paso 2: Vaciar el interior (dejar solo las paredes)
-// Interior: 1 bloque hacia adentro en todas las direcciones
-/teleport 41 23 12
+// PASO 2: Vaciar el interior (dejar solo paredes)
+// Esquina SUROESTE interior (1 bloque hacia adentro)
+/teleport 41.2 23.5 12.2
 //1
-/teleport 59 421 30
+// Esquina NORESTE interior (1 bloque hacia adentro)
+/teleport 59.1 421.5 30
 //2
 //set air
 
