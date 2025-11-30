@@ -13,10 +13,17 @@
 ## 🎯 Preparación Inicial
 
 ### Paso 1: Posicionarse en el punto de construcción
+
+**📍 UBICACIÓN EXACTA DEL EDIFICIO:**
 ```
-/spawn
+/teleport 50.7 22.5 21.8
 ```
-Ubícate en el punto donde quieres que esté la base del edificio.
+Esta posición te coloca **mirando directamente a la puerta del ascensor**.
+
+**Coordenadas de referencia:**
+- **Entrada del ascensor**: X=50.7, Y=22.5, Z=21.8
+- **Orientación**: Mirando hacia la puerta del ascensor
+- **Altura base**: Y=22.5 (nivel del piso de entrada)
 
 ### Paso 2: Verificar privilegios WorldEdit
 ```
@@ -30,17 +37,26 @@ Debes tener: `worldedit`, `server`, `creative`, `fly`, `noclip`
 
 ### FASE 1: BASE DEL EDIFICIO (Planta Baja)
 
-#### 1.1 Marcar posición inicial (esquina inferior)
-Párate en la esquina donde comenzará el edificio y ejecuta:
+#### 1.1 Posicionarse en la base del edificio
+Desde la entrada del ascensor (50.7, 22.5, 21.8), calcula la esquina inferior del edificio.
+
+**Opción A - Usar coordenadas exactas:**
 ```
+/teleport 40 22 11
 //1
 ```
+(Esquina suroeste de la base)
+
+**Opción B - Desde la puerta del ascensor:**
+Desde (50.7, 22.5, 21.8), muévete 10 bloques al oeste y 10 bloques al sur para llegar a la esquina.
 
 #### 1.2 Marcar posición final (esquina superior de la base)
-Muévete 20 bloques al frente y 20 bloques al lado (edificio 20x20), luego:
+Edificio 20x20, muévete a la esquina opuesta:
 ```
+/teleport 60 22 31
 //2
 ```
+(Esquina noreste de la base)
 
 #### 1.3 Crear la base de cristal
 ```
@@ -110,17 +126,21 @@ Ahora copia y pega hacia arriba 100 veces:
 
 ### FASE 3: ASCENSOR CENTRAL DE CRISTAL (3x2)
 
-#### 3.1 Calcular posición central
-Si tu edificio es 20x20, el centro está en X+10, Z+10 desde la esquina inicial.
+#### 3.1 Posición central del ascensor
+**📍 Ubicación exacta del ascensor:**
+- **Centro del edificio**: X=50, Z=21
+- **Puerta de entrada**: X=50.7, Y=22.5, Z=21.8 (ya conocida)
 
 #### 3.2 Limpiar el pozo del ascensor (3x2 × 400 bloques alto)
-Párate en el centro del edificio, base (Y=0):
+**Esquina inferior del pozo:**
 ```
+/teleport 49 22 20
 //1
 ```
 
-Muévete 3 bloques en X, 2 bloques en Z, y 400 bloques arriba (Y=400):
+**Esquina superior del pozo (400 bloques arriba):**
 ```
+/teleport 52 422 22
 //2
 ```
 
