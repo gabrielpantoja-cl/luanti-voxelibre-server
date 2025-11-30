@@ -289,16 +289,40 @@ Añadir antorchas en cada piso automáticamente:
 
 ---
 
-## 📐 Dimensiones Finales
+## 📐 Dimensiones y Coordenadas Finales
 
+### 🎯 Ubicación en el Mundo
+- **📍 Entrada del ascensor**: X=50.7, Y=22.5, Z=21.8
+- **Esquina suroeste**: X=40, Y=22, Z=11
+- **Esquina noreste**: X=60, Y=22, Z=31
+- **Centro del edificio**: X=50, Z=21
+- **Altura del techo**: Y=422 (400 bloques sobre la base)
+
+### 📏 Dimensiones Físicas
 - **Base**: 20×20 bloques de cristal
 - **Altura total**: 400 bloques (100 pisos × 4 bloques/piso)
-- **Ascensor**: 3×2 bloques, cristal transparente (se integra con la estructura)
+- **Ascensor**: 3×2 bloques (X: 49-52, Z: 20-22)
 - **Material**: 🔮 **100% CRISTAL** (mcl_core:glass)
 - **Paredes**: Cristal transparente
 - **Pisos**: Cristal transparente
 - **Techo**: Cristal transparente
 - **Estilo**: Edificio completamente transparente y futurista
+
+### 🗺️ Mapa de Coordenadas Clave
+```
+Edificio 20×20:
+  Esquina NE (60, 22, 31) ────────────┐
+                                      │
+                                      │ 20 bloques
+                                      │
+  Esquina SO (40, 22, 11) ────────────┘
+         └──── 20 bloques ────┘
+
+Ascensor 3×2 (centro del edificio):
+  - Esquina inferior: (49, 22, 20)
+  - Esquina superior: (52, 422, 22)
+  - Puerta de entrada: (50.7, 22.5, 21.8)
+```
 
 ---
 
