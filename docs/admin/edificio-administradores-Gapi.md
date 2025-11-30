@@ -216,58 +216,75 @@ Añadir antorchas en cada piso automáticamente:
 // PREPARACIÓN
 /fly
 /noclip
-/tp 0 100 0
+
+// ====== UBICACIÓN EXACTA DEL EDIFICIO ======
+// Entrada del ascensor: 50.7, 22.5, 21.8
+/teleport 50.7 22.5 21.8
 
 // BASE DE CRISTAL (20x20)
+// Esquina suroeste
+/teleport 40 22 11
 //1
-// Muévete manualmente a +20,+0,+20
+// Esquina noreste
+/teleport 60 22 31
 //2
 //set mcl_core:glass
 
 // ESTRUCTURA VERTICAL DE CRISTAL (400 bloques alto = 100 pisos)
+// Esquina suroeste inferior
+/teleport 40 22 11
 //1
-// Muévete a +20,+400,+20
+// Esquina noreste superior (100 pisos × 4 = 400 bloques)
+/teleport 60 422 31
 //2
 //walls mcl_core:glass
 
 // PISOS INTERNOS DE CRISTAL
-// Crea primer piso en Y=4
+// Primer piso (Y=26, que es base+4)
+/teleport 40 26 11
 //1
-// Muévete a +20,+4,+20
+/teleport 60 26 31
 //2
 //set mcl_core:glass
 //copy
 //stack 99 up 4
 
-// POZO DEL ASCENSOR (centro: +10,0,+10, tamaño 3x2)
-// Párate en +10,0,+10
+// POZO DEL ASCENSOR (3x2 en el centro)
+// Esquina inferior del pozo (49, 22, 20)
+/teleport 49 22 20
 //1
-// Muévete a +13,+400,+12
+// Esquina superior del pozo (52, 422, 22)
+/teleport 52 422 22
 //2
 //set air
 //walls mcl_core:glass
 
 // PLATAFORMAS DE CRISTAL EN ASCENSOR
-// Párate en +10,4,+10 (primer piso)
+// Primera plataforma (nivel del primer piso)
+/teleport 49 26 20
 //1
-// Muévete a +13,4,+12
+/teleport 52 26 22
 //2
 //set mcl_core:glass
 //copy
 //stack 99 up 4
 
 // TECHO DE CRISTAL
-// Párate en +0,400,+0
+/teleport 40 422 11
 //1
-// Muévete a +20,400,+20
+/teleport 60 422 31
 //2
 //set mcl_core:glass
 
 // ILUMINACIÓN
+/teleport 40 22 11
 //1
-// Selecciona todo el interior
+/teleport 60 422 31
 //2
 //replace air mcl_torches:torch_floor 2%
+
+// ====== VOLVER A LA ENTRADA ======
+/teleport 50.7 22.5 21.8
 ```
 
 ---
