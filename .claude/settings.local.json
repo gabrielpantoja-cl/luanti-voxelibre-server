@@ -25,7 +25,9 @@
       "Bash(curl:*)",
       "Bash(/home/gabriel/Documentos/luanti-voxelibre-server/server/landing-page/scripts/validate-gallery.sh:*)",
       "Bash(python3:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(git symbolic-ref:*)",
+      "Bash(git remote:*)"
     ],
     "deny": [],
     "ask": []
