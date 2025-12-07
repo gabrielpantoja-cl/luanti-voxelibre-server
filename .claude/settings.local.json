@@ -42,7 +42,8 @@
       "Bash(ls:*)",
       "Bash(identify:*)",
       "Bash(convert:*)",
-      "mcp__playwright__browser_close"
+      "mcp__playwright__browser_close",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
