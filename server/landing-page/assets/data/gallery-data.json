@@ -1,7 +1,24 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-11-26",
+  "lastUpdated": "2025-12-07",
   "images": [
+    {
+      "id": "santa-skins-christmas-2025",
+      "filename": "hohoho.png",
+      "title": "Skin de Santa Claus - HO HO HO!",
+      "emoji": "🎅",
+      "description": "¡Celebra la Navidad en Wetlands! Nuevo skin de Santa Claus disponible para todos. Presiona ESC > Personalizacion > Skins y selecciona 'santa_ho_ho_ho'. Unete a la fiesta navidena!",
+      "date": "2025-12-07",
+      "dateLabel": "Diciembre 2025",
+      "badge": {
+        "text": "NUEVO SKIN NAVIDEÑO!",
+        "emoji": "🎄",
+        "type": "new"
+      },
+      "category": "updates",
+      "featured": true,
+      "priority": 1
+    },
     {
       "id": "vehicles-2025-11",
       "filename": "AUTO-AMARILLO.png",
@@ -11,13 +28,13 @@
       "date": "2025-11",
       "dateLabel": "Noviembre 2025",
       "badge": {
-        "text": "NUEVA ACTUALIZACION!",
-        "emoji": "🆕",
+        "text": "ACTUALIZACION RECIENTE",
+        "emoji": "🚗",
         "type": "new"
       },
       "category": "updates",
-      "featured": true,
-      "priority": 1
+      "featured": false,
+      "priority": 2
     },
     {
       "id": "bathroom-kit-2025-10",
