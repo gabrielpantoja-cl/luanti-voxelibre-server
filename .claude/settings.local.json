@@ -27,7 +27,8 @@
       "Bash(python3:*)",
       "Bash(tree:*)",
       "Bash(git symbolic-ref:*)",
-      "Bash(git remote:*)"
+      "Bash(git remote:*)",
+      "Bash(gh run list:*)"
     ],
     "deny": [],
     "ask": []
