@@ -1,0 +1,5 @@
+DO NOT rename folders or the mod won't be able to read them.
+
+/sounds is where you put sounds you want loaded from the world folder
+/textures is where you put textures you want loaded from the world folder 
+ 
