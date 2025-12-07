@@ -28,7 +28,8 @@
       "Bash(tree:*)",
       "Bash(git symbolic-ref:*)",
       "Bash(git remote:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "WebFetch(domain:www.minecraftskins.com)"
     ],
     "deny": [],
     "ask": []
