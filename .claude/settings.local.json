@@ -43,7 +43,8 @@
       "Bash(identify:*)",
       "Bash(convert:*)",
       "mcp__playwright__browser_close",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git restore:*)"
     ],
     "deny": [],
     "ask": []
