@@ -143,6 +143,44 @@ Esto abrirá el menú de personalización donde pueden:
 2. Verificar configuración en `luanti.conf` y `world.mt`
 3. Revisar logs: `docker-compose logs luanti-server | grep -i skin`
 
+### ⚠️ Error: "Name does not follow naming conventions" (mcl_maps)
+**Problema**: Cuando se agregan skins desde MinecraftSkins.com, los nombres de archivo pueden contener guiones y caracteres especiales (ej: `minecraftskins_panda-panda-23030559.png`) que causan que el mod `mcl_maps` falle al intentar registrar nodos.
+
+**Síntomas**:
+- El servidor no puede iniciar completamente
+- Errores repetidos en logs: `ModError: Failed to load and run script from mcl_maps/init.lua`
+- Error: `Name does not follow naming conventions: contains unallowed characters`
+- Los clientes no pueden conectarse (timeout)
+
+**Solución correcta**:
+1. **Renombrar el archivo del skin** a un nombre simple sin guiones ni caracteres especiales:
+   ```bash
+   # En el servidor VPS
+   ssh gabriel@<VPS_IP>
+   cd /home/gabriel/luanti-voxelibre-server
+   docker-compose exec -T luanti-server sh -c 'cd /config/.minetest/worlds/world/_world_folder_media/textures/ && mv minecraftskins_panda-panda-23030559.png panda.png'
+   ```
+
+2. **Actualizar `skins.txt`** para usar el nuevo nombre:
+   ```lua
+   -- ❌ Incorrecto
+   texture = "minecraftskins_panda-panda-23030559"
+   
+   -- ✅ Correcto
+   texture = "panda"
+   ```
+
+3. **Reiniciar el servidor**:
+   ```bash
+   docker-compose restart luanti-server
+   ```
+
+**Prevención futura**:
+- **SIEMPRE** renombrar archivos de skins a nombres simples sin guiones ni caracteres especiales
+- Usar nombres descriptivos y cortos (ej: `panda.png`, `veterinaria.png`, `granjero.png`)
+- En `skins.txt`, usar solo el nombre del archivo SIN la extensión `.png`
+- Ejemplo correcto: `texture = "panda"` en lugar de `texture = "minecraftskins_panda-panda-23030559"`
+
 ## 📚 Referencias
 
 - **Mod World Folder Media**: https://content.luanti.org/packages/MisterE/_world_folder_media/
