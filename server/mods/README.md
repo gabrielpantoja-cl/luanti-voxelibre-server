@@ -115,15 +115,24 @@ volumes:
 
 ## 📋 Lista de Mods Activos
 
-### Mods Custom (Wetlands)
+### Mods Desarrollados por Wetlands
 
-| Mod | Versión | Comandos | Descripción | Doc |
-|-----|---------|----------|-------------|-----|
-| `server_rules` | 2.0 | `/reglas`, `/r`, `/filosofia`, `/santuario` | Sistema de reglas, bienvenida y filosofía | (Pendiente) |
-| `vegan_food` | 1.0 | - | Comida vegana (tofu, seitan, leche de avena) | (Pendiente) |
-| `education_blocks` | 1.0 | - | Bloques educativos interactivos | [Ver doc](./education_blocks.md) |
-| `voxelibre_protection` | 1.0 | `/area_*` | Sistema de protección de áreas | [Ver doc](./voxelibre_protection.md) |
-| `animal_sanctuary` | 1.0 | - | Santuarios y cuidado animal | (Pendiente) |
+| Mod | Versión | Comandos | Descripción | Documentación |
+|-----|---------|----------|-------------|---------------|
+| `server_rules` | 2.0 | `/reglas`, `/r`, `/filosofia`, `/santuario`, `/info`, `/discord` | Sistema de reglas, bienvenida y filosofía | [README.md](./server_rules/README.md) |
+| `education_blocks` | 1.0 | `/filosofia` | Bloques educativos interactivos | [README.md](./education_blocks/README.md) |
+| `voxelibre_protection` | 1.1.0 | `/area_*` | Sistema de protección de áreas | [README.md](./voxelibre_protection/README.md) |
+| `auto_road_builder` | 1.2.0 | `/build_road`, `/build_road_from`, `/repair_road`, `/continue_road` | Construcción automática de carreteras | [README.md](./auto_road_builder/README.md) |
+| `wetlands-music` | 2.1.0 | - | Discos de música personalizados | [README.md](./wetlands-music/README.md) |
+| `broom_racing` | 1.0.0 | `/mejores_tiempos`, `/reset_carrera`, `/dar_escoba`, `/evento_carreras` | Sistema de carreras de escobas | [README.md](./broom_racing/README.md) |
+| `halloween_ghost` | 1.0 | - | Evento temporal Halloween | [README.md](./halloween_ghost/README.md) |
+| `halloween_zombies` | 1.0 | - | Zombies pacíficos para Halloween | [README.md](./halloween_zombies/README.md) |
+| `wetlands_christmas` | 1.0 | - | Decoraciones navideñas | (Pendiente) |
+| `voxelibre_tv` | 1.0 | - | Sistema de televisión educativa | (Pendiente) |
+| `wetland_city` | 1.0 | - | Generación de ciudades | (Pendiente) |
+| `creative_force` | 1.0 | `/starter_kit`, `/give_starter_kit` | Forzar modo creativo y eliminar violencia | [README.md](./creative_force/README.md) |
+| `mcl_potions_hotfix` | 1.0 | - | Fix temporal para bug de invisibilidad | [README.md](./mcl_potions_hotfix/README.md) |
+| `vegan_replacements` | 1.0 | `/vegancheck`, `/listveganbans` | Eliminación de items no veganos | [README.md](./vegan_replacements/README.md) |
 
 ### Mods de Terceros
 
@@ -296,11 +305,16 @@ minetest.log("warning", "[mi_mod] Advertencia")
 
 ## 📝 TODO: Documentación Pendiente
 
-- [ ] `server_rules.md` - Documentar sistema de reglas v2.0
-- [ ] `vegan_food.md` - Documentar comida vegana
-- [ ] `animal_sanctuary.md` - Documentar santuarios
-- [ ] `halloween_ghost.md` - Documentar evento Halloween
+- [ ] `wetlands_christmas` - Documentar decoraciones navideñas
+- [ ] `voxelibre_tv` - Documentar sistema de televisión
+- [ ] `wetland_city` - Documentar generación de ciudades
 - [ ] Actualizar guías con ejemplos de mods existentes
+
+## 📚 Documentación Completa
+
+Para documentación detallada sobre el ecosistema completo de mods, ver:
+- **[docs/mods/README.md](../docs/mods/README.md)**: Documentación completa del ecosistema de mods
+- **[docs/mods/MODDING_GUIDE.md](../docs/mods/MODDING_GUIDE.md)**: Guía de desarrollo de mods
 
 ---
 
