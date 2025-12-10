@@ -70,9 +70,13 @@ return {
 ## 🎨 Cómo Agregar Nuevas Skins
 
 ### Paso 1: Preparar la Textura
-1. Obtener/crear skin PNG de 64x32 píxeles
-2. Si es de Minecraft (64x64), convertir usando: https://godly.github.io/minetest-skin-converter/
-3. Nombrar apropiadamente: `wetlands_nombre_descriptivo.png`
+1. Obtener/crear skin PNG de **64x32 píxeles** (⚠️ CRÍTICO: VoxeLibre solo soporta 64x32, NO 64x64)
+2. Si es de Minecraft (64x64), **DEBES convertir** usando:
+   - **Opción 1 (Recomendada)**: https://godly.github.io/minetest-skin-converter/
+   - **Opción 2 (Local)**: Usar ImageMagick o Python PIL para convertir
+3. Nombrar apropiadamente: `wetlands_nombre_descriptivo.png` (sin guiones ni caracteres especiales)
+
+**⚠️ IMPORTANTE**: Si usas una textura 64x64 sin convertir, se verá **corrupta o distorsionada** en el juego.
 
 ### Paso 2: Subir al Servidor (VPS)
 
@@ -133,10 +137,48 @@ Esto abrirá el menú de personalización donde pueden:
 ## 🔧 Troubleshooting
 
 ### Las skins no aparecen
-1. Verificar que el archivo PNG sea 64x32 (no 64x64)
+1. Verificar que el archivo PNG sea **64x32** (no 64x64) - usar `identify nombre.png` o `file nombre.png`
 2. Verificar nombre sin espacios ni caracteres especiales
 3. Verificar que esté registrado en `skins.txt` SIN la extensión `.png`
 4. Reiniciar el servidor
+
+### ⚠️ La skin se ve corrupta o distorsionada
+**Problema**: La textura se ve mal, pixelada o con partes faltantes en el juego.
+
+**Causa más común**: La textura es **64x64** en lugar de **64x32**.
+
+**Solución**:
+1. **Verificar tamaño de la textura**:
+   ```bash
+   identify server/worlds/world/_world_folder_media/textures/panda.png
+   # Debe mostrar: PNG 64x32
+   ```
+
+2. **Convertir de 64x64 a 64x32**:
+   ```bash
+   # Opción 1: Usar ImageMagick
+   convert panda.png -resize 64x32! panda_64x32.png
+   
+   # Opción 2: Usar Python PIL (copia mitad superior)
+   python3 << 'PYTHON'
+   from PIL import Image
+   img = Image.open('panda.png')
+   new_img = Image.new('RGBA', (64, 32))
+   new_img.paste(img.crop((0, 0, 64, 32)), (0, 0))
+   new_img.save('panda.png', 'PNG')
+   PYTHON
+   ```
+
+3. **Subir al servidor y reiniciar**:
+   ```bash
+   scp panda.png gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
+   ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+   ```
+
+4. **Limpiar caché del cliente** (si es necesario):
+   - Cerrar completamente el cliente Luanti
+   - Eliminar caché de texturas del cliente
+   - Reconectar al servidor
 
 ### Error al cargar mod
 1. Verificar que ambos mods estén en `server/mods/`
