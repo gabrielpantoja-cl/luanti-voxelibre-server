@@ -49,7 +49,8 @@
       "Bash(bash generate_placeholders.sh:*)",
       "Bash(file:*)",
       "Bash(sort:*)",
-      "Bash(bash create_detailed_textures.sh:*)"
+      "Bash(bash create_detailed_textures.sh:*)",
+      "mcp__playwright__browser_take_screenshot"
     ],
     "deny": [],
     "ask": []
