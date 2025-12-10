@@ -1,112 +1,101 @@
--- Custom Villagers Mod
--- Sistema de NPCs interactivos con diálogos, comercio y rutinas
+-- Custom Villagers Mod - VERSIÓN 2.0 (mcl_mobs)
+-- Sistema de NPCs interactivos usando el sistema de mobs de VoxeLibre
+-- Con texturas profesionales de VoxeLibre y diálogos educativos
 -- Apropiado para servidor educativo Wetlands (7+ años)
--- Versión 1.0.0
 
 -- ============================================================================
--- 1. INICIALIZACIÓN Y CONFIGURACIÓN
+-- 1. INICIALIZACIÓN Y VERIFICACIÓN
 -- ============================================================================
 
 local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 local S = minetest.get_translator(modname)
 
--- Verificar compatibilidad VoxeLibre
-if not minetest.get_modpath("mcl_core") then
-    minetest.log("error", "[" .. modname .. "] VoxeLibre (mcl_core) es requerido!")
+-- Verificar dependencias
+if not minetest.get_modpath("mcl_mobs") then
+    minetest.log("error", "[" .. modname .. "] mcl_mobs es requerido!")
     return
 end
 
--- Namespace global del mod
-custom_villagers = {}
-custom_villagers.version = "1.0.0"
+if not minetest.get_modpath("mcl_core") then
+    minetest.log("error", "[" .. modname .. "] mcl_core es requerido!")
+    return
+end
 
--- Configuración del mod
-custom_villagers.settings = {
-    max_villagers_per_area = tonumber(minetest.settings:get(modname .. "_max_villagers") or "5"),
-    spawn_radius = tonumber(minetest.settings:get(modname .. "_spawn_radius") or "20"),
-    debug_mode = minetest.settings:get_bool(modname .. "_debug", false),
-    enable_trading = minetest.settings:get_bool(modname .. "_enable_trading", true),
-    enable_schedules = minetest.settings:get_bool(modname .. "_enable_schedules", true),
-}
+-- Namespace global
+custom_villagers = {}
+custom_villagers.version = "2.0.0"
 
 -- Sistema de logging
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
 end
 
-local function debug(message)
-    if custom_villagers.settings.debug_mode then
-        log("info", "DEBUG: " .. message)
-    end
-end
-
-log("info", "Initializing Custom Villagers v" .. custom_villagers.version)
+log("info", "Initializing Custom Villagers v" .. custom_villagers.version .. " (mcl_mobs)")
 
 -- ============================================================================
--- 2. SISTEMA DE DIÁLOGOS
+-- 2. SISTEMA DE DIÁLOGOS EDUCATIVOS
 -- ============================================================================
 
--- Base de datos de diálogos por tipo de aldeano
 custom_villagers.dialogues = {
     farmer = {
         greetings = {
-            "¡Hola! Soy agricultor. Cultivo vegetales frescos y saludables para toda la comunidad.",
+            "¡Hola! Cultivo vegetales frescos y saludables para la comunidad.",
             "¡Buenos días! ¿Te gustaría aprender sobre agricultura sostenible?",
-            "¡Bienvenido! En mi granja cultivamos solo alimentos de origen vegetal.",
+            "¡Bienvenido! Cultivamos solo alimentos de origen vegetal.",
         },
         about_work = {
-            "Trabajo la tierra todos los días. Las plantas necesitan agua, luz solar y cuidado para crecer fuertes.",
-            "La agricultura sostenible es clave para alimentar al mundo sin dañar el planeta.",
+            "Trabajo la tierra cada día. Las plantas necesitan agua, luz y cuidado.",
+            "La agricultura sostenible alimenta al mundo sin dañar el planeta.",
         },
         education = {
-            "¿Sabías que las plantas necesitan nutrientes del suelo? Por eso es importante rotar cultivos.",
-            "Los alimentos de origen vegetal son nutritivos y respetuosos con el medio ambiente.",
+            "¿Sabías que las plantas necesitan nutrientes del suelo? Por eso rotamos cultivos.",
+            "Los alimentos vegetales son nutritivos y respetuosos con el medio ambiente.",
         },
     },
     librarian = {
         greetings = {
-            "¡Saludos! Soy el bibliotecario. Guardo el conocimiento de nuestra comunidad.",
+            "¡Saludos! Guardo el conocimiento de nuestra comunidad.",
             "¡Hola! ¿Buscas aprender algo nuevo hoy?",
-            "¡Bienvenido a la biblioteca! Aquí encontrarás libros sobre compasión y ciencia.",
+            "¡Bienvenido! Aquí encontrarás libros sobre compasión y ciencia.",
         },
         about_work = {
-            "Los libros contienen el conocimiento de generaciones. Es importante preservarlos y compartirlos.",
-            "La lectura expande tu mente y te ayuda a entender mejor el mundo.",
+            "Los libros preservan el conocimiento de generaciones.",
+            "La lectura expande tu mente y ayuda a entender el mundo.",
         },
         education = {
-            "¿Sabías que leer 30 minutos al día mejora tu comprensión y vocabulario?",
-            "El conocimiento es poder, pero la sabiduría es saber usarlo con compasión.",
+            "¿Sabías que leer 30 minutos al día mejora tu vocabulario?",
+            "El conocimiento es poder, la sabiduría es usarlo con compasión.",
         },
     },
     teacher = {
         greetings = {
-            "¡Hola estudiante! Soy el maestro. Me encanta enseñar sobre ciencia y naturaleza.",
+            "¡Hola! Me encanta enseñar sobre ciencia y naturaleza.",
             "¡Buenos días! ¿Listo para aprender algo fascinante?",
-            "¡Bienvenido! La educación es la herramienta más poderosa para cambiar el mundo.",
+            "La educación es la herramienta más poderosa para cambiar el mundo.",
         },
         about_work = {
-            "Enseño a los niños sobre ciencia, matemáticas y, sobre todo, sobre compasión hacia todos los seres.",
-            "Mi trabajo es despertar la curiosidad y el pensamiento crítico en las mentes jóvenes.",
+            "Enseño ciencia, matemáticas y compasión hacia todos los seres.",
+            "Mi trabajo es despertar la curiosidad en las mentes jóvenes.",
         },
         education = {
-            "¿Sabías que todos los animales sienten emociones como nosotros? Por eso debemos tratarlos con respeto.",
-            "La ciencia nos enseña que somos parte de la naturaleza, no sus dueños.",
+            "¿Sabías que los animales sienten emociones como nosotros? Tratémoslos con respeto.",
+            "La ciencia enseña que somos parte de la naturaleza, no sus dueños.",
         },
     },
     explorer = {
         greetings = {
-            "¡Hola aventurero! Soy un explorador. He viajado por todos los biomas del mundo.",
+            "¡Hola aventurero! He viajado por todos los biomas del mundo.",
             "¡Saludos! ¿Te gustaría escuchar historias de mis viajes?",
             "¡Bienvenido! Cada lugar tiene algo único que enseñarnos.",
         },
         about_work = {
-            "Exploro el mundo, estudio diferentes ecosistemas y aprendo de la naturaleza.",
-            "Cada bioma tiene plantas y animales únicos que merecen ser protegidos.",
+            "Exploro el mundo y estudio diferentes ecosistemas.",
+            "Cada bioma tiene plantas y animales únicos que merecen protección.",
         },
         education = {
             "¿Sabías que los bosques producen gran parte del oxígeno que respiramos?",
-            "La biodiversidad es fundamental para mantener el equilibrio del planeta.",
+            "La biodiversidad es fundamental para el equilibrio del planeta.",
         },
     },
 }
@@ -115,70 +104,65 @@ custom_villagers.dialogues = {
 local function get_dialogue(villager_type, category)
     local dialogues = custom_villagers.dialogues[villager_type]
     if not dialogues or not dialogues[category] then
-        return "..." -- Silencio si no hay diálogos definidos
+        return "..."
     end
-
     local options = dialogues[category]
     return options[math.random(1, #options)]
 end
 
 -- ============================================================================
--- 3. SISTEMA DE COMERCIO (TRADING)
+-- 3. SISTEMA DE COMERCIO EDUCATIVO
 -- ============================================================================
 
--- Ofertas de comercio por tipo de aldeano
 custom_villagers.trades = {
     farmer = {
-        -- El aldeano ofrece estos items
-        offers = {
-            {give = "mcl_farming:carrot_item 5", wants = "mcl_core:emerald 1"},
-            {give = "mcl_farming:potato_item 5", wants = "mcl_core:emerald 1"},
-            {give = "mcl_farming:beetroot_item 5", wants = "mcl_core:emerald 1"},
-            {give = "mcl_farming:wheat_item 10", wants = "mcl_core:emerald 2"},
-        },
+        {give = "mcl_farming:carrot_item 5", wants = "mcl_core:emerald 1"},
+        {give = "mcl_farming:potato_item 5", wants = "mcl_core:emerald 1"},
+        {give = "mcl_farming:beetroot_item 5", wants = "mcl_core:emerald 1"},
+        {give = "mcl_farming:wheat_item 10", wants = "mcl_core:emerald 2"},
     },
     librarian = {
-        offers = {
-            {give = "mcl_books:book 1", wants = "mcl_core:emerald 3"},
-            {give = "mcl_core:paper 10", wants = "mcl_core:emerald 1"},
-        },
+        {give = "mcl_books:book 1", wants = "mcl_core:emerald 3"},
+        {give = "mcl_core:paper 10", wants = "mcl_core:emerald 1"},
     },
     teacher = {
-        offers = {
-            {give = "mcl_books:book 2", wants = "mcl_core:emerald 5"},
-            {give = "mcl_core:paper 15", wants = "mcl_core:emerald 2"},
-        },
+        {give = "mcl_books:book 2", wants = "mcl_core:emerald 5"},
+        {give = "mcl_core:paper 15", wants = "mcl_core:emerald 2"},
     },
     explorer = {
-        offers = {
-            {give = "mcl_core:apple 10", wants = "mcl_core:emerald 2"},
-            {give = "mcl_core:stick 20", wants = "mcl_core:emerald 1"},
-        },
+        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 2"},
+        {give = "mcl_core:stick 20", wants = "mcl_core:emerald 1"},
     },
 }
 
+-- Mostrar formspec de interacción
+local function show_interaction_formspec(player_name, villager_type, villager_name)
+    local formspec = "size[8,6]" ..
+        "label[0,0;💬 " .. villager_name .. "]" ..
+        "button[0,1;8,1;dialogue_greeting;👋 Saludar]" ..
+        "button[0,2;8,1;dialogue_work;💼 Sobre su trabajo]" ..
+        "button[0,3;8,1;dialogue_education;📚 Aprender algo nuevo]" ..
+        "button[0,4;8,1;trade;🛒 Comerciar]" ..
+        "button[0,5;8,1;close;❌ Cerrar]"
+
+    minetest.show_formspec(player_name, "custom_villagers:interact_" .. villager_type, formspec)
+end
+
 -- Mostrar formspec de comercio
 local function show_trade_formspec(player_name, villager_type)
-    if not custom_villagers.settings.enable_trading then
-        minetest.chat_send_player(player_name, "🚫 El comercio está deshabilitado en este servidor.")
-        return
-    end
-
     local trades = custom_villagers.trades[villager_type]
-    if not trades or not trades.offers then
-        minetest.chat_send_player(player_name, "💬 Este aldeano no tiene nada para comerciar ahora.")
+    if not trades then
+        minetest.chat_send_player(player_name, "💬 No tengo nada para comerciar ahora.")
         return
     end
 
-    -- Construir formspec simple
     local formspec = "size[8,9]" ..
-        "label[0,0;🛒 Comercio con Aldeano - " .. villager_type .. "]" ..
-        "label[0,0.5;Ofrece tus esmeraldas por items útiles:]" ..
+        "label[0,0;🛒 Comercio - " .. villager_type .. "]" ..
+        "label[0,0.5;Ofrece esmeraldas por items útiles:]" ..
         "list[current_player;main;0,5;8,4;]"
 
-    -- Agregar ofertas (simplificado - formspec básico)
     local y = 1.5
-    for i, trade in ipairs(trades.offers) do
+    for i, trade in ipairs(trades) do
         formspec = formspec .. "label[0," .. y .. ";" .. i .. ". " .. trade.give .. " ← " .. trade.wants .. "]"
         formspec = formspec .. "button[5," .. (y-0.2) .. ";2,0.5;trade_" .. i .. ";Comerciar]"
         y = y + 0.8
@@ -187,40 +171,52 @@ local function show_trade_formspec(player_name, villager_type)
     minetest.show_formspec(player_name, "custom_villagers:trade_" .. villager_type, formspec)
 end
 
--- Manejar clicks en formspec de comercio
+-- Manejar clicks en formspecs
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if not formname:find("^custom_villagers:trade_") then
-        return
+    -- Formspec de interacción
+    if formname:find("^custom_villagers:interact_") then
+        local villager_type = formname:gsub("^custom_villagers:interact_", "")
+        local player_name = player:get_player_name()
+
+        if fields.dialogue_greeting then
+            local msg = get_dialogue(villager_type, "greetings")
+            minetest.chat_send_player(player_name, "💬 " .. msg)
+        elseif fields.dialogue_work then
+            local msg = get_dialogue(villager_type, "about_work")
+            minetest.chat_send_player(player_name, "💼 " .. msg)
+        elseif fields.dialogue_education then
+            local msg = get_dialogue(villager_type, "education")
+            minetest.chat_send_player(player_name, "📚 " .. msg)
+        elseif fields.trade then
+            show_trade_formspec(player_name, villager_type)
+        end
     end
 
-    local villager_type = formname:gsub("^custom_villagers:trade_", "")
-    local trades = custom_villagers.trades[villager_type]
-    if not trades then return end
+    -- Formspec de comercio
+    if formname:find("^custom_villagers:trade_") then
+        local villager_type = formname:gsub("^custom_villagers:trade_", "")
+        local trades = custom_villagers.trades[villager_type]
+        if not trades then return end
 
-    for field, _ in pairs(fields) do
-        if field:find("^trade_") then
-            local trade_index = tonumber(field:gsub("^trade_", ""))
-            local trade = trades.offers[trade_index]
+        for field, _ in pairs(fields) do
+            if field:find("^trade_") then
+                local trade_index = tonumber(field:gsub("^trade_", ""))
+                local trade = trades[trade_index]
 
-            if trade then
-                local player_name = player:get_player_name()
-                local inv = player:get_inventory()
+                if trade then
+                    local player_name = player:get_player_name()
+                    local inv = player:get_inventory()
 
-                -- Parsear items wanted
-                local wants_item, wants_count = trade.wants:match("(%S+)%s+(%d+)")
-                wants_count = tonumber(wants_count) or 1
+                    local wants_item, wants_count = trade.wants:match("(%S+)%s+(%d+)")
+                    wants_count = tonumber(wants_count) or 1
 
-                -- Verificar si el jugador tiene los items
-                if inv:contains_item("main", wants_item .. " " .. wants_count) then
-                    -- Quitar items del jugador
-                    inv:remove_item("main", wants_item .. " " .. wants_count)
-
-                    -- Dar items al jugador
-                    inv:add_item("main", trade.give)
-
-                    minetest.chat_send_player(player_name, "✅ ¡Comercio exitoso! Gracias por tu intercambio.")
-                else
-                    minetest.chat_send_player(player_name, "❌ No tienes suficientes items para este comercio.")
+                    if inv:contains_item("main", wants_item .. " " .. wants_count) then
+                        inv:remove_item("main", wants_item .. " " .. wants_count)
+                        inv:add_item("main", trade.give)
+                        minetest.chat_send_player(player_name, "✅ ¡Comercio exitoso! Gracias.")
+                    else
+                        minetest.chat_send_player(player_name, "❌ No tienes suficientes items.")
+                    end
                 end
             end
         end
@@ -228,218 +224,100 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 -- ============================================================================
--- 4. REGISTRO DE ENTIDADES ALDEANAS
+-- 4. REGISTRO DE ALDEANOS CON MCL_MOBS
 -- ============================================================================
 
 -- Función helper para registrar aldeanos
-local function register_villager(villager_type, def)
-    local full_name = modname .. ":" .. villager_type
+local function register_custom_villager(name, def)
+    local full_name = modname .. ":" .. name
 
-    -- Usar minetest.register_entity para mayor control
-    -- (mcl_mobs requeriría modelos y animaciones específicas de VoxeLibre)
-    minetest.register_entity(full_name, {
-        initial_properties = {
-            hp_max = def.hp_max or 20,
-            physical = true,
-            collide_with_objects = true,
-            collisionbox = def.collisionbox or {-0.3, -1.0, -0.3, 0.3, 0.9, 0.3},
-            visual = "cube",  -- Usar cubo simple (puedes cambiarlo a "mesh" con modelo)
-            visual_size = {x = 0.8, y = 1.8},
-            textures = def.textures or {
-                "custom_villagers_" .. villager_type .. "_top.png",
-                "custom_villagers_" .. villager_type .. "_bottom.png",
-                "custom_villagers_" .. villager_type .. "_side.png",
-                "custom_villagers_" .. villager_type .. "_side.png",
-                "custom_villagers_" .. villager_type .. "_front.png",
-                "custom_villagers_" .. villager_type .. "_back.png",
-            },
-            is_visible = true,
-            makes_footstep_sound = true,
-            automatic_rotate = 0,
-            stepheight = 1.1,
+    mcl_mobs.register_mob(full_name, {
+        description = def.description or S(name:gsub("^%l", string.upper)),
+        type = "npc",
+        spawn_class = "passive",
+        passive = true,
+        hp_min = 20,
+        hp_max = 20,
+        collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
+        visual = "mesh",
+        mesh = "mobs_mc_villager.b3d", -- Usa el modelo de VoxeLibre
+        textures = def.textures or {"mobs_mc_villager.png", "mobs_mc_villager.png"},
+        makes_footstep_sound = true,
+        walk_velocity = 1.2,
+        run_velocity = 2.4,
+        drops = {},
+        can_despawn = false,
+        animation = {
+            stand_start = 0, stand_end = 0,
+            walk_start = 0, walk_end = 40, walk_speed = 25,
+            run_start = 0, run_end = 40, run_speed = 25,
         },
+        view_range = 16,
+        fear_height = 4,
+        jump = true,
+        walk_chance = 33,
 
-        -- Propiedades personalizadas
-        villager_type = villager_type,
-        timer = 0,
-        walk_timer = 0,
-        direction = 0,
-        state = "idle", -- idle, walking, sleeping
-        home_pos = nil,
-
-        on_activate = function(self, staticdata)
-            self.object:set_armor_groups({fleshy = 100})
-            self.timer = 0
-            self.walk_timer = 0
-            self.direction = math.random(0, 360) * (math.pi / 180)
-            self.state = "idle"
-
-            -- Guardar posición inicial como hogar
-            local pos = self.object:get_pos()
-            if pos then
-                self.home_pos = vector.round(pos)
-            end
-
-            debug(villager_type .. " aldeano activado en " .. minetest.pos_to_string(self.home_pos or pos))
-        end,
-
-        on_step = function(self, dtime)
-            self.timer = self.timer + dtime
-            self.walk_timer = self.walk_timer + dtime
-
-            local pos = self.object:get_pos()
-            if not pos then return end
-
-            -- Sistema de horarios (dormir de noche)
-            if custom_villagers.settings.enable_schedules then
-                local time_of_day = minetest.get_timeofday()
-
-                -- Noche (0.8 - 0.2) = dormir
-                if time_of_day > 0.8 or time_of_day < 0.2 then
-                    if self.state ~= "sleeping" then
-                        self.state = "sleeping"
-                        self.object:set_velocity({x=0, y=0, z=0})
-                        debug(villager_type .. " se fue a dormir")
-                    end
-                    return -- No hacer nada más si está durmiendo
-                else
-                    if self.state == "sleeping" then
-                        self.state = "idle"
-                        debug(villager_type .. " se despertó")
-                    end
-                end
-            end
-
-            -- Comportamiento de caminata aleatoria
-            if self.walk_timer > math.random(3, 6) then
-                self.walk_timer = 0
-
-                -- 50% de probabilidad de caminar
-                if math.random(1, 2) == 1 then
-                    self.state = "walking"
-                    self.direction = math.random(0, 360) * (math.pi / 180)
-                else
-                    self.state = "idle"
-                end
-            end
-
-            -- Aplicar movimiento
-            if self.state == "walking" then
-                local speed = 0.8
-                local vel = {
-                    x = math.sin(self.direction) * speed,
-                    y = -5, -- Gravedad
-                    z = math.cos(self.direction) * speed
-                }
-
-                self.object:set_velocity(vel)
-                self.object:set_yaw(self.direction)
-
-                -- Limitar distancia del hogar (radio de 20 bloques)
-                if self.home_pos then
-                    local dist = vector.distance(pos, self.home_pos)
-                    if dist > 20 then
-                        -- Regresar hacia casa
-                        local dir_to_home = vector.direction(pos, self.home_pos)
-                        self.direction = math.atan2(dir_to_home.x, dir_to_home.z)
-                    end
-                end
-            else
-                self.object:set_velocity({x=0, y=-5, z=0})
-            end
-        end,
+        -- Datos personalizados
+        custom_villager_type = name,
 
         on_rightclick = function(self, clicker)
             if not clicker or not clicker:is_player() then return end
 
             local player_name = clicker:get_player_name()
-
-            -- Menú de interacción simple
-            local formspec = "size[6,4]" ..
-                "label[0,0;💬 Conversación con " .. (def.title or villager_type) .. "]" ..
-                "button[0,1;6,1;dialogue_greeting;👋 Saludar]" ..
-                "button[0,2;6,1;dialogue_work;💼 Preguntarle sobre su trabajo]" ..
-                "button[0,3;6,1;dialogue_education;📚 Aprender algo nuevo]"
-
-            if custom_villagers.settings.enable_trading then
-                formspec = formspec .. "button[0,3.5;6,1;trade;🛒 Comerciar]"
-            end
-
-            minetest.show_formspec(player_name, "custom_villagers:interact_" .. self.villager_type, formspec)
+            show_interaction_formspec(player_name, self.custom_villager_type, def.description or name)
         end,
 
         on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-            -- Aldeanos pacíficos - no se pueden matar
+            -- Protección: aldeanos no se pueden lastimar
             if puncher and puncher:is_player() then
                 minetest.chat_send_player(puncher:get_player_name(),
                     "🚫 Los aldeanos son parte de nuestra comunidad. ¡No debemos lastimarlos!")
             end
+            return true -- Cancelar daño
         end,
     })
 
-    log("info", "Registered villager type: " .. villager_type)
+    log("info", "Registered custom villager: " .. name)
 end
-
--- Manejar interacciones de diálogo
-minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if not formname:find("^custom_villagers:interact_") then
-        return
-    end
-
-    local villager_type = formname:gsub("^custom_villagers:interact_", "")
-    local player_name = player:get_player_name()
-
-    if fields.dialogue_greeting then
-        local msg = get_dialogue(villager_type, "greetings")
-        minetest.chat_send_player(player_name, "💬 Aldeano: " .. msg)
-
-    elseif fields.dialogue_work then
-        local msg = get_dialogue(villager_type, "about_work")
-        minetest.chat_send_player(player_name, "💼 Aldeano: " .. msg)
-
-    elseif fields.dialogue_education then
-        local msg = get_dialogue(villager_type, "education")
-        minetest.chat_send_player(player_name, "📚 Aldeano: " .. msg)
-
-    elseif fields.trade then
-        show_trade_formspec(player_name, villager_type)
-    end
-end)
 
 -- ============================================================================
 -- 5. DEFINICIÓN DE TIPOS DE ALDEANOS
 -- ============================================================================
 
--- Agricultor
-register_villager("farmer", {
-    title = "Agricultor",
-    hp_max = 20,
+-- Agricultor - Usa textura de farmer de VoxeLibre
+register_custom_villager("farmer", {
+    description = S("Agricultor de Wetlands"),
     textures = {
-        "custom_villagers_farmer_top.png",
-        "custom_villagers_farmer_bottom.png",
-        "custom_villagers_farmer_side.png",
-        "custom_villagers_farmer_side.png",
-        "custom_villagers_farmer_front.png",
-        "custom_villagers_farmer_back.png",
+        "mobs_mc_villager_farmer.png",
+        "mobs_mc_villager_farmer.png", -- sombrero
     },
 })
 
--- Bibliotecario
-register_villager("librarian", {
-    title = "Bibliotecario",
-    hp_max = 20,
+-- Bibliotecario - Usa textura de librarian de VoxeLibre
+register_custom_villager("librarian", {
+    description = S("Bibliotecario de Wetlands"),
+    textures = {
+        "mobs_mc_villager_librarian.png",
+        "mobs_mc_villager_librarian.png",
+    },
 })
 
--- Maestro
-register_villager("teacher", {
-    title = "Maestro",
-    hp_max = 20,
+-- Maestro - Usa textura de priest (cleric) de VoxeLibre
+register_custom_villager("teacher", {
+    description = S("Maestro de Wetlands"),
+    textures = {
+        "mobs_mc_villager_priest.png",
+        "mobs_mc_villager_priest.png",
+    },
 })
 
--- Explorador
-register_villager("explorer", {
-    title = "Explorador",
-    hp_max = 25,
+-- Explorador - Usa textura de cartographer de VoxeLibre
+register_custom_villager("explorer", {
+    description = S("Explorador de Wetlands"),
+    textures = {
+        "mobs_mc_villager_cartographer.png",
+        "mobs_mc_villager_cartographer.png",
+    },
 })
 
 -- ============================================================================
@@ -449,7 +327,7 @@ register_villager("explorer", {
 -- Comando para spawnear aldeano
 minetest.register_chatcommand("spawn_villager", {
     params = "<tipo>",
-    description = "Spawea un aldeano interactivo (farmer, librarian, teacher, explorer)",
+    description = "Spawea un aldeano (farmer, librarian, teacher, explorer)",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
@@ -476,7 +354,7 @@ minetest.register_chatcommand("spawn_villager", {
         local obj = minetest.add_entity(pos, modname .. ":" .. villager_type)
 
         if obj then
-            return true, "✅ Aldeano " .. villager_type .. " spawneado en " .. minetest.pos_to_string(vector.round(pos))
+            return true, "✅ Aldeano " .. villager_type .. " spawneado"
         else
             return false, "❌ Error al spawnear aldeano"
         end
@@ -486,37 +364,30 @@ minetest.register_chatcommand("spawn_villager", {
 -- Comando de información
 minetest.register_chatcommand("villager_info", {
     params = "",
-    description = "Muestra información sobre el sistema de aldeanos",
+    description = "Muestra información sobre aldeanos",
     privs = {},
     func = function(name, param)
         local info = {
-            "🏘️ === Sistema de Aldeanos de Wetlands ===",
-            "Versión: " .. custom_villagers.version,
+            "🏘️ === Aldeanos de Wetlands v" .. custom_villagers.version .. " ===",
             "",
-            "📋 Tipos de aldeanos disponibles:",
+            "📋 Tipos disponibles:",
             "• Agricultor (farmer) - Cultiva vegetales",
             "• Bibliotecario (librarian) - Guarda libros",
-            "• Maestro (teacher) - Enseña ciencia",
+            "• Maestro (teacher) - Enseña ciencia y compasión",
             "• Explorador (explorer) - Viaja por el mundo",
             "",
-            "💬 Interacciones:",
-            "• Click derecho para hablar",
-            "• Aprende sobre sus trabajos",
-            "• Comercia items útiles",
-            "",
-            "⏰ Rutinas:",
-            "• Activos de día",
-            "• Duermen de noche",
-            "• Caminan cerca de su hogar",
+            "💬 Click derecho para interactuar",
+            "🛒 Comercia items útiles por esmeraldas",
+            "🚫 Los aldeanos no se pueden lastimar",
         }
-
         return true, table.concat(info, "\n")
     end,
 })
 
 -- ============================================================================
--- 7. INICIALIZACIÓN FINAL
+-- 7. FINALIZACIÓN
 -- ============================================================================
 
 log("info", "Custom Villagers v" .. custom_villagers.version .. " loaded successfully!")
-log("info", "Registered villager types: farmer, librarian, teacher, explorer")
+log("info", "Using VoxeLibre textures and mcl_mobs system")
+log("info", "Registered villagers: farmer, librarian, teacher, explorer")
