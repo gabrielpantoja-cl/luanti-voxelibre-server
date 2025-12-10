@@ -44,7 +44,9 @@
       "Bash(convert:*)",
       "mcp__playwright__browser_close",
       "Bash(find:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(lua -c:*)",
+      "Bash(bash generate_placeholders.sh:*)"
     ],
     "deny": [],
     "ask": []
