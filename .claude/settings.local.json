@@ -46,7 +46,10 @@
       "Bash(find:*)",
       "Bash(git restore:*)",
       "Bash(lua -c:*)",
-      "Bash(bash generate_placeholders.sh:*)"
+      "Bash(bash generate_placeholders.sh:*)",
+      "Bash(file:*)",
+      "Bash(sort:*)",
+      "Bash(bash create_detailed_textures.sh:*)"
     ],
     "deny": [],
     "ask": []
