@@ -24,14 +24,26 @@ end
 
 -- Namespace global
 custom_villagers = {}
-custom_villagers.version = "2.0.0"
+custom_villagers.version = "2.1.0"  -- Incrementado por sistema AI
 
 -- Sistema de logging
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
 end
 
-log("info", "Initializing Custom Villagers v" .. custom_villagers.version .. " (mcl_mobs)")
+log("info", "Initializing Custom Villagers v" .. custom_villagers.version .. " (mcl_mobs + AI)")
+
+-- ============================================================================
+-- CARGAR MÓDULOS DEL SISTEMA AI
+-- ============================================================================
+
+-- Cargar configuración centralizada
+dofile(modpath .. "/config.lua")
+log("info", "Configuration system loaded")
+
+-- Cargar sistema de comportamientos AI tradicional
+dofile(modpath .. "/ai_behaviors.lua")
+log("info", "AI Behaviors system loaded (v" .. custom_villagers.behaviors.version .. ")")
 
 -- ============================================================================
 -- 2. SISTEMA DE DIÁLOGOS EDUCATIVOS
@@ -137,13 +149,18 @@ custom_villagers.trades = {
 
 -- Mostrar formspec de interacción
 local function show_interaction_formspec(player_name, villager_type, villager_name)
-    local formspec = "size[8,6]" ..
-        "label[0,0;💬 " .. villager_name .. "]" ..
-        "button[0,1;8,1;dialogue_greeting;👋 Saludar]" ..
-        "button[0,2;8,1;dialogue_work;💼 Sobre su trabajo]" ..
-        "button[0,3;8,1;dialogue_education;📚 Aprender algo nuevo]" ..
-        "button[0,4;8,1;trade;🛒 Comerciar]" ..
-        "button[0,5;8,1;close;❌ Cerrar]"
+    -- FIX: Convertir villager_name a string explícitamente para evitar crashes
+    local name_str = tostring(villager_name or villager_type)
+
+    -- FIX: Usar sintaxis moderna de formspec sin emojis (causa crashes en algunos clientes)
+    local formspec = "formspec_version[4]" ..
+        "size[10,7]" ..
+        "label[0.5,0.5;" .. minetest.formspec_escape(name_str) .. "]" ..
+        "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]" ..
+        "button[0.5,2.5;9,0.8;dialogue_work;Sobre su trabajo]" ..
+        "button[0.5,3.5;9,0.8;dialogue_education;Aprender algo nuevo]" ..
+        "button[0.5,4.5;9,0.8;trade;Comerciar]" ..
+        "button[0.5,5.5;9,0.8;close;Cerrar]"
 
     minetest.show_formspec(player_name, "custom_villagers:interact_" .. villager_type, formspec)
 end
@@ -152,20 +169,24 @@ end
 local function show_trade_formspec(player_name, villager_type)
     local trades = custom_villagers.trades[villager_type]
     if not trades then
-        minetest.chat_send_player(player_name, "💬 No tengo nada para comerciar ahora.")
+        minetest.chat_send_player(player_name, "No tengo nada para comerciar ahora.")
         return
     end
 
-    local formspec = "size[8,9]" ..
-        "label[0,0;🛒 Comercio - " .. villager_type .. "]" ..
-        "label[0,0.5;Ofrece esmeraldas por items útiles:]" ..
-        "list[current_player;main;0,5;8,4;]"
+    -- FIX: Usar sintaxis moderna de formspec
+    local formspec = "formspec_version[4]" ..
+        "size[12,11]" ..
+        "label[0.5,0.5;Comercio - " .. minetest.formspec_escape(villager_type) .. "]" ..
+        "label[0.5,1;Ofrece esmeraldas por items utiles:]" ..
+        "list[current_player;main;0.5,6;8,4;]"
 
-    local y = 1.5
+    local y = 2
     for i, trade in ipairs(trades) do
-        formspec = formspec .. "label[0," .. y .. ";" .. i .. ". " .. trade.give .. " ← " .. trade.wants .. "]"
-        formspec = formspec .. "button[5," .. (y-0.2) .. ";2,0.5;trade_" .. i .. ";Comerciar]"
-        y = y + 0.8
+        formspec = formspec .. "label[0.5," .. y .. ";" .. i .. ". " ..
+                   minetest.formspec_escape(trade.give) .. " <- " ..
+                   minetest.formspec_escape(trade.wants) .. "]"
+        formspec = formspec .. "button[7," .. (y-0.2) .. ";3,0.8;trade_" .. i .. ";Comerciar]"
+        y = y + 1
     end
 
     minetest.show_formspec(player_name, "custom_villagers:trade_" .. villager_type, formspec)
@@ -180,13 +201,13 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
         if fields.dialogue_greeting then
             local msg = get_dialogue(villager_type, "greetings")
-            minetest.chat_send_player(player_name, "💬 " .. msg)
+            minetest.chat_send_player(player_name, "[Aldeano] " .. msg)
         elseif fields.dialogue_work then
             local msg = get_dialogue(villager_type, "about_work")
-            minetest.chat_send_player(player_name, "💼 " .. msg)
+            minetest.chat_send_player(player_name, "[Aldeano] " .. msg)
         elseif fields.dialogue_education then
             local msg = get_dialogue(villager_type, "education")
-            minetest.chat_send_player(player_name, "📚 " .. msg)
+            minetest.chat_send_player(player_name, "[Aldeano] " .. msg)
         elseif fields.trade then
             show_trade_formspec(player_name, villager_type)
         end
@@ -213,9 +234,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                     if inv:contains_item("main", wants_item .. " " .. wants_count) then
                         inv:remove_item("main", wants_item .. " " .. wants_count)
                         inv:add_item("main", trade.give)
-                        minetest.chat_send_player(player_name, "✅ ¡Comercio exitoso! Gracias.")
+                        minetest.chat_send_player(player_name, "[Comercio exitoso] Gracias por tu intercambio!")
                     else
-                        minetest.chat_send_player(player_name, "❌ No tienes suficientes items.")
+                        minetest.chat_send_player(player_name, "[Comercio fallido] No tienes suficientes items.")
                     end
                 end
             end
@@ -231,7 +252,8 @@ end)
 local function register_custom_villager(name, def)
     local full_name = modname .. ":" .. name
 
-    mcl_mobs.register_mob(full_name, {
+    -- Crear definición del mob
+    local mob_def = {
         description = def.description or S(name:gsub("^%l", string.upper)),
         type = "npc",
         spawn_class = "passive",
@@ -243,8 +265,8 @@ local function register_custom_villager(name, def)
         mesh = "mobs_mc_villager.b3d", -- Usa el modelo de VoxeLibre
         textures = def.textures or {"mobs_mc_villager.png", "mobs_mc_villager.png"},
         makes_footstep_sound = true,
-        walk_velocity = 1.2,
-        run_velocity = 2.4,
+        walk_velocity = custom_villagers.config.movement.walk_velocity,
+        run_velocity = custom_villagers.config.movement.run_velocity,
         drops = {},
         can_despawn = false,
         animation = {
@@ -271,13 +293,19 @@ local function register_custom_villager(name, def)
             -- Protección: aldeanos no se pueden lastimar
             if puncher and puncher:is_player() then
                 minetest.chat_send_player(puncher:get_player_name(),
-                    "🚫 Los aldeanos son parte de nuestra comunidad. ¡No debemos lastimarlos!")
+                    "[Servidor] Los aldeanos son parte de nuestra comunidad. No debemos lastimarlos!")
             end
             return true -- Cancelar daño
         end,
-    })
+    }
 
-    log("info", "Registered custom villager: " .. name)
+    -- NUEVO: Inyectar sistema de comportamientos AI
+    custom_villagers.behaviors.inject_into_mob(mob_def)
+
+    -- Registrar el mob con el sistema AI integrado
+    mcl_mobs.register_mob(full_name, mob_def)
+
+    log("info", "Registered custom villager with AI: " .. name)
 end
 
 -- ============================================================================

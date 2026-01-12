@@ -1,6 +1,6 @@
 # 🏘️ Custom Villagers - Aldeanos Interactivos de Wetlands
 
-**Versión**: 1.0.0
+**Versión**: 2.1.0
 **Autor**: Wetlands Team
 **Licencia**: GPL v3
 **Compatible con**: VoxeLibre (MineClone2) v0.90.1+
@@ -9,16 +9,20 @@
 
 ## 📖 Descripción
 
-Mod de NPCs (aldeanos) interactivos con sistema de diálogos, comercio educativo y rutinas diarias. Diseñado para el servidor Wetlands con contenido apropiado para niños 7+ años.
+Mod de NPCs (aldeanos) interactivos con **sistema de comportamientos AI tradicional**, diálogos educativos, comercio y rutinas diarias inteligentes. Diseñado para el servidor Wetlands con contenido apropiado para niños 7+ años.
 
 ### ✨ Características Principales
 
 - 👥 **4 tipos de aldeanos**: Agricultor, Bibliotecario, Maestro, Explorador
+- 🤖 **AI Tradicional (FSM)**: Comportamientos inteligentes sin LLM (6 estados: idle, wander, work, social, sleep, seek_player)
 - 💬 **Sistema de diálogos**: Conversaciones educativas contextuales
 - 🛒 **Comercio educativo**: Intercambio de items útiles por esmeraldas
-- 🚶 **Pathfinding básico**: Los aldeanos caminan cerca de su hogar
-- ⏰ **Rutinas día/noche**: Activos de día, duermen de noche
+- 🚶 **Pathfinding inteligente**: Navegan hacia objetivos, buscan POI, evitan atascarse
+- ⏰ **Rutinas día/noche**: Trabajan de día, duermen de noche automáticamente
+- 👋 **Saludos proactivos**: Detectan jugadores cercanos y saludan automáticamente
+- 🤝 **Interacción social**: Aldeanos conversan entre ellos con partículas visuales
 - 🛡️ **Pacíficos**: No se pueden lastimar (apropiado para servidor compasivo)
+- ⚙️ **Configurable**: Todos los parámetros ajustables sin editar código
 
 ---
 
@@ -79,6 +83,44 @@ Spawea un aldeano en tu posición actual.
 **Privilegio requerido**: Ninguno
 
 Muestra información sobre el sistema de aldeanos.
+
+---
+
+## 📚 Documentación Completa
+
+### Guías Disponibles
+
+Este mod incluye documentación exhaustiva en la carpeta `docs/`:
+
+| Documento | Descripción |
+|-----------|-------------|
+| **[📖 docs/AI_BEHAVIORS.md](docs/AI_BEHAVIORS.md)** | 🤖 **Sistema de Comportamientos AI Tradicional**<br>Documentación completa de la Máquina de Estados Finitos (FSM), explicación de cada estado, configuración avanzada, troubleshooting y guía de desarrollo |
+| **[🔧 docs/INTEGRATION_GUIDE.md](docs/INTEGRATION_GUIDE.md)** | **Guía de Integración con VoxeLibre**<br>Paso a paso para deployment, verificación de textures, testing y resolución de problemas |
+
+### Documentación Rápida
+
+#### Comandos de AI (Nuevos en v2.1.0)
+
+```bash
+# Debug del sistema AI
+/villager_debug on           # Activar logs de estados
+/villager_state              # Ver estados de aldeanos cercanos
+
+# Configuración en runtime
+/villager_config get poi_search_radius
+/villager_config set poi_search_radius 25
+/villager_config reload      # Recargar desde minetest.conf
+```
+
+#### Características del Sistema AI
+
+- **6 Estados de Comportamiento**: IDLE, WANDER, WORK, SOCIAL, SLEEP, SEEK_PLAYER
+- **Pathfinding A***: Navegación inteligente con anti-stuck
+- **Pesos Probabilísticos**: Cada profesión tiene tendencias diferentes
+- **Rutinas Automáticas**: Duermen de noche, trabajan de día
+- **Detección de Entorno**: Reaccionan a jugadores, NPCs y bloques
+
+Ver **[docs/AI_BEHAVIORS.md](docs/AI_BEHAVIORS.md)** para información completa.
 
 ---
 

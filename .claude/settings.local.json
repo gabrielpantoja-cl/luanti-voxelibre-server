@@ -52,7 +52,8 @@
       "Bash(bash create_detailed_textures.sh:*)",
       "mcp__playwright__browser_take_screenshot",
       "Bash(docker-compose ps:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(luac:*)"
     ],
     "deny": [],
     "ask": []
