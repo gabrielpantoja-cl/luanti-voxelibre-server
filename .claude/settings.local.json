@@ -50,7 +50,8 @@
       "Bash(file:*)",
       "Bash(sort:*)",
       "Bash(bash create_detailed_textures.sh:*)",
-      "mcp__playwright__browser_take_screenshot"
+      "mcp__playwright__browser_take_screenshot",
+      "Bash(docker-compose ps:*)"
     ],
     "deny": [],
     "ask": []
