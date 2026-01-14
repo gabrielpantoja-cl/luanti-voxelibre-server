@@ -1,7 +1,7 @@
 -- Wetlands Music - Custom music discs for Wetlands server
 -- Author: Gabriel Pantoja
 -- License: GPL v3.0
--- Version: 2.1.0
+-- Version: 2.2.0
 --
 -- This mod integrates custom music discs into VoxeLibre's jukebox system
 -- All music files are in .ogg format and textures are 16x16 PNG files
@@ -112,7 +112,16 @@ mcl_jukebox.register_record(
 	"wetlands_music_te_quedas"
 )
 
-minetest.log("action", "[wetlands_music] Successfully registered 10 custom music discs")
+-- Disc 11: Juegazos (Chyste MC - Rap Chileno)
+mcl_jukebox.register_record(
+	"Juegazos",
+	"Chyste MC",
+	"wetlands_juegazos",
+	"wetlands_music_juegazos.png",
+	"wetlands_music_juegazos"
+)
+
+minetest.log("action", "[wetlands_music] Successfully registered 11 custom music discs")
 
 -- Note: pvp_battle_3 (Intergalactic Odyssey) was removed as the sound file doesn't exist
 -- To add new discs:
