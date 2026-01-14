@@ -233,4 +233,187 @@ Then manually edit `init.lua` to register each track.
 
 ---
 
+## 🎯 Caso de Estudio Real: "Juegazos" de Chyste MC
+
+Este es un ejemplo real de cómo agregamos rap chileno al servidor (Enero 2026).
+
+### Contexto
+- **Canción**: "Juegazos" - Chyste MC (rap chileno)
+- **Fuente**: YouTube (https://www.youtube.com/watch?v=mkUSaxgA6lI)
+- **Objetivo**: Agregar música urbana chilena al servidor
+- **Textura**: Basada en logo de Gran Rah (productora)
+
+### Proceso Completo Paso a Paso
+
+#### 1. Instalación de Herramientas (Una vez)
+
+```powershell
+# Instalar yt-dlp para descargar de YouTube
+pip install yt-dlp
+
+# Instalar ffmpeg (PowerShell como Administrador)
+choco install ffmpeg -y
+```
+
+#### 2. Descarga de YouTube con yt-dlp
+
+```bash
+# Descargar audio de YouTube en formato OGG directamente
+python -m yt_dlp -x --audio-format vorbis --audio-quality 5 "https://www.youtube.com/watch?v=mkUSaxgA6lI" -o "temp_juegazos.%(ext)s"
+```
+
+**Resultado**: `temp_juegazos.webm` (3.8MB) - yt-dlp descarga en WebM por limitaciones de YouTube
+
+#### 3. Conversión a OGG Vorbis con ffmpeg
+
+```bash
+# Convertir WebM a OGG Vorbis con calidad 5 (~160 kbps)
+cd C:\Users\gabri\Developer\luanti-voxelibre-server
+ffmpeg -i temp_juegazos.webm -c:a libvorbis -q:a 5 server/mods/wetlands-music/sounds/wetlands_music_juegazos.ogg
+```
+
+**Resultado**:
+- Archivo: `wetlands_music_juegazos.ogg`
+- Tamaño: 4.1MB
+- Duración: 3:47
+- Calidad: 160 kbps, stereo, 48000 Hz
+
+#### 4. Creación de Textura 16x16 con ImageMagick
+
+```bash
+# Crear textura basada en logo Gran Rah (círculo con letras "GR")
+cd server/mods/wetlands-music/textures
+magick -size 16x16 xc:none -fill black -draw "circle 8,8 8,2" -fill white -draw "circle 8,8 8,3" -fill black -pointsize 8 -gravity center -annotate +0-1 "GR" wetlands_music_juegazos.png
+```
+
+**Resultado**:
+- Archivo: `wetlands_music_juegazos.png`
+- Tamaño: 669 bytes
+- Dimensiones: 16x16 píxeles
+- Formato: PNG con transparencia
+
+#### 5. Registro en init.lua
+
+```lua
+-- Disc 11: Juegazos (Chyste MC - Rap Chileno)
+mcl_jukebox.register_record(
+	"Juegazos",
+	"Chyste MC",
+	"wetlands_juegazos",
+	"wetlands_music_juegazos.png",
+	"wetlands_music_juegazos"
+)
+```
+
+#### 6. Actualizar Metadatos
+
+**En `mod.conf`**:
+```ini
+version = 2.2.0
+description = Custom music discs for Wetlands server... 11 unique discs with optimized 16x16 textures, including Chilean rap (Chyste MC).
+```
+
+**En `init.lua`**:
+```lua
+-- Version: 2.2.0
+minetest.log("action", "[wetlands_music] Successfully registered 11 custom music discs")
+```
+
+#### 7. Limpieza y Verificación
+
+```bash
+# Eliminar archivos temporales
+rm temp_juegazos.webm
+
+# Verificar archivos finales
+ls -lh server/mods/wetlands-music/sounds/wetlands_music_juegazos.ogg
+ls -lh server/mods/wetlands-music/textures/wetlands_music_juegazos.png
+
+# Verificar formato y calidad
+file server/mods/wetlands-music/sounds/wetlands_music_juegazos.ogg
+# Output: Ogg data, Vorbis audio, stereo, 48000 Hz, ~160000 bps
+```
+
+#### 8. Commit y Deploy
+
+```bash
+# Agregar todos los cambios
+git add server/mods/wetlands-music/
+
+# Commit descriptivo
+git commit -m "feat(music): Agrega 'Juegazos' de Chyste MC - Rap chileno
+
+Disco 11/11 - Tema de rap chileno para diversificar la colección musical.
+- Artista: Chyste MC
+- Duración: 3:47
+- Textura: Logo Gran Rah adaptado a 16x16
+- Descarga: YouTube con yt-dlp + ffmpeg
+- Calidad: OGG Vorbis 160 kbps"
+
+# Push cuando los jugadores hayan salido
+git push origin main
+```
+
+### Lecciones Aprendidas
+
+**✅ Buenas Prácticas**:
+1. **Siempre usar yt-dlp** en lugar de youtube-dl (más actualizado)
+2. **Convertir a OGG Vorbis** aunque yt-dlp descargue WebM
+3. **Usar calidad 5** en ffmpeg (~160 kbps) - buen balance tamaño/calidad
+4. **Texturas 16x16** son obligatorias para rendimiento óptimo
+5. **ImageMagick** es excelente para crear texturas programáticamente
+
+**⚠️ Problemas Comunes Resueltos**:
+
+1. **Error "ffmpeg not found"**:
+   - Solución: Instalar con `choco install ffmpeg -y` (requiere admin)
+
+2. **Error "No such file or directory"**:
+   - Causa: Ejecutar comando desde directorio incorrecto
+   - Solución: Siempre `cd` al directorio del proyecto primero
+
+3. **YouTube descarga WebM en lugar de audio directo**:
+   - Normal: YouTube limita formatos desde 2024
+   - Solución: Usar ffmpeg para convertir WebM → OGG
+
+4. **Permisos de administrador en Windows**:
+   - PowerShell: Click derecho → "Ejecutar como administrador"
+   - Solo necesario para instalar herramientas, no para usarlas
+
+### Tiempos Estimados
+
+- Instalación de herramientas: 5-10 minutos (una sola vez)
+- Descarga de YouTube: 30 segundos - 2 minutos
+- Conversión a OGG: 10-30 segundos
+- Creación de textura: 5-15 minutos (si es personalizada)
+- Registro en código: 2-5 minutos
+- Testing: 5 minutos
+- **Total**: ~20-30 minutos por canción nueva
+
+### Recursos y Referencias
+
+**Herramientas Usadas**:
+- **yt-dlp**: https://github.com/yt-dlp/yt-dlp (descarga de YouTube)
+- **ffmpeg**: https://ffmpeg.org/ (conversión de audio)
+- **ImageMagick**: https://imagemagick.org/ (creación de texturas)
+- **Chocolatey**: https://chocolatey.org/ (gestor de paquetes Windows)
+
+**Comandos de Instalación Rápida**:
+```powershell
+# PowerShell como Administrador
+choco install ffmpeg imagemagick -y
+
+# PowerShell normal
+pip install yt-dlp
+```
+
+**Verificar Instalaciones**:
+```bash
+python -m yt_dlp --version    # Debe mostrar: 2025.12.08 o superior
+ffmpeg -version               # Debe mostrar: 8.0.1 o superior
+magick -version               # Debe mostrar: 7.1.2 o superior
+```
+
+---
+
 **Happy music making! 🎶**
