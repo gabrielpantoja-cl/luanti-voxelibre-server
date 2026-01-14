@@ -53,7 +53,9 @@
       "mcp__playwright__browser_take_screenshot",
       "Bash(docker-compose ps:*)",
       "WebFetch(domain:github.com)",
-      "Bash(luac:*)"
+      "Bash(luac:*)",
+      "Bash(yt-dlp:*)",
+      "Bash(youtube-dl:*)"
     ],
     "deny": [],
     "ask": []
