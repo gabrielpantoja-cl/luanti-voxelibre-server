@@ -1,5 +1,5 @@
 -- AGGRESSIVE Creative Force Mod - COMPLETELY DISABLES hostile mobs and FORCES creative mode
--- Author: Vegan Wetlands Team
+-- Author: Wetlands Team
 -- Description: NUCLEAR OPTION - Ensures 100% creative mode and ZERO hostile entities
 
 -- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
@@ -362,4 +362,4 @@ minetest.register_chatcommand("give_starter_kit", {
     end,
 })
 
-minetest.log("info", "[creative_force] Creative Force mod loaded - forcing creative mode for child-friendly vegan server with COMPLETE starter kits")
+minetest.log("info", "[creative_force] Creative Force mod loaded - forcing creative mode for child-friendly server with COMPLETE starter kits (with survival exceptions)")
