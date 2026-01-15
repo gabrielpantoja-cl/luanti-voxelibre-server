@@ -186,9 +186,9 @@ minetest.register_on_joinplayer(function(player)
     minetest.after(2.0, function()
         if player and player:is_player() then
             if survival_players[player_name] then
-                minetest.chat_send_player(player_name, "⚔️ ¡Bienvenido a Vegan Wetlands en MODO SUPERVIVENCIA! Deberás recolectar recursos, craftear herramientas y sobrevivir. ¡Buena suerte!")
+                minetest.chat_send_player(player_name, "⚔️ ¡Bienvenido a Wetlands en MODO SUPERVIVENCIA! Deberás recolectar recursos, craftear herramientas y sobrevivir. ¡Buena suerte!")
             else
-                minetest.chat_send_player(player_name, "🌱 ¡Bienvenido a Vegan Wetlands! Modo creativo activado - construye, explora y aprende sobre veganismo sin violencia. Usa /santuario para info sobre cuidado de animales.")
+                minetest.chat_send_player(player_name, "🌱 ¡Bienvenido a Wetlands! Modo creativo activado - construye, explora y aprende sin límites. Usa /santuario para info sobre cuidado de animales.")
             end
         end
     end)
