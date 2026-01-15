@@ -11,6 +11,7 @@ Documentación técnica completa del servidor Luanti educativo y compasivo para 
 ### Para Administradores
 - **[Guía de Administración](admin/usuarios-y-privilegios.md)** - Gestión de usuarios y privilegios
 - **[Comandos de Admin](admin/comandos-admin.md)** - Comandos administrativos disponibles
+- **[Modos Mixtos (Creativo + Supervivencia)](MIXED_GAMEMODE_CONFIGURATION.md)** - Sistema de coexistencia de modos de juego
 
 ### Para Desarrolladores
 - **[Sistema de Mods](mods/README.md)** - Desarrollo y documentación de mods
@@ -25,9 +26,9 @@ Guías para nuevos jugadores y conexión inicial
 
 ### 👨‍💼 [admin/](admin/)
 Documentación de administración del servidor
-- **[Usuarios y Privilegios](admin/usuarios-y-privilegios.md)** - Gestión de cuentas y permisos
+- **[Usuarios y Privilegios](admin/USER_PRIVILEGES.md)** - Gestión de cuentas y permisos
 - **[Comandos de Admin](admin/comandos-admin.md)** - Comandos administrativos disponibles
-- **[Seguridad y Bloqueos](admin/seguridad-y-bloqueos.md)** - Protección contra usuarios problemáticos
+- **[Modos Mixtos](MIXED_GAMEMODE_CONFIGURATION.md)** - Configuración de creativo + supervivencia
 - **[Ubicaciones y Coordenadas](admin/ubicaciones-coordenadas.md)** - Puntos importantes del servidor
 
 ### ⚙️ [config/](config/)
@@ -66,7 +67,7 @@ Documentación histórica y archivos reorganizados
 ### Servidor en Vivo
 - **URL**: `luanti.gabrielpantoja.cl:30000`
 - **Landing Page**: https://luanti.gabrielpantoja.cl
-- **Modo**: Creativo, sin violencia, educativo
+- **Modo**: Modos mixtos (Creativo + Supervivencia coexistiendo)
 - **Público**: Niños de 7+ años
 - **Idioma**: Español
 - **Capacidad**: Hasta 20 jugadores
@@ -134,7 +135,7 @@ ssh gabriel@<VPS_HOST_IP>
 ### Performance del Servidor
 - **Uptime objetivo**: 99.5%
 - **Capacidad**: 20 jugadores simultáneos
-- **Modo**: Creativo (sin PvP, sin daño)
+- **Modo**: Modos mixtos configurable (Creativo por defecto, Supervivencia opcional)
 - **Mundo**: VoxeLibre (MineClone2) v0.90.1
 
 ### Desarrollo Activo
@@ -144,6 +145,12 @@ ssh gabriel@<VPS_HOST_IP>
 - **CI/CD**: Automatizado con GitHub Actions
 
 ## 🔄 Historial de Actualizaciones
+
+### Enero 2026 - Sistema de Modos Mixtos
+- ✅ **Modos mixtos**: Creativo y supervivencia coexistiendo en el mismo mundo
+- ✅ **Mensajes inclusivos**: Redacción neutral para omnívoros y veganos
+- ✅ **Sistema de excepciones**: Lista configurable `survival_players` en mods
+- ✅ **Documentación completa**: `MIXED_GAMEMODE_CONFIGURATION.md` con guías detalladas
 
 ### Septiembre 2025 - Reorganización Completa
 - ✅ **Nueva estructura** de documentación por categorías
@@ -178,7 +185,7 @@ ssh gabriel@<VPS_HOST_IP>
 
 ---
 
-**📅 Última actualización**: 21 de Septiembre, 2025
-**👥 Mantenido por**: Equipo Wetlands Valdivia
-**📊 Versión**: 2.0 (Documentación Reorganizada y Optimizada)
-**🔗 Repositorio**: https://github.com/gabrielpantoja-cl/Wetlands-Valdivia.git
+**📅 Última actualización**: 15 de Enero, 2026
+**👥 Mantenido por**: Equipo Wetlands
+**📊 Versión**: 2.1 (Sistema de Modos Mixtos)
+**🔗 Repositorio**: https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git
