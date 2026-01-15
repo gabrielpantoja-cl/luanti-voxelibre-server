@@ -1,6 +1,6 @@
 # 🏟️ PVP Arena Mod - Sistema de Zonas de Combate con Scoring
 
-**Versión**: 1.3.0 🆕
+**Versión**: 1.4.0 🆕 (Sistema de Modos Mixtos)
 **Estado**: ✅ Producción
 **Servidor**: Wetlands 🌱 Luanti/VoxeLibre
 
@@ -13,15 +13,16 @@ Mod que permite PvP en zonas específicas delimitadas con **sistema de scoring e
 **Características principales**:
 - ✅ Detección automática de entrada/salida de arenas
 - ✅ Gestión automática del privilegio `creative`
+- ✅ **🆕 v1.4: Soporte de modos mixtos (Creativo + Supervivencia)**
 - ✅ Zonas circulares en 3D (altura + radio)
 - ✅ Múltiples arenas configurables
 - ✅ Scoreboard en tiempo real con Top 10
 - ✅ Sistema de Killstreaks (Triple Kill, Rampage, Godlike)
 - ✅ Tracking de K/D ratio y estadísticas personales
 - ✅ Anuncios automáticos de kills en chat
-- ✅ **🆕 Ghost Mode estilo LoL al morir (invisible, fly, espectador)**
-- ✅ **🆕 Countdown regresivo de respawn (5, 4, 3, 2, 1...)**
-- ✅ **🆕 Scoreboard mejorado (nombres hasta 18 caracteres)**
+- ✅ Ghost Mode estilo LoL al morir (invisible, fly, espectador)
+- ✅ Countdown regresivo de respawn (5, 4, 3, 2, 1...)
+- ✅ Scoreboard mejorado (nombres hasta 18 caracteres)
 - ✅ Sistema de mensajes visuales
 
 ---
@@ -47,6 +48,66 @@ Mod que permite PvP en zonas específicas delimitadas con **sistema de scoring e
 /arena_tp <nombre>                # Teleport a arena
 /arena_stats                      # Ver estadísticas
 ```
+
+---
+
+## 🆕 Sistema de Modos Mixtos (v1.4.0)
+
+Este mod trabaja en conjunto con `creative_force` para soportar **modos mixtos** donde jugadores en supervivencia y creativo coexisten.
+
+### Configuración de Excepciones
+
+**Ubicación**: Líneas 5-9 de `init.lua`
+
+```lua
+-- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
+local survival_players = {
+    ["pepelomo"] = true,  -- Jugador en modo supervivencia
+    -- Agregar más jugadores aquí
+}
+```
+
+### Comportamiento por Modo
+
+**Jugadores en Creativo**:
+- Al conectar: Reciben privilegio `creative` automáticamente
+- Al entrar a arena: Pierden `creative` temporalmente
+- Al salir de arena: Recuperan `creative`
+
+**Jugadores en Supervivencia**:
+- Al conectar: NO reciben privilegio `creative` (respetando excepción)
+- Al entrar a arena: Modo supervivencia se mantiene
+- Al salir de arena: Modo supervivencia se mantiene
+- **Logs**: `[PVP Arena] Player pepelomo is in SURVIVAL mode - skipping creative`
+
+### Sincronización con creative_force
+
+**IMPORTANTE**: Este mod **debe tener la misma lista** `survival_players` que el mod `creative_force` para evitar conflictos.
+
+Si un jugador está en la lista de supervivencia en `creative_force` pero NO en `pvp_arena`, puede recibir creative al reconectar.
+
+### Verificación de Configuración
+
+```bash
+# Ver logs de jugador en supervivencia
+docker-compose logs luanti-server | grep -i "pepelomo\|survival"
+
+# Debe mostrar:
+# [PVP Arena] Player pepelomo is in SURVIVAL mode - skipping creative
+```
+
+### Troubleshooting Modos Mixtos
+
+**Problema**: Jugador en supervivencia recibe creative al reconectar
+
+**Causa**: Lista `survival_players` no sincronizada entre mods
+
+**Solución**:
+1. Verificar que AMBOS mods (`creative_force` y `pvp_arena`) tienen la lista actualizada
+2. Reiniciar servidor
+3. Jugador debe reconectar
+
+**Documentación completa**: `docs/MIXED_GAMEMODE_CONFIGURATION.md`
 
 ---
 
@@ -148,3 +209,10 @@ MIT License - Libre para usar y modificar
 ## 👤 Autor
 
 Gabriel Pantoja (gabo) - Servidor Wetlands
+
+---
+
+**Última actualización**: Enero 15, 2026
+**Versión**: 1.4.0 (Sistema de Modos Mixtos)
+**Mantenedor**: Equipo Wetlands
+**📚 Documentación adicional**: `docs/MIXED_GAMEMODE_CONFIGURATION.md`

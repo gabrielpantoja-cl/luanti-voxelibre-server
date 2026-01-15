@@ -1,21 +1,132 @@
 # 🌱 Creative Force - Forzar Modo Creativo y Eliminar Violencia
 
-**Versión**: 1.0  
-**Autor**: Wetlands Team  
+**Versión**: 2.0 (Sistema de Modos Mixtos)
+**Autor**: Wetlands Team
 **Compatibilidad**: VoxeLibre v0.90.1
 
 ## 📖 Descripción
 
 Mod "nuclear" que fuerza completamente el modo creativo y elimina toda violencia del servidor. Garantiza un ambiente 100% seguro y creativo para niños, otorgando automáticamente todos los privilegios creativos y eliminando cualquier entidad hostil.
 
+**NUEVO en v2.0**: Soporta **modos mixtos** - permite que jugadores específicos jueguen en modo supervivencia mientras otros están en modo creativo en el mismo mundo.
+
 ## 🎯 Propósito
 
 Este mod es **CRÍTICO** para:
-- **Forzar modo creativo** para todos los jugadores
+- **Forzar modo creativo** para todos los jugadores (con excepciones configurables)
+- **Soportar modos mixtos** - Creativo y Supervivencia coexistiendo
 - **Eliminar completamente** mobs hostiles y violencia
-- **Otorgar kit de inicio** completo a nuevos jugadores
+- **Otorgar kit de inicio** completo a nuevos jugadores creativos
 - **Garantizar ambiente seguro** para niños 7+ años
 - **Prevenir daño** a jugadores
+
+## 🆕 Sistema de Modos Mixtos (v2.0)
+
+### Configuración de Excepciones de Supervivencia
+
+El mod permite que **jugadores específicos** jueguen en modo supervivencia mientras el resto juega en creativo.
+
+**Ubicación**: Líneas 5-9 de `init.lua`
+
+```lua
+-- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
+local survival_players = {
+    ["pepelomo"] = true,  -- Requested to play in survival mode
+    -- Agregar más jugadores:
+    -- ["jugador2"] = true,
+    -- ["jugador3"] = true,
+}
+```
+
+### Diferencias entre Modos
+
+| Característica | Modo Creativo | Modo Supervivencia |
+|----------------|---------------|-------------------|
+| **Inventario** | Infinito con todos los items | Debe recolectar recursos |
+| **Vuelo** | ✅ Sí (`fly`, `noclip`) | ❌ No |
+| **Daño** | ❌ Invulnerable | ❌ Protegido (sin monstruos) |
+| **Kit de inicio** | ✅ Completo (64 items) | ❌ Sin kit |
+| **Comandos** | `/give`, `/teleport` | Solo básicos |
+| **Privilegios** | 13+ privilegios | 5 básicos |
+
+### Privilegios por Modo
+
+**Modo Creativo** (por defecto):
+- `creative`, `give`, `fly`, `fast`, `noclip`, `interact`, `shout`, `home`, `spawn`, `teleport`, `settime`, `debug`, `basic_privs`
+
+**Modo Supervivencia** (excepciones):
+- `interact`, `shout`, `home`, `spawn`, `hunger`
+
+### Mensajes Diferenciados
+
+El mod envía mensajes personalizados según el modo:
+
+**Creativo**:
+> 🌱 ¡Bienvenido a Wetlands! Modo creativo activado - construye, explora y aprende sin límites.
+
+**Supervivencia**:
+> ⚔️ ¡Bienvenido a Wetlands en MODO SUPERVIVENCIA! Deberás recolectar recursos, craftear herramientas y sobrevivir. ¡Buena suerte!
+
+### Agregar Jugador a Supervivencia
+
+1. **Editar `init.lua`** (línea 6-8):
+```lua
+local survival_players = {
+    ["jugador_nuevo"] = true,  -- Agregar aquí
+}
+```
+
+2. **Limpiar privilegios existentes** (si ya estaba en creativo):
+```bash
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose stop luanti-server && docker compose run --rm luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"jugador_nuevo\");' && docker compose up -d luanti-server"
+```
+
+3. **El jugador debe reconectar** para que los cambios apliquen
+
+### Remover Jugador de Supervivencia
+
+Simplemente comentar o eliminar la línea:
+```lua
+local survival_players = {
+    -- ["pepelomo"] = true,  -- COMENTADO = vuelve a creativo
+}
+```
+
+### Comandos Restringidos
+
+Los jugadores en supervivencia **NO pueden**:
+- Usar `/starter_kit` (mensaje: "Estás en modo supervivencia - debes recolectar recursos por tu cuenta")
+- Recibir kit con `/give_starter_kit` (admins reciben advertencia)
+
+### Troubleshooting
+
+#### Jugador en supervivencia no puede romper bloques
+
+**Problema**: El jugador no tiene privilegio `interact`
+
+**Solución**: Otorgar privilegios básicos manualmente:
+```
+/grant jugador interact
+/grant jugador shout
+/grant jugador home
+/grant jugador spawn
+/grant jugador hunger
+```
+
+#### Jugador en supervivencia sigue viendo inventario creativo
+
+**Problema**: Privilegio `creative` no se removió correctamente
+
+**Solución**:
+```bash
+# Limpiar privilegio creative
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose stop luanti-server && docker compose run --rm luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"jugador\") AND privilege=\"creative\";' && docker compose up -d luanti-server"
+```
+
+### Documentación Completa
+
+Para una guía detallada paso a paso, ver:
+**`docs/MIXED_GAMEMODE_CONFIGURATION.md`**
 
 ## 🚀 Características
 
@@ -97,7 +208,7 @@ Este mod es extremadamente agresivo:
 - Bloquea completamente el daño
 - Elimina mobs hostiles del sistema de spawning
 
-**No usar** si quieres mantener alguna mecánica de supervivencia.
+**IMPORTANTE**: El mod elimina mobs hostiles **para todos**, incluso jugadores en modo supervivencia. El modo supervivencia solo afecta privilegios y acceso al inventario creativo, NO la presencia de mobs.
 
 ### Compatibilidad
 
@@ -215,8 +326,10 @@ Este mod es fundamental y debe cargarse:
 
 ---
 
-**Última actualización**: Diciembre 7, 2025  
-**Mantenedor**: Equipo Wetlands  
-**Licencia**: GPL-3.0  
+**Última actualización**: Enero 15, 2026
+**Versión**: 2.0 (Sistema de Modos Mixtos)
+**Mantenedor**: Equipo Wetlands
+**Licencia**: GPL-3.0
 **⚠️ Mod Crítico**: No deshabilitar sin reemplazo adecuado
+**📚 Documentación adicional**: `docs/MIXED_GAMEMODE_CONFIGURATION.md`
 
