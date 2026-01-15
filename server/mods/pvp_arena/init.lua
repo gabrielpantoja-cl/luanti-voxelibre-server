@@ -2,6 +2,11 @@
 -- Permite PvP en zonas específicas con sistema de scoring y respawn estilo LoL
 -- Autor: gabo (Gabriel Pantoja)
 
+-- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
+local survival_players = {
+    ["pepelomo"] = true,  -- Requested to play in survival mode
+}
+
 pvp_arena = {}
 pvp_arena.arenas = {}
 pvp_arena.players_in_arena = {}
@@ -252,27 +257,34 @@ minetest.register_on_joinplayer(function(player)
     local in_arena = pvp_arena.is_player_in_arena(name)
 
     if not in_arena then
-        -- FUERA DE ARENA: Habilitar creative mode automáticamente
-        -- VoxeLibre usa "gamemode" metadata, no "creative_mode"
-        meta:set_string("gamemode", "creative")
+        -- Check if player is in survival exception list
+        if survival_players[name] then
+            -- SURVIVAL MODE: No creative privileges
+            meta:set_string("gamemode", "survival")
+            minetest.log("action", "[PVP Arena] Player " .. name .. " is in SURVIVAL mode - skipping creative")
+        else
+            -- FUERA DE ARENA: Habilitar creative mode automáticamente
+            -- VoxeLibre usa "gamemode" metadata, no "creative_mode"
+            meta:set_string("gamemode", "creative")
 
-        -- También dar privilegio creative
-        local privs = minetest.get_player_privs(name)
-        if not privs.creative then
-            privs.creative = true
-            minetest.set_player_privs(name, privs)
-            minetest.log("action", "[PVP Arena] Granted creative mode to " .. name .. " (new player or rejoining)")
-        end
-
-        -- Mensaje de bienvenida pacífico
-        minetest.after(2, function()
-            if minetest.get_player_by_name(name) then
-                minetest.chat_send_player(name,
-                    minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Estás en zona pacífica con inventario creativo completo."))
-                minetest.chat_send_player(name,
-                    minetest.colorize("#81C784", "   Explora, construye y cuida de los animales. PvP solo en arenas específicas."))
+            -- También dar privilegio creative
+            local privs = minetest.get_player_privs(name)
+            if not privs.creative then
+                privs.creative = true
+                minetest.set_player_privs(name, privs)
+                minetest.log("action", "[PVP Arena] Granted creative mode to " .. name .. " (new player or rejoining)")
             end
-        end)
+
+            -- Mensaje de bienvenida pacífico
+            minetest.after(2, function()
+                if minetest.get_player_by_name(name) then
+                    minetest.chat_send_player(name,
+                        minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Estás en zona pacífica con inventario creativo completo."))
+                    minetest.chat_send_player(name,
+                        minetest.colorize("#81C784", "   Explora, construye y cuida de los animales. PvP solo en arenas específicas."))
+                end
+            end)
+        end
     end
 end)
 

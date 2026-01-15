@@ -182,10 +182,14 @@ minetest.register_on_joinplayer(function(player)
         end)
     end
     
-    -- Send welcome message
+    -- Send appropriate welcome message
     minetest.after(2.0, function()
         if player and player:is_player() then
-            minetest.chat_send_player(player_name, "🌱 ¡Bienvenido a Vegan Wetlands! Modo creativo activado - construye, explora y aprende sobre veganismo sin violencia. Usa /santuario para info sobre cuidado de animales.")
+            if survival_players[player_name] then
+                minetest.chat_send_player(player_name, "⚔️ ¡Bienvenido a Vegan Wetlands en MODO SUPERVIVENCIA! Deberás recolectar recursos, craftear herramientas y sobrevivir. ¡Buena suerte!")
+            else
+                minetest.chat_send_player(player_name, "🌱 ¡Bienvenido a Vegan Wetlands! Modo creativo activado - construye, explora y aprende sobre veganismo sin violencia. Usa /santuario para info sobre cuidado de animales.")
+            end
         end
     end)
 end)
@@ -318,10 +322,14 @@ minetest.register_chatcommand("starter_kit", {
         if not player then
             return false, "You must be online to use this command."
         end
-        
+
+        if survival_players[name] then
+            return false, "⚔️ Estás en modo supervivencia - debes recolectar recursos por tu cuenta."
+        end
+
         give_all_items_to_player(player)
         players_with_kit[name] = true
-        
+
         return true, "🎁 ¡Kit de inicio completo entregado! Tienes todos los materiales esenciales."
     end,
 })
@@ -335,17 +343,21 @@ minetest.register_chatcommand("give_starter_kit", {
         if param == "" then
             return false, "Uso: /give_starter_kit <nombre_jugador>"
         end
-        
+
+        if survival_players[param] then
+            return false, "⚔️ " .. param .. " está en modo supervivencia - no puede recibir kit de inicio."
+        end
+
         local target_player = minetest.get_player_by_name(param)
         if not target_player then
             return false, "Jugador '" .. param .. "' no encontrado o no está online."
         end
-        
+
         give_all_items_to_player(target_player)
         players_with_kit[param] = true
-        
+
         minetest.chat_send_player(param, "🎁 ¡Un administrador te ha dado el kit de inicio completo!")
-        
+
         return true, "Kit de inicio entregado a " .. param
     end,
 })
