@@ -1,6 +1,11 @@
 -- AGGRESSIVE Creative Force Mod - COMPLETELY DISABLES hostile mobs and FORCES creative mode
--- Author: Vegan Wetlands Team  
+-- Author: Vegan Wetlands Team
 -- Description: NUCLEAR OPTION - Ensures 100% creative mode and ZERO hostile entities
+
+-- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
+local survival_players = {
+    ["pepelomo"] = true,  -- Requested to play in survival mode
+}
 
 -- List of creative privileges to grant - COMPLETE SET
 local creative_privileges = {
@@ -21,6 +26,21 @@ local creative_privileges = {
 
 -- Function to grant all creative privileges to a player
 local function grant_creative_privileges(player_name)
+    -- Check if player is in survival exception list
+    if survival_players[player_name] then
+        minetest.log("info", "[creative_force] Player " .. player_name .. " is in SURVIVAL mode - skipping creative privileges")
+        -- Grant only basic privileges for survival players
+        local basic_privs = {"interact", "shout", "home", "spawn"}
+        for _, priv in ipairs(basic_privs) do
+            if not minetest.check_player_privs(player_name, {[priv] = true}) then
+                local privs = minetest.get_player_privs(player_name)
+                privs[priv] = true
+                minetest.set_player_privs(player_name, privs)
+            end
+        end
+        return false  -- Signal that creative mode was NOT granted
+    end
+
     for _, priv in ipairs(creative_privileges) do
         if not minetest.check_player_privs(player_name, {[priv] = true}) then
             local privs = minetest.get_player_privs(player_name)
@@ -29,10 +49,19 @@ local function grant_creative_privileges(player_name)
             minetest.log("info", "[creative_force] Granted privilege '" .. priv .. "' to player " .. player_name)
         end
     end
+    return true  -- Signal that creative mode WAS granted
 end
 
 -- Function to give ALL items to a new player
 local function give_all_items_to_player(player)
+    local player_name = player:get_player_name()
+
+    -- Skip if player is in survival mode
+    if survival_players[player_name] then
+        minetest.log("info", "[creative_force] Player " .. player_name .. " is in SURVIVAL mode - no starter kit given")
+        return
+    end
+
     local inv = player:get_inventory()
     if not inv then
         return
@@ -120,16 +149,16 @@ local players_with_kit = {}
 -- Hook into player join event
 minetest.register_on_joinplayer(function(player)
     local player_name = player:get_player_name()
-    minetest.log("info", "[creative_force] Player " .. player_name .. " joined, ensuring creative privileges...")
-    
-    -- Grant creative privileges immediately
-    grant_creative_privileges(player_name)
-    
+    minetest.log("info", "[creative_force] Player " .. player_name .. " joined, checking mode...")
+
+    -- Grant privileges (creative or survival based on exception list)
+    local is_creative = grant_creative_privileges(player_name)
+
     -- Check if this is a new player (first time joining)
     local is_new_player = not players_with_kit[player_name]
-    
-    -- Give full starter kit to new players
-    if is_new_player then
+
+    -- Give full starter kit only to creative players
+    if is_creative and is_new_player then
         minetest.after(1.5, function()
             if player and player:is_player() then
                 give_all_items_to_player(player)
