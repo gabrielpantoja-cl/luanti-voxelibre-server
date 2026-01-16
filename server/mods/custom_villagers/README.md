@@ -1,9 +1,42 @@
 # 🏘️ Custom Villagers - Aldeanos Interactivos de Wetlands
 
-**Versión**: 1.0.0
+**Versión**: 1.0.1 (Crash Fix Patch)
 **Autor**: Wetlands Team
 **Licencia**: GPL v3
 **Compatible con**: VoxeLibre (MineClone2) v0.90.1+
+
+---
+
+## 🔧 Estado del Mod
+
+| Estado | Descripción |
+|--------|-------------|
+| ✅ **OPERATIVO** | Click derecho funciona sin crashes (fix aplicado 2026-01-16) |
+| ⚠️ **EN TESTING** | Verificar que NPCs hablen y respondan correctamente |
+| 📝 **PENDIENTE** | Revisar sistema de diálogos interactivos |
+
+---
+
+## 📋 Changelog
+
+### v1.0.1 (2026-01-16) - Crash Fix Patch
+**FIXED**:
+- ✅ **Click derecho ya NO crashea el servidor** - Validación defensiva implementada
+- ✅ Emojis eliminados de mensajes automáticos (causaban crashes en clientes antiguos)
+- ✅ Protección con pcall() en todas las llamadas de pathfinding (6 ubicaciones)
+- ✅ Validación de parámetros nil en show_interaction_formspec()
+- ✅ Validación de player_name y villager_type en on_rightclick()
+
+**MEJORAS**:
+- ✅ Logging comprehensivo de errores para debugging
+- ✅ Mensajes de error amigables al jugador
+- ✅ Documentación completa del parche (ver CRASH_FIX_PATCH.md)
+
+**PENDIENTE DE VERIFICACIÓN** (ver TODO.md):
+- ⚠️ Confirmar que los aldeanos responden a diálogos
+- ⚠️ Verificar sistema de comercio funcional
+- ⚠️ Probar saludos automáticos
+- ⚠️ Validar comportamientos AI (trabajo, social, sleep)
 
 ---
 
