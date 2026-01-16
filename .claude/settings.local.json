@@ -62,7 +62,10 @@
       "Bash(choco install:*)",
       "Bash(magick:*)",
       "Bash(choco:*)",
-      "Bash(ffmpeg:*)"
+      "Bash(ffmpeg:*)",
+      "Bash(for file in /home/gabriel/Documentos/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/*.png)",
+      "Bash(done)",
+      "Bash(./scripts/add-skin.sh:*)"
     ],
     "deny": [],
     "ask": []
