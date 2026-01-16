@@ -1,6 +1,6 @@
 # 🏘️ Custom Villagers - Aldeanos Interactivos de Wetlands
 
-**Versión**: 2.1.0
+**Versión**: 1.0.0
 **Autor**: Wetlands Team
 **Licencia**: GPL v3
 **Compatible con**: VoxeLibre (MineClone2) v0.90.1+
