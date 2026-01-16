@@ -149,27 +149,56 @@ custom_villagers.trades = {
 
 -- Mostrar formspec de interacción
 local function show_interaction_formspec(player_name, villager_type, villager_name)
-    -- FIX: Convertir villager_name a string explícitamente para evitar crashes
-    local name_str = tostring(villager_name or villager_type)
+    -- DEFENSIVE: Validar parámetros críticos antes de procesar
+    if not player_name or not villager_type then
+        log("error", "show_interaction_formspec called with nil parameters")
+        return
+    end
+
+    -- DEFENSIVE: Convertir villager_name a string seguro
+    local name_str = "Aldeano"
+    if villager_name then
+        name_str = tostring(villager_name)
+    elseif villager_type then
+        -- Capitalizar primera letra del tipo
+        name_str = villager_type:sub(1,1):upper() .. villager_type:sub(2)
+    end
+
+    -- DEFENSIVE: Escapar caracteres especiales para evitar inyección
+    name_str = minetest.formspec_escape(name_str)
 
     -- FIX: Usar sintaxis moderna de formspec sin emojis (causa crashes en algunos clientes)
     local formspec = "formspec_version[4]" ..
         "size[10,7]" ..
-        "label[0.5,0.5;" .. minetest.formspec_escape(name_str) .. "]" ..
+        "label[0.5,0.5;" .. name_str .. "]" ..
         "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]" ..
         "button[0.5,2.5;9,0.8;dialogue_work;Sobre su trabajo]" ..
         "button[0.5,3.5;9,0.8;dialogue_education;Aprender algo nuevo]" ..
         "button[0.5,4.5;9,0.8;trade;Comerciar]" ..
         "button[0.5,5.5;9,0.8;close;Cerrar]"
 
-    minetest.show_formspec(player_name, "custom_villagers:interact_" .. villager_type, formspec)
+    -- DEFENSIVE: Usar pcall para capturar posibles errores de formspec
+    local success, err = pcall(function()
+        minetest.show_formspec(player_name, "custom_villagers:interact_" .. villager_type, formspec)
+    end)
+
+    if not success then
+        log("error", "Failed to show formspec: " .. tostring(err))
+        minetest.chat_send_player(player_name, "[Aldeano] Error al mostrar diálogo. Intenta de nuevo.")
+    end
 end
 
 -- Mostrar formspec de comercio
 local function show_trade_formspec(player_name, villager_type)
+    -- DEFENSIVE: Validar parámetros
+    if not player_name or not villager_type then
+        log("error", "show_trade_formspec called with nil parameters")
+        return
+    end
+
     local trades = custom_villagers.trades[villager_type]
     if not trades then
-        minetest.chat_send_player(player_name, "No tengo nada para comerciar ahora.")
+        minetest.chat_send_player(player_name, "[Aldeano] No tengo nada para comerciar ahora.")
         return
     end
 
@@ -283,10 +312,32 @@ local function register_custom_villager(name, def)
         custom_villager_type = name,
 
         on_rightclick = function(self, clicker)
-            if not clicker or not clicker:is_player() then return end
+            -- DEFENSIVE: Validar que clicker existe y es un jugador
+            if not clicker or not clicker:is_player() then
+                return
+            end
 
+            -- DEFENSIVE: Validar que self tiene los datos necesarios
+            if not self or not self.custom_villager_type then
+                log("error", "on_rightclick called on invalid villager entity")
+                return
+            end
+
+            -- DEFENSIVE: Obtener player_name de forma segura
             local player_name = clicker:get_player_name()
-            show_interaction_formspec(player_name, self.custom_villager_type, def.description or name)
+            if not player_name or player_name == "" then
+                return
+            end
+
+            -- DEFENSIVE: Usar pcall para proteger contra crashes
+            local success, err = pcall(function()
+                show_interaction_formspec(player_name, self.custom_villager_type, def.description or name)
+            end)
+
+            if not success then
+                log("error", "on_rightclick failed: " .. tostring(err))
+                minetest.chat_send_player(player_name, "[Servidor] Error al interactuar con aldeano. Reporta esto a un admin.")
+            end
         end,
 
         on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)

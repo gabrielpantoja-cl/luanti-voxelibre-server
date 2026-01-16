@@ -533,8 +533,14 @@ local function do_wander(self)
         self.ai_target = {pos = target, type = "wander"}
 
         -- Navegar hacia el objetivo usando pathfinding de mcl_mobs
-        if mcl_mobs and mcl_mobs.gopath then
-            mcl_mobs:gopath(self, target)
+        -- DEFENSIVE: Verificar que mcl_mobs existe y tiene gopath
+        if mcl_mobs and type(mcl_mobs.gopath) == "function" then
+            local success, err = pcall(function()
+                mcl_mobs:gopath(self, target)
+            end)
+            if not success and custom_villagers.config.debug.enabled then
+                minetest.log("warning", "[custom_villagers] gopath failed in wander: " .. tostring(err))
+            end
         end
     end
 end
@@ -576,8 +582,14 @@ local function do_work(self, villager_type, pos)
             self.ai_target = {pos = poi_pos, type = "work"}
 
             -- Navegar hacia el POI
-            if mcl_mobs and mcl_mobs.gopath then
-                mcl_mobs:gopath(self, poi_pos)
+            -- DEFENSIVE: Validar mcl_mobs antes de usar
+            if mcl_mobs and type(mcl_mobs.gopath) == "function" then
+                local success, err = pcall(function()
+                    mcl_mobs:gopath(self, poi_pos)
+                end)
+                if not success and custom_villagers.config.debug.enabled then
+                    minetest.log("warning", "[custom_villagers] gopath failed in work: " .. tostring(err))
+                end
             end
 
             if custom_villagers.config.debug.log_pathfinding then
@@ -657,8 +669,14 @@ local function do_social(self, pos)
             local target_pos = other_villager.object:get_pos()
 
             -- Navegar hacia el otro aldeano
-            if mcl_mobs and mcl_mobs.gopath then
-                mcl_mobs:gopath(self, target_pos)
+            -- DEFENSIVE: Validar mcl_mobs antes de usar
+            if mcl_mobs and type(mcl_mobs.gopath) == "function" then
+                local success, err = pcall(function()
+                    mcl_mobs:gopath(self, target_pos)
+                end)
+                if not success and custom_villagers.config.debug.enabled then
+                    minetest.log("warning", "[custom_villagers] gopath failed in social: " .. tostring(err))
+                end
             end
         else
             -- No hay otros aldeanos, volver a wander
@@ -713,8 +731,14 @@ local function do_social(self, pos)
             end
         else
             -- Demasiado lejos, navegar de nuevo
-            if mcl_mobs and mcl_mobs.gopath then
-                mcl_mobs:gopath(self, partner_pos)
+            -- DEFENSIVE: Validar mcl_mobs antes de usar
+            if mcl_mobs and type(mcl_mobs.gopath) == "function" then
+                local success, err = pcall(function()
+                    mcl_mobs:gopath(self, partner_pos)
+                end)
+                if not success and custom_villagers.config.debug.enabled then
+                    minetest.log("warning", "[custom_villagers] gopath failed in social (re-nav): " .. tostring(err))
+                end
             end
         end
     end
@@ -744,8 +768,14 @@ local function do_sleep(self, pos)
                 self.ai_target = {pos = bed_pos, type = "sleep"}
 
                 -- Navegar hacia la cama
-                if mcl_mobs and mcl_mobs.gopath then
-                    mcl_mobs:gopath(self, bed_pos)
+                -- DEFENSIVE: Validar mcl_mobs antes de usar
+                if mcl_mobs and type(mcl_mobs.gopath) == "function" then
+                    local success, err = pcall(function()
+                        mcl_mobs:gopath(self, bed_pos)
+                    end)
+                    if not success and custom_villagers.config.debug.enabled then
+                        minetest.log("warning", "[custom_villagers] gopath failed in sleep: " .. tostring(err))
+                    end
                 end
             else
                 -- No hay cama, dormir donde está
@@ -821,20 +851,26 @@ local function do_seek_player(self, pos)
 
     if dist > 3 then
         -- Navegar hacia el jugador
-        if mcl_mobs and mcl_mobs.gopath then
-            mcl_mobs:gopath(self, player_pos)
+        -- DEFENSIVE: Validar mcl_mobs antes de usar
+        if mcl_mobs and type(mcl_mobs.gopath) == "function" then
+            local success, err = pcall(function()
+                mcl_mobs:gopath(self, player_pos)
+            end)
+            if not success and custom_villagers.config.debug.enabled then
+                minetest.log("warning", "[custom_villagers] gopath failed in seek_player: " .. tostring(err))
+            end
         end
     else
         -- Llegó cerca del jugador, saludar
         local player_name = player:get_player_name()
         local villager_type = self.custom_villager_type or "villager"
 
-        -- Saludos por profesión
+        -- Saludos por profesión (sin emojis para evitar crashes)
         local greetings = {
-            farmer = "¡Hola, %s! 🌾 ¡Qué bueno verte!",
-            librarian = "Saludos, %s. 📚 ¿Buscas algo de conocimiento?",
-            teacher = "¡Buenos días, %s! 🎓 ¿Listo para aprender?",
-            explorer = "¡Aventurero %s! 🗺️ ¿Vas a explorar hoy?",
+            farmer = "¡Hola, %s! ¡Qué bueno verte!",
+            librarian = "Saludos, %s. ¿Buscas algo de conocimiento?",
+            teacher = "¡Buenos días, %s! ¿Listo para aprender?",
+            explorer = "¡Aventurero %s! ¿Vas a explorar hoy?",
         }
 
         local greeting = greetings[villager_type] or "¡Hola, %s!"
