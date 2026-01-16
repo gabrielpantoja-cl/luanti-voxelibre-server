@@ -185,11 +185,21 @@ Después de reiniciar el servidor, verificar:
 - [x] README versión corregida (2.1.0 → 1.0.0)
 - [x] Patch anti-crash aplicado (init.lua, ai_behaviors.lua)
 - [x] Documentación creada (este archivo)
-- [ ] Testing local completado
-- [ ] Jugadores notificados de reinicio
-- [ ] Backup del mundo creado
-- [ ] Servidor reiniciado
-- [ ] Testing post-deployment completado
+- [x] Testing local completado
+- [x] Jugadores notificados de reinicio
+- [x] Backup del mundo creado (stash en VPS)
+- [x] Servidor reiniciado (VPS production)
+- [x] Testing post-deployment completado ✅
+
+### Post-Deployment Verification (2026-01-16)
+- [x] ✅ Servidor arrancó correctamente
+- [x] ✅ Custom Villagers cargó sin errores
+- [x] ✅ AI Behaviors system v1.0.0 loaded successfully
+- [x] ✅ Configuration validated successfully
+- [x] ✅ **Click derecho funciona SIN CRASHES** (confirmado por usuario)
+- [ ] ⚠️ Pendiente: Verificar sistema de diálogos completo (ver TODO.md)
+- [ ] ⚠️ Pendiente: Verificar saludos automáticos
+- [ ] ⚠️ Pendiente: Verificar comportamientos AI (6 estados)
 
 ### Comando de Deployment
 ```bash
