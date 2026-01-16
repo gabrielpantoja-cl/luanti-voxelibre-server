@@ -11,7 +11,8 @@ Documentación técnica completa del servidor Luanti educativo y compasivo para 
 ### Para Administradores
 - **[Guía de Administración](admin/usuarios-y-privilegios.md)** - Gestión de usuarios y privilegios
 - **[Comandos de Admin](admin/comandos-admin.md)** - Comandos administrativos disponibles
-- **[Modos Mixtos (Creativo + Supervivencia)](MIXED_GAMEMODE_CONFIGURATION.md)** - Sistema de coexistencia de modos de juego
+- **[Modos Mixtos (Creativo + Supervivencia)](config/MIXED_GAMEMODE_CONFIGURATION.md)** - Sistema de coexistencia de modos de juego
+- **[Sistema de Skins](admin/QUICK_ADD_SKINS.md)** - Agregar skins personalizadas rápidamente
 
 ### Para Desarrolladores
 - **[Sistema de Mods](mods/README.md)** - Desarrollo y documentación de mods
@@ -28,8 +29,10 @@ Guías para nuevos jugadores y conexión inicial
 Documentación de administración del servidor
 - **[Usuarios y Privilegios](admin/USER_PRIVILEGES.md)** - Gestión de cuentas y permisos
 - **[Comandos de Admin](admin/comandos-admin.md)** - Comandos administrativos disponibles
-- **[Modos Mixtos](MIXED_GAMEMODE_CONFIGURATION.md)** - Configuración de creativo + supervivencia
 - **[Ubicaciones y Coordenadas](admin/ubicaciones-coordenadas.md)** - Puntos importantes del servidor
+- **[Cárcel de Baneo](admin/CARCEL_DE_BANEO.md)** - Sistema de moderación y bans
+- **[Quick Add Skins](admin/QUICK_ADD_SKINS.md)** - Workflow rápido para agregar skins
+- **[Inventario de Skins](admin/SKINS_INVENTORY.md)** - Catálogo completo de skins disponibles
 
 ### ⚙️ [config/](config/)
 Configuraciones específicas del servidor
@@ -37,6 +40,8 @@ Configuraciones específicas del servidor
 - **[Sistema de Reglas](config/sistema-reglas.md)** - Configuración del sistema automático de reglas
 - **[Protección de Bloques](config/proteccion-bloques.md)** - Sistema de protección anti-griefing
 - **[Sistema VoxeLibre](config/voxelibre-system.md)** - Configuración específica del motor de juego
+- **[Modos Mixtos](config/MIXED_GAMEMODE_CONFIGURATION.md)** - Creativo + Supervivencia coexistiendo
+- **[Configuración de Skins](config/CUSTOM_SKINS_SETUP.md)** - Setup inicial del sistema de skins
 
 ### 🎮 [mods/](mods/)
 Desarrollo y documentación de mods personalizados
@@ -51,6 +56,8 @@ Operaciones diarias y mantenimiento del servidor
 - **[Deploy](operations/deploy.md)** - Procedimientos de despliegue y CI/CD
 - **[Troubleshooting](operations/troubleshooting.md)** - Solución de problemas comunes
 - **[Texture Recovery](operations/texture-recovery.md)** - Recuperación de corrupción de texturas
+- **[VPS Sync Workflow](operations/VPS_SYNC_WORKFLOW.md)** - Sincronización de cambios VPS ↔ Repositorio
+- **[Playwright MCP Setup](operations/PLAYWRIGHT_MCP_SETUP.md)** - Configuración de herramientas de testing
 
 ### 🌐 [web/](web/)
 Frontend y desarrollo web
