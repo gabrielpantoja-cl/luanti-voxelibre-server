@@ -4,7 +4,7 @@
 
 -- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
 local survival_players = {
-    ["pepelomo"] = true,  -- Requested to play in survival mode
+    -- ["pepelomo"] = true,  -- ❌ DESACTIVADO 2026-01-16: Volvió a modo creativo después de 1 día en survival
 }
 
 pvp_arena = {}
