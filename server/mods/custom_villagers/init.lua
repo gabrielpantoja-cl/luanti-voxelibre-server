@@ -321,9 +321,29 @@ local function register_custom_villager(name, def)
                 return
             end
 
-            -- DEFENSIVE: Validar que self tiene los datos necesarios
-            if not self or not self.custom_villager_type then
-                log("error", "on_rightclick called on invalid villager entity")
+            -- DEFENSIVE: Validar que self existe
+            if not self then
+                log("error", "on_rightclick called on nil entity")
+                return
+            end
+
+            -- AUTO-FIX: Si el aldeano no tiene custom_villager_type (aldeanos viejos/corruptos),
+            -- extraerlo del nombre de la entidad (ej: "custom_villagers:explorer" -> "explorer")
+            if not self.custom_villager_type and self.name then
+                local entity_name = self.name
+                local villager_type = entity_name:match("custom_villagers:(.+)")
+                if villager_type then
+                    self.custom_villager_type = villager_type
+                    log("warning", "Auto-fixed corrupted villager: set type to " .. villager_type)
+                else
+                    log("error", "Could not extract villager type from entity name: " .. entity_name)
+                    return
+                end
+            end
+
+            -- Si aún no tiene tipo después del auto-fix, abortar
+            if not self.custom_villager_type then
+                log("error", "on_rightclick called on villager without type and auto-fix failed")
                 return
             end
 
