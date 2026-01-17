@@ -25,7 +25,7 @@
 --]]
 
 -- Namespace global de configuración
-custom_villagers.config = {}
+wetlands_npcs.config = {}
 
 -- ============================================================================
 -- SECCIÓN 1: CONFIGURACIÓN DE COMPORTAMIENTOS AI
@@ -47,7 +47,7 @@ custom_villagers.config = {}
 --]]
 
 -- Pesos de comportamiento por profesión (suman ~100 para facilitar cálculo porcentual)
-custom_villagers.config.behavior_weights = {
+wetlands_npcs.config.behavior_weights = {
     farmer = {
         idle = 20,      -- 20% del tiempo parado
         wander = 30,    -- 30% caminando
@@ -85,7 +85,7 @@ custom_villagers.config.behavior_weights = {
     - Muy largo (>30s): Aldeanos parecen "robóticos" o estáticos
     - Óptimo: 10-20s con variación aleatoria
 --]]
-custom_villagers.config.state_duration = {
+wetlands_npcs.config.state_duration = {
     min = 10,  -- Mínimo 10 segundos en un estado
     max = 20,  -- Máximo 20 segundos (luego evalúa cambio)
 }
@@ -103,7 +103,7 @@ custom_villagers.config.state_duration = {
     - Algoritmo: Busca en espiral desde posición actual
     - Pathfinding: Usa mcl_mobs:gopath() para navegar
 --]]
-custom_villagers.config.poi_types = {
+wetlands_npcs.config.poi_types = {
     farmer = {
         "mcl_farming:wheat_1", "mcl_farming:wheat_2", "mcl_farming:wheat_7",
         "mcl_farming:carrot_1", "mcl_farming:carrot_2", "mcl_farming:carrot_3",
@@ -133,7 +133,7 @@ custom_villagers.config.poi_types = {
 }
 
 -- Radio de búsqueda de POI (en bloques)
-custom_villagers.config.poi_search_radius = 15
+wetlands_npcs.config.poi_search_radius = 15
 
 -- ============================================================================
 -- SECCIÓN 2: CONFIGURACIÓN DE INTERACCIÓN SOCIAL
@@ -151,7 +151,7 @@ custom_villagers.config.poi_search_radius = 15
     - greeting_chance: Probabilidad (1-100) de saludar cada vez
     - cooldown: Tiempo mínimo entre saludos al mismo jugador
 --]]
-custom_villagers.config.auto_greet = {
+wetlands_npcs.config.auto_greet = {
     enabled = true,
     detection_radius = 5,        -- 5 bloques de radio
     greeting_chance = 5,         -- 5% de probabilidad cada tick
@@ -170,7 +170,7 @@ custom_villagers.config.auto_greet = {
     - Caminan hacia el aldeano más cercano
     - Generan partículas visuales periódicamente
 --]]
-custom_villagers.config.npc_interaction = {
+wetlands_npcs.config.npc_interaction = {
     enabled = true,
     detection_radius = 10,       -- Detectar otros NPCs a 10 bloques
     particle_chance = 5,         -- 5% probabilidad de mostrar partícula
@@ -196,7 +196,7 @@ custom_villagers.config.npc_interaction = {
 
     NOTA: time_of_day retorna valor entre 0.0 y 1.0
 --]]
-custom_villagers.config.schedule = {
+wetlands_npcs.config.schedule = {
     -- Hora de dormir (noche)
     sleep_start = 0.8,   -- 80% del día = ~7:00 PM
     sleep_end = 0.2,     -- 20% del día = ~5:00 AM
@@ -226,7 +226,7 @@ custom_villagers.config.schedule = {
 
     UNIDADES: Bloques por segundo
 --]]
-custom_villagers.config.movement = {
+wetlands_npcs.config.movement = {
     walk_velocity = 1.2,     -- Caminar tranquilo
     run_velocity = 2.4,      -- Correr (si es necesario)
     jump_height = 5,         -- Altura de salto
@@ -245,7 +245,7 @@ custom_villagers.config.movement = {
     - timeout: Tiempo máximo de cálculo (evita lag)
     - stuck_threshold: Si no se mueve por X segundos, abandonar objetivo
 --]]
-custom_villagers.config.pathfinding = {
+wetlands_npcs.config.pathfinding = {
     max_distance = 30,       -- No buscar rutas de más de 30 bloques
     timeout = 5,             -- 5 segundos máximo de cálculo
     stuck_threshold = 10,    -- Si no se mueve por 10 seg, abandonar
@@ -266,7 +266,7 @@ custom_villagers.config.pathfinding = {
     - note.png: Notas musicales (contento)
     - angry.png: Nube de enojo (si está molesto)
 --]]
-custom_villagers.config.particles = {
+wetlands_npcs.config.particles = {
     enabled = true,
 
     -- Partículas de trabajo (cuando está en estado WORK)
@@ -305,7 +305,7 @@ custom_villagers.config.particles = {
     - area_radius: Radio del área (en bloques)
     - max_total: Máximo absoluto de aldeanos en el servidor
 --]]
-custom_villagers.config.spawning = {
+wetlands_npcs.config.spawning = {
     max_per_area = 3,        -- Máximo 3 del mismo tipo en 50 bloques
     area_radius = 50,
     max_total_villagers = 20, -- Máximo 20 aldeanos en todo el servidor
@@ -330,9 +330,9 @@ custom_villagers.config.spawning = {
     - show_state_above: Muestra texto del estado sobre el aldeano
     - log_state_changes: Imprime en consola cada cambio de estado
 --]]
-custom_villagers.config.debug = {
-    enabled = minetest.settings:get_bool("custom_villagers_debug", false),
-    level = tonumber(minetest.settings:get("custom_villagers_debug_level")) or 1,
+wetlands_npcs.config.debug = {
+    enabled = minetest.settings:get_bool("wetlands_npcs_debug", false),
+    level = tonumber(minetest.settings:get("wetlands_npcs_debug_level")) or 1,
     show_state_above = false,  -- Nametag con estado actual
     log_state_changes = false, -- Log en consola
     log_pathfinding = false,   -- Log de cálculos de ruta
@@ -348,14 +348,14 @@ custom_villagers.config.debug = {
     Obtiene un valor de configuración usando dot notation.
 
     EJEMPLO:
-        local radius = custom_villagers.config.get("poi_search_radius")
-        local sleep_start = custom_villagers.config.get("schedule.sleep_start")
+        local radius = wetlands_npcs.config.get("poi_search_radius")
+        local sleep_start = wetlands_npcs.config.get("schedule.sleep_start")
 
     VENTAJA: Permite sobreescribir con minetest.conf fácilmente
 --]]
-function custom_villagers.config.get(path)
+function wetlands_npcs.config.get(path)
     local keys = string.split(path, ".")
-    local value = custom_villagers.config
+    local value = wetlands_npcs.config
 
     for _, key in ipairs(keys) do
         if value[key] ~= nil then
@@ -375,12 +375,12 @@ end
     Útil para comandos de admin que ajustan parámetros sin reiniciar.
 
     EJEMPLO:
-        custom_villagers.config.set("poi_search_radius", 25)
-        custom_villagers.config.set("auto_greet.enabled", false)
+        wetlands_npcs.config.set("poi_search_radius", 25)
+        wetlands_npcs.config.set("auto_greet.enabled", false)
 --]]
-function custom_villagers.config.set(path, value)
+function wetlands_npcs.config.set(path, value)
     local keys = string.split(path, ".")
-    local target = custom_villagers.config
+    local target = wetlands_npcs.config
 
     for i = 1, #keys - 1 do
         local key = keys[i]
@@ -404,25 +404,25 @@ end
     FORMATO EN minetest.conf:
         custom_villagers_poi_radius = 20
         custom_villagers_auto_greet = true
-        custom_villagers_debug = false
+        wetlands_npcs_debug = false
 --]]
-function custom_villagers.config.reload_from_conf()
+function wetlands_npcs.config.reload_from_conf()
     -- POI radius
     local poi_radius = minetest.settings:get("custom_villagers_poi_radius")
     if poi_radius then
-        custom_villagers.config.poi_search_radius = tonumber(poi_radius)
+        wetlands_npcs.config.poi_search_radius = tonumber(poi_radius)
     end
 
     -- Auto greet enabled
     local auto_greet = minetest.settings:get_bool("custom_villagers_auto_greet")
     if auto_greet ~= nil then
-        custom_villagers.config.auto_greet.enabled = auto_greet
+        wetlands_npcs.config.auto_greet.enabled = auto_greet
     end
 
     -- Debug mode
-    local debug = minetest.settings:get_bool("custom_villagers_debug")
+    local debug = minetest.settings:get_bool("wetlands_npcs_debug")
     if debug ~= nil then
-        custom_villagers.config.debug.enabled = debug
+        wetlands_npcs.config.debug.enabled = debug
     end
 
     minetest.log("action", "[custom_villagers] Configuration reloaded from minetest.conf")
@@ -440,11 +440,11 @@ end
 
     RETORNA: true si válido, false + mensaje de error si inválido
 --]]
-function custom_villagers.config.validate()
+function wetlands_npcs.config.validate()
     local errors = {}
 
     -- Validar pesos de comportamiento suman aproximadamente 100
-    for profession, weights in pairs(custom_villagers.config.behavior_weights) do
+    for profession, weights in pairs(wetlands_npcs.config.behavior_weights) do
         local total = 0
         for state, weight in pairs(weights) do
             total = total + weight
@@ -456,16 +456,16 @@ function custom_villagers.config.validate()
     end
 
     -- Validar radios son positivos
-    if custom_villagers.config.poi_search_radius <= 0 then
+    if wetlands_npcs.config.poi_search_radius <= 0 then
         table.insert(errors, "poi_search_radius must be positive")
     end
 
-    if custom_villagers.config.auto_greet.detection_radius <= 0 then
+    if wetlands_npcs.config.auto_greet.detection_radius <= 0 then
         table.insert(errors, "auto_greet.detection_radius must be positive")
     end
 
     -- Validar horarios están en rango 0.0-1.0
-    if custom_villagers.config.schedule.sleep_start < 0 or custom_villagers.config.schedule.sleep_start > 1 then
+    if wetlands_npcs.config.schedule.sleep_start < 0 or wetlands_npcs.config.schedule.sleep_start > 1 then
         table.insert(errors, "schedule.sleep_start must be between 0.0 and 1.0")
     end
 
@@ -481,10 +481,10 @@ end
 -- ============================================================================
 
 -- Recargar configuración desde minetest.conf al cargar el mod
-custom_villagers.config.reload_from_conf()
+wetlands_npcs.config.reload_from_conf()
 
 -- Validar configuración
-local valid, error_msg = custom_villagers.config.validate()
+local valid, error_msg = wetlands_npcs.config.validate()
 if not valid then
     minetest.log("error", "[custom_villagers] Invalid configuration:\n" .. error_msg)
 else
@@ -509,7 +509,7 @@ minetest.register_chatcommand("villager_config", {
                 return false, "Uso: /villager_config get <parameter>"
             end
 
-            local value = custom_villagers.config.get(key)
+            local value = wetlands_npcs.config.get(key)
             if value == nil then
                 return false, "Parameter not found: " .. key
             end
@@ -534,11 +534,11 @@ minetest.register_chatcommand("villager_config", {
                 value = false
             end
 
-            custom_villagers.config.set(key, value)
+            wetlands_npcs.config.set(key, value)
             return true, "✅ " .. key .. " = " .. tostring(value)
 
         elseif action == "reload" then
-            custom_villagers.config.reload_from_conf()
+            wetlands_npcs.config.reload_from_conf()
             return true, "✅ Configuration reloaded from minetest.conf"
 
         else
