@@ -353,14 +353,19 @@ local function register_custom_villager(name, def)
                 return
             end
 
+            -- Generar nombre legible del aldeano (capitalizar tipo)
+            local villager_name = self.custom_villager_type:sub(1,1):upper() .. self.custom_villager_type:sub(2)
+
             -- DEFENSIVE: Usar pcall para proteger contra crashes
             local success, err = pcall(function()
-                show_interaction_formspec(player_name, self.custom_villager_type, def.description or name)
+                show_interaction_formspec(player_name, self.custom_villager_type, villager_name)
             end)
 
             if not success then
                 log("error", "on_rightclick failed: " .. tostring(err))
-                minetest.chat_send_player(player_name, "[Servidor] Error al interactuar con aldeano. Reporta esto a un admin.")
+                minetest.chat_send_player(player_name, "[Servidor] Error al interactuar con aldeano. Intenta de nuevo.")
+            else
+                log("info", "Opened interaction menu for " .. player_name .. " with " .. self.custom_villager_type)
             end
         end,
 
