@@ -1,7 +1,7 @@
 -- ============================================================================
 -- ai_behaviors.lua - Sistema de Comportamientos AI Tradicional
 -- ============================================================================
--- Mod: Custom Villagers v2.0
+-- Mod: Wetlands NPCs v2.1.1
 -- Propósito: Implementar máquina de estados finitos (FSM) para comportamientos
 --            inteligentes de aldeanos sin usar LLM/Machine Learning
 -- Autor: Wetlands Team
@@ -43,8 +43,8 @@
 --]]
 
 -- Namespace del sistema de comportamientos
-custom_villagers.behaviors = {}
-custom_villagers.behaviors.version = "1.0.0"
+wetlands_npcs.behaviors = {}
+wetlands_npcs.behaviors.version = "1.0.0"
 
 -- ============================================================================
 -- SECCIÓN 1: CONSTANTES Y ENUMERACIONES
@@ -137,7 +137,7 @@ local function init_ai_context(self)
 
     self.ai_initialized = true
 
-    if custom_villagers.config.debug.log_state_changes then
+    if wetlands_npcs.config.debug.log_state_changes then
         minetest.log("action", "[custom_villagers] AI context initialized for " ..
                      (self.custom_villager_type or "unknown"))
     end
@@ -157,7 +157,7 @@ end
 --]]
 local function is_night_time()
     local time = minetest.get_timeofday()
-    local schedule = custom_villagers.config.schedule
+    local schedule = wetlands_npcs.config.schedule
 
     -- Lógica: Es noche si time > sleep_start O time < sleep_end
     -- Ejemplo: sleep_start=0.8, sleep_end=0.2
@@ -372,11 +372,11 @@ end
     RETORNA: string - nuevo estado
 --]]
 local function choose_next_state(self, villager_type)
-    local weights = custom_villagers.config.behavior_weights[villager_type]
+    local weights = wetlands_npcs.config.behavior_weights[villager_type]
 
     if not weights then
         -- Fallback a farmer si no existe la profesión
-        weights = custom_villagers.config.behavior_weights.farmer
+        weights = wetlands_npcs.config.behavior_weights.farmer
     end
 
     -- Calcular peso total
@@ -425,20 +425,20 @@ local function should_override_state(self, current_state)
     end
 
     -- PRIORIDAD 3: Detectar jugador muy cerca (opcional)
-    if custom_villagers.config.auto_greet.enabled then
+    if wetlands_npcs.config.auto_greet.enabled then
         local pos = self.object:get_pos()
-        local radius = custom_villagers.config.auto_greet.detection_radius
+        local radius = wetlands_npcs.config.auto_greet.detection_radius
         local player = get_nearest_player(pos, radius)
 
         if player and current_state ~= STATES.SEEK_PLAYER then
             -- Verificar cooldown de saludo
             local player_name = player:get_player_name()
             local last_greet = self.ai_memory.last_greet_player[player_name] or 0
-            local cooldown = custom_villagers.config.auto_greet.cooldown_seconds
+            local cooldown = wetlands_npcs.config.auto_greet.cooldown_seconds
 
             if os.time() - last_greet > cooldown then
                 -- Probabilidad de buscar al jugador
-                if math.random(1, 100) <= custom_villagers.config.auto_greet.greeting_chance then
+                if math.random(1, 100) <= wetlands_npcs.config.auto_greet.greeting_chance then
                     return STATES.SEEK_PLAYER
                 end
             end
@@ -497,7 +497,7 @@ local function do_idle(self)
     end
 
     -- Debug: Mostrar partícula si está activado
-    if custom_villagers.config.debug.enabled and custom_villagers.config.debug.level >= 3 then
+    if wetlands_npcs.config.debug.enabled and wetlands_npcs.config.debug.level >= 3 then
         -- Opcional: agregar partícula de debug
     end
 end
@@ -538,7 +538,7 @@ local function do_wander(self)
             local success, err = pcall(function()
                 mcl_mobs:gopath(self, target)
             end)
-            if not success and custom_villagers.config.debug.enabled then
+            if not success and wetlands_npcs.config.debug.enabled then
                 minetest.log("warning", "[custom_villagers] gopath failed in wander: " .. tostring(err))
             end
         end
@@ -565,7 +565,7 @@ end
 --]]
 local function do_work(self, villager_type, pos)
     -- Obtener lista de POI para esta profesión
-    local poi_list = custom_villagers.config.poi_types[villager_type]
+    local poi_list = wetlands_npcs.config.poi_types[villager_type]
 
     if not poi_list then
         -- Si no hay POI definidos, volver a wander
@@ -575,7 +575,7 @@ local function do_work(self, villager_type, pos)
 
     -- Si no tiene objetivo de trabajo, buscar uno
     if not self.ai_target or self.ai_target.type ~= "work" then
-        local radius = custom_villagers.config.poi_search_radius
+        local radius = wetlands_npcs.config.poi_search_radius
         local poi_pos = find_poi_nearby(pos, poi_list, radius)
 
         if poi_pos then
@@ -587,12 +587,12 @@ local function do_work(self, villager_type, pos)
                 local success, err = pcall(function()
                     mcl_mobs:gopath(self, poi_pos)
                 end)
-                if not success and custom_villagers.config.debug.enabled then
+                if not success and wetlands_npcs.config.debug.enabled then
                     minetest.log("warning", "[custom_villagers] gopath failed in work: " .. tostring(err))
                 end
             end
 
-            if custom_villagers.config.debug.log_pathfinding then
+            if wetlands_npcs.config.debug.log_pathfinding then
                 minetest.log("action", "[custom_villagers] " .. villager_type ..
                            " found POI at " .. minetest.pos_to_string(poi_pos))
             end
@@ -609,8 +609,8 @@ local function do_work(self, villager_type, pos)
 
         if dist < 2 then  -- Llegó (menos de 2 bloques)
             -- Mostrar partícula de trabajo
-            if custom_villagers.config.particles.enabled then
-                local particle_config = custom_villagers.config.particles.work_particle
+            if wetlands_npcs.config.particles.enabled then
+                local particle_config = wetlands_npcs.config.particles.work_particle
 
                 if math.random(1, 100) <= particle_config.spawn_chance then
                     minetest.add_particlespawner({
@@ -654,14 +654,14 @@ end
     5. Después de X tiempo, cambiar de estado
 --]]
 local function do_social(self, pos)
-    if not custom_villagers.config.npc_interaction.enabled then
+    if not wetlands_npcs.config.npc_interaction.enabled then
         self.ai_state = STATES.WANDER
         return
     end
 
     -- Si no tiene pareja social, buscar una
     if not self.ai_memory.social_partner then
-        local radius = custom_villagers.config.npc_interaction.detection_radius
+        local radius = wetlands_npcs.config.npc_interaction.detection_radius
         local other_villager = get_nearest_villager(pos, radius, self)
 
         if other_villager then
@@ -674,7 +674,7 @@ local function do_social(self, pos)
                 local success, err = pcall(function()
                     mcl_mobs:gopath(self, target_pos)
                 end)
-                if not success and custom_villagers.config.debug.enabled then
+                if not success and wetlands_npcs.config.debug.enabled then
                     minetest.log("warning", "[custom_villagers] gopath failed in social: " .. tostring(err))
                 end
             end
@@ -708,8 +708,8 @@ local function do_social(self, pos)
             self.object:set_yaw(yaw)
 
             -- Mostrar partícula de interacción social
-            if custom_villagers.config.particles.enabled then
-                local particle_config = custom_villagers.config.particles.social_particle
+            if wetlands_npcs.config.particles.enabled then
+                local particle_config = wetlands_npcs.config.particles.social_particle
 
                 if math.random(1, 100) <= particle_config.spawn_chance then
                     minetest.add_particlespawner({
@@ -736,7 +736,7 @@ local function do_social(self, pos)
                 local success, err = pcall(function()
                     mcl_mobs:gopath(self, partner_pos)
                 end)
-                if not success and custom_villagers.config.debug.enabled then
+                if not success and wetlands_npcs.config.debug.enabled then
                     minetest.log("warning", "[custom_villagers] gopath failed in social (re-nav): " .. tostring(err))
                 end
             end
@@ -760,8 +760,8 @@ end
 local function do_sleep(self, pos)
     -- Si tiene cama objetivo, ir hacia ella
     if not self.ai_target or self.ai_target.type ~= "sleep" then
-        if custom_villagers.config.schedule.seek_bed_on_sleep then
-            local radius = custom_villagers.config.schedule.bed_search_radius
+        if wetlands_npcs.config.schedule.seek_bed_on_sleep then
+            local radius = wetlands_npcs.config.schedule.bed_search_radius
             local bed_pos = find_nearest_bed(pos, radius)
 
             if bed_pos then
@@ -773,7 +773,7 @@ local function do_sleep(self, pos)
                     local success, err = pcall(function()
                         mcl_mobs:gopath(self, bed_pos)
                     end)
-                    if not success and custom_villagers.config.debug.enabled then
+                    if not success and wetlands_npcs.config.debug.enabled then
                         minetest.log("warning", "[custom_villagers] gopath failed in sleep: " .. tostring(err))
                     end
                 end
@@ -796,8 +796,8 @@ local function do_sleep(self, pos)
     end
 
     -- Mostrar partículas de sueño ocasionalmente
-    if custom_villagers.config.particles.enabled then
-        local particle_config = custom_villagers.config.particles.sleep_particle
+    if wetlands_npcs.config.particles.enabled then
+        local particle_config = wetlands_npcs.config.particles.sleep_particle
 
         if math.random(1, 100) <= particle_config.spawn_chance then
             -- Usar bubble.png como fallback si zzz.png no existe
@@ -837,7 +837,7 @@ end
     5. Volver a estado anterior
 --]]
 local function do_seek_player(self, pos)
-    local radius = custom_villagers.config.auto_greet.detection_radius * 2  -- Radio extendido
+    local radius = wetlands_npcs.config.auto_greet.detection_radius * 2  -- Radio extendido
     local player = get_nearest_player(pos, radius)
 
     if not player then
@@ -856,7 +856,7 @@ local function do_seek_player(self, pos)
             local success, err = pcall(function()
                 mcl_mobs:gopath(self, player_pos)
             end)
-            if not success and custom_villagers.config.debug.enabled then
+            if not success and wetlands_npcs.config.debug.enabled then
                 minetest.log("warning", "[custom_villagers] gopath failed in seek_player: " .. tostring(err))
             end
         end
@@ -889,7 +889,7 @@ end
 -- ============================================================================
 
 --[[
-    FUNCIÓN: custom_villagers.behaviors.update(self)
+    FUNCIÓN: wetlands_npcs.behaviors.update(self)
 
     Esta es la función principal que se llama cada tick (0.5 seg por defecto).
     Implementa el loop de la máquina de estados.
@@ -908,7 +908,7 @@ end
 
     LLAMADA: Desde on_step() de cada aldeano (ver init.lua)
 --]]
-function custom_villagers.behaviors.update(self, dtime)
+function wetlands_npcs.behaviors.update(self, dtime)
     -- PASO 1: Inicializar si es necesario
     init_ai_context(self)
 
@@ -923,7 +923,7 @@ function custom_villagers.behaviors.update(self, dtime)
     if override_state then
         if override_state ~= self.ai_state then
             -- Cambio forzado de estado
-            if custom_villagers.config.debug.log_state_changes then
+            if wetlands_npcs.config.debug.log_state_changes then
                 minetest.log("action", "[custom_villagers] " .. villager_type ..
                            " override: " .. self.ai_state .. " → " .. override_state)
             end
@@ -938,8 +938,8 @@ function custom_villagers.behaviors.update(self, dtime)
     self.ai_timer = self.ai_timer + (dtime or 0.5)
 
     -- PASO 5: Evaluar cambio de estado normal (cada X segundos)
-    local state_duration_min = custom_villagers.config.state_duration.min
-    local state_duration_max = custom_villagers.config.state_duration.max
+    local state_duration_min = wetlands_npcs.config.state_duration.min
+    local state_duration_max = wetlands_npcs.config.state_duration.max
     local duration_threshold = math.random(state_duration_min, state_duration_max)
 
     if self.ai_timer > duration_threshold and not override_state then
@@ -947,7 +947,7 @@ function custom_villagers.behaviors.update(self, dtime)
         local new_state = choose_next_state(self, villager_type)
 
         if new_state ~= self.ai_state then
-            if custom_villagers.config.debug.log_state_changes then
+            if wetlands_npcs.config.debug.log_state_changes then
                 minetest.log("action", "[custom_villagers] " .. villager_type ..
                            " transition: " .. self.ai_state .. " → " .. new_state)
             end
@@ -979,7 +979,7 @@ function custom_villagers.behaviors.update(self, dtime)
     end
 
     -- PASO 7: Debug visual (opcional)
-    if custom_villagers.config.debug.show_state_above then
+    if wetlands_npcs.config.debug.show_state_above then
         -- TODO: Implementar nametag con estado actual
         -- Requiere modificar el mob definition para agregar nametag dinámico
     end
@@ -990,7 +990,7 @@ end
 -- ============================================================================
 
 --[[
-    FUNCIÓN: custom_villagers.behaviors.inject_into_mob(mob_def)
+    FUNCIÓN: wetlands_npcs.behaviors.inject_into_mob(mob_def)
 
     Modifica la definición de un mob para agregar el sistema de comportamientos AI.
 
@@ -1001,7 +1001,7 @@ end
             -- ... otras propiedades
         }
 
-        custom_villagers.behaviors.inject_into_mob(mob_def)
+        wetlands_npcs.behaviors.inject_into_mob(mob_def)
         mcl_mobs.register_mob("mod:villager", mob_def)
 
     PARÁMETROS:
@@ -1009,7 +1009,7 @@ end
 
     RETORNA: mob_def modificado (también modifica in-place)
 --]]
-function custom_villagers.behaviors.inject_into_mob(mob_def)
+function wetlands_npcs.behaviors.inject_into_mob(mob_def)
     -- Guardar on_step original si existe
     local original_on_step = mob_def.on_step
 
@@ -1021,7 +1021,7 @@ function custom_villagers.behaviors.inject_into_mob(mob_def)
         end
 
         -- Ejecutar sistema de comportamientos AI
-        custom_villagers.behaviors.update(self, dtime)
+        wetlands_npcs.behaviors.update(self, dtime)
     end
 
     return mob_def
@@ -1042,12 +1042,12 @@ minetest.register_chatcommand("villager_debug", {
     privs = {server = true},
     func = function(name, param)
         if param == "on" then
-            custom_villagers.config.debug.enabled = true
-            custom_villagers.config.debug.log_state_changes = true
+            wetlands_npcs.config.debug.enabled = true
+            wetlands_npcs.config.debug.log_state_changes = true
             return true, "✅ Debug activado. Revisa la consola del servidor."
         elseif param == "off" then
-            custom_villagers.config.debug.enabled = false
-            custom_villagers.config.debug.log_state_changes = false
+            wetlands_npcs.config.debug.enabled = false
+            wetlands_npcs.config.debug.log_state_changes = false
             return true, "✅ Debug desactivado."
         else
             return false, "Uso: /villager_debug <on|off>"
@@ -1101,7 +1101,7 @@ minetest.register_chatcommand("villager_state", {
 -- ============================================================================
 
 minetest.log("action", "[custom_villagers] AI Behaviors system v" ..
-             custom_villagers.behaviors.version .. " loaded successfully")
+             wetlands_npcs.behaviors.version .. " loaded successfully")
 
 -- ============================================================================
 -- FIN DE ai_behaviors.lua
