@@ -1,0 +1,552 @@
+-- ============================================================================
+-- config.lua - Configuración Centralizada del Sistema AI
+-- ============================================================================
+-- Mod: Custom Villagers v2.0
+-- Propósito: Centralizar toda la configuración del sistema de comportamientos
+-- Autor: Wetlands Team
+-- Documentación: README_AI_BEHAVIORS.md
+-- ============================================================================
+
+--[[
+    ARQUITECTURA DE CONFIGURACIÓN:
+
+    Este archivo actúa como "single source of truth" para todos los parámetros
+    configurables del sistema de comportamientos AI tradicional.
+
+    JERARQUÍA DE CONFIGURACIÓN:
+    1. Valores por defecto (definidos aquí)
+    2. minetest.conf (sobreescribe defaults si existe)
+    3. Comandos in-game de admin (sobreescribe en runtime)
+
+    VENTAJAS:
+    - Fácil ajuste de parámetros sin tocar lógica
+    - Testing rápido de diferentes configuraciones
+    - Documentación inline de cada parámetro
+--]]
+
+-- Namespace global de configuración
+custom_villagers.config = {}
+
+-- ============================================================================
+-- SECCIÓN 1: CONFIGURACIÓN DE COMPORTAMIENTOS AI
+-- ============================================================================
+
+--[[
+    MÁQUINA DE ESTADOS (Finite State Machine)
+
+    Los aldeanos operan en diferentes "estados" que determinan su comportamiento.
+    Cada estado tiene un peso probabilístico que afecta la frecuencia de ese comportamiento.
+
+    ESTADOS DISPONIBLES:
+    - IDLE: Parado, mirando alrededor (bajo consumo CPU)
+    - WANDER: Caminando aleatorio (exploración del entorno)
+    - WORK: Trabajando en su profesión (busca POI relevantes)
+    - SOCIAL: Interactuando con otros NPCs (cercanía social)
+    - SLEEP: Durmiendo (solo de noche)
+    - SEEK_PLAYER: Buscando jugador cercano (interacción proactiva)
+--]]
+
+-- Pesos de comportamiento por profesión (suman ~100 para facilitar cálculo porcentual)
+custom_villagers.config.behavior_weights = {
+    farmer = {
+        idle = 20,      -- 20% del tiempo parado
+        wander = 30,    -- 30% caminando
+        work = 40,      -- 40% trabajando (farmers son trabajadores)
+        social = 10,    -- 10% socializando
+    },
+    librarian = {
+        idle = 40,      -- Librarians son más contemplativos
+        wander = 20,
+        work = 30,
+        social = 10,
+    },
+    teacher = {
+        idle = 25,
+        wander = 25,
+        work = 35,
+        social = 15,    -- Teachers son más sociales
+    },
+    explorer = {
+        idle = 10,      -- Explorers casi nunca están quietos
+        wander = 60,    -- Constantemente explorando
+        work = 20,
+        social = 10,
+    },
+}
+
+--[[
+    DURACIÓN DE ESTADOS
+
+    Controla cuánto tiempo (en segundos) permanece un aldeano en cada estado
+    antes de evaluar un cambio de comportamiento.
+
+    BALANCE:
+    - Muy corto (<5s): Aldeanos parecen "nerviosos" o indecisivos
+    - Muy largo (>30s): Aldeanos parecen "robóticos" o estáticos
+    - Óptimo: 10-20s con variación aleatoria
+--]]
+custom_villagers.config.state_duration = {
+    min = 10,  -- Mínimo 10 segundos en un estado
+    max = 20,  -- Máximo 20 segundos (luego evalúa cambio)
+}
+
+--[[
+    PUNTOS DE INTERÉS (POI - Points of Interest)
+
+    Define qué bloques/nodos son "interesantes" para cada profesión.
+    Los aldeanos buscarán activamente estos bloques cuando están en estado WORK.
+
+    FORMATO: Lista de node names de VoxeLibre
+
+    IMPLEMENTACIÓN:
+    - Radio de búsqueda: 15 bloques (configurable abajo)
+    - Algoritmo: Busca en espiral desde posición actual
+    - Pathfinding: Usa mcl_mobs:gopath() para navegar
+--]]
+custom_villagers.config.poi_types = {
+    farmer = {
+        "mcl_farming:wheat_1", "mcl_farming:wheat_2", "mcl_farming:wheat_7",
+        "mcl_farming:carrot_1", "mcl_farming:carrot_2", "mcl_farming:carrot_3",
+        "mcl_farming:potato_1", "mcl_farming:potato_2", "mcl_farming:potato_3",
+        "mcl_farming:beetroot_1", "mcl_farming:beetroot_2", "mcl_farming:beetroot_3",
+        "mcl_core:dirt_with_grass",  -- Tierra para plantar
+        "mcl_farming:farmland",       -- Tierra arada
+    },
+    librarian = {
+        "mcl_books:bookshelf",       -- Estanterías
+        "mcl_core:book",             -- Libros sueltos
+        "mcl_enchanting:table",      -- Mesa de encantamientos (conocimiento)
+    },
+    teacher = {
+        "mcl_books:bookshelf",
+        "mcl_core:paper",
+        "mcl_blackstone:blackboard", -- Pizarra (si existe en VoxeLibre)
+        "mcl_core:stick",            -- Para escribir/enseñar
+    },
+    explorer = {
+        "mcl_core:tree",             -- Árboles (naturaleza)
+        "mcl_flowers:dandelion",     -- Flores
+        "mcl_flowers:poppy",
+        "mcl_core:water_source",     -- Agua (exploración)
+        "mcl_core:stone",            -- Piedra (geología)
+    },
+}
+
+-- Radio de búsqueda de POI (en bloques)
+custom_villagers.config.poi_search_radius = 15
+
+-- ============================================================================
+-- SECCIÓN 2: CONFIGURACIÓN DE INTERACCIÓN SOCIAL
+-- ============================================================================
+
+--[[
+    SISTEMA DE SALUDOS AUTOMÁTICOS
+
+    Los aldeanos pueden saludar proactivamente a los jugadores cuando se acercan.
+    Esto crea una experiencia más "viva" y acogedora.
+
+    PARÁMETROS:
+    - enabled: true/false para activar/desactivar
+    - detection_radius: Distancia para detectar jugadores
+    - greeting_chance: Probabilidad (1-100) de saludar cada vez
+    - cooldown: Tiempo mínimo entre saludos al mismo jugador
+--]]
+custom_villagers.config.auto_greet = {
+    enabled = true,
+    detection_radius = 5,        -- 5 bloques de radio
+    greeting_chance = 5,         -- 5% de probabilidad cada tick
+    cooldown_seconds = 30,       -- No saludar al mismo jugador por 30 seg
+}
+
+--[[
+    INTERACCIÓN ENTRE NPCs
+
+    Los aldeanos pueden "hablar" entre ellos cuando están cerca.
+    Esto se visualiza con partículas de corazón o burbujas de chat.
+
+    COMPORTAMIENTO:
+    - Solo en estado SOCIAL
+    - Buscan otros aldeanos en detection_radius
+    - Caminan hacia el aldeano más cercano
+    - Generan partículas visuales periódicamente
+--]]
+custom_villagers.config.npc_interaction = {
+    enabled = true,
+    detection_radius = 10,       -- Detectar otros NPCs a 10 bloques
+    particle_chance = 5,         -- 5% probabilidad de mostrar partícula
+    interaction_duration = 15,   -- Interactúan por 15 segundos
+}
+
+-- ============================================================================
+-- SECCIÓN 3: CONFIGURACIÓN DE RUTINAS DÍA/NOCHE
+-- ============================================================================
+
+--[[
+    CICLO CIRCADIANO (Día/Noche)
+
+    Los aldeanos tienen rutinas diferentes según la hora del día.
+    Esto simula un ciclo de vida realista.
+
+    HORARIOS EN LUANTI:
+    - 0.0 = Medianoche
+    - 0.25 = Amanecer
+    - 0.5 = Mediodía
+    - 0.75 = Atardecer
+    - 1.0 = Medianoche (ciclo completo)
+
+    NOTA: time_of_day retorna valor entre 0.0 y 1.0
+--]]
+custom_villagers.config.schedule = {
+    -- Hora de dormir (noche)
+    sleep_start = 0.8,   -- 80% del día = ~7:00 PM
+    sleep_end = 0.2,     -- 20% del día = ~5:00 AM
+
+    -- Hora de trabajo (día)
+    work_start = 0.25,   -- Amanecer
+    work_end = 0.75,     -- Atardecer
+
+    -- Buscar cama al dormir
+    seek_bed_on_sleep = true,
+    bed_search_radius = 20,  -- Buscar camas en 20 bloques
+}
+
+-- ============================================================================
+-- SECCIÓN 4: CONFIGURACIÓN DE MOVIMIENTO Y PATHFINDING
+-- ============================================================================
+
+--[[
+    PARÁMETROS DE MOVIMIENTO
+
+    Controla la velocidad y comportamiento de navegación de los aldeanos.
+    Estos valores se pasan a mcl_mobs para control de movimiento.
+
+    VELOCIDADES:
+    - walk_velocity: Velocidad al caminar normal
+    - run_velocity: Velocidad al correr (perseguir/huir)
+
+    UNIDADES: Bloques por segundo
+--]]
+custom_villagers.config.movement = {
+    walk_velocity = 1.2,     -- Caminar tranquilo
+    run_velocity = 2.4,      -- Correr (si es necesario)
+    jump_height = 5,         -- Altura de salto
+    stepheight = 1.1,        -- Subir escalones automáticamente
+}
+
+--[[
+    PATHFINDING (Navegación)
+
+    Controla cómo los aldeanos encuentran rutas hacia objetivos.
+
+    ALGORITMO: A* (implementado por mcl_mobs)
+
+    PARÁMETROS:
+    - max_distance: Distancia máxima para calcular ruta
+    - timeout: Tiempo máximo de cálculo (evita lag)
+    - stuck_threshold: Si no se mueve por X segundos, abandonar objetivo
+--]]
+custom_villagers.config.pathfinding = {
+    max_distance = 30,       -- No buscar rutas de más de 30 bloques
+    timeout = 5,             -- 5 segundos máximo de cálculo
+    stuck_threshold = 10,    -- Si no se mueve por 10 seg, abandonar
+}
+
+-- ============================================================================
+-- SECCIÓN 5: CONFIGURACIÓN DE ANIMACIONES Y EFECTOS VISUALES
+-- ============================================================================
+
+--[[
+    PARTÍCULAS Y EFECTOS VISUALES
+
+    Define los efectos visuales que comunican el estado del aldeano.
+
+    PARTÍCULAS DISPONIBLES:
+    - heart.png: Corazones (felicidad, social)
+    - bubble.png: Burbujas (pensando, trabajando)
+    - note.png: Notas musicales (contento)
+    - angry.png: Nube de enojo (si está molesto)
+--]]
+custom_villagers.config.particles = {
+    enabled = true,
+
+    -- Partículas de trabajo (cuando está en estado WORK)
+    work_particle = {
+        texture = "bubble.png",
+        amount = 2,
+        spawn_chance = 10,  -- 10% cada tick
+    },
+
+    -- Partículas de interacción social
+    social_particle = {
+        texture = "heart.png",
+        amount = 3,
+        spawn_chance = 5,   -- 5% cada tick
+    },
+
+    -- Partículas de sueño
+    sleep_particle = {
+        texture = "zzz.png",  -- Si existe, sino usar bubble.png
+        amount = 1,
+        spawn_chance = 20,  -- 20% cada tick cuando duerme
+    },
+}
+
+-- ============================================================================
+-- SECCIÓN 6: CONFIGURACIÓN DE SPAWNING Y LÍMITES
+-- ============================================================================
+
+--[[
+    CONTROL DE SPAWNING
+
+    Evita sobrepoblación de aldeanos y controla su distribución.
+
+    LÍMITES:
+    - max_per_area: Máximo de aldeanos del mismo tipo en un área
+    - area_radius: Radio del área (en bloques)
+    - max_total: Máximo absoluto de aldeanos en el servidor
+--]]
+custom_villagers.config.spawning = {
+    max_per_area = 3,        -- Máximo 3 del mismo tipo en 50 bloques
+    area_radius = 50,
+    max_total_villagers = 20, -- Máximo 20 aldeanos en todo el servidor
+}
+
+-- ============================================================================
+-- SECCIÓN 7: CONFIGURACIÓN DE DEBUG Y LOGGING
+-- ============================================================================
+
+--[[
+    SISTEMA DE DEBUG
+
+    Ayuda a diagnosticar problemas y optimizar comportamientos.
+
+    NIVELES:
+    - 0: Sin debug
+    - 1: Errores críticos
+    - 2: Warnings y cambios de estado
+    - 3: Verbose (todos los eventos)
+
+    VISUALIZACIÓN:
+    - show_state_above: Muestra texto del estado sobre el aldeano
+    - log_state_changes: Imprime en consola cada cambio de estado
+--]]
+custom_villagers.config.debug = {
+    enabled = minetest.settings:get_bool("custom_villagers_debug", false),
+    level = tonumber(minetest.settings:get("custom_villagers_debug_level")) or 1,
+    show_state_above = false,  -- Nametag con estado actual
+    log_state_changes = false, -- Log en consola
+    log_pathfinding = false,   -- Log de cálculos de ruta
+}
+
+-- ============================================================================
+-- SECCIÓN 8: FUNCIONES HELPER DE CONFIGURACIÓN
+-- ============================================================================
+
+--[[
+    FUNCIÓN: get_config(path)
+
+    Obtiene un valor de configuración usando dot notation.
+
+    EJEMPLO:
+        local radius = custom_villagers.config.get("poi_search_radius")
+        local sleep_start = custom_villagers.config.get("schedule.sleep_start")
+
+    VENTAJA: Permite sobreescribir con minetest.conf fácilmente
+--]]
+function custom_villagers.config.get(path)
+    local keys = string.split(path, ".")
+    local value = custom_villagers.config
+
+    for _, key in ipairs(keys) do
+        if value[key] ~= nil then
+            value = value[key]
+        else
+            return nil
+        end
+    end
+
+    return value
+end
+
+--[[
+    FUNCIÓN: set_config(path, value)
+
+    Establece un valor de configuración en runtime.
+    Útil para comandos de admin que ajustan parámetros sin reiniciar.
+
+    EJEMPLO:
+        custom_villagers.config.set("poi_search_radius", 25)
+        custom_villagers.config.set("auto_greet.enabled", false)
+--]]
+function custom_villagers.config.set(path, value)
+    local keys = string.split(path, ".")
+    local target = custom_villagers.config
+
+    for i = 1, #keys - 1 do
+        local key = keys[i]
+        if target[key] == nil then
+            target[key] = {}
+        end
+        target = target[key]
+    end
+
+    target[keys[#keys]] = value
+
+    minetest.log("action", "[custom_villagers] Config updated: " .. path .. " = " .. tostring(value))
+end
+
+--[[
+    FUNCIÓN: reload_from_conf()
+
+    Recarga configuración desde minetest.conf.
+    Permite ajustar parámetros sin editar código Lua.
+
+    FORMATO EN minetest.conf:
+        custom_villagers_poi_radius = 20
+        custom_villagers_auto_greet = true
+        custom_villagers_debug = false
+--]]
+function custom_villagers.config.reload_from_conf()
+    -- POI radius
+    local poi_radius = minetest.settings:get("custom_villagers_poi_radius")
+    if poi_radius then
+        custom_villagers.config.poi_search_radius = tonumber(poi_radius)
+    end
+
+    -- Auto greet enabled
+    local auto_greet = minetest.settings:get_bool("custom_villagers_auto_greet")
+    if auto_greet ~= nil then
+        custom_villagers.config.auto_greet.enabled = auto_greet
+    end
+
+    -- Debug mode
+    local debug = minetest.settings:get_bool("custom_villagers_debug")
+    if debug ~= nil then
+        custom_villagers.config.debug.enabled = debug
+    end
+
+    minetest.log("action", "[custom_villagers] Configuration reloaded from minetest.conf")
+end
+
+-- ============================================================================
+-- SECCIÓN 9: VALIDACIÓN DE CONFIGURACIÓN
+-- ============================================================================
+
+--[[
+    FUNCIÓN: validate()
+
+    Valida que todos los valores de configuración sean coherentes.
+    Previene crashes por valores inválidos.
+
+    RETORNA: true si válido, false + mensaje de error si inválido
+--]]
+function custom_villagers.config.validate()
+    local errors = {}
+
+    -- Validar pesos de comportamiento suman aproximadamente 100
+    for profession, weights in pairs(custom_villagers.config.behavior_weights) do
+        local total = 0
+        for state, weight in pairs(weights) do
+            total = total + weight
+        end
+
+        if total < 80 or total > 120 then
+            table.insert(errors, "Behavior weights for " .. profession .. " sum to " .. total .. " (should be ~100)")
+        end
+    end
+
+    -- Validar radios son positivos
+    if custom_villagers.config.poi_search_radius <= 0 then
+        table.insert(errors, "poi_search_radius must be positive")
+    end
+
+    if custom_villagers.config.auto_greet.detection_radius <= 0 then
+        table.insert(errors, "auto_greet.detection_radius must be positive")
+    end
+
+    -- Validar horarios están en rango 0.0-1.0
+    if custom_villagers.config.schedule.sleep_start < 0 or custom_villagers.config.schedule.sleep_start > 1 then
+        table.insert(errors, "schedule.sleep_start must be between 0.0 and 1.0")
+    end
+
+    if #errors > 0 then
+        return false, table.concat(errors, "\n")
+    end
+
+    return true
+end
+
+-- ============================================================================
+-- INICIALIZACIÓN
+-- ============================================================================
+
+-- Recargar configuración desde minetest.conf al cargar el mod
+custom_villagers.config.reload_from_conf()
+
+-- Validar configuración
+local valid, error_msg = custom_villagers.config.validate()
+if not valid then
+    minetest.log("error", "[custom_villagers] Invalid configuration:\n" .. error_msg)
+else
+    minetest.log("action", "[custom_villagers] Configuration loaded and validated successfully")
+end
+
+-- ============================================================================
+-- COMANDO DE ADMIN: /villager_config
+-- ============================================================================
+
+minetest.register_chatcommand("villager_config", {
+    params = "[get|set] <parameter> [value]",
+    description = "Configurar sistema de comportamientos AI en runtime",
+    privs = {server = true},
+    func = function(name, param)
+        local args = string.split(param, " ")
+        local action = args[1]
+
+        if action == "get" then
+            local key = args[2]
+            if not key then
+                return false, "Uso: /villager_config get <parameter>"
+            end
+
+            local value = custom_villagers.config.get(key)
+            if value == nil then
+                return false, "Parameter not found: " .. key
+            end
+
+            return true, key .. " = " .. tostring(value)
+
+        elseif action == "set" then
+            local key = args[2]
+            local value = args[3]
+
+            if not key or not value then
+                return false, "Uso: /villager_config set <parameter> <value>"
+            end
+
+            -- Intentar convertir a número si es posible
+            local numeric_value = tonumber(value)
+            if numeric_value then
+                value = numeric_value
+            elseif value == "true" then
+                value = true
+            elseif value == "false" then
+                value = false
+            end
+
+            custom_villagers.config.set(key, value)
+            return true, "✅ " .. key .. " = " .. tostring(value)
+
+        elseif action == "reload" then
+            custom_villagers.config.reload_from_conf()
+            return true, "✅ Configuration reloaded from minetest.conf"
+
+        else
+            return false, "Uso: /villager_config [get|set|reload] <parameter> [value]"
+        end
+    end,
+})
+
+-- ============================================================================
+-- FIN DE config.lua
+-- ============================================================================
