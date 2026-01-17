@@ -217,6 +217,42 @@ All Luanti-related development must happen in this repository (`luanti-voxelibre
 3. **Automatic Deployment**: GitHub Actions handles VPS deployment
 4. **Verification**: Check server status and logs
 
+### 💡 Manual Commits for Token Efficiency (RECOMMENDED)
+
+**Context**: To save Claude Code tokens (~5x efficiency), commits should be done manually by the user in VS Code instead of automated by Claude.
+
+**Workflow**:
+1. **Claude's Role**:
+   - Makes code changes and improvements
+   - Provides a ready-to-copy commit message
+   - Does NOT execute git commands
+
+2. **User's Role**:
+   - Reviews changes in VS Code
+   - Copies commit message provided by Claude
+   - Stages files and commits manually in VS Code
+   - Pushes to trigger GitHub Actions deployment
+
+**Benefits**:
+- **~5x token savings**: Avoids expensive Bash tool calls for git operations
+- **User control**: Full visibility of changes before commit
+- **Same deployment**: GitHub Actions still handles VPS deployment automatically
+- **Audit trail**: User explicitly approves each commit
+
+**Example Interaction**:
+```
+User: "Improve the custom_villagers mod"
+Claude: [Makes improvements] "Here's your commit message to copy/paste in VSC: ..."
+User: [Copies message, commits in VSC, pushes]
+GitHub Actions: [Deploys automatically to VPS]
+```
+
+**When to Use**:
+- ✅ Normal development work (preferred method)
+- ✅ Mod improvements and bug fixes
+- ✅ Configuration changes
+- ❌ Emergency fixes requiring immediate deployment (Claude can commit)
+
 ### VPS to Local Synchronization
 When configuration changes are made directly on the VPS (e.g., emergency fixes, performance tuning):
 
