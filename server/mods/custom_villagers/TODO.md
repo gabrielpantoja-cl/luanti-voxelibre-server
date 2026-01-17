@@ -1,7 +1,7 @@
 # 📋 Custom Villagers - Tareas Pendientes
 
 **Última actualización**: 2026-01-16
-**Versión actual**: v1.0.1
+**Versión actual**: v2.1.1
 
 ---
 
@@ -159,33 +159,30 @@ auto_greet = {
 ### Prioridad Media - Optimizaciones y Mejoras
 
 #### 5. Resolver Warnings de API Deprecada
-**Estado**: ⚠️ WARNING (no crítico)
-**Descripción**: mcl_mobs muestra warnings sobre hp_min/hp_max deprecated
+**Estado**: ✅ COMPLETADO (2026-01-16)
+**Descripción**: mcl_mobs warnings sobre hp_min/hp_max deprecated - RESUELTO
 
-**Warnings actuales**:
-```
-WARNING: mob custom_villagers:farmer has deprecated placement of
-hp_min, hp_max and breath_max in base of mob definition
-```
+**Fix aplicado**:
+- [x] Movido hp_min, hp_max a initial_properties en register_custom_villager()
+- [x] Actualizada definición en init.lua líneas 290-305
+- [x] Aldeanos ahora usan API moderna mcl_mobs
+- [x] Versión incrementada a v2.1.1
 
-**Tareas**:
-- [ ] Mover hp_min, hp_max a initial_properties en register_custom_villager()
-- [ ] Actualizar definición en init.lua líneas 256-276
-- [ ] Probar que aldeanos siguen teniendo 20 HP
-
-**Código actual** (init.lua:262-263):
-```lua
-hp_min = 20,
-hp_max = 20,
-```
-
-**Código recomendado**:
+**Código actualizado** (init.lua:295-305):
 ```lua
 initial_properties = {
     hp_max = 20,
-    -- otras propiedades...
-}
+    collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
+    visual = "mesh",
+    mesh = "mobs_mc_villager.b3d",
+    textures = def.textures or {"mobs_mc_villager.png", "mobs_mc_villager.png"},
+    makes_footstep_sound = true,
+},
 ```
+
+**Verificación pendiente**:
+- [ ] Confirmar que warnings NO aparecen en logs después de reinicio
+- [ ] Verificar que aldeanos siguen teniendo 20 HP correctamente
 
 ---
 
