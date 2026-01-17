@@ -7,10 +7,11 @@ local survival_players = {
     -- ["pepelomo"] = true,  -- ❌ DESACTIVADO 2026-01-16: Volvió a modo creativo después de 1 día en survival
 }
 
--- List of creative privileges to grant - COMPLETE SET
+-- List of construction privileges to grant - NO CREATIVE (to allow damage)
+-- "creative" privilege removed so players can take damage from falls and PVP
 local creative_privileges = {
-    "creative",
-    "give", 
+    -- "creative",  -- ❌ REMOVED: Makes players invulnerable
+    "give",
     "fly",
     "fast",
     "noclip",
@@ -138,10 +139,11 @@ local function give_all_items_to_player(player)
     minetest.log("info", "[creative_force] Filled inventory with " .. (slot - 1) .. " essential vegan/creative items for player " .. player:get_player_name())
 end
 
--- COMPLETELY DISABLE ALL DAMAGE
-minetest.register_on_player_hpchange(function(player, hp_change, reason)
-    return 0  -- NO DAMAGE EVER
-end, true)
+-- ❌ DAMAGE SYSTEM ENABLED - Players can die from falls and PVP
+-- Previous version disabled all damage - now removed to allow:
+-- - Death from high falls
+-- - Death in PVP arena zones
+-- (No hook needed - let VoxeLibre handle damage naturally)
 
 -- Track players who have already received their starter kit
 local players_with_kit = {}
@@ -188,7 +190,8 @@ minetest.register_on_joinplayer(function(player)
             if survival_players[player_name] then
                 minetest.chat_send_player(player_name, "⚔️ ¡Bienvenido a Wetlands en MODO SUPERVIVENCIA! Deberás recolectar recursos, craftear herramientas y sobrevivir. ¡Buena suerte!")
             else
-                minetest.chat_send_player(player_name, "🌱 ¡Bienvenido a Wetlands! Modo creativo activado - construye, explora y aprende sin límites. Usa /santuario para info sobre cuidado de animales.")
+                minetest.chat_send_player(player_name, "🌱 ¡Bienvenido a Wetlands! Puedes volar y construir libremente.")
+                minetest.chat_send_player(player_name, "⚠️  CUIDADO: Puedes morir por caídas desde gran altura y en zonas PVP.")
             end
         end
     end)
@@ -305,14 +308,9 @@ minetest.register_globalstep(function(dtime)
     end
 end)
 
--- FORCE HEAL ALL PLAYERS TO FULL HP EVERY SECOND
-minetest.register_globalstep(function(dtime)
-    for _, player in ipairs(minetest.get_connected_players()) do
-        if player and player:is_player() then
-            player:set_hp(20) -- Force full health
-        end
-    end
-end)
+-- ❌ AUTO-HEAL REMOVED - Let damage work naturally
+-- Previous version forced HP to 20 every second, preventing all deaths
+-- Now removed to allow players to die from falls and PVP combat
 
 -- Chat command to manually give starter kit
 minetest.register_chatcommand("starter_kit", {
@@ -362,4 +360,4 @@ minetest.register_chatcommand("give_starter_kit", {
     end,
 })
 
-minetest.log("info", "[creative_force] Creative Force mod loaded - forcing creative mode for child-friendly server with COMPLETE starter kits (with survival exceptions)")
+minetest.log("info", "[creative_force] Creative Force mod loaded - granting construction privileges (fly/give/fast/noclip) but WITH damage enabled for falls and PVP")

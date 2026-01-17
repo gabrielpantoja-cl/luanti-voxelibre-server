@@ -248,7 +248,7 @@ function pvp_arena.show_exit_message(player)
         minetest.colorize("#66BB6A", "🌱 Estás de vuelta en zona pacífica"))
 end
 
--- Habilitar creative mode para jugadores nuevos al unirse
+-- Configurar jugadores al unirse: Privilegios de construcción pero CON daño habilitado
 minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
     local meta = player:get_meta()
@@ -257,34 +257,31 @@ minetest.register_on_joinplayer(function(player)
     local in_arena = pvp_arena.is_player_in_arena(name)
 
     if not in_arena then
-        -- Check if player is in survival exception list
-        if survival_players[name] then
-            -- SURVIVAL MODE: No creative privileges
-            meta:set_string("gamemode", "survival")
-            minetest.log("action", "[PVP Arena] Player " .. name .. " is in SURVIVAL mode - skipping creative")
-        else
-            -- FUERA DE ARENA: Habilitar creative mode automáticamente
-            -- VoxeLibre usa "gamemode" metadata, no "creative_mode"
-            meta:set_string("gamemode", "creative")
+        -- IMPORTANTE: NO activar modo creativo para que puedan recibir daño por caídas
+        -- Los jugadores tienen privilegios give/fly/fast/noclip pero NO son invulnerables
+        meta:set_string("gamemode", "survival")
 
-            -- También dar privilegio creative
-            local privs = minetest.get_player_privs(name)
-            if not privs.creative then
-                privs.creative = true
-                minetest.set_player_privs(name, privs)
-                minetest.log("action", "[PVP Arena] Granted creative mode to " .. name .. " (new player or rejoining)")
-            end
-
-            -- Mensaje de bienvenida pacífico
-            minetest.after(2, function()
-                if minetest.get_player_by_name(name) then
-                    minetest.chat_send_player(name,
-                        minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Estás en zona pacífica con inventario creativo completo."))
-                    minetest.chat_send_player(name,
-                        minetest.colorize("#81C784", "   Explora, construye y cuida de los animales. PvP solo en arenas específicas."))
-                end
-            end)
+        -- Asegurar que tienen privilegios de construcción (ya están en default_privs en luanti.conf)
+        local privs = minetest.get_player_privs(name)
+        -- No dar privilegio creative para mantener daño por caídas habilitado
+        if privs.creative then
+            privs.creative = nil  -- Remover creative si lo tenían
+            minetest.set_player_privs(name, privs)
         end
+
+        minetest.log("action", "[PVP Arena] Player " .. name .. " joined - survival mode with construction privileges and fall damage enabled")
+
+        -- Mensaje de bienvenida
+        minetest.after(2, function()
+            if minetest.get_player_by_name(name) then
+                minetest.chat_send_player(name,
+                    minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Puedes volar y construir libremente."))
+                minetest.chat_send_player(name,
+                    minetest.colorize("#FFB74D", "⚠️  CUIDADO: Puedes morir por caídas desde gran altura."))
+                minetest.chat_send_player(name,
+                    minetest.colorize("#81C784", "   PvP solo en Arena Principal. ¡Diviértete de forma segura!"))
+            end
+        end)
     end
 end)
 
