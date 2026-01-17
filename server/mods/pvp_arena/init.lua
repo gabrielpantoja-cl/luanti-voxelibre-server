@@ -248,38 +248,34 @@ function pvp_arena.show_exit_message(player)
         minetest.colorize("#66BB6A", "🌱 Estás de vuelta en zona pacífica"))
 end
 
--- Configurar jugadores al unirse: Privilegios de construcción pero CON daño habilitado
+-- Configurar jugadores al unirse: MODO CREATIVO con inventario infinito (Fix 2026-01-16)
 minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
     local meta = player:get_meta()
 
-    -- Verificar si es primera vez que se une (o no está en arena)
+    -- Verificar si está en arena
     local in_arena = pvp_arena.is_player_in_arena(name)
 
     if not in_arena then
-        -- IMPORTANTE: NO activar modo creativo para que puedan recibir daño por caídas
-        -- Los jugadores tienen privilegios give/fly/fast/noclip pero NO son invulnerables
-        meta:set_string("gamemode", "survival")
+        -- MODO CREATIVO: Establecer gamemode creative para inventario infinito
+        meta:set_string("gamemode", "creative")
 
-        -- Asegurar que tienen privilegios de construcción (ya están en default_privs en luanti.conf)
+        -- Asegurar que tienen privilegio creative para inventario infinito
         local privs = minetest.get_player_privs(name)
-        -- No dar privilegio creative para mantener daño por caídas habilitado
-        if privs.creative then
-            privs.creative = nil  -- Remover creative si lo tenían
+        if not privs.creative then
+            privs.creative = true
             minetest.set_player_privs(name, privs)
         end
 
-        minetest.log("action", "[PVP Arena] Player " .. name .. " joined - survival mode with construction privileges and fall damage enabled")
+        minetest.log("action", "[PVP Arena] Player " .. name .. " joined - CREATIVE mode with infinite inventory")
 
         -- Mensaje de bienvenida
         minetest.after(2, function()
             if minetest.get_player_by_name(name) then
                 minetest.chat_send_player(name,
-                    minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Puedes volar y construir libremente."))
+                    minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Modo creativo con inventario infinito."))
                 minetest.chat_send_player(name,
-                    minetest.colorize("#FFB74D", "⚠️  CUIDADO: Puedes morir por caídas desde gran altura."))
-                minetest.chat_send_player(name,
-                    minetest.colorize("#81C784", "   PvP solo en Arena Principal. ¡Diviértete de forma segura!"))
+                    minetest.colorize("#81C784", "   Presiona E para acceder a todos los items. ¡Diviértete!"))
             end
         end)
     end
