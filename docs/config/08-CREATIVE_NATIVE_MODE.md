@@ -479,6 +479,96 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 
 ---
 
+# 10. Conflicto Resuelto: Mod pvp_arena (2026-01-16)
+
+## 10.1. Problema Detectado
+
+Después de configurar el modo creativo nativo, los jugadores **seguían sin ver el inventario creativo**.
+
+**Diagnóstico**: El mod `pvp_arena` tenía un `register_on_joinplayer` que:
+1. Establecía `gamemode = "survival"` para TODOS los jugadores al conectar
+2. REMOVÍA el privilegio `creative` de los jugadores
+
+Esto sobrescribía toda la configuración de modo creativo.
+
+## 10.2. Código Problemático (ANTES)
+
+```lua
+-- En server/mods/pvp_arena/init.lua (líneas 251-286)
+minetest.register_on_joinplayer(function(player)
+    local name = player:get_player_name()
+    local meta = player:get_meta()
+    local in_arena = pvp_arena.is_player_in_arena(name)
+
+    if not in_arena then
+        meta:set_string("gamemode", "survival")  -- ❌ FORZABA SURVIVAL
+
+        local privs = minetest.get_player_privs(name)
+        if privs.creative then
+            privs.creative = nil  -- ❌ REMOVÍA CREATIVE
+            minetest.set_player_privs(name, privs)
+        end
+    end
+end)
+```
+
+## 10.3. Solución Aplicada (DESPUÉS)
+
+```lua
+-- En server/mods/pvp_arena/init.lua (líneas 251-282)
+minetest.register_on_joinplayer(function(player)
+    local name = player:get_player_name()
+    local meta = player:get_meta()
+    local in_arena = pvp_arena.is_player_in_arena(name)
+
+    if not in_arena then
+        meta:set_string("gamemode", "creative")  -- ✅ MODO CREATIVO
+
+        local privs = minetest.get_player_privs(name)
+        if not privs.creative then
+            privs.creative = true  -- ✅ ASEGURA CREATIVE
+            minetest.set_player_privs(name, privs)
+        end
+    end
+end)
+```
+
+## 10.4. Lección Aprendida
+
+**Los mods pueden interferir entre sí y con la configuración global.**
+
+Para modo creativo completo en VoxeLibre se necesita:
+
+| Componente | Configuración Requerida |
+|------------|------------------------|
+| `luanti.conf` | `creative_mode = true`, `mcl_enable_creative_mode = true` |
+| `world.mt` | `creative_mode = true` |
+| `default_privs` | Incluir `creative` |
+| **Todos los mods** | NO establecer `gamemode = "survival"` al conectar |
+| **Base de datos** | `user_privileges` debe incluir `creative` |
+| **Player metadata** | `gamemode = "creative"` |
+
+## 10.5. Verificación Rápida
+
+Si el modo creativo no funciona, verificar:
+
+```bash
+# 1. Verificar privilegios del jugador
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"JUGADOR\");'" | grep creative
+
+# 2. Verificar gamemode en metadata
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \
+  'SELECT value FROM player_metadata WHERE player=\"JUGADOR\" AND metadata=\"gamemode\";'"
+
+# 3. Buscar mods que establezcan survival
+grep -r "gamemode.*survival" server/mods/*/init.lua
+```
+
+---
+
 **Última actualización**: 2026-01-16
 **Estado**: ✅ PRODUCCIÓN - Sistema estable y funcionando perfectamente
 **Responsable**: Gabriel Pantoja (gabo)
