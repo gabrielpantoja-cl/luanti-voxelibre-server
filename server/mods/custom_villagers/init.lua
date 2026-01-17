@@ -24,7 +24,7 @@ end
 
 -- Namespace global
 custom_villagers = {}
-custom_villagers.version = "2.1.0"  -- Incrementado por sistema AI
+custom_villagers.version = "2.1.1"  -- Fix API deprecada hp_min/hp_max
 
 -- Sistema de logging
 local function log(level, message)
@@ -287,13 +287,17 @@ local function register_custom_villager(name, def)
         type = "npc",
         spawn_class = "passive",
         passive = true,
-        hp_min = 20,
-        hp_max = 20,
-        collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
-        visual = "mesh",
-        mesh = "mobs_mc_villager.b3d", -- Usa el modelo de VoxeLibre
-        textures = def.textures or {"mobs_mc_villager.png", "mobs_mc_villager.png"},
-        makes_footstep_sound = true,
+
+        -- FIX: Mover hp_min/hp_max a initial_properties (API moderna mcl_mobs)
+        initial_properties = {
+            hp_max = 20,
+            collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
+            visual = "mesh",
+            mesh = "mobs_mc_villager.b3d",
+            textures = def.textures or {"mobs_mc_villager.png", "mobs_mc_villager.png"},
+            makes_footstep_sound = true,
+        },
+
         walk_velocity = custom_villagers.config.movement.walk_velocity,
         run_velocity = custom_villagers.config.movement.run_velocity,
         drops = {},
