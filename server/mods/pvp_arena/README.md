@@ -1,6 +1,6 @@
 # 🏟️ PVP Arena Mod - Sistema de Zonas de Combate con Scoring
 
-**Versión**: 1.4.0 🆕 (Sistema de Modos Mixtos)
+**Versión**: 1.5.0 🆕 (Modo Creativo Nativo)
 **Estado**: ✅ Producción
 **Servidor**: Wetlands 🌱 Luanti/VoxeLibre
 
@@ -51,63 +51,69 @@ Mod que permite PvP en zonas específicas delimitadas con **sistema de scoring e
 
 ---
 
-## 🆕 Sistema de Modos Mixtos (v1.4.0)
+## 🆕 Modo Creativo Nativo (v1.5.0) - Fix 2026-01-16
 
-Este mod trabaja en conjunto con `creative_force` para soportar **modos mixtos** donde jugadores en supervivencia y creativo coexisten.
+Este mod ahora establece **modo creativo por defecto** para todos los jugadores, compatible con el modo creativo nativo de VoxeLibre.
 
-### Configuración de Excepciones
+### ⚠️ IMPORTANTE: Cambio de Comportamiento
 
-**Ubicación**: Líneas 5-9 de `init.lua`
+**Versión anterior (v1.4.0)**:
+- Establecía `gamemode = "survival"` al conectar (INCORRECTO)
+- Removía el privilegio `creative` (INCORRECTO)
+- Causaba que jugadores NO vieran el inventario creativo infinito
 
+**Versión actual (v1.5.0)**:
+- Establece `gamemode = "creative"` al conectar (CORRECTO)
+- Asegura que el privilegio `creative` esté presente (CORRECTO)
+- Compatible con el inventario creativo infinito de VoxeLibre
+
+### Comportamiento Actual
+
+**Al Conectar (fuera de arena)**:
 ```lua
--- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
-local survival_players = {
-    ["pepelomo"] = true,  -- Jugador en modo supervivencia
-    -- Agregar más jugadores aquí
-}
+meta:set_string("gamemode", "creative")  -- Modo creativo
+privs.creative = true                     -- Privilegio creative
 ```
 
-### Comportamiento por Modo
-
-**Jugadores en Creativo**:
-- Al conectar: Reciben privilegio `creative` automáticamente
-- Al entrar a arena: Pierden `creative` temporalmente
-- Al salir de arena: Recuperan `creative`
-
-**Jugadores en Supervivencia**:
-- Al conectar: NO reciben privilegio `creative` (respetando excepción)
-- Al entrar a arena: Modo supervivencia se mantiene
-- Al salir de arena: Modo supervivencia se mantiene
-- **Logs**: `[PVP Arena] Player pepelomo is in SURVIVAL mode - skipping creative`
-
-### Sincronización con creative_force
-
-**IMPORTANTE**: Este mod **debe tener la misma lista** `survival_players` que el mod `creative_force` para evitar conflictos.
-
-Si un jugador está en la lista de supervivencia en `creative_force` pero NO en `pvp_arena`, puede recibir creative al reconectar.
-
-### Verificación de Configuración
-
-```bash
-# Ver logs de jugador en supervivencia
-docker-compose logs luanti-server | grep -i "pepelomo\|survival"
-
-# Debe mostrar:
-# [PVP Arena] Player pepelomo is in SURVIVAL mode - skipping creative
+**Al Entrar a Arena PVP**:
+```lua
+meta:set_string("gamemode", "survival")  -- Temporal: modo survival
+privs.creative = nil                      -- Temporal: sin creative
 ```
 
-### Troubleshooting Modos Mixtos
+**Al Salir de Arena PVP**:
+```lua
+meta:set_string("gamemode", "creative")  -- Restaura: modo creativo
+privs.creative = true                     -- Restaura: privilegio creative
+```
 
-**Problema**: Jugador en supervivencia recibe creative al reconectar
+### Interacción con Otros Sistemas
 
-**Causa**: Lista `survival_players` no sincronizada entre mods
+| Sistema | Interacción |
+|---------|-------------|
+| `luanti.conf` | `creative_mode = true`, `mcl_enable_creative_mode = true` |
+| `world.mt` | `creative_mode = true` |
+| `default_privs` | Debe incluir `creative` |
+| **Este mod** | ✅ Ahora establece `creative` al conectar |
 
-**Solución**:
-1. Verificar que AMBOS mods (`creative_force` y `pvp_arena`) tienen la lista actualizada
-2. Reiniciar servidor
-3. Jugador debe reconectar
+### Logs Esperados
 
-**Documentación completa**: `docs/MIXED_GAMEMODE_CONFIGURATION.md`
+```
+[PVP Arena] Player gabo joined - CREATIVE mode with infinite inventory
+[PVP Arena] gabo entered Arena Principal
+[PVP Arena] Disabled creative for gabo (arena entry)
+[PVP Arena] gabo left arena
+[PVP Arena] Restored creative to gabo (arena exit)
+```
+
+### Mod creative_force (DESHABILITADO)
+
+El mod `creative_force` ya NO se usa. Fue movido a `server/mods_backup/` porque:
+1. Tenía bugs de persistencia de inventarios
+2. El modo creativo nativo de VoxeLibre es más confiable
+3. Este mod (pvp_arena) ahora maneja el modo creativo correctamente
+
+**Documentación completa**: `docs/config/08-CREATIVE_NATIVE_MODE.md`
 
 ---
 
@@ -212,7 +218,7 @@ Gabriel Pantoja (gabo) - Servidor Wetlands
 
 ---
 
-**Última actualización**: Enero 15, 2026
-**Versión**: 1.4.0 (Sistema de Modos Mixtos)
+**Última actualización**: Enero 16, 2026
+**Versión**: 1.5.0 (Modo Creativo Nativo)
 **Mantenedor**: Equipo Wetlands
-**📚 Documentación adicional**: `docs/MIXED_GAMEMODE_CONFIGURATION.md`
+**📚 Documentación adicional**: `docs/config/08-CREATIVE_NATIVE_MODE.md`
