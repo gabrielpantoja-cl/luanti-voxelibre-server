@@ -24,13 +24,14 @@ Todos los documentos están ordenados por **orden de importancia** con prefijos 
 | **03** | [MIXED_GAMEMODE.md](03-MIXED_GAMEMODE.md) | **Modos de juego mixtos** - Sistema para tener jugadores en creativo Y supervivencia simultáneamente. Incluye caso de estudio: migración pepelomo | ⚠️ IMPORTANTE |
 | **04** | [VOXELIBRE_SYSTEM.md](04-VOXELIBRE_SYSTEM.md) | **Sistema VoxeLibre completo** - Arquitectura interna, sistema de mods, troubleshooting y optimización de rendimiento | ⚠️ IMPORTANTE |
 
-### 🛠️ Configuración Funcional (05-07)
+### 🛠️ Configuración Funcional (05-08)
 
 | # | Archivo | Descripción | Prioridad |
 |---|---------|-------------|-----------|
 | **05** | [BLOCK_PROTECTION.md](05-BLOCK_PROTECTION.md) | **Sistema de protección de bloques** - Guía completa del sistema anti-griefing con bloques protectores | ℹ️ FUNCIONAL |
 | **06** | [RULES_SYSTEM.md](06-RULES_SYSTEM.md) | **Sistema de reglas automáticas** - Configuración de comandos `/reglas`, `/filosofia`, mensajes automáticos | ℹ️ FUNCIONAL |
 | **07** | [CUSTOM_SKINS.md](07-CUSTOM_SKINS.md) | **Skins personalizados** - Instalación y configuración de mods para skins de jugadores | ℹ️ FUNCIONAL |
+| **08** | [CREATIVE_NATIVE_MODE.md](08-CREATIVE_NATIVE_MODE.md) | **Modo creativo nativo** - Inventario infinito VoxeLibre sin bugs de persistencia (CONFIGURACIÓN ACTUAL) | ⚠️ IMPORTANTE |
 
 ---
 
@@ -42,7 +43,8 @@ Todos los documentos están ordenados por **orden de importancia** con prefijos 
 3. **Después revisa**: [04-VOXELIBRE_SYSTEM.md](04-VOXELIBRE_SYSTEM.md) para troubleshooting de mods
 
 ### Si necesitas cambiar modos de juego:
-→ **Ve directo a**: [03-MIXED_GAMEMODE.md](03-MIXED_GAMEMODE.md)
+→ **Configuración actual**: [08-CREATIVE_NATIVE_MODE.md](08-CREATIVE_NATIVE_MODE.md) - Modo creativo nativo (RECOMENDADO)
+→ **Sistema legacy**: [03-MIXED_GAMEMODE.md](03-MIXED_GAMEMODE.md) - Modos mixtos con creative_force (DEPRECADO)
 
 ### Si tienes problemas con mods:
 → **Revisa**: [04-VOXELIBRE_SYSTEM.md](04-VOXELIBRE_SYSTEM.md) → Sección 2: Sistema de Mods Técnico
@@ -109,11 +111,12 @@ docs/config/
 ├── README.md                              # 📖 Este archivo - Índice general
 ├── 01-CONFIGURATION_HIERARCHY.md         # 🎯 CRÍTICO - Jerarquía de configs
 ├── 02-NUCLEAR_CONFIG.md                  # 🚨 CRÍTICO - Anti-mobs
-├── 03-MIXED_GAMEMODE.md                  # ⭐ IMPORTANTE - Modos mixtos + caso pepelomo
+├── 03-MIXED_GAMEMODE.md                  # 📚 LEGACY - Modos mixtos (deprecado)
 ├── 04-VOXELIBRE_SYSTEM.md                # ⭐ IMPORTANTE - Sistema completo VoxeLibre
 ├── 05-BLOCK_PROTECTION.md                # 🛡️ Sistema de protección
 ├── 06-RULES_SYSTEM.md                    # 📜 Sistema de reglas
-└── 07-CUSTOM_SKINS.md                    # 🎨 Skins personalizados
+├── 07-CUSTOM_SKINS.md                    # 🎨 Skins personalizados
+└── 08-CREATIVE_NATIVE_MODE.md            # ⚠️ IMPORTANTE - Modo creativo actual
 ```
 
 ---
@@ -209,6 +212,8 @@ docs/config/
 
 | Fecha | Cambio | Documentos Afectados |
 |-------|--------|---------------------|
+| **2026-01-16** | ✅ **MIGRACIÓN A MODO CREATIVO NATIVO** - Fix bug inventarios | 08-CREATIVE_NATIVE_MODE.md |
+| **2026-01-16** | Deprecación de creative_force mod | 03-MIXED_GAMEMODE.md (marcado legacy) |
 | **2026-01-16** | Reorganización completa de docs/config/ | Todos |
 | **2026-01-16** | Caso de estudio migración pepelomo | 03-MIXED_GAMEMODE.md |
 | **2026-01-15** | Sistema de modos mixtos implementado | 03-MIXED_GAMEMODE.md |
@@ -233,6 +238,7 @@ docs/config/
 ---
 
 **Última actualización**: 2026-01-16
-**Archivos totales**: 7 documentos técnicos + README
+**Archivos totales**: 8 documentos técnicos + README
 **Cobertura**: Configuración completa del servidor Wetlands
 **Estado**: ✅ Documentación completa y actualizada
+**Configuración Actual**: Modo Creativo Nativo (08-CREATIVE_NATIVE_MODE.md)
