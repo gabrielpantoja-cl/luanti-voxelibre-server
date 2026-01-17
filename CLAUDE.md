@@ -217,9 +217,9 @@ All Luanti-related development must happen in this repository (`luanti-voxelibre
 3. **Automatic Deployment**: GitHub Actions handles VPS deployment
 4. **Verification**: Check server status and logs
 
-### 💡 Manual Commits for Token Efficiency (RECOMMENDED)
+### 💡 Manual Commits for Claude Code Max 5x Plan Efficiency (RECOMMENDED)
 
-**Context**: To save Claude Code tokens (~5x efficiency), commits should be done manually by the user in VS Code instead of automated by Claude.
+**Context**: To conserve Claude Code Max 5x plan usage, commits should be done manually by the user in VS Code instead of automated by Claude.
 
 **Workflow**:
 1. **Claude's Role**:
@@ -234,7 +234,8 @@ All Luanti-related development must happen in this repository (`luanti-voxelibre
    - Pushes to trigger GitHub Actions deployment
 
 **Benefits**:
-- **~5x token savings**: Avoids expensive Bash tool calls for git operations
+- **Token conservation**: Avoids expensive Bash tool calls for git operations
+- **Max 5x plan efficiency**: Saves quota for actual development work
 - **User control**: Full visibility of changes before commit
 - **Same deployment**: GitHub Actions still handles VPS deployment automatically
 - **Audit trail**: User explicitly approves each commit
