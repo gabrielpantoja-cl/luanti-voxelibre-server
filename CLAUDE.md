@@ -830,22 +830,26 @@ El servidor usa dos mods para skins personalizados:
 
 ### Ubicacion de Archivos
 
+**Local (trackeado en git):**
+```
+server/skins/              # Copia de referencia de todos los skins (64x32)
+├── buddhist_monk.png
+├── ninja_boxy.png
+├── panda.png
+├── pepe.png
+├── santa_ho_ho_ho.png
+└── zombie.png
+```
+
+**VPS (produccion):**
 ```
 server/worlds/world/
 ├── _world_folder_media/
-│   └── textures/          # Archivos PNG de skins (64x32)
-│       ├── wetlands_cuidador_animales.png
-│       ├── wetlands_veterinaria.png
-│       ├── zombie.png
-│       ├── buddhist_monk.png
-│       ├── ninja_boxy.png
-│       ├── panda.png
-│       ├── santa_ho_ho_ho.png
-│       └── pepe.png
+│   └── textures/          # Skins servidos a los clientes (64x32)
 └── skins.txt              # Registro de skins disponibles (Lua table)
 ```
 
-**NOTA**: Estos archivos estan gitignored y solo existen en el VPS. Los skins convertidos localmente deben copiarse manualmente al servidor.
+**Flujo**: Convertir skin -> guardar en `server/skins/` -> deploy con `scp` al VPS.
 
 ### Formato de skins.txt
 
@@ -883,7 +887,7 @@ python -c "
 from PIL import Image
 src = Image.open('server/mods/ARCHIVO_DESCARGADO.png')
 cropped = src.crop((0, 0, 64, 32))
-cropped.save('server/worlds/world/_world_folder_media/textures/NOMBRE_SKIN.png')
+cropped.save('server/skins/NOMBRE_SKIN.png')
 print(f'Convertido: {cropped.size}')
 "
 ```
@@ -894,7 +898,7 @@ print(f'Convertido: {cropped.size}')
 
 ```bash
 # Copiar skin convertido
-scp server/worlds/world/_world_folder_media/textures/NOMBRE_SKIN.png \
+scp server/skins/NOMBRE_SKIN.png \
     gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
 
 # Agregar entrada a skins.txt en VPS (ajustar gender segun corresponda)
@@ -915,8 +919,8 @@ ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && docker-c
 | Paso | Comando/Accion |
 |------|---------------|
 | Descargar | minecraftskins.com -> PNG 64x64 |
-| Convertir | Python crop (0,0,64,32) -> PNG 64x32 |
-| Copiar | `scp` al VPS en `_world_folder_media/textures/` |
+| Convertir | Python crop (0,0,64,32) -> `server/skins/` |
+| Copiar | `scp` desde `server/skins/` al VPS |
 | Registrar | Agregar entrada en `skins.txt` |
 | Activar | `docker-compose restart luanti-server` |
 | Verificar | `/skin` en el juego |
