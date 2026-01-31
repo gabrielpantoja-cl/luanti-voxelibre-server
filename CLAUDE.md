@@ -820,6 +820,107 @@ rsync -avz server/landing-page/ gabriel@167.172.251.27:/home/gabriel/vps-do/ngin
 ssh gabriel@167.172.251.27 'cd /home/gabriel/vps-do && docker-compose exec nginx-proxy nginx -s reload'
 ```
 
+## 🎨 Agregar Skins desde MinecraftSkins.com
+
+### Overview
+
+El servidor usa dos mods para skins personalizados:
+- **`mcl_custom_world_skins`**: Permite seleccionar skins con el comando `/skin`
+- **`_world_folder_media`**: Sirve texturas desde la carpeta del mundo a los clientes
+
+### Ubicacion de Archivos
+
+```
+server/worlds/world/
+├── _world_folder_media/
+│   └── textures/          # Archivos PNG de skins (64x32)
+│       ├── wetlands_cuidador_animales.png
+│       ├── wetlands_veterinaria.png
+│       ├── zombie.png
+│       ├── buddhist_monk.png
+│       ├── ninja_boxy.png
+│       ├── panda.png
+│       ├── santa_ho_ho_ho.png
+│       └── pepe.png
+└── skins.txt              # Registro de skins disponibles (Lua table)
+```
+
+**NOTA**: Estos archivos estan gitignored y solo existen en el VPS. Los skins convertidos localmente deben copiarse manualmente al servidor.
+
+### Formato de skins.txt
+
+El archivo usa formato de tabla Lua serializada:
+```lua
+return {
+  { texture = "wetlands_cuidador_animales", gender = "male" },
+  { texture = "wetlands_veterinaria", gender = "female" },
+  { texture = "zombie", gender = "male" },
+  { texture = "buddhist_monk", gender = "male" },
+  { texture = "ninja_boxy", gender = "male" },
+  { texture = "panda", gender = "male" },
+  { texture = "santa_ho_ho_ho", gender = "male" },
+  { texture = "pepe", gender = "male" },
+}
+```
+
+- `texture`: Nombre del archivo PNG sin extension
+- `gender`: `"male"` o `"female"` (afecta el modelo 3D del personaje)
+
+### Proceso Paso a Paso: Agregar un Nuevo Skin
+
+#### 1. Descargar skin de minecraftskins.com
+- Buscar un skin en https://www.minecraftskins.com/
+- Descargar el archivo PNG (sera 64x64 en formato Minecraft)
+- Guardarlo en `server/mods/` temporalmente
+
+#### 2. Convertir a formato VoxeLibre (64x32)
+VoxeLibre usa solo la mitad superior del template de Minecraft. Convertir con Python + Pillow:
+
+```bash
+python -m pip install Pillow  # Solo la primera vez
+
+python -c "
+from PIL import Image
+src = Image.open('server/mods/ARCHIVO_DESCARGADO.png')
+cropped = src.crop((0, 0, 64, 32))
+cropped.save('server/worlds/world/_world_folder_media/textures/NOMBRE_SKIN.png')
+print(f'Convertido: {cropped.size}')
+"
+```
+
+**Importante**: El nombre del archivo PNG sera el nombre que aparece en `/skin` en el juego.
+
+#### 3. Deploy al VPS
+
+```bash
+# Copiar skin convertido
+scp server/worlds/world/_world_folder_media/textures/NOMBRE_SKIN.png \
+    gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
+
+# Agregar entrada a skins.txt en VPS (ajustar gender segun corresponda)
+ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server/server/worlds/world && \
+    sed -i "s/^}$/  { texture = \"NOMBRE_SKIN\", gender = \"male\" },\n}/" skins.txt'
+
+# Reiniciar servidor para cargar nuevo skin
+ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server'
+```
+
+#### 4. Verificacion
+- Conectar al servidor con el cliente Luanti
+- Usar comando `/skin` en el chat
+- El nuevo skin debe aparecer en la lista de skins disponibles
+
+### Referencia Rapida
+
+| Paso | Comando/Accion |
+|------|---------------|
+| Descargar | minecraftskins.com -> PNG 64x64 |
+| Convertir | Python crop (0,0,64,32) -> PNG 64x32 |
+| Copiar | `scp` al VPS en `_world_folder_media/textures/` |
+| Registrar | Agregar entrada en `skins.txt` |
+| Activar | `docker-compose restart luanti-server` |
+| Verificar | `/skin` en el juego |
+
 ## 🚨 CRITICAL: Texture Corruption Prevention & Recovery Protocol
 
 ### **⚠️ GOLDEN RULES - NEVER BREAK THESE:**
