@@ -67,7 +67,8 @@
       "Bash(done)",
       "Bash(./scripts/add-skin.sh:*)",
       "Bash(./scripts/sync-skins-to-vps.sh:*)",
-      "Bash(git mv:*)"
+      "Bash(git mv:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []
