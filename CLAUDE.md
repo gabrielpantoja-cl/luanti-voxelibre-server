@@ -182,12 +182,13 @@ All mods follow Luanti mod structure:
 2. **vegan_food**: Plant-based food items (burgers, oat milk, plant-based cheese)
 3. **education_blocks**: Interactive educational content about compassion and sustainability
 4. **back_to_spawn** (mcl_back_to_spawn): Teleportation to personal spawn points via bed sleeping mechanics
+5. **wetlands_newplayer**: Grants full creative privileges to new players automatically (see "New Player Privileges" section)
 
 ### Server Configuration
 - **Mode**: Creative (no damage, no PvP, no TNT)
 - **Language**: Spanish (es)
 - **Max Players**: 20
-- **Default Privileges**: `interact,shout,home,spawn,creative`
+- **Default Privileges**: Managed by `wetlands_newplayer` mod (see below)
 - **World Generation**: v7 with caves, dungeons, biomes
 - **Spawn Point**: 0,15,0 (static)
 
@@ -308,6 +309,81 @@ Full documentation: `docs/VPS_SYNC_WORKFLOW.md`
 - Admin functionality to teleport other players (requires `server` and `tp` privileges)
 - Multilingual support with locale files
 
+## New Player Privileges (wetlands_newplayer mod)
+
+### The Problem: VoxeLibre Ignores `default_privs`
+
+**CRITICAL DISCOVERY (Feb 2026):** VoxeLibre **ignores** the `default_privs` setting in `minetest.conf`. Regardless of what is configured there, new players only receive `creative, interact, shout`. This means children joining the server could NOT fly, run fast, or use noclip — essential for creative exploration.
+
+**Additional pitfall:** If `default_privs` contains privilege names from mods that are not loaded (e.g., `home` from `sethome`, `areas` from `areas` mod), the engine may silently fail and fall back to a minimal privilege set.
+
+### The Solution: `wetlands_newplayer` Mod
+
+Instead of relying on `default_privs`, the mod `server/mods/wetlands_newplayer/init.lua` uses `minetest.register_on_newplayer()` to grant privileges programmatically when a player first joins.
+
+**Privileges granted to every new player:**
+
+| Privilege | Purpose | Key for kids |
+|-----------|---------|-------------|
+| `interact` | Place/break blocks, use items | Basic gameplay |
+| `shout` | Chat with other players | Communication |
+| `fly` | Fly freely (press K) | Exploration & building |
+| `fast` | Run fast (press J) | Fun movement |
+| `noclip` | Move through blocks (press H) | Building assistance |
+| `give` | Give self items | Creative mode items |
+| `creative` | Creative mode access | Infinite inventory |
+| `spawn` | Return to spawn point | Safety net |
+
+### Modifying New Player Privileges
+
+To change what privileges new players receive, edit the `PRIVS` table in:
+```
+server/mods/wetlands_newplayer/init.lua
+```
+
+```lua
+local PRIVS = {
+    fly = true,
+    fast = true,
+    noclip = true,
+    give = true,
+    spawn = true,
+    creative = true,
+    interact = true,
+    shout = true,
+}
+```
+
+After editing, deploy to VPS and restart:
+```bash
+scp -r server/mods/wetlands_newplayer gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/mods/
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+```
+
+### Important Notes
+
+- The mod must be enabled in `world.mt`: `load_mod_wetlands_newplayer = true`
+- The `default_privs` line in `luanti.conf` is kept as a fallback but is NOT effective with VoxeLibre
+- The mod logs each new player grant: `[wetlands_newplayer] Privilegios otorgados a nuevo jugador: <name>`
+- Existing users are NOT affected — only first-time registrations
+- To grant privileges to existing users retroactively, use SQLite (see Admin Privilege Management below)
+
+### Granting Privileges to Existing Users (Bulk)
+
+If you need to grant missing privileges to users who registered before the mod was active:
+```bash
+# Get user ID
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  "SELECT id, name FROM auth WHERE name='USERNAME';"
+
+# Grant specific privileges (replace ID and privilege names)
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES (ID,'fly'),(ID,'fast'),(ID,'noclip'),(ID,'give'),(ID,'spawn');"
+
+# Restart server
+docker-compose restart luanti-server
+```
+
 ## Admin Privilege Management
 
 ### Overview
@@ -410,6 +486,7 @@ VoxeLibre uses a specific mod loading system that differs from vanilla Luanti:
 │   ├── vegan_food/          # ✅ Personal mods
 │   ├── pvp_arena/           # ✅ PVP arena system
 │   ├── worldedit/           # 🔧 WorldEdit core API
+│   ├── wetlands_newplayer/   # 🎯 Auto-grants privileges to new players (fly, fast, noclip, etc.)
 │   ├── worldedit_commands/  # 🔧 WorldEdit chat commands
 │   ├── worldedit_shortcommands/  # 🔧 Short command aliases
 │   ├── worldedit_brush/     # 🔧 WorldEdit brush tools
@@ -498,6 +575,21 @@ docker compose restart luanti-server
 1. **Mod not loading**: Check `docker compose logs luanti-server | grep server_rules`
 2. **Syntax errors**: Verify Lua syntax in `init.lua`
 3. **Missing mod.conf**: Ensure proper mod configuration
+
+#### Issue 4: New Players Missing Privileges (fly, fast, noclip, etc.)
+**Symptoms**: New players can only interact, shout, and use creative but cannot fly (K key), run fast (J), or noclip (H)
+
+**Root Cause**: VoxeLibre **ignores** `default_privs` from `minetest.conf`. No matter what is set there, new players only get `creative, interact, shout`.
+
+**Additional trap**: If `default_privs` contains privileges from mods not loaded in `world.mt` (e.g., `home` from `sethome`, `areas` from `areas` mod), the engine silently fails.
+
+**Solution**: Use the `wetlands_newplayer` mod which grants privileges via `register_on_newplayer()`.
+- **Mod location**: `server/mods/wetlands_newplayer/init.lua`
+- **Must be enabled in `world.mt`**: `load_mod_wetlands_newplayer = true`
+- **To modify privileges**: Edit the `PRIVS` table in `init.lua`
+- **Full documentation**: `docs/admin/USER_PRIVILEGES.md`
+
+**NEVER rely on `default_privs` in `minetest.conf` when using VoxeLibre.** Always use the mod.
 
 ### 📋 Mod Documentation
 

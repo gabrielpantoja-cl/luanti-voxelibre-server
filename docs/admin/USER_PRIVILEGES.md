@@ -471,3 +471,121 @@ WHERE up.privilege IN ("areas", "server", "protection_bypass");
 4. **Establecer política de privilegios**:
    - Jugador → Creative → Moderador → Admin → Super Admin
    - Documentar qué privilegios tiene cada rol
+
+---
+
+## PROBLEMA CRITICO: VoxeLibre Ignora `default_privs` (Feb 2026)
+
+### Descripcion del Problema
+
+El setting `default_privs` en `minetest.conf` **NO funciona con VoxeLibre**. Independientemente de lo que se configure, los usuarios nuevos solo reciben:
+```
+creative, interact, shout
+```
+
+Esto fue descubierto cuando el usuario **juju** (y otros como lucia, gabo87) no podian volar a pesar de que `default_privs` incluia `fly`.
+
+### Causa Raiz
+
+1. **VoxeLibre sobreescribe `default_privs`**: El juego base ignora la configuracion del engine y aplica su propio set minimo de privilegios.
+2. **Privilegios de mods no cargados**: Si `default_privs` incluye privilegios de mods no habilitados en `world.mt` (ej: `home` de `sethome`, `areas` de `areas`), el engine puede fallar silenciosamente y aplicar solo un subset minimo.
+
+### Configuracion Anterior (NO FUNCIONAL)
+```conf
+default_privs = interact,shout,give,fly,fast,noclip,home,areas,areas_high_limit,protect,creative
+```
+
+Resultado real para nuevos usuarios: `creative, interact, shout` (sin fly, fast, noclip, etc.)
+
+### Solucion Implementada: Mod `wetlands_newplayer`
+
+Se creo el mod `server/mods/wetlands_newplayer/` que usa `minetest.register_on_newplayer()` para otorgar privilegios programaticamente.
+
+**Archivo**: `server/mods/wetlands_newplayer/init.lua`
+
+**Privilegios otorgados automaticamente a cada nuevo jugador**:
+
+| Privilegio | Tecla | Para que sirve |
+|-----------|-------|---------------|
+| `interact` | - | Colocar/romper bloques |
+| `shout` | - | Chatear |
+| `fly` | K | Volar libremente |
+| `fast` | J | Moverse rapido |
+| `noclip` | H | Atravesar bloques |
+| `give` | - | Darse items |
+| `creative` | - | Modo creativo |
+| `spawn` | - | Volver al spawn |
+
+### Habilitacion
+
+El mod debe estar habilitado en `world.mt` (en el VPS):
+```
+load_mod_wetlands_newplayer = true
+```
+
+### Verificacion
+
+1. Crear un usuario de prueba nuevo en el servidor
+2. Revisar privilegios:
+```bash
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  "SELECT GROUP_CONCAT(p.privilege, ', ') FROM auth a JOIN user_privileges p ON a.id = p.id WHERE a.name='NOMBRE_USUARIO';"
+```
+3. Debe mostrar: `creative, fast, fly, give, interact, noclip, shout, spawn`
+
+### Logs del Mod
+
+El mod registra cada asignacion en los logs del servidor:
+```
+[wetlands_newplayer] Mod cargado - privilegios para nuevos jugadores: fly, fast, noclip, give, spawn, creative, interact, shout
+[wetlands_newplayer] Privilegios otorgados a nuevo jugador: gabo2222
+```
+
+Para verificar que el mod esta cargado:
+```bash
+docker-compose logs luanti-server | grep wetlands_newplayer
+```
+
+### Como Modificar los Privilegios por Defecto
+
+Editar la tabla `PRIVS` en `server/mods/wetlands_newplayer/init.lua`:
+
+```lua
+local PRIVS = {
+    fly = true,
+    fast = true,
+    noclip = true,
+    give = true,
+    spawn = true,
+    creative = true,
+    interact = true,
+    shout = true,
+    -- Agregar nuevos privilegios aqui, ej:
+    -- teleport = true,
+    -- home = true,  -- Solo si el mod sethome esta cargado
+}
+```
+
+Luego desplegar al VPS y reiniciar el servidor.
+
+### Otorgar Privilegios a Usuarios Existentes (Retroactivo)
+
+Para usuarios que se registraron ANTES de que el mod estuviera activo:
+
+```bash
+# Obtener ID del usuario
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  "SELECT id, name FROM auth WHERE name='USUARIO';"
+
+# Otorgar privilegios faltantes (reemplazar ID_NUM)
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES
+  (ID_NUM,'fly'),(ID_NUM,'fast'),(ID_NUM,'noclip'),(ID_NUM,'give'),(ID_NUM,'spawn');"
+
+# Reiniciar servidor
+docker-compose restart luanti-server
+```
+
+### Leccion Aprendida
+
+> **NUNCA confiar en `default_privs` de minetest.conf cuando se usa VoxeLibre.** Siempre usar un mod con `register_on_newplayer()` para garantizar que los privilegios se apliquen correctamente. El setting `default_privs` se mantiene en luanti.conf como documentacion/fallback pero no tiene efecto real.
