@@ -72,7 +72,13 @@
       "Bash(minetest:*)",
       "Bash(luanti:*)",
       "Bash(apt list:*)",
-      "Bash(apt-cache policy:*)"
+      "Bash(apt-cache policy:*)",
+      "Bash(sudo apt update:*)",
+      "Bash(snap info:*)",
+      "Bash(flatpak remote-info:*)",
+      "Bash(flatpak install:*)",
+      "Bash(flatpak info:*)",
+      "Bash(sudo apt remove:*)"
     ],
     "deny": [],
     "ask": []
