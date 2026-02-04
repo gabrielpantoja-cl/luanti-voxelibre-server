@@ -1,7 +1,24 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2025-12-07",
+  "lastUpdated": "2026-02-04",
   "images": [
+    {
+      "id": "luanti-5-15-update-2026-02",
+      "filename": "luanti-5-15-update.png",
+      "title": "Luanti 5.15.0 - Nueva Version!",
+      "emoji": "🚀",
+      "description": "Actualizamos a Luanti 5.15.0! Graficos hasta 10 veces mas rapidos, sombras dinamicas en Android, tema oscuro en el menu y muchas mejoras. Descarga la nueva version y disfruta!",
+      "date": "2026-02-04",
+      "dateLabel": "Febrero 2026",
+      "badge": {
+        "text": "NUEVA VERSION!",
+        "emoji": "🆕",
+        "type": "new"
+      },
+      "category": "updates",
+      "featured": true,
+      "priority": 1
+    },
     {
       "id": "santa-skins-christmas-2025",
       "filename": "hohoho.png",
@@ -10,14 +27,10 @@
       "description": "¡Celebra la Navidad en Wetlands! Nuevo skin de Santa Claus disponible para todos. Presiona ESC > Personalizacion > Skins y selecciona 'santa_ho_ho_ho'. Unete a la fiesta navidena!",
       "date": "2025-12-07",
       "dateLabel": "Diciembre 2025",
-      "badge": {
-        "text": "NUEVO SKIN NAVIDEÑO!",
-        "emoji": "🎄",
-        "type": "new"
-      },
+      "badge": null,
       "category": "updates",
-      "featured": true,
-      "priority": 1
+      "featured": false,
+      "priority": 2
     },
     {
       "id": "vehicles-2025-11",
@@ -27,14 +40,10 @@
       "description": "Ahora puedes manejar autos en Wetlands! Explora el mundo sobre ruedas con nuestros nuevos vehiculos. Conduce, viaja y diviertete!",
       "date": "2025-11",
       "dateLabel": "Noviembre 2025",
-      "badge": {
-        "text": "ACTUALIZACION RECIENTE",
-        "emoji": "🚗",
-        "type": "new"
-      },
+      "badge": null,
       "category": "updates",
       "featured": false,
-      "priority": 2
+      "priority": 3
     },
     {
       "id": "bathroom-kit-2025-10",
@@ -44,14 +53,10 @@
       "description": "Nuevos items para construir baños increibles! Incluye toilets, lavamanos, duchas, grifos y carteles de 'Baño $500'. Decora tu casa como un pro!",
       "date": "2025-10",
       "dateLabel": "Octubre 2025",
-      "badge": {
-        "text": "ACTUALIZACION RECIENTE",
-        "emoji": "🔥",
-        "type": "new"
-      },
+      "badge": null,
       "category": "updates",
       "featured": false,
-      "priority": 2
+      "priority": 4
     },
     {
       "id": "halloween-2025",
@@ -61,14 +66,10 @@
       "description": "Nuevo mod de fantasmas amigables! Encuentralos flotando, tocalos para recibir dulces y descubre las calabazas magicas. Sin sustos, solo diversion de Halloween!",
       "date": "2025-10",
       "dateLabel": "Octubre 2025",
-      "badge": {
-        "text": "EVENTO ACTIVO!",
-        "emoji": "👻",
-        "type": "event"
-      },
+      "badge": null,
       "category": "updates",
       "featured": false,
-      "priority": 3
+      "priority": 5
     },
     {
       "id": "area-protection-2025-10",
@@ -81,7 +82,7 @@
       "badge": null,
       "category": "updates",
       "featured": false,
-      "priority": 4
+      "priority": 6
     },
     {
       "id": "tv-mod-2025-10",
@@ -94,7 +95,7 @@
       "badge": null,
       "category": "updates",
       "featured": false,
-      "priority": 5
+      "priority": 7
     },
     {
       "id": "server-rules-2025-09",
@@ -107,7 +108,7 @@
       "badge": null,
       "category": "updates",
       "featured": false,
-      "priority": 6
+      "priority": 8
     },
     {
       "id": "pool-gameplay-2025-09",
@@ -120,7 +121,7 @@
       "badge": null,
       "category": "gameplay",
       "featured": false,
-      "priority": 7
+      "priority": 9
     },
     {
       "id": "community-pepe-gabo-2025-09",
@@ -133,7 +134,7 @@
       "badge": null,
       "category": "community",
       "featured": false,
-      "priority": 8
+      "priority": 10
     },
     {
       "id": "epic-adventure-2025-08",
@@ -146,7 +147,7 @@
       "badge": null,
       "category": "gameplay",
       "featured": false,
-      "priority": 9
+      "priority": 11
     }
   ],
   "categories": {
