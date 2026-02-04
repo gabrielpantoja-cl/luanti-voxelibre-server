@@ -68,7 +68,11 @@
       "Bash(./scripts/add-skin.sh:*)",
       "Bash(./scripts/sync-skins-to-vps.sh:*)",
       "Bash(git mv:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(minetest:*)",
+      "Bash(luanti:*)",
+      "Bash(apt list:*)",
+      "Bash(apt-cache policy:*)"
     ],
     "deny": [],
     "ask": []
