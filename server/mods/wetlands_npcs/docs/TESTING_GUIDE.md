@@ -1,8 +1,7 @@
-# 🧪 Custom Villagers - Guía de Testing
+# Wetlands NPCs - Guia de Testing
 
-**Versión**: v1.0.1
-**Última actualización**: 2026-01-16
-**Estado**: Crash fix aplicado ✅ - Testing de funcionalidad pendiente ⚠️
+**Version**: v1.2.0
+**Ultima actualizacion**: Febrero 2026
 
 ---
 
@@ -411,7 +410,7 @@ PROBLEMA ENCONTRADO:
 
 LOGS:
 /villager_state
-docker-compose logs --tail=50 luanti-server | grep custom_villagers
+docker-compose logs --tail=50 luanti-server | grep wetlands_npcs
 ```
 
 ---

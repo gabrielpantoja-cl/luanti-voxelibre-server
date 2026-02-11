@@ -1,8 +1,8 @@
 # 🤖 Sistema de Comportamientos AI Tradicional - Documentación Completa
 
 **Versión**: 1.0.0
-**Mod**: Custom Villagers v2.1.0
-**Fecha**: Enero 2026
+**Mod**: wetlands_npcs v1.2.0
+**Fecha**: Febrero 2026
 **Autor**: Wetlands Team
 
 ---
@@ -52,7 +52,7 @@ El **Sistema de Comportamientos AI Tradicional** hace que los aldeanos de Wetlan
 ### Estructura de Archivos
 
 ```
-server/mods/custom_villagers/
+server/mods/wetlands_npcs/
 ├── init.lua                    # Punto de entrada principal
 ├── config.lua                  # ✅ NUEVO: Configuración centralizada
 ├── ai_behaviors.lua            # ✅ NUEVO: Sistema de comportamientos
@@ -430,14 +430,14 @@ Puedes ajustar parámetros sin editar código Lua:
 # minetest.conf
 
 # Radio de búsqueda de POI (default: 15)
-custom_villagers_poi_radius = 20
+wetlands_npcs_poi_radius = 20
 
 # Activar saludos automáticos (default: true)
-custom_villagers_auto_greet = true
+wetlands_npcs_auto_greet = true
 
 # Activar modo debug (default: false)
-custom_villagers_debug = true
-custom_villagers_debug_level = 2
+wetlands_npcs_debug = true
+wetlands_npcs_debug_level = 2
 ```
 
 ### Parámetros Principales
@@ -447,8 +447,8 @@ custom_villagers_debug_level = 2
 Ajusta los pesos probabilísticos de cada estado:
 
 ```lua
-custom_villagers.config.behavior_weights.farmer.work = 50  -- Aumentar trabajo
-custom_villagers.config.behavior_weights.explorer.wander = 70  -- Más exploración
+wetlands_npcs.config.behavior_weights.farmer.work = 50  -- Aumentar trabajo
+wetlands_npcs.config.behavior_weights.explorer.wander = 70  -- Más exploración
 ```
 
 #### Duración de Estados (state_duration)
@@ -456,7 +456,7 @@ custom_villagers.config.behavior_weights.explorer.wander = 70  -- Más exploraci
 Controla cuánto tiempo permanece en cada estado:
 
 ```lua
-custom_villagers.config.state_duration = {
+wetlands_npcs.config.state_duration = {
     min = 10,  -- Mínimo 10 segundos
     max = 20,  -- Máximo 20 segundos
 }
@@ -465,13 +465,13 @@ custom_villagers.config.state_duration = {
 #### Radio de Búsqueda de POI
 
 ```lua
-custom_villagers.config.poi_search_radius = 15  -- bloques
+wetlands_npcs.config.poi_search_radius = 15  -- bloques
 ```
 
 #### Sistema de Saludos Automáticos
 
 ```lua
-custom_villagers.config.auto_greet = {
+wetlands_npcs.config.auto_greet = {
     enabled = true,
     detection_radius = 5,        -- Detectar jugador a 5 bloques
     greeting_chance = 5,         -- 5% probabilidad cada tick
@@ -482,7 +482,7 @@ custom_villagers.config.auto_greet = {
 #### Rutinas Día/Noche
 
 ```lua
-custom_villagers.config.schedule = {
+wetlands_npcs.config.schedule = {
     sleep_start = 0.8,   -- Dormir desde 80% del día (7 PM)
     sleep_end = 0.2,     -- Despertar al 20% del día (5 AM)
     seek_bed_on_sleep = true,  -- Buscar cama al dormir
@@ -493,7 +493,7 @@ custom_villagers.config.schedule = {
 #### Movimiento
 
 ```lua
-custom_villagers.config.movement = {
+wetlands_npcs.config.movement = {
     walk_velocity = 1.2,     -- Velocidad al caminar
     run_velocity = 2.4,      -- Velocidad al correr
 }
@@ -502,7 +502,7 @@ custom_villagers.config.movement = {
 #### Partículas
 
 ```lua
-custom_villagers.config.particles = {
+wetlands_npcs.config.particles = {
     enabled = true,
     work_particle = {
         texture = "bubble.png",
@@ -548,7 +548,7 @@ Los aldeanos usan el sistema de pathfinding de `mcl_mobs` (basado en algoritmo A
 
 **Configuración**:
 ```lua
-custom_villagers.config.pathfinding = {
+wetlands_npcs.config.pathfinding = {
     max_distance = 30,       -- No rutas de >30 bloques
     timeout = 5,             -- Máximo 5 seg de cálculo
     stuck_threshold = 10,    -- Abandonar si no se mueve por 10 seg
@@ -621,7 +621,7 @@ self.ai_memory = {
 **Cooldown de saludos**:
 ```lua
 local last_greet = self.ai_memory.last_greet_player[player_name] or 0
-local cooldown = custom_villagers.config.auto_greet.cooldown_seconds
+local cooldown = wetlands_npcs.config.auto_greet.cooldown_seconds
 
 if os.time() - last_greet > cooldown then
     -- Permitir saludo
@@ -679,9 +679,9 @@ Activar modo debug para ver logs de estados.
 > ✅ Debug activado. Revisa la consola del servidor.
 
 # Logs que aparecerán:
-[custom_villagers] farmer transition: idle → wander
-[custom_villagers] farmer found POI at (12, 15, -3)
-[custom_villagers] librarian override: wander → sleep
+[wetlands_npcs] farmer transition: idle → wander
+[wetlands_npcs] farmer found POI at (12, 15, -3)
+[wetlands_npcs] librarian override: wander → sleep
 ```
 
 **Privilegio requerido**: `server`
@@ -741,7 +741,7 @@ Mostrar información general del sistema.
 
 **Ejemplo de salida**:
 ```
-🏘️ === Aldeanos de Wetlands v2.1.0 ===
+🏘️ === Aldeanos de Wetlands v1.2.0 ===
 
 📋 Tipos disponibles:
 • Agricultor (farmer) - Cultiva vegetales
@@ -780,8 +780,8 @@ Los aldeanos no se pueden lastimar
 1. **Sistema AI no cargado**:
    - **Verificar**: Logs de inicio deben mostrar:
      ```
-     [custom_villagers] Configuration system loaded
-     [custom_villagers] AI Behaviors system loaded (v1.0.0)
+     [wetlands_npcs] Configuration system loaded
+     [wetlands_npcs] AI Behaviors system loaded (v1.0.0)
      ```
    - **Solución**: Verificar que `config.lua` y `ai_behaviors.lua` existen y no tienen errores de sintaxis
 
@@ -969,7 +969,7 @@ end
 
 **Paso 3**: Añadir pesos probabilísticos:
 ```lua
-custom_villagers.config.behavior_weights.farmer.dance = 5  -- 5% del tiempo
+wetlands_npcs.config.behavior_weights.farmer.dance = 5  -- 5% del tiempo
 ```
 
 **Paso 4**: Integrar en `update()`:
@@ -985,7 +985,7 @@ elseif self.ai_state == STATES.DANCE then
 
 ```lua
 -- En config.lua
-custom_villagers.config.poi_types.explorer = {
+wetlands_npcs.config.poi_types.explorer = {
     -- ... POIs existentes
     "mcl_campfires:campfire",  -- NUEVO
 }
@@ -999,7 +999,7 @@ custom_villagers.config.poi_types.explorer = {
 -- En config.lua
 
 -- 1. Definir pesos de comportamiento
-custom_villagers.config.behavior_weights.chef = {
+wetlands_npcs.config.behavior_weights.chef = {
     idle = 15,
     wander = 25,
     work = 50,  -- Muy trabajador en la cocina
@@ -1007,7 +1007,7 @@ custom_villagers.config.behavior_weights.chef = {
 }
 
 -- 2. Definir POIs
-custom_villagers.config.poi_types.chef = {
+wetlands_npcs.config.poi_types.chef = {
     "mcl_furnaces:furnace",
     "mcl_furnaces:furnace_active",
     "mcl_core:chest",  -- Almacenamiento de ingredientes
@@ -1136,7 +1136,7 @@ Puedes añadir tracking de métricas:
 
 ```lua
 -- Añadir a config.lua
-custom_villagers.stats = {
+wetlands_npcs.stats = {
     total_state_changes = 0,
     state_histogram = {
         idle = 0,
@@ -1148,16 +1148,16 @@ custom_villagers.stats = {
 }
 
 -- Incrementar en behaviors.update() al cambiar de estado
-custom_villagers.stats.total_state_changes = custom_villagers.stats.total_state_changes + 1
-custom_villagers.stats.state_histogram[new_state] =
-    custom_villagers.stats.state_histogram[new_state] + 1
+wetlands_npcs.stats.total_state_changes = wetlands_npcs.stats.total_state_changes + 1
+wetlands_npcs.stats.state_histogram[new_state] =
+    wetlands_npcs.stats.state_histogram[new_state] + 1
 ```
 
 **Comando para ver stats**:
 ```lua
 minetest.register_chatcommand("villager_stats", {
     func = function(name)
-        local stats = custom_villagers.stats
+        local stats = wetlands_npcs.stats
         return true, string.format(
             "📊 Estadísticas:\n" ..
             "Total cambios de estado: %d\n" ..
@@ -1213,9 +1213,9 @@ Después de desplegar el sistema AI, verificar:
 
 - [ ] Logs muestran carga exitosa:
   ```
-  [custom_villagers] Configuration system loaded
-  [custom_villagers] AI Behaviors system loaded (v1.0.0)
-  [custom_villagers] Registered custom villager with AI: farmer
+  [wetlands_npcs] Configuration system loaded
+  [wetlands_npcs] AI Behaviors system loaded (v1.0.0)
+  [wetlands_npcs] Registered custom villager with AI: farmer
   ```
 
 - [ ] Aldeanos spawneados se mueven:
@@ -1261,7 +1261,7 @@ Si algo falla:
 
 2. **Revisar logs del servidor**:
    ```bash
-   tail -f ~/.minetest/debug.txt | grep custom_villagers
+   tail -f ~/.minetest/debug.txt | grep wetlands_npcs
    ```
 
 3. **Testear en servidor local primero**:
@@ -1292,4 +1292,4 @@ Si en el futuro deseas añadir conversaciones dinámicas generadas por IA, puede
 **Generado por**: Wetlands Team
 **Fecha**: Enero 2026
 **Versión del documento**: 1.0.0
-**Sistema**: Custom Villagers AI v2.1.0
+**Sistema**: Wetlands NPCs AI v1.2.0
