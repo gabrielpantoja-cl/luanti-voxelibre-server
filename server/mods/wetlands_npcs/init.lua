@@ -347,10 +347,13 @@ local function register_custom_villager(name, def)
         spawn_class = "passive",
         passive = true,
 
-        hp_min = 20,
-        hp_max = 20,
         xp_min = 0,
         xp_max = 0,
+
+        initial_properties = {
+            hp_min = 20,
+            hp_max = 20,
+        },
 
         collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
         visual = "mesh",
