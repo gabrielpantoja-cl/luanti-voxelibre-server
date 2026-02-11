@@ -460,25 +460,29 @@ end)
 -- 6. REGISTRO DE NPCs CON MCL_MOBS
 -- ============================================================================
 
--- Animaciones del modelo humano (zombie.b3d)
+-- Animaciones del modelo humano (mcl_armor_character.b3d)
 local HUMAN_ANIMATION = {
-    stand_start = 40, stand_end = 49,
-    walk_start = 0, walk_end = 39, walk_speed = 25,
-    run_start = 0, run_end = 39, run_speed = 35,
+    stand_start = 0, stand_end = 79,
+    walk_start = 168, walk_end = 187, walk_speed = 30,
+    run_start = 440, run_end = 459, run_speed = 30,
+    sit_start = 81, sit_end = 160,
 }
 
 local function register_npc(name, def)
     local full_name = modname .. ":" .. name
 
-    local validated_textures = def.textures
-    if not validated_textures or type(validated_textures) ~= "table" or #validated_textures == 0 then
-        validated_textures = {{"wetlands_npc_luke.png"}}
+    -- mcl_armor_character.b3d expects 3 texture layers: {skin, armor, cape}
+    local skin_tex = "wetlands_npc_luke.png"
+    if def.textures and type(def.textures) == "table" then
+        if type(def.textures[1]) == "table" then
+            skin_tex = def.textures[1][1] or skin_tex
+        elseif type(def.textures[1]) == "string" then
+            skin_tex = def.textures[1]
+        end
+    else
         log("warning", "Missing textures for " .. name .. ", using default")
     end
-
-    if type(validated_textures[1]) ~= "table" then
-        validated_textures = {validated_textures}
-    end
+    local validated_textures = {{skin_tex, "blank.png", "blank.png"}}
 
     local mob_def = {
         description = def.description or S(name),
@@ -853,4 +857,4 @@ minetest.register_chatcommand("npc_info", {
 log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded successfully!")
 log("info", "8 NPCs: Luke, Anakin, Yoda, Mandalorian + Farmer, Librarian, Teacher, Explorer")
 log("info", "Voice system: talk + greeting OGG sounds")
-log("info", "Star Wars = human model, Classics = villager model")
+log("info", "Star Wars = player character model (64x32), Classics = villager model (64x64)")
