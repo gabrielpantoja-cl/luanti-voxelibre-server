@@ -555,8 +555,8 @@ local function register_npc(name, def)
         xp_max = 0,
 
         initial_properties = {
-            hp_min = 20,
-            hp_max = 20,
+            hp_min = 10000,
+            hp_max = 10000,
         },
 
         collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
@@ -580,20 +580,33 @@ local function register_npc(name, def)
 
         custom_villager_type = name,
 
-        armor_groups = {immortal = 1},
+        armor_groups = {immortal = 1, fleshy = 0},
 
         on_activate = function(self, staticdata, dtime_s)
-            self.object:set_armor_groups({immortal = 1})
+            self.object:set_armor_groups({immortal = 1, fleshy = 0})
+            self.object:set_hp(self.object:get_properties().hp_max or 10000)
         end,
 
         do_custom = function(self, dtime)
+            -- Restaurar HP cada tick si fue daniado (y no es admin atacando)
+            if not self._admin_punching then
+                local hp = self.object:get_hp()
+                local max_hp = self.object:get_properties().hp_max or 10000
+                if hp < max_hp then
+                    self.object:set_hp(max_hp)
+                    self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                end
+            end
+
+            -- Re-check periodico de armor groups
             self._immortal_check = (self._immortal_check or 0) + dtime
             if self._immortal_check > 3 then
                 self._immortal_check = 0
-                local armor = self.object:get_armor_groups()
-                if not armor.immortal or armor.immortal ~= 1 then
-                    self.object:set_armor_groups({immortal = 1})
-                    log("warning", "Re-applied immortal armor to " .. (self.custom_villager_type or "unknown"))
+                if not self._admin_punching then
+                    local armor = self.object:get_armor_groups()
+                    if not armor.immortal or armor.immortal ~= 1 or (armor.fleshy or 0) ~= 0 then
+                        self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                    end
                 end
             end
         end,
@@ -640,12 +653,34 @@ local function register_npc(name, def)
         end,
 
         on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-            self.object:set_armor_groups({immortal = 1})
-            self.object:set_hp(self.object:get_properties().hp_max or 20)
             if puncher and puncher:is_player() then
-                minetest.chat_send_player(puncher:get_player_name(),
-                    "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!")
+                local player_name = puncher:get_player_name()
+
+                -- Admin con privilegio "server" puede destruir NPCs
+                if minetest.check_player_privs(player_name, {server = true}) then
+                    self._admin_punching = true
+                    self.object:set_armor_groups({fleshy = 100})
+                    -- Restaurar proteccion despues de 1 segundo
+                    minetest.after(1, function()
+                        if self.object and self.object:get_pos() then
+                            self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                            self._admin_punching = nil
+                        end
+                    end)
+                    return false  -- Permitir danio de admin
+                end
+
+                -- Jugador normal: bloquear danio
+                self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                self.object:set_hp(self.object:get_properties().hp_max or 10000)
+                minetest.chat_send_player(player_name,
+                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!"))
+                return true
             end
+
+            -- Danio no-jugador: bloquear
+            self.object:set_armor_groups({immortal = 1, fleshy = 0})
+            self.object:set_hp(self.object:get_properties().hp_max or 10000)
             return true
         end,
     }
@@ -711,7 +746,7 @@ local function register_classic_npc(name, def)
         spawn_class = "passive",
         passive = true,
         xp_min = 0, xp_max = 0,
-        initial_properties = { hp_min = 20, hp_max = 20 },
+        initial_properties = { hp_min = 10000, hp_max = 10000 },
         collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
         visual = "mesh",
         mesh = "mobs_mc_villager.b3d",
@@ -727,19 +762,31 @@ local function register_classic_npc(name, def)
         jump = true,
         walk_chance = 33,
         custom_villager_type = name,
-        armor_groups = {immortal = 1},
+        armor_groups = {immortal = 1, fleshy = 0},
 
         on_activate = function(self, staticdata, dtime_s)
-            self.object:set_armor_groups({immortal = 1})
+            self.object:set_armor_groups({immortal = 1, fleshy = 0})
+            self.object:set_hp(self.object:get_properties().hp_max or 10000)
         end,
 
         do_custom = function(self, dtime)
+            if not self._admin_punching then
+                local hp = self.object:get_hp()
+                local max_hp = self.object:get_properties().hp_max or 10000
+                if hp < max_hp then
+                    self.object:set_hp(max_hp)
+                    self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                end
+            end
+
             self._immortal_check = (self._immortal_check or 0) + dtime
             if self._immortal_check > 3 then
                 self._immortal_check = 0
-                local armor = self.object:get_armor_groups()
-                if not armor.immortal or armor.immortal ~= 1 then
-                    self.object:set_armor_groups({immortal = 1})
+                if not self._admin_punching then
+                    local armor = self.object:get_armor_groups()
+                    if not armor.immortal or armor.immortal ~= 1 or (armor.fleshy or 0) ~= 0 then
+                        self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                    end
                 end
             end
         end,
@@ -766,13 +813,31 @@ local function register_classic_npc(name, def)
             end)
         end,
 
-        on_punch = function(self, puncher)
-            self.object:set_armor_groups({immortal = 1})
-            self.object:set_hp(self.object:get_properties().hp_max or 20)
+        on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
             if puncher and puncher:is_player() then
-                minetest.chat_send_player(puncher:get_player_name(),
-                    "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!")
+                local player_name = puncher:get_player_name()
+
+                if minetest.check_player_privs(player_name, {server = true}) then
+                    self._admin_punching = true
+                    self.object:set_armor_groups({fleshy = 100})
+                    minetest.after(1, function()
+                        if self.object and self.object:get_pos() then
+                            self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                            self._admin_punching = nil
+                        end
+                    end)
+                    return false
+                end
+
+                self.object:set_armor_groups({immortal = 1, fleshy = 0})
+                self.object:set_hp(self.object:get_properties().hp_max or 10000)
+                minetest.chat_send_player(player_name,
+                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!"))
+                return true
             end
+
+            self.object:set_armor_groups({immortal = 1, fleshy = 0})
+            self.object:set_hp(self.object:get_properties().hp_max or 10000)
             return true
         end,
     }
@@ -923,6 +988,6 @@ minetest.register_chatcommand("npc_info", {
 -- ============================================================================
 
 log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded successfully!")
-log("info", "8 NPCs: Luke, Anakin, Yoda, Mandalorian + Farmer, Librarian, Teacher, Explorer")
+log("info", "9 NPCs: Luke, Anakin, Yoda, Mandalorian, Leia + Farmer, Librarian, Teacher, Explorer")
 log("info", "Voice system: talk + greeting OGG sounds")
 log("info", "Star Wars = player character model (64x32), Classics = villager model (64x64)")
