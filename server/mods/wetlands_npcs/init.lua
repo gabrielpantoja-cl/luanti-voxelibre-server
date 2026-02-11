@@ -385,13 +385,13 @@ local function show_interaction_formspec(player_name, npc_type, display_name)
         btn_greet = "button[0.5,1.5;9,0.8;dialogue_greeting;Say hello]"
         btn_work = "button[0.5,2.5;9,0.8;dialogue_work;About their story]"
         btn_trade = "button[0.5,4.5;9,0.8;trade;Trade]"
-        btn_close = "button[0.5,5.5;9,0.8;close;Close]"
+        btn_close = "button_exit[0.5,5.5;9,0.8;close;Close]"
     else
         third_button = "button[0.5,3.5;9,0.8;dialogue_education;Dato educativo]"
         btn_greet = "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]"
         btn_work = "button[0.5,2.5;9,0.8;dialogue_work;Sobre su historia]"
         btn_trade = "button[0.5,4.5;9,0.8;trade;Comerciar]"
-        btn_close = "button[0.5,5.5;9,0.8;close;Cerrar]"
+        btn_close = "button_exit[0.5,5.5;9,0.8;close;Cerrar]"
     end
 
     local formspec = "formspec_version[4]" ..
