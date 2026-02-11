@@ -23,6 +23,16 @@ Thumbs.db
 *.tmp
 *.swp
 *~
+salida_ogg/
+otras-texturas/
+
+# Herramientas de testing/MCP (cache local)
+.playwright-mcp/
+
+# Screenshots temporales en raiz
+/*.png
+/*.jpg
+/*.jpeg
 
 # Secrets (por si acaso)
 secrets/
