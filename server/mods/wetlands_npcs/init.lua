@@ -189,26 +189,21 @@ wetlands_npcs.dialogues = {
     mandalorian = {
         greetings = {
             "Este es el Camino.",
-            "Saludos. No me quito el casco. Es la tradicion.",
+            "Saludos. No me quito el casco. Es la tradicion. Nunca frente a otros.",
             "Bienvenido. Si necesitas proteccion, estoy aqui.",
             "Hola. Tengo una mision, pero puedo hablar un momento.",
-            "Soy Mandaloriano. Mi honor es mi armadura.",
+            "Soy Mandaloriano. Mi honor es mi armadura. El beskar es mas valioso que el oro.",
+            "Boba Fett tambien usa beskar. Es el clon mas famoso de Jango Fett.",
         },
         about_work = {
             "Soy cazarrecompensas. Pero ahora mi mision es proteger al Ninio.",
-            "Mi armadura es de beskar puro. Fue forjada por la Armera de mi clan.",
-            "El Darksaber es la espada mas importante de Mandalore. Quien la porta, lidera.",
+            "Mi armadura es de beskar puro, minado solo en Mandalore. Fue forjada por la Armera de mi clan.",
+            "El Darksaber fue creado por Tarre Vizsla, el primer Mandaloriano Jedi. Tiene 1000 anios!",
             "He viajado por toda la galaxia. Cada planeta tiene sus peligros y maravillas.",
             "Mi nave se llamaba Razor Crest. Era vieja pero confiable. La extranio.",
-        },
-        education = {
-            "Dato friki: El beskar se mina solo en Mandalore. Es tan raro que vale mas que el oro.",
-            "Dato friki: El Darksaber fue creado por Tarre Vizsla, el primer Mandaloriano Jedi. Tiene 1000 anios!",
-            "Dato friki: Los Mandalorianos tienen un codigo de honor estricto. Nunca se quitan el casco frente a otros.",
-            "Dato friki: Boba Fett es el clon mas famoso de Jango Fett. Su armadura tambien es de beskar.",
-            "Dato friki: El Halcon Milenario gano el record Kessel en 12 parsecs. Un parsec son 3.26 anios luz!",
-            "Dato friki: Los jetpacks Mandalorianos usan combustible de propulsion ionica. Alcanzan 145 km/h!",
-            "Dato friki: La Tribu Mandaloriana vive escondida. Solo un guerrero sale a la vez para conseguir recursos.",
+            "Los jetpacks Mandalorianos usan propulsion ionica. Alcanzan 145 km/h!",
+            "La Tribu Mandaloriana vive escondida. Solo un guerrero sale a la vez para conseguir recursos.",
+            "Un parsec son 3.26 anios luz. El Halcon Milenario hizo el recorrido Kessel en menos de 12.",
         },
     },
     -- NPCs Clasicos
@@ -218,12 +213,14 @@ wetlands_npcs.dialogues = {
             "Buenos dias! Te gustaria aprender sobre agricultura sostenible?",
             "Bienvenido! Cultivamos solo alimentos de origen vegetal.",
             "Que gusto verte! Hoy las zanahorias estan creciendo muy bien.",
+            "Hola! Las plantas necesitan luz... como los Jedi necesitan la Fuerza.",
         },
         about_work = {
             "Trabajo la tierra cada dia. Las plantas necesitan agua, luz y cuidado.",
             "La agricultura sostenible alimenta al mundo sin daniar el planeta.",
             "Las abejas polinizan mis cultivos. Sin ellas no habria cosecha!",
             "Compostar los restos de comida crea el mejor fertilizante natural.",
+            "Incluso en Tatooine con dos soles se puede cultivar... bueno, casi.",
         },
         education = {
             "Las plantas liberan oxigeno durante el dia. Los arboles son los pulmones del planeta.",
@@ -237,11 +234,13 @@ wetlands_npcs.dialogues = {
             "Hola! Buscas aprender algo nuevo hoy?",
             "Bienvenido! Aqui encontraras libros sobre compasion y ciencia.",
             "Pasa, pasa! Tengo historias maravillosas que compartir.",
+            "Hola! Tengo un libro mas viejo que Yoda... bueno, casi. El vivio 900 anios!",
         },
         about_work = {
             "Los libros preservan el conocimiento de generaciones.",
             "La lectura expande tu mente y ayuda a entender el mundo.",
             "Cada libro es una ventana a un mundo diferente. Cual quieres abrir?",
+            "Dicen que los archivos del Templo Jedi tenian mas libros que cualquier biblioteca.",
         },
         education = {
             "Sabias que leer 30 minutos al dia mejora tu vocabulario?",
@@ -254,11 +253,13 @@ wetlands_npcs.dialogues = {
             "Hola! Me encanta enseniar sobre ciencia y naturaleza.",
             "Buenos dias! Listo para aprender algo fascinante?",
             "La educacion es la herramienta mas poderosa para cambiar el mundo.",
+            "Como diria cierto maestro verde: Hazlo o no lo hagas, no hay intentar.",
         },
         about_work = {
             "Ensenio ciencia, matematicas y compasion hacia todos los seres.",
             "Mi trabajo es despertar la curiosidad en las mentes jovenes.",
             "Ensenio que todos los seres merecen respeto y cuidado.",
+            "Los midi-clorianos no son reales... pero las mitocondrias si! Son la fuerza de las celulas.",
         },
         education = {
             "Sabias que los animales sienten emociones como nosotros?",
@@ -271,11 +272,13 @@ wetlands_npcs.dialogues = {
             "Hola aventurero! He viajado por todos los biomas del mundo.",
             "Saludos! Te gustaria escuchar historias de mis viajes?",
             "Hola! Acabo de volver de explorar unas cuevas increibles.",
+            "He explorado tantos biomas como planetas ha visitado el Mandalorian!",
         },
         about_work = {
             "Exploro el mundo y estudio diferentes ecosistemas.",
             "Cada bioma tiene plantas y animales unicos que merecen proteccion.",
             "Mi brujula y mi mapa son mis mejores amigos en las expediciones.",
+            "Me recuerdan a los exploradores de Kamino... pero con menos lluvia.",
         },
         education = {
             "Sabias que los bosques producen gran parte del oxigeno que respiramos?",
