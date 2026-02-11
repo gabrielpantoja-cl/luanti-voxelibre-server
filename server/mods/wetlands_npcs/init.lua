@@ -59,7 +59,7 @@ function wetlands_npcs.play_npc_voice(npc_type, pos)
 end
 
 -- Tabla de NPCs Star Wars (para logica condicional)
-local STAR_WARS_NPCS = {luke = true, anakin = true, yoda = true, mandalorian = true}
+local STAR_WARS_NPCS = {luke = true, anakin = true, yoda = true, mandalorian = true, leia = true}
 wetlands_npcs.STAR_WARS_NPCS = STAR_WARS_NPCS
 
 -- Reproducir audio iconico de Star Wars (1 clip unico por personaje)
@@ -117,6 +117,7 @@ wetlands_npcs.display_names = {
     anakin = "Anakin Skywalker",
     yoda = "Baby Yoda",
     mandalorian = "Mandalorian",
+    leia = "Princess Leia",
     -- Clasicos
     farmer = "Agricultor",
     librarian = "Bibliotecario",
@@ -205,6 +206,25 @@ wetlands_npcs.dialogues = {
             "Mandalorian jetpacks use ionic propulsion. They reach 145 km/h!",
             "The Mandalorian Tribe lives in hiding. Only one warrior goes out at a time for resources.",
             "A parsec is 3.26 light years. The Millennium Falcon made the Kessel run in less than 12.",
+        },
+    },
+    leia = {
+        greetings = {
+            "Hello! I'm Princess Leia Organa of Alderaan. Welcome!",
+            "Greetings! The Rebellion always needs brave souls like you.",
+            "Hey! Did you know Alderaan was one of the most peaceful planets in the galaxy?",
+            "Welcome! I'm a Senator and a leader of the Rebel Alliance.",
+            "Hello there! Help me, you're my only hope!",
+            "Greetings! I once strangled a Hutt with my own chains. Don't underestimate me.",
+        },
+        about_work = {
+            "I lead the Rebel Alliance against the Empire. Freedom is worth fighting for!",
+            "I'm a diplomat and a warrior. My blaster aim is better than most stormtroopers.",
+            "My home planet Alderaan was destroyed by the Death Star. I fight so it never happens again.",
+            "Luke is my twin brother! We didn't find out until much later. The Force works in mysterious ways.",
+            "Han Solo is... complicated. But he came back when it mattered. He always does.",
+            "The Rebel base on Hoth was hidden in ice caves. It was freezing but we had each other.",
+            "I can feel the Force too. It runs in the Skywalker family.",
         },
     },
     -- NPCs Clasicos
@@ -322,6 +342,11 @@ wetlands_npcs.trades = {
         {give = "mcl_core:iron_ingot 5", wants = "mcl_core:emerald 2"},  -- Beskar (hierro)
         {give = "mcl_core:diamond 1", wants = "mcl_core:emerald 5"},     -- Equipo raro
         {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},      -- Provisiones
+    },
+    leia = {
+        {give = "mcl_books:book 2", wants = "mcl_core:emerald 2"},       -- Diplomatic documents
+        {give = "mcl_core:gold_ingot 2", wants = "mcl_core:emerald 3"},  -- Royal Alderaan treasures
+        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},      -- Rebel rations
     },
     -- Clasicos
     farmer = {
@@ -445,6 +470,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 anakin = "I am your father.",
                 yoda = "Do or do not... there is no try.",
                 mandalorian = "This is the way.",
+                leia = "Help me, Obi-Wan Kenobi. You're my only hope.",
             }
             local phrase = iconic_phrases[npc_type] or "..."
             minetest.chat_send_player(player_name, "[" .. display .. "] " .. phrase)
@@ -632,7 +658,7 @@ local function register_npc(name, def)
 end
 
 -- ============================================================================
--- 6A. DEFINICION DE LOS 4 NPCs STAR WARS
+-- 6A. DEFINICION DE LOS 5 NPCs STAR WARS
 -- ============================================================================
 
 register_npc("luke", {
@@ -653,6 +679,11 @@ register_npc("yoda", {
 register_npc("mandalorian", {
     description = S("Mandalorian"),
     textures = {{"wetlands_npc_mandalorian.png"}},
+})
+
+register_npc("leia", {
+    description = S("Princess Leia"),
+    textures = {{"wetlands_npc_leia.png"}},
 })
 
 -- ============================================================================
