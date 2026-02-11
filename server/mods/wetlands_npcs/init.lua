@@ -433,7 +433,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             wetlands_npcs.play_npc_iconic(npc_type, player_pos)
             local iconic_phrases = {
                 luke = "May the Force be with you...",
-                anakin = "This is where the fun begins!",
+                anakin = "I am your father.",
                 yoda = "Do or do not... there is no try.",
                 mandalorian = "This is the way.",
             }
