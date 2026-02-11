@@ -831,6 +831,7 @@ local NPC_TYPES = {
     anakin      = "Anakin Skywalker - Jedi de las Guerras Clon, piloto legendario",
     yoda        = "Baby Yoda (Grogu) - Pequenio pero poderoso en la Fuerza",
     mandalorian = "Mandalorian (Din Djarin) - Cazarrecompensas con armadura beskar",
+    leia        = "Princess Leia - Rebel leader, diplomat and warrior",
     -- Clasicos
     farmer      = "Agricultor - cultiva vegetales y cuida la tierra",
     librarian   = "Bibliotecario - guarda libros y conocimiento",
@@ -839,7 +840,7 @@ local NPC_TYPES = {
 }
 
 minetest.register_chatcommand("spawn_npc", {
-    params = "<luke | anakin | yoda | mandalorian | farmer | librarian | teacher | explorer>",
+    params = "<luke | anakin | yoda | mandalorian | leia | farmer | librarian | teacher | explorer>",
     description = "Spawnea un NPC de Wetlands",
     privs = {server = true},
     func = function(name, param)
@@ -882,7 +883,7 @@ minetest.register_chatcommand("spawn_npc", {
 
 -- Mantener /spawn_villager como alias por compatibilidad
 minetest.register_chatcommand("spawn_villager", {
-    params = "<luke | anakin | yoda | mandalorian | farmer | librarian | teacher | explorer>",
+    params = "<luke | anakin | yoda | mandalorian | leia | farmer | librarian | teacher | explorer>",
     description = "Alias de /spawn_npc",
     privs = {server = true},
     func = function(name, param)
@@ -903,6 +904,7 @@ minetest.register_chatcommand("npc_info", {
             "- Anakin Skywalker (/spawn_npc anakin)",
             "- Baby Yoda (/spawn_npc yoda)",
             "- Mandalorian (/spawn_npc mandalorian)",
+            "- Princess Leia (/spawn_npc leia)",
             "",
             "Clasicos:",
             "- Agricultor (/spawn_npc farmer)",
