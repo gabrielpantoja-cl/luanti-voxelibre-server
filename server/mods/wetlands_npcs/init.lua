@@ -58,6 +58,27 @@ function wetlands_npcs.play_npc_voice(npc_type, pos)
     })
 end
 
+-- Tabla de NPCs Star Wars (para logica condicional)
+local STAR_WARS_NPCS = {luke = true, anakin = true, yoda = true, mandalorian = true}
+wetlands_npcs.STAR_WARS_NPCS = STAR_WARS_NPCS
+
+-- Reproducir audio iconico de Star Wars (1 clip unico por personaje)
+function wetlands_npcs.play_npc_iconic(npc_type, pos)
+    if not STAR_WARS_NPCS[npc_type] then return end
+    local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
+    if sound_config and not sound_config.enabled then return end
+
+    local sound_name = "wetlands_npc_iconic_" .. npc_type
+    local gain = (sound_config and sound_config.gain) or 0.8
+    local max_dist = (sound_config and sound_config.max_hear_distance) or 20
+
+    minetest.sound_play(sound_name, {
+        pos = pos,
+        gain = gain,
+        max_hear_distance = max_dist,
+    })
+end
+
 function wetlands_npcs.play_npc_greeting(npc_type, pos)
     local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
     if sound_config and not sound_config.enabled then
@@ -111,51 +132,39 @@ wetlands_npcs.dialogues = {
     luke = {
         greetings = {
             "Que la Fuerza te acompanie, amigo!",
-            "Hey! Soy Luke. Alguna vez has volado un X-Wing?",
+            "Hey! Soy Luke. Alguna vez has volado un X-Wing? Tiene 4 alas que se abren en forma de X!",
             "Bienvenido! La galaxia necesita heroes como tu.",
-            "Saludos! Sabias que creci en Tatooine, un planeta con dos soles?",
+            "Saludos! Sabias que creci en Tatooine? Tiene DOS soles, los atardeceres son dobles!",
             "Hola! Mi padre fue Darth Vader, pero al final volvio al lado luminoso.",
+            "Hey! Sabias que la Estrella de la Muerte media 160 km de diametro? Mas grande que muchas lunas!",
+            "Hola! Han Solo hizo el recorrido Kessel en menos de 12 parsecs con el Halcon Milenario!",
         },
         about_work = {
-            "Soy un Caballero Jedi. Mi maestro fue Yoda, el mas sabio de todos.",
+            "Soy un Caballero Jedi. Mi maestro fue Yoda, el mas sabio de todos. Vivio 900 anios!",
             "Destrui la primera Estrella de la Muerte con un disparo imposible!",
-            "Mi sable laser es verde. Lo construi yo mismo en Dagobah.",
-            "Entreno nuevos Jedi. La Fuerza esta en todos, solo hay que sentirla.",
+            "Mi sable laser es verde. Lo construi con un cristal Kyber que encontre en una cueva en Dagobah.",
+            "Entreno nuevos Jedi. La Fuerza tiene un lado luminoso y uno oscuro, el equilibrio es la clave.",
             "Mi mejor amigo es Han Solo. Juntos salvamos la galaxia mas de una vez.",
-        },
-        education = {
-            "Dato friki: La Estrella de la Muerte media 160 km de diametro. Eso es mas grande que muchas lunas!",
-            "Dato friki: Los sables laser funcionan con cristales Kyber. Cada Jedi encuentra el suyo en una cueva especial.",
-            "Dato friki: Tatooine tiene DOS soles. Se llaman Tatoo I y Tatoo II. Los atardeceres son dobles!",
-            "Dato friki: Un X-Wing tiene 4 alas que se abren en forma de X para el combate. De ahi el nombre!",
-            "Dato friki: Yoda vivio 900 anios. Es de una especie tan misteriosa que nadie sabe su nombre.",
-            "Dato friki: La Fuerza tiene un lado luminoso y uno oscuro. El equilibrio entre ambos es la clave.",
-            "Dato friki: Han Solo hizo el recorrido Kessel en menos de 12 parsecs con el Halcon Milenario!",
+            "Los sables laser funcionan con cristales Kyber. Cada Jedi encuentra el suyo en una cueva especial.",
         },
     },
     anakin = {
         greetings = {
             "Saludos! Soy Anakin, el mejor piloto de la galaxia.",
-            "Hey! Quieres ver mis habilidades con el sable laser?",
-            "Bienvenido! Construi mi primer droide a los 9 anios. Se llama C-3PO!",
-            "Hola! La Fuerza es fuerte en ti, puedo sentirlo.",
+            "Hey! Quieres ver mis habilidades con el sable laser? Puede cortar casi cualquier material!",
+            "Bienvenido! Construi a C-3PO con piezas recicladas a los 9 anios. Habla 6 millones de idiomas!",
+            "Hola! La Fuerza es fuerte en ti, puedo sentirlo. Los midi-clorianos no mienten.",
             "Que bueno verte! Acabamos de ganar una batalla en las Guerras Clon.",
+            "Hey! Sabias que las carreras de vainas alcanzan 900 km/h? Los motores son como cohetes gemelos!",
         },
         about_work = {
             "Soy Caballero Jedi y General en las Guerras Clon. Mi maestro es Obi-Wan.",
             "Cuando era ninio gane una carrera de vainas en Tatooine. Fui el primer humano en hacerlo!",
-            "Mi droide R2-D2 me ha salvado la vida como 100 veces. Es el mejor.",
+            "R2-D2 me ha salvado la vida como 100 veces. Es un droide astromecanoico que puede hackear cualquier computadora!",
             "Lucho para proteger a los inocentes. Esa es la mision de un Jedi.",
-            "Mi sable laser es azul. El azul es el color de los Jedi Guardianes.",
-        },
-        education = {
-            "Dato friki: Las carreras de vainas alcanzan 900 km/h. Los motores son como cohetes gemelos!",
-            "Dato friki: C-3PO habla mas de 6 millones de formas de comunicacion. Lo construi con piezas recicladas!",
-            "Dato friki: Los Clones fueron creados en Kamino, un planeta cubierto de oceano con tormentas constantes.",
-            "Dato friki: El Templo Jedi en Coruscant tiene miles de anios de antiguedad y 5 torres enormes.",
-            "Dato friki: R2-D2 es un droide astromecanoico serie R2. Puede hackear cualquier computadora!",
-            "Dato friki: Los midi-clorianos son microorganismos que conectan a los seres vivos con la Fuerza.",
-            "Dato friki: Un sable laser puede cortar casi cualquier material, excepto otro sable laser o beskar.",
+            "Mi sable laser es azul, el color de los Jedi Guardianes. Solo el beskar puede resistir un corte.",
+            "Los Clones fueron creados en Kamino, un planeta oceano con tormentas constantes. Increible, no?",
+            "El Templo Jedi en Coruscant tiene miles de anios de antiguedad y 5 torres enormes.",
         },
     },
     yoda = {
@@ -164,23 +173,17 @@ wetlands_npcs.dialogues = {
             "La Fuerza, en ti siento. Fuerte es.",
             "Hola! Cosas magicas, mostrarte puedo.",
             "Pequenio soy, pero poderoso. Juzgar por tamano, no debes.",
-            "Gu gu! ...digo, bienvenido!",
+            "Gu gu! ...digo, bienvenido! Mi especie, un misterio es. Solo 3 hemos aparecido!",
+            "Hmm! Los Jawas de Tatooine, droides viejos reciclan. Los mejores recicladores, son!",
         },
         about_work = {
             "Con la Fuerza, cosas mover puedo. Pesadas o ligeras, igual da.",
-            "Maestros Jedi me cuidan. Din Djarin, mi protector es.",
+            "Maestros Jedi me cuidan. Din Djarin, mi protector es. Su beskar, sables laser bloquea!",
             "Ranas me gustan mucho. Deliciosas son! ...no me juzgues.",
             "50 anios tengo, pero un bebe aun soy. Mi especie, lenta crece.",
-            "La Fuerza, usarla sin pensar puedo. Natural en mi es.",
-        },
-        education = {
-            "Dato friki: Mi especie es un misterio. En 900 anios de historia, solo 3 hemos aparecido!",
-            "Dato friki: El beskar es el metal mas resistente de la galaxia. Puede bloquear sables laser!",
-            "Dato friki: Los Jedi mas viejos podian convertirse en fantasmas de la Fuerza despues de morir.",
-            "Dato friki: Mandalore era un planeta guerrero. Sus habitantes crearon la armadura mas fuerte del universo.",
-            "Dato friki: Los midi-clorianos mas altos registrados fueron los de Anakin: mas de 20.000 por celula!",
-            "Dato friki: El Halcon Milenario parece chatarra pero es la nave mas rapida del universo.",
-            "Dato friki: Los Jawas de Tatooine reciclan droides viejos. Son los mejores recicladores de la galaxia!",
+            "La Fuerza, usarla sin pensar puedo. Los midi-clorianos de Anakin, mas de 20.000 por celula eran!",
+            "El Halcon Milenario, chatarra parece, pero la nave mas rapida del universo es.",
+            "Los Jedi mas viejos, en fantasmas de la Fuerza convertirse podian. Increible, si.",
         },
     },
     mandalorian = {
@@ -346,12 +349,20 @@ local function show_interaction_formspec(player_name, npc_type, display_name)
     local name_str = display_name or wetlands_npcs.display_names[npc_type] or npc_type
     name_str = minetest.formspec_escape(name_str)
 
+    -- Tercer boton depende del tipo de NPC
+    local third_button
+    if STAR_WARS_NPCS[npc_type] then
+        third_button = "button[0.5,3.5;9,0.8;play_iconic;Probar audio]"
+    else
+        third_button = "button[0.5,3.5;9,0.8;dialogue_education;Dato educativo]"
+    end
+
     local formspec = "formspec_version[4]" ..
         "size[10,7]" ..
         "label[0.5,0.5;" .. name_str .. "]" ..
         "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]" ..
         "button[0.5,2.5;9,0.8;dialogue_work;Sobre su historia]" ..
-        "button[0.5,3.5;9,0.8;dialogue_education;Dato friki de Star Wars]" ..
+        third_button ..
         "button[0.5,4.5;9,0.8;trade;Comerciar]" ..
         "button[0.5,5.5;9,0.8;close;Cerrar]"
 
@@ -414,7 +425,19 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             local msg = get_dialogue(npc_type, "about_work")
             minetest.chat_send_player(player_name, "[" .. display .. "] " .. msg)
             wetlands_npcs.play_npc_voice(npc_type, player_pos)
+        elseif fields.play_iconic then
+            -- Boton "Probar audio" - reproduce clip iconico de Star Wars
+            wetlands_npcs.play_npc_iconic(npc_type, player_pos)
+            local iconic_phrases = {
+                luke = "May the Force be with you...",
+                anakin = "This is where the fun begins!",
+                yoda = "Do or do not... there is no try.",
+                mandalorian = "This is the way.",
+            }
+            local phrase = iconic_phrases[npc_type] or "..."
+            minetest.chat_send_player(player_name, "[" .. display .. "] " .. phrase)
         elseif fields.dialogue_education then
+            -- Boton "Dato educativo" (solo NPCs clasicos)
             local msg = get_dialogue(npc_type, "education")
             minetest.chat_send_player(player_name, "[" .. display .. "] " .. msg)
             wetlands_npcs.play_npc_voice(npc_type, player_pos)
