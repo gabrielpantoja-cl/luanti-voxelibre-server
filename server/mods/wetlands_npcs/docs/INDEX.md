@@ -103,13 +103,9 @@ wetlands_npcs/
 │   ├── AI_BEHAVIORS.md         # Documentacion del sistema AI
 │   ├── INTEGRATION_GUIDE.md    # Guia de deployment
 │   ├── CHANGELOG.md            # Historial de cambios
-│   ├── CRASH_FIX_PATCH.md      # Parche de crash fix v1.0.1
-│   ├── DEPLOYMENT_NOTES_v2.1.1.md # Notas de deployment v2.1.1
-│   ├── MIGRATION_NOTES.md      # Notas de migracion custom_villagers -> wetlands_npcs
-│   ├── README_MEJORAS.md       # Ideas de mejoras
 │   ├── TESTING_GUIDE.md        # Guia de testing
-│   ├── TODO.md                 # Tareas pendientes
-│   └── VOICE_MAP.md            # Mapa de voces por NPC
+│   ├── VOICE_MAP.md            # Mapa de voces por NPC
+│   └── TODO.md                 # Tareas pendientes
 └── locale/
     └── template.txt            # Traducciones
 ```
@@ -127,9 +123,6 @@ Guia paso a paso para deployment, verificacion y troubleshooting.
 ### [CHANGELOG.md](CHANGELOG.md)
 Historial de cambios del mod.
 
-### [MIGRATION_NOTES.md](MIGRATION_NOTES.md)
-Notas de migracion desde custom_villagers a wetlands_npcs.
-
 ### [TESTING_GUIDE.md](TESTING_GUIDE.md)
 Guia de testing manual en el servidor.
 
@@ -138,15 +131,6 @@ Mapa de archivos de voz por NPC.
 
 ### [TODO.md](TODO.md)
 Tareas pendientes y mejoras planificadas.
-
-### [CRASH_FIX_PATCH.md](CRASH_FIX_PATCH.md)
-Documentacion del parche de crash fix v1.0.1.
-
-### [DEPLOYMENT_NOTES_v2.1.1.md](DEPLOYMENT_NOTES_v2.1.1.md)
-Notas de deployment version 2.1.1.
-
-### [README_MEJORAS.md](README_MEJORAS.md)
-Ideas y propuestas de mejoras.
 
 ---
 
