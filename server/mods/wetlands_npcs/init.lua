@@ -652,7 +652,7 @@ local function register_npc(name, def)
             end
         end,
 
-        on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
+        do_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
             if puncher and puncher:is_player() then
                 local player_name = puncher:get_player_name()
 
@@ -666,12 +666,11 @@ local function register_npc(name, def)
                             self._admin_punching = nil
                         end
                     end)
-                    -- Retornar true para que mcl_mobs continue procesando danio
                     return true
                 end
 
                 -- Jugador normal: bloquear danio completamente
-                -- Retornar false = mcl_mobs detiene TODO el procesamiento (incluido creative instakill)
+                -- return false = mcl_mobs detiene TODO (incluido creative instakill en combat.lua:490)
                 self.object:set_armor_groups({immortal = 1, fleshy = 0})
                 self.object:set_hp(self.object:get_properties().hp_max or 10000)
                 self.health = 10000
@@ -816,7 +815,7 @@ local function register_classic_npc(name, def)
             end)
         end,
 
-        on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
+        do_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
             if puncher and puncher:is_player() then
                 local player_name = puncher:get_player_name()
 
