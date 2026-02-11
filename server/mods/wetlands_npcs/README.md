@@ -1,6 +1,6 @@
 # Wetlands NPCs - Aldeanos Interactivos de Wetlands
 
-**Versión**: 2.1.1 (Estable - Sin crashes)
+**Version**: 1.2.0
 **Nombre Original**: custom_villagers (renombrado a wetlands_npcs)
 **Autor**: Wetlands Team
 **Licencia**: GPL v3
@@ -18,7 +18,7 @@
 
 ---
 
-## Cambios Principales v2.1.1
+## Cambios Principales v1.2.0
 
 ### Renombramiento Completo
 **ANTES**: `custom_villagers` (causaba crashes)
@@ -273,7 +273,7 @@ Para documentación completa del sistema AI, ver `docs/AI_BEHAVIORS.md`.
 docker-compose logs luanti-server | grep wetlands_npcs
 
 # Debe mostrar:
-# [wetlands_npcs] Wetlands NPCs v2.1.1 loaded successfully!
+# [wetlands_npcs] Wetlands NPCs v1.2.0 loaded successfully!
 ```
 
 ### Click derecho no abre menú
