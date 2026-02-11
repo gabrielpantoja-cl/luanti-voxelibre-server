@@ -660,28 +660,31 @@ local function register_npc(name, def)
                 if minetest.check_player_privs(player_name, {server = true}) then
                     self._admin_punching = true
                     self.object:set_armor_groups({fleshy = 100})
-                    -- Restaurar proteccion despues de 1 segundo
                     minetest.after(1, function()
                         if self.object and self.object:get_pos() then
                             self.object:set_armor_groups({immortal = 1, fleshy = 0})
                             self._admin_punching = nil
                         end
                     end)
-                    return false  -- Permitir danio de admin
+                    -- Retornar true para que mcl_mobs continue procesando danio
+                    return true
                 end
 
-                -- Jugador normal: bloquear danio
+                -- Jugador normal: bloquear danio completamente
+                -- Retornar false = mcl_mobs detiene TODO el procesamiento (incluido creative instakill)
                 self.object:set_armor_groups({immortal = 1, fleshy = 0})
                 self.object:set_hp(self.object:get_properties().hp_max or 10000)
+                self.health = 10000
                 minetest.chat_send_player(player_name,
                     minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!"))
-                return true
+                return false
             end
 
             -- Danio no-jugador: bloquear
             self.object:set_armor_groups({immortal = 1, fleshy = 0})
             self.object:set_hp(self.object:get_properties().hp_max or 10000)
-            return true
+            self.health = 10000
+            return false
         end,
     }
 
@@ -826,19 +829,21 @@ local function register_classic_npc(name, def)
                             self._admin_punching = nil
                         end
                     end)
-                    return false
+                    return true
                 end
 
                 self.object:set_armor_groups({immortal = 1, fleshy = 0})
                 self.object:set_hp(self.object:get_properties().hp_max or 10000)
+                self.health = 10000
                 minetest.chat_send_player(player_name,
                     minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!"))
-                return true
+                return false
             end
 
             self.object:set_armor_groups({immortal = 1, fleshy = 0})
             self.object:set_hp(self.object:get_properties().hp_max or 10000)
-            return true
+            self.health = 10000
+            return false
         end,
     }
 
