@@ -675,7 +675,7 @@ local function register_npc(name, def)
                 self.object:set_hp(self.object:get_properties().hp_max or 10000)
                 self.health = 10000
                 minetest.chat_send_player(player_name,
-                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!"))
+                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles daño!"))
                 return false
             end
 
@@ -835,7 +835,7 @@ local function register_classic_npc(name, def)
                 self.object:set_hp(self.object:get_properties().hp_max or 10000)
                 self.health = 10000
                 minetest.chat_send_player(player_name,
-                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles danio!"))
+                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles daño!"))
                 return false
             end
 
