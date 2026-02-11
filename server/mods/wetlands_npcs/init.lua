@@ -380,9 +380,24 @@ local function register_custom_villager(name, def)
 
         custom_villager_type = name,
 
-        -- FIX: Hacer NPCs inmortales via armor groups al activarse
+        -- FIX: Multiples capas de inmortalidad (mcl_mobs puede resetear armor_groups)
+        armor_groups = {immortal = 1},
+
         on_activate = function(self, staticdata, dtime_s)
             self.object:set_armor_groups({immortal = 1})
+        end,
+
+        do_custom = function(self, dtime)
+            -- Verificar periodicamente que la inmortalidad persiste
+            self._immortal_check = (self._immortal_check or 0) + dtime
+            if self._immortal_check > 3 then
+                self._immortal_check = 0
+                local armor = self.object:get_armor_groups()
+                if not armor.immortal or armor.immortal ~= 1 then
+                    self.object:set_armor_groups({immortal = 1})
+                    log("warning", "Re-applied immortal armor to " .. (self.custom_villager_type or "unknown"))
+                end
+            end
         end,
 
         on_rightclick = function(self, clicker)
@@ -437,6 +452,10 @@ local function register_custom_villager(name, def)
         end,
 
         on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
+            -- Re-forzar inmortalidad en cada golpe (por si mcl_mobs la reseteo)
+            self.object:set_armor_groups({immortal = 1})
+            -- Restaurar HP completa
+            self.object:set_hp(self.object:get_properties().hp_max or 20)
             if puncher and puncher:is_player() then
                 minetest.chat_send_player(puncher:get_player_name(),
                     "[Servidor] Los aldeanos son parte de nuestra comunidad. No debemos lastimarlos!")
@@ -510,26 +529,38 @@ log("info", "Legacy custom_villagers entity migration registered")
 -- ============================================================================
 
 minetest.register_chatcommand("spawn_villager", {
-    params = "<tipo>",
-    description = "Spawnea un aldeano (farmer, librarian, teacher, explorer)",
+    params = "<tipo: farmer | librarian | teacher | explorer>",
+    description = "Spawnea un NPC aldeano. Tipos: farmer (agricultor), librarian (bibliotecario), teacher (maestro Jedi), explorer (explorador galactico)",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
         if not player then return false, "Jugador no encontrado" end
 
-        local villager_type = param:lower()
-        local valid_types = {"farmer", "librarian", "teacher", "explorer"}
+        local villager_types = {
+            farmer    = "Agricultor - cultiva vegetales y cuida la tierra",
+            librarian = "Bibliotecario - guarda libros y conocimiento",
+            teacher   = "Maestro - ensenia ciencia y compasion",
+            explorer  = "Explorador - viaja por el mundo descubriendo secretos",
+        }
 
-        local is_valid = false
-        for _, vtype in ipairs(valid_types) do
-            if vtype == villager_type then
-                is_valid = true
-                break
+        local villager_type = param:lower():gsub("^%s+", ""):gsub("%s+$", "")
+
+        if villager_type == "" then
+            local lines = {"=== Tipos de NPC disponibles ==="}
+            for vtype, desc in pairs(villager_types) do
+                table.insert(lines, "  /spawn_villager " .. vtype .. " - " .. desc)
             end
+            table.insert(lines, "")
+            table.insert(lines, "Ejemplo: /spawn_villager farmer")
+            return true, table.concat(lines, "\n")
         end
 
-        if not is_valid then
-            return false, "Tipo invalido. Usa: farmer, librarian, teacher, explorer"
+        if not villager_types[villager_type] then
+            local lines = {"Tipo '" .. villager_type .. "' no existe. Tipos disponibles:"}
+            for vtype, desc in pairs(villager_types) do
+                table.insert(lines, "  " .. vtype .. " - " .. desc)
+            end
+            return false, table.concat(lines, "\n")
         end
 
         local pos = player:get_pos()
@@ -538,7 +569,7 @@ minetest.register_chatcommand("spawn_villager", {
         local obj = minetest.add_entity(pos, modname .. ":" .. villager_type)
 
         if obj then
-            return true, "Aldeano " .. villager_type .. " spawneado exitosamente"
+            return true, "Aldeano " .. villager_types[villager_type]:match("^(%S+)") .. " (" .. villager_type .. ") spawneado exitosamente"
         else
             return false, "Error al spawnear aldeano"
         end
