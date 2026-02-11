@@ -4,7 +4,7 @@ Guidance for Claude Code working with this repository.
 
 ## Project Overview
 
-Wetlands is a **Luanti (formerly Minetest) game server** -- a compassionate, educational, creative environment for children 7+. Custom mods promote animal care, compassion, and non-violent gameplay. Server address: `luanti.gabrielpantoja.cl:30000`.
+Wetlands is a **Luanti (formerly Minetest) game server** -- a compassionate, educational, creative environment for children 7+. Custom mods promote animal care, compassion, and controlled gameplay (survival/hostile mobs disabled, PvP only in dedicated arenas). Server address: `luanti.gabrielpantoja.cl:30000`.
 
 ## Repository Scope
 
@@ -25,7 +25,7 @@ This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods
 
 ```
 docker-compose.yml              # Container orchestration
-server/config/luanti.conf       # Server config (creative, no damage, no PvP)
+server/config/luanti.conf       # Server config (creative, no damage, PvP in arenas only)
 server/games/mineclone2/        # VoxeLibre game files
 server/mods/                    # Custom + third-party mods
 server/worlds/world/world.mt    # LOCAL REFERENCE COPY (real one lives on VPS)
@@ -200,7 +200,7 @@ Recovery protocol: `docs/operations/texture-recovery.md`
 
 ## Server Config Summary
 
-- **Mode**: Creative (no damage, no PvP, no TNT)
+- **Mode**: Creative (no damage in overworld, PvP in dedicated arenas, no TNT)
 - **Max Players**: 20
 - **Spawn**: 0,15,0 (static)
 - **World Gen**: v7 with caves, dungeons, biomes
