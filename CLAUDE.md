@@ -80,17 +80,19 @@ docker-compose down                         # Stop
 ### VPS Deployment
 ```bash
 # Standard deploy flow: local -> GitHub -> VPS
-git push origin main                        # Push to GitHub
+git push origin main
 ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
 ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
-# Enable a mod on VPS (world.mt lives there, not in this repo)
+# Verify after restart (use --since to avoid old log noise)
+ssh gabriel@167.172.251.27 "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
+
+# Enable a mod on VPS (world.mt must be edited in BOTH host and container)
 ssh gabriel@167.172.251.27 "echo 'load_mod_my_mod = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
 ssh gabriel@167.172.251.27 "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
-
-# Check logs for mod loading
-ssh gabriel@167.172.251.27 "docker logs --tail=50 luanti-voxelibre-server 2>&1 | grep -i 'error\|my_mod'"
 ```
+
+**IMPORTANT:** When checking logs after restart, always use `--since='2m'` or `--since='5m'` to filter only recent entries. The full log contains thousands of historical entries that will pollute search results.
 
 ## Development Workflow
 
@@ -140,15 +142,59 @@ In `mod.conf`: use `optional_depends = mcl_core, mcl_farming` instead of `depend
 ### mcl_mobs Deprecation: hp_min/hp_max
 When registering mobs with `mcl_mobs.register_mob()`, put `hp_min` and `hp_max` inside `initial_properties = {}`, NOT at the root level. Root-level placement triggers deprecation warnings.
 
+### Making NPCs Immortal
+`return true` in `on_punch` does NOT work with mcl_mobs. The correct approach:
+```lua
+on_activate = function(self, staticdata, dtime_s)
+    self.object:set_armor_groups({immortal = 1})
+end,
+```
+
+### Entity Migration When Renaming/Deleting Mods
+When a mod is renamed (e.g., `custom_villagers` -> `wetlands_npcs`) or deleted, entities already spawned in the world still reference the OLD mod name. The server logs `LuaEntity name "old_mod:entity" not defined` errors.
+
+**Fix:** Register lightweight legacy entities under the old name that auto-replace on activation:
+```lua
+for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
+    minetest.register_entity(":old_mod:" .. vtype, {
+        on_activate = function(self, staticdata, dtime_s)
+            local pos = self.object:get_pos()
+            self.object:remove()
+            if pos then
+                minetest.add_entity(pos, "new_mod:" .. vtype)
+            end
+        end,
+    })
+end
+```
+The `:` prefix in `:old_mod:entity` allows registering under a different mod namespace.
+
 ### Nuclear Config
 The server requires a nuclear config override to disable monsters. Apply with `./scripts/apply-nuclear-config.sh`. Details: `docs/config/02-NUCLEAR_CONFIG.md`.
 
-## Texture Corruption -- Golden Rules
+## Texture & Asset Rules
 
+### Golden Rules
 1. **NEVER modify `docker-compose.yml` volume mappings for mods** -- causes texture ID conflicts
 2. **NEVER install mods with heavy texture dependencies** (motorboat, biofuel, mobkit) without local testing first
 3. **ALWAYS backup world data before mod changes**: `cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d)`
 4. **NEVER name mod textures with VoxeLibre base names** (e.g. `mobs_mc_villager_farmer.png`) -- use unique prefixes like `wetlands_npc_*.png`
+
+### Villager Textures: UV Map is NOT Player Skin Format
+The `mobs_mc_villager.b3d` model uses the **Minecraft villager UV layout** (64x64), which is completely different from player skin UV (also 64x64 but different regions). The villager has: head with protruding nose, hat overlay, robe body, crossed arms, and legs -- all in unique UV positions.
+
+**NEVER draw villager textures from scratch** -- you WILL get the UV wrong. Instead:
+1. Use the base texture from `server/games/mineclone2/textures/mobs_mc_villager.png` as reference
+2. **Recolor it** using the script at `server/mods/wetlands_npcs/tools/generate_textures.py`
+3. Reference copies are at `server/mods/wetlands_npcs/textures/raw_skins/ref_villager_base.png`
+
+### Player Skins vs Villager Textures
+| Format | Size | Used by | UV Layout |
+|--------|------|---------|-----------|
+| Player skin | 64x32 | `server/skins/` | Steve/Alex format (head, torso, arms, legs) |
+| Villager texture | 64x64 | `mobs_mc_villager.b3d` | Minecraft villager format (robe, hat overlay, nose) |
+
+These are **NOT interchangeable**. Downloaded Minecraft player skins cannot be used directly as villager textures.
 
 Recovery protocol: `docs/operations/texture-recovery.md`
 

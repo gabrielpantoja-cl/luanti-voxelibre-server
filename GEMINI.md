@@ -72,12 +72,13 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-c
 ssh gabriel@167.172.251.27 "docker logs --tail=50 luanti-voxelibre-server 2>&1 | grep -i error"
 ```
 
-## Texture Corruption -- Golden Rules
+## Texture & Asset Rules
 
 1. **NEVER modify `docker-compose.yml` volume mappings for mods** -- causes texture ID conflicts
 2. **NEVER install mods with heavy texture dependencies** (motorboat, biofuel, mobkit) without local testing
 3. **ALWAYS backup world data before mod changes**
-4. **NEVER name mod textures with VoxeLibre base names** -- use unique prefixes
+4. **NEVER name mod textures with VoxeLibre base names** -- use unique prefixes (e.g. `wetlands_npc_*.png`)
+5. **Villager textures (64x64) have a DIFFERENT UV map than player skins (64x32)** -- they are NOT interchangeable. To create villager textures, recolor the base `mobs_mc_villager.png` from `server/games/mineclone2/textures/`. Script: `server/mods/wetlands_npcs/tools/generate_textures.py`
 
 **Emergency Recovery Protocol:**
 ```bash
@@ -108,6 +109,15 @@ In `mod.conf`: use `optional_depends` instead of `depends`.
 
 ### mcl_mobs: hp_min/hp_max Deprecation
 Put `hp_min`/`hp_max` inside `initial_properties = {}`, NOT at the root level of mob definitions.
+
+### Making NPCs Immortal
+`return true` in `on_punch` does NOT work with mcl_mobs. Use `on_activate` with `self.object:set_armor_groups({immortal = 1})`.
+
+### Entity Migration When Renaming Mods
+When a mod is renamed/deleted, entities already in the world still reference the old name. Register lightweight legacy entities under the old name (`:old_mod:entity`) that auto-replace with new ones via `on_activate`. See `wetlands_npcs/init.lua` section 6B for example.
+
+### Docker Logs: Use --since
+Always use `docker logs --since='2m'` when checking VPS logs. The full log has thousands of historical entries.
 
 ## Authentication System (SQLite)
 
