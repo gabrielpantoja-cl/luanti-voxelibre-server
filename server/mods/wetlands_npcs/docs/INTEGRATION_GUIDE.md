@@ -1,413 +1,146 @@
-# 🚀 Guía de Integración - Custom Villagers
+# Guia de Integracion - Wetlands NPCs
 
-**Para**: Servidor Wetlands VoxeLibre
-**Fecha**: 2025-12-10
-**Versión del Mod**: 1.0.0
-
----
-
-## 📋 Pasos de Integración Completos
-
-### Paso 1: Verificar Estructura del Mod ✅
-
-El mod ya está creado en:
-```
-/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/custom_villagers/
-```
-
-**Estructura actual**:
-```
-custom_villagers/
-├── mod.conf                      # ✅ Creado
-├── init.lua                      # ✅ Creado
-├── README.md                     # ✅ Creado
-├── INTEGRATION_GUIDE.md          # ✅ Este archivo
-├── textures/
-│   ├── README_TEXTURES.md        # ✅ Creado
-│   └── generate_placeholders.sh  # ✅ Creado (ejecutable)
-└── locale/
-    └── template.txt              # ✅ Creado
-```
+**Mod**: wetlands_npcs v1.0.0
+**Servidor**: Wetlands VoxeLibre
+**Ultima actualizacion**: Febrero 2026
 
 ---
 
-### Paso 2: Generar Texturas Placeholder
+## Requisitos
 
-**Opción A: Usar script automático (Recomendado)**
+- Luanti 5.4.0+
+- VoxeLibre (MineClone2) v0.90.1+
+- Mods disponibles: mcl_core, mcl_mobs, mcl_farming, mcl_books
+
+---
+
+## Deployment
+
+### 1. Habilitar el mod
+
+**luanti.conf** (ya configurado en el repo):
+```ini
+load_mod_wetlands_npcs = true
+```
+
+**world.mt en VPS** (ambos: host y contenedor):
+```bash
+ssh gabriel@167.172.251.27 "echo 'load_mod_wetlands_npcs = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh gabriel@167.172.251.27 "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_wetlands_npcs = true\" >> /config/.minetest/worlds/world/world.mt'"
+```
+
+### 2. Push y deploy
 
 ```bash
-# Navegar al directorio de texturas
-cd /home/gabriel/Documentos/luanti-voxelibre-server/server/mods/custom_villagers/textures/
-
-# Ejecutar generador
-bash generate_placeholders.sh
-```
-
-**Resultado esperado**:
-- 20 archivos PNG (4 tipos × 5 caras)
-- Colores distintivos: Verde (farmer), Azul (librarian), Morado (teacher), Marrón (explorer)
-
-**Opción B: Crear manualmente con ImageMagick**
-
-Ver instrucciones detalladas en `textures/README_TEXTURES.md`
-
----
-
-### Paso 3: Commit y Push al Repositorio
-
-```bash
-# Navegar al directorio raíz del proyecto
-cd /home/gabriel/Documentos/luanti-voxelibre-server/
-
-# Verificar archivos a agregar
-git status
-
-# Agregar mod completo
-git add server/mods/custom_villagers/
-
-# Commit descriptivo
-git commit -m "🏘️ Add: Custom Villagers mod v1.0.0 - Interactive NPCs
-
-🎯 Características:
-• 4 tipos de aldeanos (Farmer, Librarian, Teacher, Explorer)
-• Sistema de diálogos educativos interactivos
-• Sistema de comercio con esmeraldas
-• Rutinas día/noche (activos de día, duermen de noche)
-• Pathfinding básico cerca del hogar
-
-🛠️ Implementación:
-• Compatible con VoxeLibre v0.90.1+
-• Usa minetest.register_entity() para control total
-• Formspecs para interacciones
-• Educativo y apropiado para niños 7+
-
-📦 Archivos:
-• init.lua - Sistema completo
-• mod.conf - Configuración
-• README.md - Documentación
-• textures/ - Texturas placeholder
-• locale/ - Template de traducciones
-
-🧪 Testing:
-• Probado localmente con sintaxis Lua correcta
-• Compatible con estructura Docker del servidor
-
-🤖 Generated with Claude Code
-
-Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
-
-# Push al repositorio remoto
 git push origin main
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
+ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 ```
 
----
-
-### Paso 4: Deployment en VPS
-
-#### 4.1 Conectar al VPS
+### 3. Verificar
 
 ```bash
-ssh gabriel@167.172.251.27
-```
-
-#### 4.2 Pull cambios del repositorio
-
-```bash
-# Navegar al directorio del proyecto
-cd /home/gabriel/luanti-voxelibre-server
-
-# Backup preventivo (recomendado)
-docker-compose exec -T luanti-server cp -r /config/.minetest/worlds/world /config/.minetest/worlds/world_backup_$(date +%Y%m%d_%H%M%S)
-
-# Pull desde GitHub
-git pull origin main
-```
-
-#### 4.3 Verificar que el mod se descargó
-
-```bash
-ls -la server/mods/custom_villagers/
-
-# Verificar archivos clave
-ls -la server/mods/custom_villagers/init.lua
-ls -la server/mods/custom_villagers/textures/*.png
-```
-
----
-
-### Paso 5: Habilitar el Mod en VoxeLibre
-
-```bash
-# Opción 1: Agregar directamente al world.mt
-docker-compose exec -T luanti-server sh -c 'echo "load_mod_custom_villagers = true" >> /config/.minetest/worlds/world/world.mt'
-
-# Opción 2: Editar manualmente
-docker-compose exec luanti-server vi /config/.minetest/worlds/world/world.mt
-# Agregar línea: load_mod_custom_villagers = true
-
-# Verificar que se agregó correctamente
-docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep custom_villagers
+ssh gabriel@167.172.251.27 "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep wetlands_npcs"
 ```
 
 **Salida esperada**:
 ```
-load_mod_custom_villagers = true
+[wetlands_npcs] Configuration loaded and validated successfully
+[wetlands_npcs] AI Behaviors system v1.0.0 loaded successfully
+[wetlands_npcs] Wetlands NPCs v1.0.0 loaded successfully!
+[wetlands_npcs] 8 NPCs: Luke, Anakin, Yoda, Mandalorian + Farmer, Librarian, Teacher, Explorer
 ```
 
 ---
 
-### Paso 6: Reiniciar el Servidor
+## Testing en el Juego
 
-```bash
-# Reiniciar contenedor de Luanti
-docker-compose restart luanti-server
+### Spawnear NPCs
 
-# Esperar inicio completo (30-40 segundos)
-sleep 40
-
-# Verificar que el servidor está corriendo
-docker-compose ps | grep luanti-server
+```
+/spawn_npc luke
+/spawn_npc anakin
+/spawn_npc yoda
+/spawn_npc mandalorian
+/spawn_npc farmer
+/spawn_npc librarian
+/spawn_npc teacher
+/spawn_npc explorer
 ```
 
-**Estado esperado**: `Up`
+Requiere privilegio `server`.
+
+### Verificar funcionalidad
+
+- [ ] NPCs aparecen con texturas correctas
+- [ ] Star Wars: pose de jugador (brazos a los lados)
+- [ ] Clasicos: pose de villager (brazos cruzados)
+- [ ] Click derecho abre menu de interaccion
+- [ ] Dialogos funcionan (Saludar, Trabajo, Educacion)
+- [ ] Comercio funciona (esmeraldas)
+- [ ] Voces suenan al interactuar
+- [ ] NPCs caminan y tienen comportamiento AI
+- [ ] NPCs son inmortales (no se pueden matar)
 
 ---
 
-### Paso 7: Verificar Carga del Mod
+## Sistema de Texturas
 
-```bash
-# Ver logs de inicialización
-docker-compose logs --tail=50 luanti-server | grep -i "custom_villagers"
+### Star Wars (modelo jugador)
+
+| Paso | Detalle |
+|------|---------|
+| Fuente | MinecraftSkins.com |
+| Formato original | 64x64 px (Minecraft 1.8+) |
+| Formato requerido | **64x32 px** (crop mitad superior) |
+| Modelo 3D | `wetlands_npc_human.b3d` (= mcl_armor_character.b3d) |
+| Capas textura | 3: {skin.png, blank.png, blank.png} |
+
+**Conversion**:
+```python
+from PIL import Image
+img = Image.open('raw_skin_64x64.png')
+img.crop((0, 0, 64, 32)).save('wetlands_npc_nombre.png', 'PNG')
 ```
 
-**Mensajes esperados**:
-```
-[custom_villagers] Initializing Custom Villagers v1.0.0
-[custom_villagers] Registered villager type: farmer
-[custom_villagers] Registered villager type: librarian
-[custom_villagers] Registered villager type: teacher
-[custom_villagers] Registered villager type: explorer
-[custom_villagers] Custom Villagers v1.0.0 loaded successfully!
-```
+### Clasicos (modelo villager)
+
+| Paso | Detalle |
+|------|---------|
+| Fuente | Recolor de textura base VoxeLibre |
+| Formato | 64x64 px (UV villager Minecraft) |
+| Modelo 3D | `mobs_mc_villager.b3d` (de VoxeLibre) |
+| Herramienta | `tools/generate_textures.py` |
+
+**NUNCA dibujar texturas villager desde cero** - el UV map del villager es complejo.
+Siempre recolorear la base: `server/games/mineclone2/textures/mobs_mc_villager.png`
 
 ---
 
-### Paso 8: Testing en el Juego
+## Troubleshooting
 
-#### 8.1 Conectar al servidor
+### NPCs Star Wars se ven distorsionados
+**Causa**: Textura 64x64 sin convertir a 64x32.
+**Solucion**: Convertir con PIL crop o convertidor online.
 
-Desde el cliente Luanti:
-- **Dirección**: `luanti.gabrielpantoja.cl`
-- **Puerto**: `30000`
+### NPCs aparecen como cubos negros
+**Causa**: Textura faltante o nombre incorrecto.
+**Verificar**: `ls server/mods/wetlands_npcs/textures/wetlands_npc_*.png`
 
-#### 8.2 Obtener privilegios de server (si es necesario)
+### Mod no carga
+**Verificar**:
+1. `load_mod_wetlands_npcs = true` en luanti.conf
+2. `load_mod_wetlands_npcs = true` en world.mt (host + contenedor)
+3. Logs: `docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i error`
 
-```
-/grant <tu_nombre> server
-```
+### Voces no suenan
+**Verificar**: Archivos OGG en `sounds/` con formato `wetlands_npc_greet_<tipo>1.ogg`
 
-#### 8.3 Spawnear aldeanos de prueba
-
-```
-/spawn_villager farmer
-/spawn_villager librarian
-/spawn_villager teacher
-/spawn_villager explorer
-```
-
-#### 8.4 Verificar funcionalidad
-
-- [ ] **Aldeanos aparecen visualmente** (con texturas de colores)
-- [ ] **Click derecho abre menú de interacción**
-- [ ] **Diálogos funcionan** (botones Saludar, Trabajo, Educación)
-- [ ] **Comercio funciona** (si está habilitado)
-- [ ] **Aldeanos caminan** cerca de su hogar
-- [ ] **Rutinas día/noche** (duermen de noche)
+### Entidades legacy (custom_villagers:*)
+El mod registra entidades de migracion para el nombre antiguo `custom_villagers`.
+Los NPCs spawneados con el nombre viejo se auto-reemplazan al cargar el mundo.
 
 ---
 
-## ⚙️ Configuración Opcional
-
-### Ajustar configuración en server/config/luanti.conf
-
-```ini
-# Agregar al final del archivo luanti.conf
-
-# === Custom Villagers Configuration ===
-
-# Máximo de aldeanos por área
-custom_villagers_max_villagers = 5
-
-# Radio de spawn natural
-custom_villagers_spawn_radius = 20
-
-# Habilitar debug (solo para desarrollo)
-custom_villagers_debug = false
-
-# Habilitar comercio
-custom_villagers_enable_trading = true
-
-# Habilitar rutinas de horarios
-custom_villagers_enable_schedules = true
-```
-
-**Aplicar cambios**:
-```bash
-docker-compose restart luanti-server
-```
-
----
-
-## 🎨 Mejoras Post-Integración
-
-### Fase 1: Texturas Mejoradas
-
-1. **Crear texturas pixel art personalizadas**
-   - Usar GIMP, Krita o Aseprite
-   - Resolución 16x16 o 32x32
-   - Seguir guía en `textures/README_TEXTURES.md`
-
-2. **Reemplazar placeholders**
-   ```bash
-   # Local: editar texturas
-   # Git add, commit, push
-   # VPS: git pull y restart
-   ```
-
-### Fase 2: Modelos 3D (Avanzado)
-
-1. **Crear modelos .b3d con Blender**
-2. **Modificar init.lua para usar mesh**:
-   ```lua
-   visual = "mesh",
-   mesh = "custom_villagers_farmer.b3d",
-   ```
-
-### Fase 3: Sonidos
-
-1. **Agregar efectos de voz/ambiente** (.ogg)
-2. **Implementar en on_rightclick**
-
----
-
-## 🐛 Troubleshooting Común
-
-### Problema 1: Mod no se carga
-
-**Síntomas**: No aparece en logs, comandos no funcionan
-
-**Diagnóstico**:
-```bash
-# Verificar que el mod está en el directorio correcto
-docker-compose exec -T luanti-server ls -la /config/.minetest/mods/ | grep custom_villagers
-
-# Verificar habilitación en world.mt
-docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep custom_villagers
-
-# Revisar errores de sintaxis Lua
-docker-compose logs luanti-server | grep -i error | grep -i custom_villagers
-```
-
-**Soluciones**:
-1. Verificar `load_mod_custom_villagers = true` en world.mt
-2. Reiniciar servidor
-3. Verificar sintaxis Lua con `lua -c init.lua`
-
----
-
-### Problema 2: Texturas faltantes (cubos negros/blancos)
-
-**Síntomas**: Aldeanos aparecen pero sin colores
-
-**Diagnóstico**:
-```bash
-# Verificar texturas en contenedor
-docker-compose exec -T luanti-server ls -la /config/.minetest/mods/custom_villagers/textures/
-
-# Verificar cantidad de archivos PNG
-docker-compose exec -T luanti-server find /config/.minetest/mods/custom_villagers/textures/ -name "*.png" | wc -l
-```
-
-**Esperado**: 20 archivos PNG
-
-**Soluciones**:
-1. Generar placeholders con `generate_placeholders.sh`
-2. Verificar nombres exactos de archivos (case-sensitive)
-3. Git pull para asegurar sincronización
-
----
-
-### Problema 3: Aldeanos no aparecen al usar comando
-
-**Síntomas**: Comando ejecuta pero no hay entity
-
-**Diagnóstico**:
-```bash
-# Verificar logs de spawn
-docker-compose logs --tail=20 luanti-server
-```
-
-**Soluciones**:
-1. Verificar que tienes privilegio `server`
-2. Usar nombres correctos: farmer, librarian, teacher, explorer (lowercase)
-3. Verificar que no hay errores de registro de entidad
-
----
-
-### Problema 4: Diálogos en blanco
-
-**Síntomas**: Menú se abre pero no hay texto
-
-**Causa**: Base de datos de diálogos no inicializada
-
-**Solución**: Reiniciar servidor (los diálogos están hardcoded en init.lua)
-
----
-
-## 📊 Métricas de Éxito
-
-Después de la integración, verifica:
-
-- ✅ **Mod cargado**: Aparece en logs de inicialización
-- ✅ **4 tipos registrados**: farmer, librarian, teacher, explorer
-- ✅ **Comandos funcionan**: /spawn_villager, /villager_info
-- ✅ **Entidades visibles**: Aldeanos con texturas de colores
-- ✅ **Interacción OK**: Click derecho abre menú
-- ✅ **Diálogos OK**: Mensajes educativos aparecen
-- ✅ **Comercio OK**: Transacciones funcionan (si está habilitado)
-- ✅ **Comportamiento OK**: Caminan y duermen de noche
-
----
-
-## 🎓 Próximos Pasos
-
-### Educación y Comunidad
-
-1. **Crear tutorial en el juego**
-   - Libro explicativo sobre aldeanos
-   - Comando `/tutorial_villagers`
-
-2. **Integrar con otros mods**
-   - Compatibilidad con `education_blocks`
-   - Sistema de misiones educativas
-
-3. **Comunidad de jugadores**
-   - Anunciar nueva característica en Discord
-   - Recopilar feedback de niños jugadores
-   - Iterar mejoras basadas en uso real
-
----
-
-## 📞 Soporte y Contacto
-
-**Documentación completa**: `README.md`
-**Texturas**: `textures/README_TEXTURES.md`
-**Modding general**: `../../docs/mods/MODDING_GUIDE.md`
-
-**Repositorio**: https://github.com/gabrielpantoja-cl/luanti-voxelibre-server
-**VPS**: 167.172.251.27
-**Servidor de juego**: luanti.gabrielpantoja.cl:30000
-
----
-
-**¡Integración lista para deployment!** 🚀🏘️
+**Mantenedor**: Wetlands Team
+**Repositorio**: github.com/gabrielpantoja-cl/luanti-voxelibre-server
