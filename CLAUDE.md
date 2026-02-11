@@ -188,15 +188,42 @@ The `mobs_mc_villager.b3d` model uses the **Minecraft villager UV layout** (64x6
 2. **Recolor it** using the script at `server/mods/wetlands_npcs/tools/generate_textures.py`
 3. Reference copies are at `server/mods/wetlands_npcs/textures/raw_skins/ref_villager_base.png`
 
-### Player Skins vs Villager Textures
-| Format | Size | Used by | UV Layout |
-|--------|------|---------|-----------|
-| Player skin | 64x32 | `server/skins/` | Steve/Alex format (head, torso, arms, legs) |
-| Villager texture | 64x64 | `mobs_mc_villager.b3d` | Minecraft villager format (robe, hat overlay, nose) |
+### Player Skins vs Villager Textures vs NPC Textures
+| Format | Size | Model | Used by | UV Layout |
+|--------|------|-------|---------|-----------|
+| Player skin | 64x32 | `mcl_armor_character.b3d` | `server/skins/`, NPC Star Wars | Steve/Alex format (head, torso, arms, legs) |
+| Villager texture | 64x64 | `mobs_mc_villager.b3d` | NPC classics (farmer, etc.) | Minecraft villager format (robe, hat overlay, nose) |
+| Minecraft download | 64x64 | N/A (must convert) | Source from MinecraftSkins.com | Player skin format but MUST be cropped to 64x32 |
 
-These are **NOT interchangeable**. Downloaded Minecraft player skins cannot be used directly as villager textures.
+**Key rules:**
+- Player skins and villager textures are **NOT interchangeable**
+- Downloaded Minecraft skins (64x64) **MUST be converted to 64x32** before use with the player model (`mcl_armor_character.b3d`). Crop the top half: `img.crop((0, 0, 64, 32))`
+- Villager textures must be **recolored from the base**, never drawn from scratch
+- Online converter: https://godly.github.io/minetest-skin-converter/
 
 Recovery protocol: `docs/operations/texture-recovery.md`
+
+### NPC Dual Model System (wetlands_npcs)
+The `wetlands_npcs` mod uses **two different 3D models** depending on NPC type:
+
+| NPC Type | Model | Texture Format | Texture Layers | Pose |
+|----------|-------|----------------|----------------|------|
+| Star Wars (luke, anakin, yoda, mandalorian) | `wetlands_npc_human.b3d` (= `mcl_armor_character.b3d`) | 64x32 | 3: {skin, blank, blank} | Arms at sides (normal) |
+| Classics (farmer, librarian, teacher, explorer) | `mobs_mc_villager.b3d` | 64x64 | 1: {skin} | Arms crossed (villager) |
+
+**Adding new Star Wars-style NPCs:**
+1. Download skin from MinecraftSkins.com (64x64)
+2. Save raw to `textures/raw_skins/raw_name.png`
+3. Convert to 64x32: `img.crop((0, 0, 64, 32))` with PIL
+4. Save as `textures/wetlands_npc_name.png`
+5. Register with `register_npc()` in init.lua (uses player model automatically)
+
+**Adding new classic NPCs:**
+1. Recolor `mobs_mc_villager.png` base texture (64x64) using `tools/generate_textures.py`
+2. Save as `textures/wetlands_npc_name.png`
+3. Register with `register_classic_npc()` in init.lua (uses villager model)
+
+**NEVER use `mobs_mc_zombie.b3d`** for humanoid NPCs -- it has zombie pose (arms stretched forward). Always use `mcl_armor_character.b3d` for normal human pose.
 
 ## Server Config Summary
 
@@ -211,7 +238,7 @@ Recovery protocol: `docs/operations/texture-recovery.md`
 ### Custom Wetlands Mods
 | Mod | Purpose |
 |-----|---------|
-| `wetlands_npcs` | Interactive NPCs with AI, voices, and dialogues (v1.0.0) |
+| `wetlands_npcs` | 8 interactive NPCs (4 Star Wars + 4 classic) with AI, voices, dialogues, dual model system |
 | `wetlands_newplayer` | Auto-grant privileges to new players |
 | `wetlands_music` | Background music system |
 | `wetlands_christmas` | Seasonal Christmas content |

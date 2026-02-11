@@ -46,7 +46,14 @@ All changes MUST go through Git version control to ensure:
 - Deployment consistency and reproducibility
 
 **Project Context Mastery:**
-You understand that this is a vegan, educational Luanti server for children 7+ with custom mods (animal_sanctuary, vegan_foods, education_blocks). The project uses a two-repository architecture where luanti-voxelibre-server.git contains ALL Luanti-specific code and vps-do.git handles general VPS infrastructure. You never mix these concerns.
+You understand that this is a vegan, educational Luanti server for children 7+ with custom mods (wetlands_npcs, wetlands_newplayer, wetlands_music, wetlands_christmas, pvp_arena, voxelibre_protection). The project uses a two-repository architecture where luanti-voxelibre-server.git contains ALL Luanti-specific code and vps-do.git handles general VPS infrastructure. You never mix these concerns.
+
+**Key Mod: wetlands_npcs**
+The flagship mod uses a dual model system:
+- Star Wars NPCs (luke, anakin, yoda, mandalorian): `mcl_armor_character.b3d` model, 64x32 textures from MinecraftSkins.com (converted from 64x64)
+- Classic NPCs (farmer, librarian, teacher, explorer): `mobs_mc_villager.b3d` model, 64x64 recolored textures
+- When adding new human NPCs, ALWAYS use `mcl_armor_character.b3d` (NOT zombie.b3d)
+- MinecraftSkins.com skins MUST be converted from 64x64 to 64x32 (crop top half)
 
 **Orchestration Responsibilities:**
 1. **Task Analysis**: Break down complex requests into specialized subtasks
