@@ -485,6 +485,27 @@ register_custom_villager("explorer", {
 })
 
 -- ============================================================================
+-- 6B. MIGRACION DE ENTIDADES LEGACY (custom_villagers -> wetlands_npcs)
+-- ============================================================================
+-- Los NPCs viejos del mod eliminado custom_villagers siguen en el mundo.
+-- Registramos entidades legacy que se auto-reemplazan por las nuevas.
+
+for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
+    minetest.register_entity(":custom_villagers:" .. vtype, {
+        on_activate = function(self, staticdata, dtime_s)
+            local pos = self.object:get_pos()
+            self.object:remove()
+            if pos then
+                minetest.add_entity(pos, "wetlands_npcs:" .. vtype)
+                log("info", "Migrated legacy entity custom_villagers:" .. vtype .. " -> wetlands_npcs:" .. vtype)
+            end
+        end,
+    })
+end
+
+log("info", "Legacy custom_villagers entity migration registered")
+
+-- ============================================================================
 -- 7. COMANDOS DE ADMINISTRACION
 -- ============================================================================
 
