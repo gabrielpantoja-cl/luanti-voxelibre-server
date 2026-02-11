@@ -48,14 +48,40 @@ wetlands_npcs.config = {}
 
 -- Pesos de comportamiento por profesión (suman ~100 para facilitar cálculo porcentual)
 wetlands_npcs.config.behavior_weights = {
+    -- Star Wars NPCs
+    luke = {
+        idle = 20,
+        wander = 30,
+        work = 35,
+        social = 15,
+    },
+    anakin = {
+        idle = 10,
+        wander = 40,
+        work = 35,
+        social = 15,
+    },
+    yoda = {
+        idle = 40,      -- Yoda es contemplativo
+        wander = 20,
+        work = 25,
+        social = 15,
+    },
+    mandalorian = {
+        idle = 15,
+        wander = 50,    -- Siempre en movimiento
+        work = 25,
+        social = 10,
+    },
+    -- Classic NPCs
     farmer = {
-        idle = 20,      -- 20% del tiempo parado
-        wander = 30,    -- 30% caminando
-        work = 40,      -- 40% trabajando (farmers son trabajadores)
-        social = 10,    -- 10% socializando
+        idle = 20,
+        wander = 30,
+        work = 40,
+        social = 10,
     },
     librarian = {
-        idle = 40,      -- Librarians son más contemplativos
+        idle = 40,
         wander = 20,
         work = 30,
         social = 10,
@@ -64,11 +90,11 @@ wetlands_npcs.config.behavior_weights = {
         idle = 25,
         wander = 25,
         work = 35,
-        social = 15,    -- Teachers son más sociales
+        social = 15,
     },
     explorer = {
-        idle = 10,      -- Explorers casi nunca están quietos
-        wander = 60,    -- Constantemente explorando
+        idle = 10,
+        wander = 60,
         work = 20,
         social = 10,
     },
@@ -104,31 +130,38 @@ wetlands_npcs.config.state_duration = {
     - Pathfinding: Usa mcl_mobs:gopath() para navegar
 --]]
 wetlands_npcs.config.poi_types = {
+    -- Star Wars NPCs
+    luke = {
+        "mcl_books:bookshelf", "mcl_core:tree",
+        "mcl_flowers:dandelion", "mcl_core:stone",
+    },
+    anakin = {
+        "mcl_core:iron_ingot", "mcl_core:stone",
+        "mcl_core:tree", "mcl_farming:farmland",
+    },
+    yoda = {
+        "mcl_flowers:dandelion", "mcl_flowers:poppy",
+        "mcl_core:water_source", "mcl_core:tree",
+    },
+    mandalorian = {
+        "mcl_core:stone", "mcl_core:iron_ingot",
+        "mcl_core:tree", "mcl_core:water_source",
+    },
+    -- Classic NPCs
     farmer = {
         "mcl_farming:wheat_1", "mcl_farming:wheat_2", "mcl_farming:wheat_7",
         "mcl_farming:carrot_1", "mcl_farming:carrot_2", "mcl_farming:carrot_3",
-        "mcl_farming:potato_1", "mcl_farming:potato_2", "mcl_farming:potato_3",
-        "mcl_farming:beetroot_1", "mcl_farming:beetroot_2", "mcl_farming:beetroot_3",
-        "mcl_core:dirt_with_grass",  -- Tierra para plantar
-        "mcl_farming:farmland",       -- Tierra arada
+        "mcl_core:dirt_with_grass", "mcl_farming:farmland",
     },
     librarian = {
-        "mcl_books:bookshelf",       -- Estanterías
-        "mcl_core:book",             -- Libros sueltos
-        "mcl_enchanting:table",      -- Mesa de encantamientos (conocimiento)
+        "mcl_books:bookshelf", "mcl_enchanting:table",
     },
     teacher = {
-        "mcl_books:bookshelf",
-        "mcl_core:paper",
-        "mcl_blackstone:blackboard", -- Pizarra (si existe en VoxeLibre)
-        "mcl_core:stick",            -- Para escribir/enseñar
+        "mcl_books:bookshelf", "mcl_core:paper", "mcl_core:stick",
     },
     explorer = {
-        "mcl_core:tree",             -- Árboles (naturaleza)
-        "mcl_flowers:dandelion",     -- Flores
-        "mcl_flowers:poppy",
-        "mcl_core:water_source",     -- Agua (exploración)
-        "mcl_core:stone",            -- Piedra (geología)
+        "mcl_core:tree", "mcl_flowers:dandelion",
+        "mcl_core:water_source", "mcl_core:stone",
     },
 }
 
