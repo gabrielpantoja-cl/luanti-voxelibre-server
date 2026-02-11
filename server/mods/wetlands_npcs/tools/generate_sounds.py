@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Generate Animal Crossing-style NPC voice sounds for Wetlands NPCs mod v3.0.0.
+Generate Animal Crossing-style NPC voice sounds for Wetlands NPCs mod.
 
-Creates short "mumble/babble" sounds using sine waves with variable pitch
-that simulate speech. 3 variants per NPC type (12 files total).
+Creates two types of sounds:
+1. Talk sounds: short "mumble/babble" (3 variants per NPC = 12 files)
+2. Greeting sounds: rising "Ho-la!" pattern (2 variants per NPC = 8 files)
 
 Each NPC type has a distinct pitch range:
-- Farmer: mid-low (180-280 Hz)
+- Farmer: mid-warm (180-280 Hz)
 - Librarian: mid-soft (220-320 Hz)
-- Teacher: mid-high (250-400 Hz)
-- Explorer: low-deep (150-250 Hz)
+- Teacher: low-wise (140-220 Hz)
+- Explorer: high-energetic (280-420 Hz)
 
 Output: OGG Vorbis files in the sounds/ directory.
 """
@@ -30,11 +31,12 @@ SAMPLE_RATE = 22050
 NPC_VOICES = {
     "farmer": (180, 280),
     "librarian": (220, 320),
-    "teacher": (250, 400),
-    "explorer": (150, 250),
+    "teacher": (140, 220),
+    "explorer": (280, 420),
 }
 
-VARIANTS_PER_TYPE = 3
+TALK_VARIANTS = 3
+GREET_VARIANTS = 2
 
 
 def generate_syllable(freq: float, duration: float, sample_rate: int = SAMPLE_RATE) -> list[float]:
@@ -88,6 +90,47 @@ def generate_mumble(min_freq: float, max_freq: float, seed: int) -> list[float]:
     return samples
 
 
+def generate_greeting(min_freq: float, max_freq: float, seed: int) -> list[float]:
+    """Generate a greeting sound: rising "Ho-la!" two-syllable pattern.
+
+    The greeting has a distinctive rising pitch that sounds friendly,
+    like saying "Hola!" in an Animal Crossing style.
+    """
+    rng = random.Random(seed)
+    samples = []
+
+    # Base frequency in the NPC's range
+    base_freq = rng.uniform(min_freq, (min_freq + max_freq) / 2)
+
+    # Syllable 1: "Ho" - lower, slightly longer
+    freq1 = base_freq * rng.uniform(0.9, 1.0)
+    duration1 = rng.uniform(0.12, 0.18)
+    syllable1 = generate_syllable(freq1, duration1)
+    samples.extend(syllable1)
+
+    # Short pause between syllables
+    gap = int(SAMPLE_RATE * rng.uniform(0.03, 0.06))
+    samples.extend([0.0] * gap)
+
+    # Syllable 2: "la!" - higher pitch (rising), shorter, more energetic
+    freq2 = base_freq * rng.uniform(1.3, 1.6)
+    duration2 = rng.uniform(0.10, 0.16)
+    syllable2 = generate_syllable(freq2, duration2)
+    samples.extend(syllable2)
+
+    # Optional third syllable for some variants (like an exclamation)
+    if rng.random() > 0.4:
+        gap2 = int(SAMPLE_RATE * rng.uniform(0.02, 0.04))
+        samples.extend([0.0] * gap2)
+
+        freq3 = base_freq * rng.uniform(1.1, 1.4)
+        duration3 = rng.uniform(0.06, 0.10)
+        syllable3 = generate_syllable(freq3, duration3)
+        samples.extend(syllable3)
+
+    return samples
+
+
 def samples_to_wav(samples: list[float], filepath: str):
     """Write samples to a WAV file."""
     with wave.open(filepath, "w") as wav_file:
@@ -111,31 +154,43 @@ def wav_to_ogg(wav_path: str, ogg_path: str):
     )
 
 
+def generate_and_save(sound_name: str, samples: list[float]):
+    """Save samples as OGG via temporary WAV."""
+    ogg_path = os.path.join(OUTPUT_DIR, f"{sound_name}.ogg")
+
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        wav_path = tmp.name
+
+    try:
+        samples_to_wav(samples, wav_path)
+        wav_to_ogg(wav_path, ogg_path)
+        duration = len(samples) / SAMPLE_RATE
+        print(f"  Generated: {sound_name}.ogg ({duration:.2f}s)")
+    finally:
+        if os.path.exists(wav_path):
+            os.unlink(wav_path)
+
+
 def main():
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+    print("=== Generating talk sounds (12 files) ===")
     for npc_type, (min_freq, max_freq) in NPC_VOICES.items():
-        for variant in range(1, VARIANTS_PER_TYPE + 1):
+        for variant in range(1, TALK_VARIANTS + 1):
             sound_name = f"wetlands_npc_talk_{npc_type}{variant}"
-            ogg_path = os.path.join(OUTPUT_DIR, f"{sound_name}.ogg")
-
-            # Generate audio
-            seed = hash(f"{npc_type}_{variant}") & 0xFFFFFFFF
+            seed = hash(f"{npc_type}_talk_{variant}") & 0xFFFFFFFF
             samples = generate_mumble(min_freq, max_freq, seed)
+            generate_and_save(sound_name, samples)
 
-            # Write WAV to temp file, then convert to OGG
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-                wav_path = tmp.name
+    print("\n=== Generating greeting sounds (8 files) ===")
+    for npc_type, (min_freq, max_freq) in NPC_VOICES.items():
+        for variant in range(1, GREET_VARIANTS + 1):
+            sound_name = f"wetlands_npc_greet_{npc_type}{variant}"
+            seed = hash(f"{npc_type}_greet_{variant}") & 0xFFFFFFFF
+            samples = generate_greeting(min_freq, max_freq, seed)
+            generate_and_save(sound_name, samples)
 
-            try:
-                samples_to_wav(samples, wav_path)
-                wav_to_ogg(wav_path, ogg_path)
-                print(f"Generated: {sound_name}.ogg ({len(samples)/SAMPLE_RATE:.2f}s)")
-            finally:
-                if os.path.exists(wav_path):
-                    os.unlink(wav_path)
-
-    print(f"\nAll sounds saved to: {OUTPUT_DIR}")
+    print(f"\nAll 20 sounds saved to: {OUTPUT_DIR}")
 
 
 if __name__ == "__main__":

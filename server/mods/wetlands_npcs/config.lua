@@ -154,7 +154,7 @@ wetlands_npcs.config.poi_search_radius = 15
 wetlands_npcs.config.auto_greet = {
     enabled = true,
     detection_radius = 5,        -- 5 bloques de radio
-    greeting_chance = 5,         -- 5% de probabilidad cada tick
+    greeting_chance = 30,        -- 30% de probabilidad cada tick
     cooldown_seconds = 30,       -- No saludar al mismo jugador por 30 seg
 }
 
