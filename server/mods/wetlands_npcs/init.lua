@@ -301,7 +301,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 
         for field, _ in pairs(fields) do
             if field:find("^trade_") then
-                local trade_index = tonumber(field:gsub("^trade_", ""))
+                local index_str = field:gsub("^trade_", "")
+                local trade_index = tonumber(index_str)
+                if not trade_index then break end
                 local trade = trades[trade_index]
 
                 if trade then
