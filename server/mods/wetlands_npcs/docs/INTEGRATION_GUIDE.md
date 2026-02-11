@@ -1,6 +1,6 @@
 # Guia de Integracion - Wetlands NPCs
 
-**Mod**: wetlands_npcs v1.0.0
+**Mod**: wetlands_npcs v1.2.0
 **Servidor**: Wetlands VoxeLibre
 **Ultima actualizacion**: Febrero 2026
 

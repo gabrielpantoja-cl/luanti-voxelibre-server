@@ -1,6 +1,6 @@
 # Wetlands NPCs - Documentacion
 
-**Mod**: wetlands_npcs v1.0.0
+**Mod**: wetlands_npcs v1.2.0
 **Servidor**: Wetlands (luanti.gabrielpantoja.cl:30000)
 **Ultima actualizacion**: Febrero 2026
 

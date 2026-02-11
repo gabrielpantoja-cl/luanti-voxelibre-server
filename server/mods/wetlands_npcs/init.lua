@@ -1,4 +1,4 @@
--- Wetlands NPCs v2.0.0 - Star Wars Edition
+-- Wetlands NPCs v1.2.0 - Star Wars Edition
 -- NPCs interactivos Star Wars para servidor Wetlands (7+ anios)
 -- Compatible con VoxeLibre v0.90.1 (mcl_mobs)
 
@@ -28,7 +28,7 @@ end
 
 -- Namespace global
 wetlands_npcs = {}
-wetlands_npcs.version = "2.0.0"
+wetlands_npcs.version = "1.2.0"
 
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
