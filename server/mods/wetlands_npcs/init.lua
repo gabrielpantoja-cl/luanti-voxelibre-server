@@ -129,81 +129,82 @@ wetlands_npcs.display_names = {
 -- ============================================================================
 
 wetlands_npcs.dialogues = {
+    -- STAR WARS NPCs: English dialogues (bilingual learning!)
     luke = {
         greetings = {
-            "Que la Fuerza te acompanie, amigo!",
-            "Hey! Soy Luke. Alguna vez has volado un X-Wing? Tiene 4 alas que se abren en forma de X!",
-            "Bienvenido! La galaxia necesita heroes como tu.",
-            "Saludos! Sabias que creci en Tatooine? Tiene DOS soles, los atardeceres son dobles!",
-            "Hola! Mi padre fue Darth Vader, pero al final volvio al lado luminoso.",
-            "Hey! Sabias que la Estrella de la Muerte media 160 km de diametro? Mas grande que muchas lunas!",
-            "Hola! Han Solo hizo el recorrido Kessel en menos de 12 parsecs con el Halcon Milenario!",
+            "May the Force be with you, friend!",
+            "Hey! I'm Luke. Have you ever flown an X-Wing? It has 4 wings that open in an X shape!",
+            "Welcome! The galaxy needs heroes like you.",
+            "Greetings! Did you know I grew up on Tatooine? It has TWO suns, the sunsets are double!",
+            "Hello! My father was Darth Vader, but in the end he came back to the light side.",
+            "Hey! Did you know the Death Star was 160 km in diameter? Bigger than many moons!",
+            "Hello! Han Solo made the Kessel run in less than 12 parsecs with the Millennium Falcon!",
         },
         about_work = {
-            "Soy un Caballero Jedi. Mi maestro fue Yoda, el mas sabio de todos. Vivio 900 anios!",
-            "Destrui la primera Estrella de la Muerte con un disparo imposible!",
-            "Mi sable laser es verde. Lo construi con un cristal Kyber que encontre en una cueva en Dagobah.",
-            "Entreno nuevos Jedi. La Fuerza tiene un lado luminoso y uno oscuro, el equilibrio es la clave.",
-            "Mi mejor amigo es Han Solo. Juntos salvamos la galaxia mas de una vez.",
-            "Los sables laser funcionan con cristales Kyber. Cada Jedi encuentra el suyo en una cueva especial.",
+            "I'm a Jedi Knight. My master was Yoda, the wisest of all. He lived 900 years!",
+            "I destroyed the first Death Star with an impossible shot!",
+            "My lightsaber is green. I built it with a Kyber crystal I found in a cave on Dagobah.",
+            "I train new Jedi. The Force has a light side and a dark side, balance is the key.",
+            "My best friend is Han Solo. Together we saved the galaxy more than once.",
+            "Lightsabers work with Kyber crystals. Every Jedi finds their own in a special cave.",
         },
     },
     anakin = {
         greetings = {
-            "Saludos! Soy Anakin, el mejor piloto de la galaxia.",
-            "Hey! Quieres ver mis habilidades con el sable laser? Puede cortar casi cualquier material!",
-            "Bienvenido! Construi a C-3PO con piezas recicladas a los 9 anios. Habla 6 millones de idiomas!",
-            "Hola! La Fuerza es fuerte en ti, puedo sentirlo. Los midi-clorianos no mienten.",
-            "Que bueno verte! Acabamos de ganar una batalla en las Guerras Clon.",
-            "Hey! Sabias que las carreras de vainas alcanzan 900 km/h? Los motores son como cohetes gemelos!",
+            "Greetings! I'm Anakin, the best pilot in the galaxy.",
+            "Hey! Wanna see my lightsaber skills? It can cut through almost any material!",
+            "Welcome! I built C-3PO from recycled parts when I was 9. He speaks 6 million languages!",
+            "Hello! The Force is strong with you, I can feel it. The midi-chlorians don't lie.",
+            "Good to see you! We just won a battle in the Clone Wars.",
+            "Hey! Did you know podracers reach 900 km/h? The engines are like twin rockets!",
         },
         about_work = {
-            "Soy Caballero Jedi y General en las Guerras Clon. Mi maestro es Obi-Wan.",
-            "Cuando era ninio gane una carrera de vainas en Tatooine. Fui el primer humano en hacerlo!",
-            "R2-D2 me ha salvado la vida como 100 veces. Es un droide astromecanoico que puede hackear cualquier computadora!",
-            "Lucho para proteger a los inocentes. Esa es la mision de un Jedi.",
-            "Mi sable laser es azul, el color de los Jedi Guardianes. Solo el beskar puede resistir un corte.",
-            "Los Clones fueron creados en Kamino, un planeta oceano con tormentas constantes. Increible, no?",
-            "El Templo Jedi en Coruscant tiene miles de anios de antiguedad y 5 torres enormes.",
+            "I'm a Jedi Knight and General in the Clone Wars. My master is Obi-Wan.",
+            "When I was a kid I won a podrace on Tatooine. I was the first human to do it!",
+            "R2-D2 has saved my life like 100 times. He's an astromech droid that can hack any computer!",
+            "I fight to protect the innocent. That is the mission of a Jedi.",
+            "My lightsaber is blue, the color of Jedi Guardians. Only beskar can resist a cut.",
+            "The Clones were created on Kamino, an ocean planet with constant storms. Incredible, right?",
+            "The Jedi Temple on Coruscant is thousands of years old and has 5 enormous towers.",
         },
     },
     yoda = {
         greetings = {
-            "Hmm! Visitante tenemos. Bienvenido eres.",
-            "La Fuerza, en ti siento. Fuerte es.",
-            "Hola! Cosas magicas, mostrarte puedo.",
-            "Pequenio soy, pero poderoso. Juzgar por tamano, no debes.",
-            "Gu gu! ...digo, bienvenido! Mi especie, un misterio es. Solo 3 hemos aparecido!",
-            "Hmm! Los Jawas de Tatooine, droides viejos reciclan. Los mejores recicladores, son!",
+            "Hmm! A visitor we have. Welcome you are.",
+            "The Force, in you I sense. Strong it is.",
+            "Hello! Magic things, show you I can.",
+            "Small I am, but powerful. Judge me by my size, you should not.",
+            "Goo goo! ...I mean, welcome! My species, a mystery it is. Only 3 have we appeared!",
+            "Hmm! The Jawas on Tatooine, old droids they recycle. The best recyclers, they are!",
         },
         about_work = {
-            "Con la Fuerza, cosas mover puedo. Pesadas o ligeras, igual da.",
-            "Maestros Jedi me cuidan. Din Djarin, mi protector es. Su beskar, sables laser bloquea!",
-            "Ranas me gustan mucho. Deliciosas son! ...no me juzgues.",
-            "50 anios tengo, pero un bebe aun soy. Mi especie, lenta crece.",
-            "La Fuerza, usarla sin pensar puedo. Los midi-clorianos de Anakin, mas de 20.000 por celula eran!",
-            "El Halcon Milenario, chatarra parece, pero la nave mas rapida del universo es.",
-            "Los Jedi mas viejos, en fantasmas de la Fuerza convertirse podian. Increible, si.",
+            "With the Force, things move I can. Heavy or light, matters it does not.",
+            "Jedi Masters take care of me. Din Djarin, my protector he is. His beskar, lightsabers it blocks!",
+            "Frogs I like very much. Delicious they are! ...judge me, do not.",
+            "50 years old I am, but a baby still I am. My species, slowly it grows.",
+            "The Force, use it without thinking I can. Anakin's midi-chlorians, over 20,000 per cell they were!",
+            "The Millennium Falcon, junk it looks like, but the fastest ship in the universe it is.",
+            "The oldest Jedi, into Force ghosts they could turn. Incredible, yes.",
         },
     },
     mandalorian = {
         greetings = {
-            "Este es el Camino.",
-            "Saludos. No me quito el casco. Es la tradicion. Nunca frente a otros.",
-            "Bienvenido. Si necesitas proteccion, estoy aqui.",
-            "Hola. Tengo una mision, pero puedo hablar un momento.",
-            "Soy Mandaloriano. Mi honor es mi armadura. El beskar es mas valioso que el oro.",
-            "Boba Fett tambien usa beskar. Es el clon mas famoso de Jango Fett.",
+            "This is the Way.",
+            "Greetings. I never remove my helmet. It is tradition. Never in front of others.",
+            "Welcome. If you need protection, I am here.",
+            "Hello. I have a mission, but I can talk for a moment.",
+            "I am Mandalorian. My honor is my armor. Beskar is more valuable than gold.",
+            "Boba Fett also wears beskar. He's the most famous clone of Jango Fett.",
         },
         about_work = {
-            "Soy cazarrecompensas. Pero ahora mi mision es proteger al Ninio.",
-            "Mi armadura es de beskar puro, minado solo en Mandalore. Fue forjada por la Armera de mi clan.",
-            "El Darksaber fue creado por Tarre Vizsla, el primer Mandaloriano Jedi. Tiene 1000 anios!",
-            "He viajado por toda la galaxia. Cada planeta tiene sus peligros y maravillas.",
-            "Mi nave se llamaba Razor Crest. Era vieja pero confiable. La extranio.",
-            "Los jetpacks Mandalorianos usan propulsion ionica. Alcanzan 145 km/h!",
-            "La Tribu Mandaloriana vive escondida. Solo un guerrero sale a la vez para conseguir recursos.",
-            "Un parsec son 3.26 anios luz. El Halcon Milenario hizo el recorrido Kessel en menos de 12.",
+            "I'm a bounty hunter. But now my mission is to protect the Child.",
+            "My armor is pure beskar, mined only on Mandalore. It was forged by the Armorer of my clan.",
+            "The Darksaber was created by Tarre Vizsla, the first Mandalorian Jedi. It's 1000 years old!",
+            "I've traveled across the entire galaxy. Every planet has its dangers and wonders.",
+            "My ship was called the Razor Crest. She was old but reliable. I miss her.",
+            "Mandalorian jetpacks use ionic propulsion. They reach 145 km/h!",
+            "The Mandalorian Tribe lives in hiding. Only one warrior goes out at a time for resources.",
+            "A parsec is 3.26 light years. The Millennium Falcon made the Kessel run in less than 12.",
         },
     },
     -- NPCs Clasicos
@@ -352,22 +353,30 @@ local function show_interaction_formspec(player_name, npc_type, display_name)
     local name_str = display_name or wetlands_npcs.display_names[npc_type] or npc_type
     name_str = minetest.formspec_escape(name_str)
 
-    -- Tercer boton depende del tipo de NPC
-    local third_button
+    -- Botones dependen del tipo de NPC (English para Star Wars, Spanish para clasicos)
+    local third_button, btn_greet, btn_work, btn_trade, btn_close
     if STAR_WARS_NPCS[npc_type] then
-        third_button = "button[0.5,3.5;9,0.8;play_iconic;Probar audio]"
+        third_button = "button[0.5,3.5;9,0.8;play_iconic;Play iconic audio]"
+        btn_greet = "button[0.5,1.5;9,0.8;dialogue_greeting;Say hello]"
+        btn_work = "button[0.5,2.5;9,0.8;dialogue_work;About their story]"
+        btn_trade = "button[0.5,4.5;9,0.8;trade;Trade]"
+        btn_close = "button[0.5,5.5;9,0.8;close;Close]"
     else
         third_button = "button[0.5,3.5;9,0.8;dialogue_education;Dato educativo]"
+        btn_greet = "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]"
+        btn_work = "button[0.5,2.5;9,0.8;dialogue_work;Sobre su historia]"
+        btn_trade = "button[0.5,4.5;9,0.8;trade;Comerciar]"
+        btn_close = "button[0.5,5.5;9,0.8;close;Cerrar]"
     end
 
     local formspec = "formspec_version[4]" ..
         "size[10,7]" ..
         "label[0.5,0.5;" .. name_str .. "]" ..
-        "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]" ..
-        "button[0.5,2.5;9,0.8;dialogue_work;Sobre su historia]" ..
+        btn_greet ..
+        btn_work ..
         third_button ..
-        "button[0.5,4.5;9,0.8;trade;Comerciar]" ..
-        "button[0.5,5.5;9,0.8;close;Cerrar]"
+        btn_trade ..
+        btn_close
 
     local success, err = pcall(function()
         minetest.show_formspec(player_name, "wetlands_npcs:interact_" .. npc_type, formspec)
