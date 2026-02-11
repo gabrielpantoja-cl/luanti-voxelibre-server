@@ -861,24 +861,45 @@ local function do_seek_player(self, pos)
             end
         end
     else
-        -- Llegó cerca del jugador, saludar
+        -- Llego cerca del jugador, saludar
         local player_name = player:get_player_name()
         local villager_type = self.custom_villager_type or "villager"
 
-        -- Saludos por profesión (sin emojis para evitar crashes)
+        -- Saludos con variantes por profesion (usa nombre real del jugador)
         local greetings = {
-            farmer = "¡Hola, %s! ¡Qué bueno verte!",
-            librarian = "Saludos, %s. ¿Buscas algo de conocimiento?",
-            teacher = "¡Buenos días, %s! ¿Listo para aprender?",
-            explorer = "¡Aventurero %s! ¿Vas a explorar hoy?",
+            farmer = {
+                "Hola %s! La cosecha de hoy esta increible!",
+                "Bienvenido %s, quieres ver mi huerto?",
+                "Que bueno verte, %s! Las zanahorias estan creciendo hermosas.",
+                "Hey %s! Ven a ver mis cultivos, estan preciosos!",
+            },
+            librarian = {
+                "Bienvenido %s. Tengo un libro nuevo que te puede interesar.",
+                "Saludos %s, el conocimiento te espera.",
+                "Hola %s! Encontre un pergamino fascinante.",
+                "%s! Pasa, tengo historias maravillosas.",
+            },
+            teacher = {
+                "Que la Fuerza te acompanie, %s.",
+                "Joven %s, tengo algo que enseniarte.",
+                "Bienvenido, Padawan %s. Sientes la Fuerza?",
+                "Saludos %s. La sabiduria te llama.",
+            },
+            explorer = {
+                "Hey %s! Acabo de descubrir algo increible!",
+                "Aventurero %s, vamos a explorar juntos!",
+                "%s! Tienes que ver lo que encontre!",
+                "Saludos %s! Listo para una mision?",
+            },
         }
 
-        local greeting = greetings[villager_type] or "¡Hola, %s!"
+        local type_greetings = greetings[villager_type] or {"Hola, %s!"}
+        local greeting = type_greetings[math.random(1, #type_greetings)]
         minetest.chat_send_player(player_name, string.format(greeting, player_name))
 
-        -- Reproducir voz del NPC al saludar
-        if wetlands_npcs.play_npc_voice then
-            wetlands_npcs.play_npc_voice(villager_type, pos)
+        -- Reproducir sonido de saludo (greeting) del NPC
+        if wetlands_npcs.play_npc_greeting then
+            wetlands_npcs.play_npc_greeting(villager_type, pos)
         end
 
         -- Registrar saludo en cooldown

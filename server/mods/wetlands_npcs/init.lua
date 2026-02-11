@@ -60,6 +60,24 @@ function wetlands_npcs.play_npc_voice(villager_type, pos)
     })
 end
 
+function wetlands_npcs.play_npc_greeting(villager_type, pos)
+    local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
+    if sound_config and not sound_config.enabled then
+        return
+    end
+
+    local variant = math.random(1, 2)
+    local sound_name = "wetlands_npc_greet_" .. villager_type .. variant
+    local gain = (sound_config and sound_config.gain) or 0.8
+    local max_dist = (sound_config and sound_config.max_hear_distance) or 20
+
+    minetest.sound_play(sound_name, {
+        pos = pos,
+        gain = gain,
+        max_hear_distance = max_dist,
+    })
+end
+
 -- ============================================================================
 -- CARGAR MODULOS
 -- ============================================================================
@@ -123,48 +141,48 @@ wetlands_npcs.dialogues = {
     },
     teacher = {
         greetings = {
-            "Hola! Me encanta enseniar sobre ciencia y naturaleza.",
-            "Buenos dias! Listo para aprender algo fascinante?",
-            "La educacion es la herramienta mas poderosa para cambiar el mundo.",
-            "Bienvenido a mi clase! Hoy hablaremos sobre los ecosistemas.",
-            "Que bueno que llegas! Tengo un experimento interesante preparado.",
+            "Que la Fuerza te acompanie, joven aprendiz.",
+            "Bienvenido. La paciencia es el camino de la sabiduria.",
+            "Hola! Hay mucho que aprender sobre la Fuerza y la compasion.",
+            "Saludos, joven Padawan. Sientes la Fuerza a tu alrededor?",
+            "El camino del conocimiento comienza con un solo paso.",
         },
         about_work = {
-            "Ensenio ciencia, matematicas y compasion hacia todos los seres.",
-            "Mi trabajo es despertar la curiosidad en las mentes jovenes.",
-            "La mejor leccion es la que aprendes haciendo, no solo escuchando.",
-            "Cada pregunta que haces te acerca mas a la sabiduria.",
-            "Ensenio que todos los seres merecen respeto y cuidado.",
+            "Ensenioo el camino de la Fuerza: compasion, paciencia y sabiduria.",
+            "Un verdadero maestro nunca deja de aprender de sus alumnos.",
+            "La Fuerza nos conecta a todos. Cada ser vivo es parte de ella.",
+            "Mi trabajo es guiar, no controlar. La sabiduria viene de adentro.",
+            "La compasion es la forma mas poderosa de la Fuerza.",
         },
         education = {
-            "Sabias que los animales sienten emociones como nosotros? Tratemoslos con respeto.",
-            "La ciencia ensenia que somos parte de la naturaleza, no sus duenios.",
-            "El agua cubre el 70% de la Tierra, pero solo el 3% es agua dulce.",
-            "Las estrellas que ves en el cielo estan a millones de anios luz de distancia.",
-            "Tu cerebro tiene mas conexiones que estrellas hay en la galaxia!",
+            "La Fuerza es lo que nos conecta. Esta en todas las cosas vivas.",
+            "Un Jedi usa la Fuerza para el conocimiento y la defensa, nunca para atacar.",
+            "La paciencia es la mayor virtud. Todo llega a su tiempo.",
+            "El miedo lleva al enojo, el enojo al odio. Elige siempre la compasion.",
+            "Las estrellas que ves en el cielo son sistemas solares con mundos increibles.",
         },
     },
     explorer = {
         greetings = {
-            "Hola aventurero! He viajado por todos los biomas del mundo.",
-            "Saludos! Te gustaria escuchar historias de mis viajes?",
-            "Bienvenido! Cada lugar tiene algo unico que enseniarnos.",
-            "Viajero! Ven, te contare sobre los desiertos y las selvas.",
-            "Hola! Acabo de volver de explorar unas cuevas increibles.",
+            "Hey! Acabo de descubrir algo increible!",
+            "Saludos, aventurero! Listo para una nueva mision?",
+            "Hola! Hay un planeta entero por explorar!",
+            "Bienvenido! Quieres escuchar sobre mi ultima aventura?",
+            "Viajero! Ven, tengo historias de galaxias lejanas.",
         },
         about_work = {
-            "Exploro el mundo y estudio diferentes ecosistemas.",
-            "Cada bioma tiene plantas y animales unicos que merecen proteccion.",
-            "He cruzado desiertos, selvas y montanias. Cada uno tiene su magia.",
-            "Mi brujula y mi mapa son mis mejores amigos en las expediciones.",
-            "Documento cada especie nueva que encuentro para que todos aprendan.",
+            "Exploro mundos desconocidos y descubro sus secretos.",
+            "Cada bioma es como un planeta diferente. Todos merecen proteccion.",
+            "He volado por canyones y cruzado desiertos. La aventura nunca termina!",
+            "Mi nave y mi brujula son mis mejores aliados en las misiones.",
+            "Documento cada descubrimiento para que todos puedan aprender.",
         },
         education = {
             "Sabias que los bosques producen gran parte del oxigeno que respiramos?",
-            "La biodiversidad es fundamental para el equilibrio del planeta.",
-            "Los oceanos regulan la temperatura de toda la Tierra.",
-            "Los animales migran miles de kilometros siguiendo las estaciones.",
-            "Cada gota de agua que bebes ha existido desde que se formo la Tierra!",
+            "En la galaxia hay billones de estrellas, y cada una podria tener planetas!",
+            "La biodiversidad es como la Fuerza: conecta todo el ecosistema.",
+            "Los oceanos son tan vastos como el espacio. Guardan misterios increibles.",
+            "El coraje no es no tener miedo, es actuar a pesar de el.",
         },
     },
 }
@@ -343,6 +361,14 @@ local function register_custom_villager(name, def)
         validated_textures = {validated_textures}
     end
 
+    -- Modelo y animaciones: usar los del def o defaults de villager
+    local mesh = def.mesh or "mobs_mc_villager.b3d"
+    local animation = def.animation or {
+        stand_start = 0, stand_end = 0,
+        walk_start = 0, walk_end = 40, walk_speed = 25,
+        run_start = 0, run_end = 40, run_speed = 25,
+    }
+
     local mob_def = {
         description = def.description or S(name:gsub("^%l", string.upper)),
         type = "npc",
@@ -359,7 +385,7 @@ local function register_custom_villager(name, def)
 
         collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
         visual = "mesh",
-        mesh = "mobs_mc_villager.b3d",
+        mesh = mesh,
         textures = validated_textures,
         makes_footstep_sound = true,
 
@@ -369,11 +395,7 @@ local function register_custom_villager(name, def)
         drops = {},
         can_despawn = false,
 
-        animation = {
-            stand_start = 0, stand_end = 0,
-            walk_start = 0, walk_end = 40, walk_speed = 25,
-            run_start = 0, run_end = 40, run_speed = 25,
-        },
+        animation = animation,
 
         view_range = 16,
         fear_height = 4,
@@ -492,16 +514,28 @@ register_custom_villager("librarian", {
 })
 
 register_custom_villager("teacher", {
-    description = S("Maestro de Wetlands"),
+    description = S("Maestro Jedi de Wetlands"),
     textures = {
         {"wetlands_npc_teacher.png"}
+    },
+    mesh = "wetlands_npc_human.b3d",
+    animation = {
+        stand_start = 40, stand_end = 49,
+        walk_start = 0, walk_end = 39, walk_speed = 25,
+        run_start = 0, run_end = 39, run_speed = 35,
     },
 })
 
 register_custom_villager("explorer", {
-    description = S("Explorador de Wetlands"),
+    description = S("Explorador Galactico de Wetlands"),
     textures = {
         {"wetlands_npc_explorer.png"}
+    },
+    mesh = "wetlands_npc_human.b3d",
+    animation = {
+        stand_start = 40, stand_end = 49,
+        walk_start = 0, walk_end = 39, walk_speed = 25,
+        run_start = 0, run_end = 39, run_speed = 35,
     },
 })
 
@@ -532,17 +566,17 @@ log("info", "Legacy custom_villagers entity migration registered")
 
 minetest.register_chatcommand("spawn_villager", {
     params = "<tipo: farmer | librarian | teacher | explorer>",
-    description = "Spawnea un NPC aldeano. Tipos: farmer (agricultor), librarian (bibliotecario), teacher (maestro Jedi), explorer (explorador galactico)",
+    description = "Spawnea un NPC. Tipos: farmer (aldeano agricultor), librarian (aldeano bibliotecario), teacher (Obi-Wan, modelo humano), explorer (Luke, modelo humano)",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
         if not player then return false, "Jugador no encontrado" end
 
         local villager_types = {
-            farmer    = "Agricultor - cultiva vegetales y cuida la tierra",
-            librarian = "Bibliotecario - guarda libros y conocimiento",
-            teacher   = "Maestro - ensenia ciencia y compasion",
-            explorer  = "Explorador - viaja por el mundo descubriendo secretos",
+            farmer    = "Agricultor - cultiva vegetales y cuida la tierra (aldeano)",
+            librarian = "Bibliotecario - guarda libros y conocimiento (aldeano)",
+            teacher   = "Maestro Jedi (Obi-Wan) - ensenia la Fuerza y compasion (humano)",
+            explorer  = "Explorador Galactico (Luke) - aventura entre galaxias (humano)",
         }
 
         local villager_type = param:lower():gsub("^%s+", ""):gsub("%s+$", "")
@@ -584,17 +618,17 @@ minetest.register_chatcommand("villager_info", {
     privs = {},
     func = function(name, param)
         local info = {
-            "=== Aldeanos de Wetlands v" .. wetlands_npcs.version .. " ===",
+            "=== NPCs de Wetlands v" .. wetlands_npcs.version .. " ===",
             "",
             "Tipos disponibles:",
-            "- Agricultor (farmer) - Cultiva vegetales",
-            "- Bibliotecario (librarian) - Guarda libros",
-            "- Maestro (teacher) - Ensenia ciencia y compasion",
-            "- Explorador (explorer) - Viaja por el mundo",
+            "- Agricultor (farmer) - Cultiva vegetales [modelo aldeano]",
+            "- Bibliotecario (librarian) - Guarda libros [modelo aldeano]",
+            "- Maestro Jedi (teacher) - Obi-Wan, la Fuerza [modelo humano]",
+            "- Explorador Galactico (explorer) - Luke, aventuras [modelo humano]",
             "",
             "Click derecho para interactuar",
+            "Se acercan y te saludan por tu nombre!",
             "Comercia items utiles por esmeraldas",
-            "Los aldeanos no se pueden lastimar",
         }
         return true, table.concat(info, "\n")
     end,
@@ -605,6 +639,6 @@ minetest.register_chatcommand("villager_info", {
 -- ============================================================================
 
 log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded successfully!")
-log("info", "Unique textures: wetlands_npc_*.png (no VoxeLibre conflicts)")
-log("info", "Voice system: 12 Animal Crossing style OGG sounds")
-log("info", "Registered villagers: farmer, librarian, teacher, explorer")
+log("info", "Dual-model NPCs: villager (farmer/librarian) + human (teacher/explorer)")
+log("info", "Voice system: 12 talk + 8 greeting OGG sounds")
+log("info", "Registered NPCs: farmer, librarian, teacher (Obi-Wan), explorer (Luke)")
