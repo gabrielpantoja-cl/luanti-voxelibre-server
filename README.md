@@ -6,13 +6,13 @@
 
 ---
 
-**Wetlands** es un mundo de juego diseniado como un espacio seguro y sin violencia para ninios y familias. La aventura y el aprendizaje van de la mano.
+**Wetlands** es un mundo de juego diseniado como un espacio seguro y controlado para ninios y familias. La aventura y el aprendizaje van de la mano.
 
 ## Nuestra Filosofia
 
 - **Compasion Animal:** Cuidamos a los animales, no los daniamos.
 - **Educacion Creativa:** Aprende sobre sostenibilidad y alimentacion consciente mientras juegas.
-- **Juego No-Violento:** Un entorno 100% libre de violencia, ideal para toda la familia.
+- **Violencia Controlada:** El modo survival y los mobs hostiles estan desactivados para que explores sin miedo. Existe una arena PvP dedicada donde puedes combatir con otros jugadores si lo deseas, pero el resto del mundo es pacifico.
 
 ## Como Unirte
 
@@ -30,6 +30,7 @@
 - **Conduce vehiculos** -- vespas, motos, buggies, escarabajos
 - **Juega ajedrez** con otros jugadores
 - **Aprende con bloques educativos** interactivos
+- **Combate en la arena PvP** -- zona dedicada para quienes quieran accion
 - **Colabora** con otros jugadores en grandes proyectos comunitarios
 
 ## Caracteristicas del Servidor
@@ -37,13 +38,17 @@
 | Caracteristica | Detalle |
 |----------------|---------|
 | Modo | Creativo (construye sin limites) |
-| Dano | Desactivado (no puedes morir) |
-| PvP | Desactivado (entorno pacifico) |
+| Dano | Desactivado en el mundo general (no puedes morir explorando) |
+| PvP | Solo en arenas dedicadas (arena principal disponible) |
 | Jugadores | Hasta 20 simultaneos |
 | NPCs | Aldeanos interactivos con voces estilo Animal Crossing |
 | Vehiculos | Vespa, moto, buggy, escarabajo |
 | Musica | Soundtrack ambiental original |
 | Mods | 25+ mods personalizados y de terceros |
+
+## Bugs Conocidos
+
+- **Flechas hacen danio fuera de la arena:** Actualmente las flechas (arcos) causan danio en cualquier parte del mapa, no solo en la arena PvP. Estamos trabajando en restringir el danio de proyectiles solo a las zonas de combate.
 
 ## Tecnologia
 
