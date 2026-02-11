@@ -1,18 +1,16 @@
--- Wetlands NPCs - Sistema Mejorado y Compatible con VoxeLibre v0.90.1
--- Sistema de NPCs interactivos usando mcl_mobs de VoxeLibre
--- Con texturas profesionales de VoxeLibre y diálogos educativos
--- Apropiado para servidor educativo Wetlands (7+ años)
--- Mejorado desde custom_villagers original - 100% estable sin crashes
+-- Wetlands NPCs v1.0.0 - Sistema Completo con Voces y Texturas Unicas
+-- NPCs interactivos educativos para servidor Wetlands (7+ anios)
+-- Compatible con VoxeLibre v0.90.1 (mcl_mobs)
 
 -- ============================================================================
--- 1. INICIALIZACIÓN Y VERIFICACIÓN
+-- 1. INICIALIZACION Y VERIFICACION
 -- ============================================================================
 
 local modname = minetest.get_current_modname()
 local modpath = minetest.get_modpath(modname)
 local S = minetest.get_translator(modname)
 
--- Verificar dependencias críticas
+-- Verificar dependencias criticas
 if not minetest.get_modpath("mcl_mobs") then
     minetest.log("error", "[" .. modname .. "] mcl_mobs es requerido!")
     return
@@ -23,105 +21,154 @@ if not minetest.get_modpath("mcl_core") then
     return
 end
 
--- Verificar versión de mcl_mobs (prevenir crashes por API incompatible)
-if mcl_mobs.register_mob then
-    minetest.log("info", "[" .. modname .. "] mcl_mobs API detectada correctamente")
-else
+if not mcl_mobs.register_mob then
     minetest.log("error", "[" .. modname .. "] mcl_mobs.register_mob no disponible!")
     return
 end
 
--- Namespace global (usando nuevo nombre del mod)
+-- Namespace global
 wetlands_npcs = {}
-wetlands_npcs.version = "2.1.1"  -- Fix API deprecada hp_min/hp_max + renombrado
+wetlands_npcs.version = "1.0.0"
 
--- Sistema de logging con nivel de detalle
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
 end
 
-log("info", "Initializing Wetlands NPCs v" .. wetlands_npcs.version .. " (mcl_mobs + AI)")
+log("info", "Initializing Wetlands NPCs v" .. wetlands_npcs.version)
 
 -- ============================================================================
--- CARGAR MÓDULOS DEL SISTEMA AI
+-- 2. SISTEMA DE SONIDO (debe cargarse ANTES de ai_behaviors.lua)
 -- ============================================================================
 
--- Cargar configuración centralizada
+function wetlands_npcs.play_npc_voice(villager_type, pos)
+    -- Verificar que sonidos estan habilitados (config se carga despues,
+    -- asi que usamos fallback defensivo)
+    local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
+    if sound_config and not sound_config.enabled then
+        return
+    end
+
+    local variant = math.random(1, 3)
+    local sound_name = "wetlands_npc_talk_" .. villager_type .. variant
+    local gain = (sound_config and sound_config.gain) or 0.8
+    local max_dist = (sound_config and sound_config.max_hear_distance) or 20
+
+    minetest.sound_play(sound_name, {
+        pos = pos,
+        gain = gain,
+        max_hear_distance = max_dist,
+    })
+end
+
+-- ============================================================================
+-- CARGAR MODULOS
+-- ============================================================================
+
 dofile(modpath .. "/config.lua")
 log("info", "Configuration system loaded")
 
--- Cargar sistema de comportamientos AI tradicional
 dofile(modpath .. "/ai_behaviors.lua")
 log("info", "AI Behaviors system loaded (v" .. wetlands_npcs.behaviors.version .. ")")
 
 -- ============================================================================
--- 2. SISTEMA DE DIÁLOGOS EDUCATIVOS
+-- 3. SISTEMA DE DIALOGOS EDUCATIVOS
 -- ============================================================================
 
 wetlands_npcs.dialogues = {
     farmer = {
         greetings = {
-            "¡Hola! Cultivo vegetales frescos y saludables para la comunidad.",
-            "¡Buenos días! ¿Te gustaría aprender sobre agricultura sostenible?",
-            "¡Bienvenido! Cultivamos solo alimentos de origen vegetal.",
+            "Hola! Cultivo vegetales frescos y saludables para la comunidad.",
+            "Buenos dias! Te gustaria aprender sobre agricultura sostenible?",
+            "Bienvenido! Cultivamos solo alimentos de origen vegetal.",
+            "Que gusto verte! Hoy las zanahorias estan creciendo muy bien.",
+            "Hola amigo! Ven a ver mi huerto, esta lleno de colores.",
         },
         about_work = {
-            "Trabajo la tierra cada día. Las plantas necesitan agua, luz y cuidado.",
-            "La agricultura sostenible alimenta al mundo sin dañar el planeta.",
+            "Trabajo la tierra cada dia. Las plantas necesitan agua, luz y cuidado.",
+            "La agricultura sostenible alimenta al mundo sin daniar el planeta.",
+            "Roto los cultivos para mantener la tierra fertil. Trigo, zanahorias, papas...",
+            "Las abejas polinizan mis cultivos. Sin ellas no habria cosecha!",
+            "Compostar los restos de comida crea el mejor fertilizante natural.",
         },
         education = {
-            "¿Sabías que las plantas necesitan nutrientes del suelo? Por eso rotamos cultivos.",
+            "Sabias que las plantas necesitan nutrientes del suelo? Por eso rotamos cultivos.",
             "Los alimentos vegetales son nutritivos y respetuosos con el medio ambiente.",
+            "Una semilla de trigo puede producir cientos de granos. La naturaleza es generosa!",
+            "Las plantas liberan oxigeno durante el dia. Los arboles son los pulmones del planeta.",
+            "El agua subterranea alimenta las raices. Por eso cuidar los rios es tan importante.",
         },
     },
     librarian = {
         greetings = {
-            "¡Saludos! Guardo el conocimiento de nuestra comunidad.",
-            "¡Hola! ¿Buscas aprender algo nuevo hoy?",
-            "¡Bienvenido! Aquí encontrarás libros sobre compasión y ciencia.",
+            "Saludos! Guardo el conocimiento de nuestra comunidad.",
+            "Hola! Buscas aprender algo nuevo hoy?",
+            "Bienvenido! Aqui encontraras libros sobre compasion y ciencia.",
+            "Que alegria ver a alguien interesado en los libros!",
+            "Pasa, pasa! Tengo historias maravillosas que compartir.",
         },
         about_work = {
             "Los libros preservan el conocimiento de generaciones.",
             "La lectura expande tu mente y ayuda a entender el mundo.",
+            "Organizo los libros por tema: ciencia, naturaleza, arte y compasion.",
+            "Cada libro es una ventana a un mundo diferente. Cual quieres abrir?",
+            "Cuido estos libros como tesoros. El conocimiento es invaluable.",
         },
         education = {
-            "¿Sabías que leer 30 minutos al día mejora tu vocabulario?",
-            "El conocimiento es poder, la sabiduría es usarlo con compasión.",
+            "Sabias que leer 30 minutos al dia mejora tu vocabulario?",
+            "El conocimiento es poder, la sabiduria es usarlo con compasion.",
+            "Los primeros libros se escribian a mano. Tardaban meses en completarse!",
+            "La biblioteca mas grande del mundo tiene millones de libros.",
+            "Leer nos permite vivir mil vidas diferentes sin movernos de lugar.",
         },
     },
     teacher = {
         greetings = {
-            "¡Hola! Me encanta enseñar sobre ciencia y naturaleza.",
-            "¡Buenos días! ¿Listo para aprender algo fascinante?",
-            "La educación es la herramienta más poderosa para cambiar el mundo.",
+            "Hola! Me encanta enseniar sobre ciencia y naturaleza.",
+            "Buenos dias! Listo para aprender algo fascinante?",
+            "La educacion es la herramienta mas poderosa para cambiar el mundo.",
+            "Bienvenido a mi clase! Hoy hablaremos sobre los ecosistemas.",
+            "Que bueno que llegas! Tengo un experimento interesante preparado.",
         },
         about_work = {
-            "Enseño ciencia, matemáticas y compasión hacia todos los seres.",
-            "Mi trabajo es despertar la curiosidad en las mentes jóvenes.",
+            "Ensenio ciencia, matematicas y compasion hacia todos los seres.",
+            "Mi trabajo es despertar la curiosidad en las mentes jovenes.",
+            "La mejor leccion es la que aprendes haciendo, no solo escuchando.",
+            "Cada pregunta que haces te acerca mas a la sabiduria.",
+            "Ensenio que todos los seres merecen respeto y cuidado.",
         },
         education = {
-            "¿Sabías que los animales sienten emociones como nosotros? Tratémoslos con respeto.",
-            "La ciencia enseña que somos parte de la naturaleza, no sus dueños.",
+            "Sabias que los animales sienten emociones como nosotros? Tratemoslos con respeto.",
+            "La ciencia ensenia que somos parte de la naturaleza, no sus duenios.",
+            "El agua cubre el 70% de la Tierra, pero solo el 3% es agua dulce.",
+            "Las estrellas que ves en el cielo estan a millones de anios luz de distancia.",
+            "Tu cerebro tiene mas conexiones que estrellas hay en la galaxia!",
         },
     },
     explorer = {
         greetings = {
-            "¡Hola aventurero! He viajado por todos los biomas del mundo.",
-            "¡Saludos! ¿Te gustaría escuchar historias de mis viajes?",
-            "¡Bienvenido! Cada lugar tiene algo único que enseñarnos.",
+            "Hola aventurero! He viajado por todos los biomas del mundo.",
+            "Saludos! Te gustaria escuchar historias de mis viajes?",
+            "Bienvenido! Cada lugar tiene algo unico que enseniarnos.",
+            "Viajero! Ven, te contare sobre los desiertos y las selvas.",
+            "Hola! Acabo de volver de explorar unas cuevas increibles.",
         },
         about_work = {
             "Exploro el mundo y estudio diferentes ecosistemas.",
-            "Cada bioma tiene plantas y animales únicos que merecen protección.",
+            "Cada bioma tiene plantas y animales unicos que merecen proteccion.",
+            "He cruzado desiertos, selvas y montanias. Cada uno tiene su magia.",
+            "Mi brujula y mi mapa son mis mejores amigos en las expediciones.",
+            "Documento cada especie nueva que encuentro para que todos aprendan.",
         },
         education = {
-            "¿Sabías que los bosques producen gran parte del oxígeno que respiramos?",
+            "Sabias que los bosques producen gran parte del oxigeno que respiramos?",
             "La biodiversidad es fundamental para el equilibrio del planeta.",
+            "Los oceanos regulan la temperatura de toda la Tierra.",
+            "Los animales migran miles de kilometros siguiendo las estaciones.",
+            "Cada gota de agua que bebes ha existido desde que se formo la Tierra!",
         },
     },
 }
 
--- Función para obtener diálogo aleatorio
 local function get_dialogue(villager_type, category)
     local dialogues = wetlands_npcs.dialogues[villager_type]
     if not dialogues or not dialogues[category] then
@@ -132,7 +179,7 @@ local function get_dialogue(villager_type, category)
 end
 
 -- ============================================================================
--- 3. SISTEMA DE COMERCIO EDUCATIVO
+-- 4. SISTEMA DE COMERCIO EDUCATIVO
 -- ============================================================================
 
 wetlands_npcs.trades = {
@@ -156,27 +203,21 @@ wetlands_npcs.trades = {
     },
 }
 
--- Mostrar formspec de interacción
+-- Mostrar formspec de interaccion
 local function show_interaction_formspec(player_name, villager_type, villager_name)
-    -- DEFENSIVE: Validar parámetros críticos antes de procesar
     if not player_name or not villager_type then
         log("error", "show_interaction_formspec called with nil parameters")
         return
     end
 
-    -- DEFENSIVE: Convertir villager_name a string seguro
     local name_str = "Aldeano"
     if villager_name then
         name_str = tostring(villager_name)
     elseif villager_type then
-        -- Capitalizar primera letra del tipo
         name_str = villager_type:sub(1,1):upper() .. villager_type:sub(2)
     end
-
-    -- DEFENSIVE: Escapar caracteres especiales para evitar inyección
     name_str = minetest.formspec_escape(name_str)
 
-    -- FIX: Usar sintaxis moderna de formspec sin emojis (causa crashes en algunos clientes)
     local formspec = "formspec_version[4]" ..
         "size[10,7]" ..
         "label[0.5,0.5;" .. name_str .. "]" ..
@@ -186,20 +227,18 @@ local function show_interaction_formspec(player_name, villager_type, villager_na
         "button[0.5,4.5;9,0.8;trade;Comerciar]" ..
         "button[0.5,5.5;9,0.8;close;Cerrar]"
 
-    -- DEFENSIVE: Usar pcall para capturar posibles errores de formspec
     local success, err = pcall(function()
         minetest.show_formspec(player_name, "wetlands_npcs:interact_" .. villager_type, formspec)
     end)
 
     if not success then
         log("error", "Failed to show formspec: " .. tostring(err))
-        minetest.chat_send_player(player_name, "[Aldeano] Error al mostrar diálogo. Intenta de nuevo.")
+        minetest.chat_send_player(player_name, "[Aldeano] Error al mostrar dialogo. Intenta de nuevo.")
     end
 end
 
 -- Mostrar formspec de comercio
 local function show_trade_formspec(player_name, villager_type)
-    -- DEFENSIVE: Validar parámetros
     if not player_name or not villager_type then
         log("error", "show_trade_formspec called with nil parameters")
         return
@@ -211,7 +250,6 @@ local function show_trade_formspec(player_name, villager_type)
         return
     end
 
-    -- FIX: Usar sintaxis moderna de formspec
     local formspec = "formspec_version[4]" ..
         "size[12,11]" ..
         "label[0.5,0.5;Comercio - " .. minetest.formspec_escape(villager_type) .. "]" ..
@@ -232,20 +270,24 @@ end
 
 -- Manejar clicks en formspecs
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    -- Formspec de interacción
+    -- Formspec de interaccion
     if formname:find("^wetlands_npcs:interact_") then
         local villager_type = formname:gsub("^wetlands_npcs:interact_", "")
         local player_name = player:get_player_name()
+        local player_pos = player:get_pos()
 
         if fields.dialogue_greeting then
             local msg = get_dialogue(villager_type, "greetings")
             minetest.chat_send_player(player_name, "[Aldeano] " .. msg)
+            wetlands_npcs.play_npc_voice(villager_type, player_pos)
         elseif fields.dialogue_work then
             local msg = get_dialogue(villager_type, "about_work")
             minetest.chat_send_player(player_name, "[Aldeano] " .. msg)
+            wetlands_npcs.play_npc_voice(villager_type, player_pos)
         elseif fields.dialogue_education then
             local msg = get_dialogue(villager_type, "education")
             minetest.chat_send_player(player_name, "[Aldeano] " .. msg)
+            wetlands_npcs.play_npc_voice(villager_type, player_pos)
         elseif fields.trade then
             show_trade_formspec(player_name, villager_type)
         end
@@ -283,89 +325,75 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 -- ============================================================================
--- 4. REGISTRO DE ALDEANOS CON MCL_MOBS
+-- 5. REGISTRO DE ALDEANOS CON MCL_MOBS
 -- ============================================================================
 
--- Función helper para registrar aldeanos
 local function register_custom_villager(name, def)
     local full_name = modname .. ":" .. name
 
-    -- CRITICAL FIX: Validar y garantizar formato correcto de texturas
-    -- mcl_mobs espera un array de texturas, no puede ser nil
     local validated_textures = def.textures
     if not validated_textures or type(validated_textures) ~= "table" or #validated_textures == 0 then
-        -- Fallback seguro a textura por defecto de VoxeLibre
         validated_textures = {{"mobs_mc_villager.png"}}
         log("warning", "Missing or invalid textures for " .. name .. ", using default")
     end
 
-    -- Asegurar que textures es un array de arrays (formato esperado por mcl_mobs)
     if type(validated_textures[1]) ~= "table" then
         validated_textures = {validated_textures}
     end
 
-    -- Crear definición del mob con validaciones defensivas
     local mob_def = {
         description = def.description or S(name:gsub("^%l", string.upper)),
         type = "npc",
         spawn_class = "passive",
         passive = true,
 
-        -- CRITICAL: hp_min/hp_max en nivel raíz (NO en initial_properties)
-        -- Esta es la API correcta para VoxeLibre mcl_mobs
         hp_min = 20,
         hp_max = 20,
         xp_min = 0,
         xp_max = 0,
 
-        -- Propiedades visuales básicas
         collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
         visual = "mesh",
         mesh = "mobs_mc_villager.b3d",
         textures = validated_textures,
         makes_footstep_sound = true,
 
-        -- Propiedades de movimiento
         walk_velocity = wetlands_npcs.config.movement.walk_velocity,
         run_velocity = wetlands_npcs.config.movement.run_velocity,
 
-        -- Sin drops ni despawn
         drops = {},
         can_despawn = false,
 
-        -- Animaciones estándar de aldeano VoxeLibre
         animation = {
             stand_start = 0, stand_end = 0,
             walk_start = 0, walk_end = 40, walk_speed = 25,
             run_start = 0, run_end = 40, run_speed = 25,
         },
 
-        -- Comportamiento básico
         view_range = 16,
         fear_height = 4,
         jump = true,
         walk_chance = 33,
 
-        -- Datos personalizados
         custom_villager_type = name,
 
+        -- FIX: Hacer NPCs inmortales via armor groups al activarse
+        on_activate = function(self, staticdata, dtime_s)
+            self.object:set_armor_groups({immortal = 1})
+        end,
+
         on_rightclick = function(self, clicker)
-            -- DEFENSIVE: Validar que clicker existe y es un jugador
             if not clicker or not clicker:is_player() then
                 return
             end
-
-            -- DEFENSIVE: Validar que self existe
             if not self then
                 log("error", "on_rightclick called on nil entity")
                 return
             end
 
-            -- AUTO-FIX: Si el aldeano no tiene custom_villager_type (aldeanos viejos/corruptos),
-            -- extraerlo del nombre de la entidad (soporta ambos nombres: custom_villagers y wetlands_npcs)
+            -- Auto-fix para aldeanos sin tipo
             if not self.custom_villager_type and self.name then
                 local entity_name = self.name
-                -- Intentar ambos patrones para retrocompatibilidad
                 local villager_type = entity_name:match("wetlands_npcs:(.+)") or
                                      entity_name:match("custom_villagers:(.+)")
                 if villager_type then
@@ -377,98 +405,89 @@ local function register_custom_villager(name, def)
                 end
             end
 
-            -- Si aún no tiene tipo después del auto-fix, abortar
             if not self.custom_villager_type then
-                log("error", "on_rightclick called on villager without type and auto-fix failed")
+                log("error", "on_rightclick: villager without type, auto-fix failed")
                 return
             end
 
-            -- DEFENSIVE: Obtener player_name de forma segura
             local player_name = clicker:get_player_name()
             if not player_name or player_name == "" then
                 return
             end
 
-            -- Generar nombre legible del aldeano (capitalizar tipo)
             local villager_name = self.custom_villager_type:sub(1,1):upper() .. self.custom_villager_type:sub(2)
 
-            -- DEFENSIVE: Usar pcall para proteger contra crashes
+            -- Reproducir voz al interactuar
+            local pos = self.object:get_pos()
+            if pos then
+                wetlands_npcs.play_npc_voice(self.custom_villager_type, pos)
+            end
+
             local success, err = pcall(function()
                 show_interaction_formspec(player_name, self.custom_villager_type, villager_name)
             end)
 
             if not success then
                 log("error", "on_rightclick failed: " .. tostring(err))
-                minetest.chat_send_player(player_name, "[Servidor] Error al interactuar con aldeano. Intenta de nuevo.")
-            else
-                log("info", "Opened interaction menu for " .. player_name .. " with " .. self.custom_villager_type)
+                minetest.chat_send_player(player_name, "[Servidor] Error al interactuar con aldeano.")
             end
         end,
 
         on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-            -- Protección: aldeanos no se pueden lastimar
             if puncher and puncher:is_player() then
                 minetest.chat_send_player(puncher:get_player_name(),
                     "[Servidor] Los aldeanos son parte de nuestra comunidad. No debemos lastimarlos!")
             end
-            return true -- Cancelar daño
+            return true
         end,
     }
 
-    -- NUEVO: Inyectar sistema de comportamientos AI
+    -- Inyectar sistema de comportamientos AI
     wetlands_npcs.behaviors.inject_into_mob(mob_def)
 
-    -- Registrar el mob con el sistema AI integrado
     mcl_mobs.register_mob(full_name, mob_def)
-
-    log("info", "Registered custom villager with AI: " .. name)
+    log("info", "Registered villager with AI: " .. name)
 end
 
 -- ============================================================================
--- 5. DEFINICIÓN DE TIPOS DE ALDEANOS
+-- 6. DEFINICION DE TIPOS DE ALDEANOS (texturas unicas)
 -- ============================================================================
 
--- Agricultor - Usa textura de farmer de VoxeLibre
 register_custom_villager("farmer", {
     description = S("Agricultor de Wetlands"),
-    -- Formato correcto: array de arrays para compatibilidad mcl_mobs
     textures = {
-        {"mobs_mc_villager_farmer.png"}
+        {"wetlands_npc_farmer.png"}
     },
 })
 
--- Bibliotecario - Usa textura de librarian de VoxeLibre
 register_custom_villager("librarian", {
     description = S("Bibliotecario de Wetlands"),
     textures = {
-        {"mobs_mc_villager_librarian.png"}
+        {"wetlands_npc_librarian.png"}
     },
 })
 
--- Maestro - Usa textura de priest (cleric) de VoxeLibre
 register_custom_villager("teacher", {
     description = S("Maestro de Wetlands"),
     textures = {
-        {"mobs_mc_villager_priest.png"}
+        {"wetlands_npc_teacher.png"}
     },
 })
 
--- Explorador - Usa textura de cartographer de VoxeLibre
 register_custom_villager("explorer", {
     description = S("Explorador de Wetlands"),
     textures = {
-        {"mobs_mc_villager_cartographer.png"}
+        {"wetlands_npc_explorer.png"}
     },
 })
 
 -- ============================================================================
--- 6. COMANDOS DE ADMINISTRACIÓN
+-- 7. COMANDOS DE ADMINISTRACION
 -- ============================================================================
 
--- Comando para spawnear aldeano
 minetest.register_chatcommand("spawn_villager", {
     params = "<tipo>",
-    description = "Spawea un aldeano (farmer, librarian, teacher, explorer)",
+    description = "Spawnea un aldeano (farmer, librarian, teacher, explorer)",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
@@ -486,7 +505,7 @@ minetest.register_chatcommand("spawn_villager", {
         end
 
         if not is_valid then
-            return false, "Tipo inválido. Usa: farmer, librarian, teacher, explorer"
+            return false, "Tipo invalido. Usa: farmer, librarian, teacher, explorer"
         end
 
         local pos = player:get_pos()
@@ -495,41 +514,40 @@ minetest.register_chatcommand("spawn_villager", {
         local obj = minetest.add_entity(pos, modname .. ":" .. villager_type)
 
         if obj then
-            return true, "✅ Aldeano " .. villager_type .. " spawneado"
+            return true, "Aldeano " .. villager_type .. " spawneado exitosamente"
         else
-            return false, "❌ Error al spawnear aldeano"
+            return false, "Error al spawnear aldeano"
         end
     end,
 })
 
--- Comando de información
 minetest.register_chatcommand("villager_info", {
     params = "",
-    description = "Muestra información sobre aldeanos",
+    description = "Muestra informacion sobre aldeanos",
     privs = {},
     func = function(name, param)
         local info = {
-            "🏘️ === Aldeanos de Wetlands v" .. wetlands_npcs.version .. " ===",
+            "=== Aldeanos de Wetlands v" .. wetlands_npcs.version .. " ===",
             "",
-            "📋 Tipos disponibles:",
-            "• Agricultor (farmer) - Cultiva vegetales",
-            "• Bibliotecario (librarian) - Guarda libros",
-            "• Maestro (teacher) - Enseña ciencia y compasión",
-            "• Explorador (explorer) - Viaja por el mundo",
+            "Tipos disponibles:",
+            "- Agricultor (farmer) - Cultiva vegetales",
+            "- Bibliotecario (librarian) - Guarda libros",
+            "- Maestro (teacher) - Ensenia ciencia y compasion",
+            "- Explorador (explorer) - Viaja por el mundo",
             "",
-            "💬 Click derecho para interactuar",
-            "🛒 Comercia items útiles por esmeraldas",
-            "🚫 Los aldeanos no se pueden lastimar",
+            "Click derecho para interactuar",
+            "Comercia items utiles por esmeraldas",
+            "Los aldeanos no se pueden lastimar",
         }
         return true, table.concat(info, "\n")
     end,
 })
 
 -- ============================================================================
--- 7. FINALIZACIÓN
+-- 8. FINALIZACION
 -- ============================================================================
 
 log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded successfully!")
-log("info", "Using VoxeLibre textures and mcl_mobs system")
+log("info", "Unique textures: wetlands_npc_*.png (no VoxeLibre conflicts)")
+log("info", "Voice system: 12 Animal Crossing style OGG sounds")
 log("info", "Registered villagers: farmer, librarian, teacher, explorer")
-log("info", "Crash fixes applied: texture validation, defensive programming, pcall wrappers")

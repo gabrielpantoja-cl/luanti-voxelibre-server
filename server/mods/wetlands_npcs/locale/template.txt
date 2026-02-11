@@ -1,9 +1,9 @@
-# Locale template for custom_villagers
+# Locale template for wetlands_npcs
 # Copy to es.tr for Spanish translations
 
 # Mod info
-Custom Villagers=
-Interactive NPCs with dialogue and trading=
+Wetlands NPCs=
+Interactive NPCs with dialogue, trading and voice=
 
 # Villager types
 Farmer=

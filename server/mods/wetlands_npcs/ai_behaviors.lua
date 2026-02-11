@@ -1,7 +1,7 @@
 -- ============================================================================
 -- ai_behaviors.lua - Sistema de Comportamientos AI Tradicional
 -- ============================================================================
--- Mod: Wetlands NPCs v2.1.1
+-- Mod: Wetlands NPCs v1.0.0
 -- Propósito: Implementar máquina de estados finitos (FSM) para comportamientos
 --            inteligentes de aldeanos sin usar LLM/Machine Learning
 -- Autor: Wetlands Team
@@ -138,7 +138,7 @@ local function init_ai_context(self)
     self.ai_initialized = true
 
     if wetlands_npcs.config.debug.log_state_changes then
-        minetest.log("action", "[custom_villagers] AI context initialized for " ..
+        minetest.log("action", "[wetlands_npcs] AI context initialized for " ..
                      (self.custom_villager_type or "unknown"))
     end
 end
@@ -539,7 +539,7 @@ local function do_wander(self)
                 mcl_mobs:gopath(self, target)
             end)
             if not success and wetlands_npcs.config.debug.enabled then
-                minetest.log("warning", "[custom_villagers] gopath failed in wander: " .. tostring(err))
+                minetest.log("warning", "[wetlands_npcs] gopath failed in wander: " .. tostring(err))
             end
         end
     end
@@ -588,12 +588,12 @@ local function do_work(self, villager_type, pos)
                     mcl_mobs:gopath(self, poi_pos)
                 end)
                 if not success and wetlands_npcs.config.debug.enabled then
-                    minetest.log("warning", "[custom_villagers] gopath failed in work: " .. tostring(err))
+                    minetest.log("warning", "[wetlands_npcs] gopath failed in work: " .. tostring(err))
                 end
             end
 
             if wetlands_npcs.config.debug.log_pathfinding then
-                minetest.log("action", "[custom_villagers] " .. villager_type ..
+                minetest.log("action", "[wetlands_npcs] " .. villager_type ..
                            " found POI at " .. minetest.pos_to_string(poi_pos))
             end
         else
@@ -675,7 +675,7 @@ local function do_social(self, pos)
                     mcl_mobs:gopath(self, target_pos)
                 end)
                 if not success and wetlands_npcs.config.debug.enabled then
-                    minetest.log("warning", "[custom_villagers] gopath failed in social: " .. tostring(err))
+                    minetest.log("warning", "[wetlands_npcs] gopath failed in social: " .. tostring(err))
                 end
             end
         else
@@ -737,7 +737,7 @@ local function do_social(self, pos)
                     mcl_mobs:gopath(self, partner_pos)
                 end)
                 if not success and wetlands_npcs.config.debug.enabled then
-                    minetest.log("warning", "[custom_villagers] gopath failed in social (re-nav): " .. tostring(err))
+                    minetest.log("warning", "[wetlands_npcs] gopath failed in social (re-nav): " .. tostring(err))
                 end
             end
         end
@@ -774,7 +774,7 @@ local function do_sleep(self, pos)
                         mcl_mobs:gopath(self, bed_pos)
                     end)
                     if not success and wetlands_npcs.config.debug.enabled then
-                        minetest.log("warning", "[custom_villagers] gopath failed in sleep: " .. tostring(err))
+                        minetest.log("warning", "[wetlands_npcs] gopath failed in sleep: " .. tostring(err))
                     end
                 end
             else
@@ -857,7 +857,7 @@ local function do_seek_player(self, pos)
                 mcl_mobs:gopath(self, player_pos)
             end)
             if not success and wetlands_npcs.config.debug.enabled then
-                minetest.log("warning", "[custom_villagers] gopath failed in seek_player: " .. tostring(err))
+                minetest.log("warning", "[wetlands_npcs] gopath failed in seek_player: " .. tostring(err))
             end
         end
     else
@@ -875,6 +875,11 @@ local function do_seek_player(self, pos)
 
         local greeting = greetings[villager_type] or "¡Hola, %s!"
         minetest.chat_send_player(player_name, string.format(greeting, player_name))
+
+        -- Reproducir voz del NPC al saludar
+        if wetlands_npcs.play_npc_voice then
+            wetlands_npcs.play_npc_voice(villager_type, pos)
+        end
 
         -- Registrar saludo en cooldown
         self.ai_memory.last_greet_player[player_name] = os.time()
@@ -924,7 +929,7 @@ function wetlands_npcs.behaviors.update(self, dtime)
         if override_state ~= self.ai_state then
             -- Cambio forzado de estado
             if wetlands_npcs.config.debug.log_state_changes then
-                minetest.log("action", "[custom_villagers] " .. villager_type ..
+                minetest.log("action", "[wetlands_npcs] " .. villager_type ..
                            " override: " .. self.ai_state .. " → " .. override_state)
             end
 
@@ -948,7 +953,7 @@ function wetlands_npcs.behaviors.update(self, dtime)
 
         if new_state ~= self.ai_state then
             if wetlands_npcs.config.debug.log_state_changes then
-                minetest.log("action", "[custom_villagers] " .. villager_type ..
+                minetest.log("action", "[wetlands_npcs] " .. villager_type ..
                            " transition: " .. self.ai_state .. " → " .. new_state)
             end
 
@@ -1100,7 +1105,7 @@ minetest.register_chatcommand("villager_state", {
 -- FINALIZACIÓN
 -- ============================================================================
 
-minetest.log("action", "[custom_villagers] AI Behaviors system v" ..
+minetest.log("action", "[wetlands_npcs] AI Behaviors system v" ..
              wetlands_npcs.behaviors.version .. " loaded successfully")
 
 -- ============================================================================

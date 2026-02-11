@@ -1,10 +1,10 @@
 -- ============================================================================
--- config.lua - Configuración Centralizada del Sistema AI
+-- config.lua - Configuracion Centralizada del Sistema AI
 -- ============================================================================
--- Mod: Custom Villagers v2.0
--- Propósito: Centralizar toda la configuración del sistema de comportamientos
+-- Mod: Wetlands NPCs v1.0.0
+-- Proposito: Centralizar toda la configuracion del sistema de comportamientos
 -- Autor: Wetlands Team
--- Documentación: README_AI_BEHAVIORS.md
+-- Documentacion: README_AI_BEHAVIORS.md
 -- ============================================================================
 
 --[[
@@ -292,7 +292,17 @@ wetlands_npcs.config.particles = {
 }
 
 -- ============================================================================
--- SECCIÓN 6: CONFIGURACIÓN DE SPAWNING Y LÍMITES
+-- SECCION 5B: CONFIGURACION DE SONIDO (VOCES NPC)
+-- ============================================================================
+
+wetlands_npcs.config.sounds = {
+    enabled = true,
+    gain = 0.8,
+    max_hear_distance = 20,
+}
+
+-- ============================================================================
+-- SECCION 6: CONFIGURACION DE SPAWNING Y LIMITES
 -- ============================================================================
 
 --[[
@@ -392,7 +402,7 @@ function wetlands_npcs.config.set(path, value)
 
     target[keys[#keys]] = value
 
-    minetest.log("action", "[custom_villagers] Config updated: " .. path .. " = " .. tostring(value))
+    minetest.log("action", "[wetlands_npcs] Config updated: " .. path .. " = " .. tostring(value))
 end
 
 --[[
@@ -402,19 +412,19 @@ end
     Permite ajustar parámetros sin editar código Lua.
 
     FORMATO EN minetest.conf:
-        custom_villagers_poi_radius = 20
-        custom_villagers_auto_greet = true
+        wetlands_npcs_poi_radius = 20
+        wetlands_npcs_auto_greet = true
         wetlands_npcs_debug = false
 --]]
 function wetlands_npcs.config.reload_from_conf()
     -- POI radius
-    local poi_radius = minetest.settings:get("custom_villagers_poi_radius")
+    local poi_radius = minetest.settings:get("wetlands_npcs_poi_radius")
     if poi_radius then
         wetlands_npcs.config.poi_search_radius = tonumber(poi_radius)
     end
 
     -- Auto greet enabled
-    local auto_greet = minetest.settings:get_bool("custom_villagers_auto_greet")
+    local auto_greet = minetest.settings:get_bool("wetlands_npcs_auto_greet")
     if auto_greet ~= nil then
         wetlands_npcs.config.auto_greet.enabled = auto_greet
     end
@@ -425,7 +435,7 @@ function wetlands_npcs.config.reload_from_conf()
         wetlands_npcs.config.debug.enabled = debug
     end
 
-    minetest.log("action", "[custom_villagers] Configuration reloaded from minetest.conf")
+    minetest.log("action", "[wetlands_npcs] Configuration reloaded from minetest.conf")
 end
 
 -- ============================================================================
@@ -486,9 +496,9 @@ wetlands_npcs.config.reload_from_conf()
 -- Validar configuración
 local valid, error_msg = wetlands_npcs.config.validate()
 if not valid then
-    minetest.log("error", "[custom_villagers] Invalid configuration:\n" .. error_msg)
+    minetest.log("error", "[wetlands_npcs] Invalid configuration:\n" .. error_msg)
 else
-    minetest.log("action", "[custom_villagers] Configuration loaded and validated successfully")
+    minetest.log("action", "[wetlands_npcs] Configuration loaded and validated successfully")
 end
 
 -- ============================================================================
