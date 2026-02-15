@@ -90,6 +90,50 @@ local STATE_PRIORITIES = {
 }
 
 -- ============================================================================
+-- SECCIÓN 1B: HELPERS DE CONFIGURACION POR NPC
+-- ============================================================================
+
+-- Obtener radio maximo de wander para un NPC especifico
+local function get_npc_max_radius(villager_type)
+    local overrides = wetlands_npcs.config.movement_overrides
+    if overrides and overrides[villager_type] then
+        return overrides[villager_type].max_wander_radius
+            or wetlands_npcs.config.movement.max_wander_radius
+    end
+    return wetlands_npcs.config.movement.max_wander_radius or 15
+end
+
+-- Obtener threshold de retorno a home para un NPC especifico
+local function get_npc_return_threshold(villager_type)
+    local overrides = wetlands_npcs.config.movement_overrides
+    if overrides and overrides[villager_type] then
+        return overrides[villager_type].return_home_threshold
+            or wetlands_npcs.config.movement.return_home_threshold
+    end
+    return wetlands_npcs.config.movement.return_home_threshold or 20
+end
+
+-- Obtener radio de busqueda de POI para un NPC especifico
+local function get_npc_poi_radius(villager_type)
+    local overrides = wetlands_npcs.config.movement_overrides
+    if overrides and overrides[villager_type] then
+        return overrides[villager_type].poi_search_radius
+            or wetlands_npcs.config.poi_search_radius
+    end
+    return wetlands_npcs.config.poi_search_radius or 15
+end
+
+-- Obtener radio de busqueda social para un NPC especifico
+local function get_npc_social_radius(villager_type)
+    local overrides = wetlands_npcs.config.movement_overrides
+    if overrides and overrides[villager_type] then
+        return overrides[villager_type].social_search_radius
+            or wetlands_npcs.config.npc_interaction.detection_radius
+    end
+    return wetlands_npcs.config.npc_interaction.detection_radius or 10
+end
+
+-- ============================================================================
 -- SECCIÓN 2: MEMORIA Y CONTEXTO DEL ALDEANO
 -- ============================================================================
 
@@ -449,7 +493,8 @@ local function should_override_state(self, current_state)
     if self.ai_memory and self.ai_memory.home_pos then
         local pos = self.object:get_pos()
         local home = self.ai_memory.home_pos
-        local return_threshold = wetlands_npcs.config.movement.return_home_threshold or 20
+        local villager_type = self.custom_villager_type or "farmer"
+        local return_threshold = get_npc_return_threshold(villager_type)
         local dist_from_home = vector.distance(pos, home)
 
         if dist_from_home > return_threshold and current_state ~= STATES.WANDER then
@@ -535,7 +580,8 @@ local function do_wander(self)
     if not self.ai_target or math.random(1, 20) == 1 then
         local pos = self.object:get_pos()
         local home = self.ai_memory and self.ai_memory.home_pos
-        local max_radius = wetlands_npcs.config.movement.max_wander_radius or 15
+        local villager_type = self.custom_villager_type or "farmer"
+        local max_radius = get_npc_max_radius(villager_type)
 
         -- Si no tiene home_pos, usar posicion actual como home
         if not home then
@@ -547,20 +593,22 @@ local function do_wander(self)
 
         -- Verificar si esta demasiado lejos de home -> forzar retorno
         local dist_from_home = vector.distance(pos, home)
-        local return_threshold = wetlands_npcs.config.movement.return_home_threshold or 20
+        local return_threshold = get_npc_return_threshold(villager_type)
 
         local target
         if dist_from_home > return_threshold then
             -- Demasiado lejos, volver hacia home
+            local jitter = math.min(3, max_radius)
             target = {
-                x = home.x + math.random(-3, 3),
+                x = home.x + math.random(-jitter, jitter),
                 y = home.y,
-                z = home.z + math.random(-3, 3),
+                z = home.z + math.random(-jitter, jitter),
             }
         else
             -- Generar posicion aleatoria DENTRO del radio permitido desde home
-            local offset_x = math.random(-10, 10)
-            local offset_z = math.random(-10, 10)
+            local wander_range = math.min(10, max_radius)
+            local offset_x = math.random(-wander_range, wander_range)
+            local offset_z = math.random(-wander_range, wander_range)
             target = {
                 x = home.x + offset_x,
                 y = pos.y,
@@ -621,8 +669,17 @@ local function do_work(self, villager_type, pos)
 
     -- Si no tiene objetivo de trabajo, buscar uno
     if not self.ai_target or self.ai_target.type ~= "work" then
-        local radius = wetlands_npcs.config.poi_search_radius
+        local radius = get_npc_poi_radius(villager_type)
         local poi_pos = find_poi_nearby(pos, poi_list, radius)
+
+        -- Verificar que el POI no este fuera del radio de wander desde home
+        if poi_pos and self.ai_memory and self.ai_memory.home_pos then
+            local max_radius = get_npc_max_radius(villager_type)
+            local dist_from_home = vector.distance(poi_pos, self.ai_memory.home_pos)
+            if dist_from_home > max_radius then
+                poi_pos = nil  -- Descartar POI fuera de rango
+            end
+        end
 
         if poi_pos then
             self.ai_target = {pos = poi_pos, type = "work"}
@@ -705,10 +762,24 @@ local function do_social(self, pos)
         return
     end
 
+    local villager_type = self.custom_villager_type or "farmer"
+
     -- Si no tiene pareja social, buscar una
     if not self.ai_memory.social_partner then
-        local radius = wetlands_npcs.config.npc_interaction.detection_radius
+        local radius = get_npc_social_radius(villager_type)
         local other_villager = get_nearest_villager(pos, radius, self)
+
+        -- Verificar que ir hacia el otro NPC no nos saque del radio de home
+        if other_villager and self.ai_memory and self.ai_memory.home_pos then
+            local max_radius = get_npc_max_radius(villager_type)
+            local other_pos = other_villager.object:get_pos()
+            if other_pos then
+                local dist_from_home = vector.distance(other_pos, self.ai_memory.home_pos)
+                if dist_from_home > max_radius then
+                    other_villager = nil  -- Descartar, esta fuera de rango
+                end
+            end
+        end
 
         if other_villager then
             self.ai_memory.social_partner = other_villager
