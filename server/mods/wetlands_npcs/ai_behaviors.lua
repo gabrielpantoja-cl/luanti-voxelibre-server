@@ -503,8 +503,11 @@ local function should_override_state(self, current_state)
     end
 
     -- PRIORIDAD 5: Anti-stuck (cambiar a WANDER si atascado)
-    if is_stuck(self) and current_state ~= STATES.WANDER then
-        return STATES.WANDER
+    -- NO aplicar a NPCs en IDLE (estar quieto es intencional, no estar atascado)
+    if current_state ~= STATES.IDLE and current_state ~= STATES.WANDER then
+        if is_stuck(self) then
+            return STATES.WANDER
+        end
     end
 
     return nil  -- No hay override necesario
@@ -544,8 +547,11 @@ end
     - Mostrar animación de idle (si existe)
 --]]
 local function do_idle(self)
-    -- Detener movimiento
-    self.object:set_velocity({x=0, y=0, z=0})
+    -- Detener movimiento horizontal, preservar velocidad Y (gravedad)
+    local vel = self.object:get_velocity()
+    if vel then
+        self.object:set_velocity({x=0, y=vel.y, z=0})
+    end
 
     -- Mirar alrededor ocasionalmente (10% de probabilidad cada tick)
     if math.random(1, 10) == 1 then
