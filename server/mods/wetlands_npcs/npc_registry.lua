@@ -230,7 +230,7 @@ wetlands_npcs.registry.register("splinter", {
 wetlands_npcs.registry.register("sensei_wu", {
     description = S("Sensei Wu"),
     model = "human",
-    walk_chance = 7,  -- Pasos ocasionales controlados por FSM (radius=4)
+    walk_chance = 0,  -- CERO: solo nuestro FSM controla movimiento (radius=4)
     jump = false,     -- No salta
 })
 
