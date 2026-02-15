@@ -1,5 +1,6 @@
--- Wetlands NPCs v1.2.0 - Star Wars Edition
--- NPCs interactivos Star Wars para servidor Wetlands (7+ anios)
+-- Wetlands NPCs v2.0.0 - Star Wars Edition
+-- NPCs interactivos con misiones, persistencia y sistema de amistad
+-- Para servidor educativo Wetlands (7+ anios)
 -- Compatible con VoxeLibre v0.90.1 (mcl_mobs)
 
 -- ============================================================================
@@ -28,23 +29,21 @@ end
 
 -- Namespace global
 wetlands_npcs = {}
-wetlands_npcs.version = "1.2.0"
+wetlands_npcs.version = "2.0.0"
 
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
 end
 
-log("info", "Initializing Wetlands NPCs v" .. wetlands_npcs.version .. " (Star Wars Edition)")
+log("info", "Initializing Wetlands NPCs v" .. wetlands_npcs.version)
 
 -- ============================================================================
--- 2. SISTEMA DE SONIDO (debe cargarse ANTES de ai_behaviors.lua)
+-- 2. SISTEMA DE SONIDO (debe cargarse ANTES de otros modulos)
 -- ============================================================================
 
 function wetlands_npcs.play_npc_voice(npc_type, pos)
     local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
-    if sound_config and not sound_config.enabled then
-        return
-    end
+    if sound_config and not sound_config.enabled then return end
 
     local variant = math.random(1, 3)
     local sound_name = "wetlands_npc_talk_" .. npc_type .. variant
@@ -52,73 +51,51 @@ function wetlands_npcs.play_npc_voice(npc_type, pos)
     local max_dist = (sound_config and sound_config.max_hear_distance) or 20
 
     minetest.sound_play(sound_name, {
-        pos = pos,
-        gain = gain,
-        max_hear_distance = max_dist,
+        pos = pos, gain = gain, max_hear_distance = max_dist,
     })
 end
 
--- Tabla de NPCs Star Wars (para logica condicional)
-local STAR_WARS_NPCS = {luke = true, anakin = true, yoda = true, mandalorian = true, leia = true}
+local STAR_WARS_NPCS = {
+    luke = true, anakin = true, yoda = true, mandalorian = true, leia = true,
+}
 wetlands_npcs.STAR_WARS_NPCS = STAR_WARS_NPCS
 
--- Reproducir audio iconico de Star Wars (1 clip unico por personaje)
 function wetlands_npcs.play_npc_iconic(npc_type, pos)
     if not STAR_WARS_NPCS[npc_type] then return end
     local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
     if sound_config and not sound_config.enabled then return end
 
-    local sound_name = "wetlands_npc_iconic_" .. npc_type
     local gain = (sound_config and sound_config.gain) or 0.8
     local max_dist = (sound_config and sound_config.max_hear_distance) or 20
 
-    minetest.sound_play(sound_name, {
-        pos = pos,
-        gain = gain,
-        max_hear_distance = max_dist,
+    minetest.sound_play("wetlands_npc_iconic_" .. npc_type, {
+        pos = pos, gain = gain, max_hear_distance = max_dist,
     })
 end
 
 function wetlands_npcs.play_npc_greeting(npc_type, pos)
     local sound_config = wetlands_npcs.config and wetlands_npcs.config.sounds
-    if sound_config and not sound_config.enabled then
-        return
-    end
+    if sound_config and not sound_config.enabled then return end
 
     local variant = math.random(1, 2)
-    local sound_name = "wetlands_npc_greet_" .. npc_type .. variant
     local gain = (sound_config and sound_config.gain) or 0.8
     local max_dist = (sound_config and sound_config.max_hear_distance) or 20
 
-    minetest.sound_play(sound_name, {
-        pos = pos,
-        gain = gain,
-        max_hear_distance = max_dist,
+    minetest.sound_play("wetlands_npc_greet_" .. npc_type .. variant, {
+        pos = pos, gain = gain, max_hear_distance = max_dist,
     })
 end
 
 -- ============================================================================
--- CARGAR MODULOS
--- ============================================================================
-
-dofile(modpath .. "/config.lua")
-log("info", "Configuration system loaded")
-
-dofile(modpath .. "/ai_behaviors.lua")
-log("info", "AI Behaviors system loaded (v" .. wetlands_npcs.behaviors.version .. ")")
-
--- ============================================================================
--- 3. NOMBRES DE DISPLAY PARA CADA NPC
+-- 3. NOMBRES DE DISPLAY
 -- ============================================================================
 
 wetlands_npcs.display_names = {
-    -- Star Wars
     luke = "Luke Skywalker",
     anakin = "Anakin Skywalker",
     yoda = "Baby Yoda",
     mandalorian = "Mandalorian",
     leia = "Princess Leia",
-    -- Clasicos
     farmer = "Agricultor",
     librarian = "Bibliotecario",
     teacher = "Maestro",
@@ -126,229 +103,35 @@ wetlands_npcs.display_names = {
 }
 
 -- ============================================================================
--- 4. SISTEMA DE DIALOGOS - STAR WARS FRIKI
--- ============================================================================
-
-wetlands_npcs.dialogues = {
-    -- STAR WARS NPCs: English dialogues (bilingual learning!)
-    luke = {
-        greetings = {
-            "May the Force be with you, friend!",
-            "Hey! I'm Luke. Have you ever flown an X-Wing? It has 4 wings that open in an X shape!",
-            "Welcome! The galaxy needs heroes like you.",
-            "Greetings! Did you know I grew up on Tatooine? It has TWO suns, the sunsets are double!",
-            "Hello! My father was Darth Vader, but in the end he came back to the light side.",
-            "Hey! Did you know the Death Star was 160 km in diameter? Bigger than many moons!",
-            "Hello! Han Solo made the Kessel run in less than 12 parsecs with the Millennium Falcon!",
-        },
-        about_work = {
-            "I'm a Jedi Knight. My master was Yoda, the wisest of all. He lived 900 years!",
-            "I destroyed the first Death Star with an impossible shot!",
-            "My lightsaber is green. I built it with a Kyber crystal I found in a cave on Dagobah.",
-            "I train new Jedi. The Force has a light side and a dark side, balance is the key.",
-            "My best friend is Han Solo. Together we saved the galaxy more than once.",
-            "Lightsabers work with Kyber crystals. Every Jedi finds their own in a special cave.",
-        },
-    },
-    anakin = {
-        greetings = {
-            "Greetings! I'm Anakin, the best pilot in the galaxy.",
-            "Hey! Wanna see my lightsaber skills? It can cut through almost any material!",
-            "Welcome! I built C-3PO from recycled parts when I was 9. He speaks 6 million languages!",
-            "Hello! The Force is strong with you, I can feel it. The midi-chlorians don't lie.",
-            "Good to see you! We just won a battle in the Clone Wars.",
-            "Hey! Did you know podracers reach 900 km/h? The engines are like twin rockets!",
-        },
-        about_work = {
-            "I'm a Jedi Knight and General in the Clone Wars. My master is Obi-Wan.",
-            "When I was a kid I won a podrace on Tatooine. I was the first human to do it!",
-            "R2-D2 has saved my life like 100 times. He's an astromech droid that can hack any computer!",
-            "I fight to protect the innocent. That is the mission of a Jedi.",
-            "My lightsaber is blue, the color of Jedi Guardians. Only beskar can resist a cut.",
-            "The Clones were created on Kamino, an ocean planet with constant storms. Incredible, right?",
-            "The Jedi Temple on Coruscant is thousands of years old and has 5 enormous towers.",
-        },
-    },
-    yoda = {
-        greetings = {
-            "Hmm! A visitor we have. Welcome you are.",
-            "The Force, in you I sense. Strong it is.",
-            "Hello! Magic things, show you I can.",
-            "Small I am, but powerful. Judge me by my size, you should not.",
-            "Goo goo! ...I mean, welcome! My species, a mystery it is. Only 3 have we appeared!",
-            "Hmm! The Jawas on Tatooine, old droids they recycle. The best recyclers, they are!",
-        },
-        about_work = {
-            "With the Force, things move I can. Heavy or light, matters it does not.",
-            "Jedi Masters take care of me. Din Djarin, my protector he is. His beskar, lightsabers it blocks!",
-            "Frogs I like very much. Delicious they are! ...judge me, do not.",
-            "50 years old I am, but a baby still I am. My species, slowly it grows.",
-            "The Force, use it without thinking I can. Anakin's midi-chlorians, over 20,000 per cell they were!",
-            "The Millennium Falcon, junk it looks like, but the fastest ship in the universe it is.",
-            "The oldest Jedi, into Force ghosts they could turn. Incredible, yes.",
-        },
-    },
-    mandalorian = {
-        greetings = {
-            "This is the Way.",
-            "Greetings. I never remove my helmet. It is tradition. Never in front of others.",
-            "Welcome. If you need protection, I am here.",
-            "Hello. I have a mission, but I can talk for a moment.",
-            "I am Mandalorian. My honor is my armor. Beskar is more valuable than gold.",
-            "Boba Fett also wears beskar. He's the most famous clone of Jango Fett.",
-        },
-        about_work = {
-            "I'm a bounty hunter. But now my mission is to protect the Child.",
-            "My armor is pure beskar, mined only on Mandalore. It was forged by the Armorer of my clan.",
-            "The Darksaber was created by Tarre Vizsla, the first Mandalorian Jedi. It's 1000 years old!",
-            "I've traveled across the entire galaxy. Every planet has its dangers and wonders.",
-            "My ship was called the Razor Crest. She was old but reliable. I miss her.",
-            "Mandalorian jetpacks use ionic propulsion. They reach 145 km/h!",
-            "The Mandalorian Tribe lives in hiding. Only one warrior goes out at a time for resources.",
-            "A parsec is 3.26 light years. The Millennium Falcon made the Kessel run in less than 12.",
-        },
-    },
-    leia = {
-        greetings = {
-            "Hello! I'm Princess Leia Organa of Alderaan. Welcome!",
-            "Greetings! The Rebellion always needs brave souls like you.",
-            "Hey! Did you know Alderaan was one of the most peaceful planets in the galaxy?",
-            "Welcome! I'm a Senator and a leader of the Rebel Alliance.",
-            "Hello there! Help me, you're my only hope!",
-            "Greetings! I once strangled a Hutt with my own chains. Don't underestimate me.",
-        },
-        about_work = {
-            "I lead the Rebel Alliance against the Empire. Freedom is worth fighting for!",
-            "I'm a diplomat and a warrior. My blaster aim is better than most stormtroopers.",
-            "My home planet Alderaan was destroyed by the Death Star. I fight so it never happens again.",
-            "Luke is my twin brother! We didn't find out until much later. The Force works in mysterious ways.",
-            "Han Solo is... complicated. But he came back when it mattered. He always does.",
-            "The Rebel base on Hoth was hidden in ice caves. It was freezing but we had each other.",
-            "I can feel the Force too. It runs in the Skywalker family.",
-        },
-    },
-    -- NPCs Clasicos
-    farmer = {
-        greetings = {
-            "Hola! Cultivo vegetales frescos y saludables para la comunidad.",
-            "Buenos dias! Te gustaria aprender sobre agricultura sostenible?",
-            "Bienvenido! Cultivamos solo alimentos de origen vegetal.",
-            "Que gusto verte! Hoy las zanahorias estan creciendo muy bien.",
-            "Hola! Las plantas necesitan luz... como los Jedi necesitan la Fuerza.",
-        },
-        about_work = {
-            "Trabajo la tierra cada dia. Las plantas necesitan agua, luz y cuidado.",
-            "La agricultura sostenible alimenta al mundo sin daniar el planeta.",
-            "Las abejas polinizan mis cultivos. Sin ellas no habria cosecha!",
-            "Compostar los restos de comida crea el mejor fertilizante natural.",
-            "Incluso en Tatooine con dos soles se puede cultivar... bueno, casi.",
-        },
-        education = {
-            "Las plantas liberan oxigeno durante el dia. Los arboles son los pulmones del planeta.",
-            "Una semilla de trigo puede producir cientos de granos. La naturaleza es generosa!",
-            "El agua subterranea alimenta las raices. Por eso cuidar los rios es tan importante.",
-        },
-    },
-    librarian = {
-        greetings = {
-            "Saludos! Guardo el conocimiento de nuestra comunidad.",
-            "Hola! Buscas aprender algo nuevo hoy?",
-            "Bienvenido! Aqui encontraras libros sobre compasion y ciencia.",
-            "Pasa, pasa! Tengo historias maravillosas que compartir.",
-            "Hola! Tengo un libro mas viejo que Yoda... bueno, casi. El vivio 900 anios!",
-        },
-        about_work = {
-            "Los libros preservan el conocimiento de generaciones.",
-            "La lectura expande tu mente y ayuda a entender el mundo.",
-            "Cada libro es una ventana a un mundo diferente. Cual quieres abrir?",
-            "Dicen que los archivos del Templo Jedi tenian mas libros que cualquier biblioteca.",
-        },
-        education = {
-            "Sabias que leer 30 minutos al dia mejora tu vocabulario?",
-            "Los primeros libros se escribian a mano. Tardaban meses en completarse!",
-            "La biblioteca mas grande del mundo tiene millones de libros.",
-        },
-    },
-    teacher = {
-        greetings = {
-            "Hola! Me encanta enseniar sobre ciencia y naturaleza.",
-            "Buenos dias! Listo para aprender algo fascinante?",
-            "La educacion es la herramienta mas poderosa para cambiar el mundo.",
-            "Como diria cierto maestro verde: Hazlo o no lo hagas, no hay intentar.",
-        },
-        about_work = {
-            "Ensenio ciencia, matematicas y compasion hacia todos los seres.",
-            "Mi trabajo es despertar la curiosidad en las mentes jovenes.",
-            "Ensenio que todos los seres merecen respeto y cuidado.",
-            "Los midi-clorianos no son reales... pero las mitocondrias si! Son la fuerza de las celulas.",
-        },
-        education = {
-            "Sabias que los animales sienten emociones como nosotros?",
-            "Tu cerebro tiene mas conexiones que estrellas hay en la galaxia!",
-            "El agua cubre el 70% de la Tierra, pero solo el 3% es agua dulce.",
-        },
-    },
-    explorer = {
-        greetings = {
-            "Hola aventurero! He viajado por todos los biomas del mundo.",
-            "Saludos! Te gustaria escuchar historias de mis viajes?",
-            "Hola! Acabo de volver de explorar unas cuevas increibles.",
-            "He explorado tantos biomas como planetas ha visitado el Mandalorian!",
-        },
-        about_work = {
-            "Exploro el mundo y estudio diferentes ecosistemas.",
-            "Cada bioma tiene plantas y animales unicos que merecen proteccion.",
-            "Mi brujula y mi mapa son mis mejores amigos en las expediciones.",
-            "Me recuerdan a los exploradores de Kamino... pero con menos lluvia.",
-        },
-        education = {
-            "Sabias que los bosques producen gran parte del oxigeno que respiramos?",
-            "La biodiversidad es fundamental para el equilibrio del planeta.",
-            "Cada gota de agua que bebes ha existido desde que se formo la Tierra!",
-        },
-    },
-}
-
-local function get_dialogue(npc_type, category)
-    local dialogues = wetlands_npcs.dialogues[npc_type]
-    if not dialogues or not dialogues[category] then
-        return "..."
-    end
-    local options = dialogues[category]
-    return options[math.random(1, #options)]
-end
-
--- ============================================================================
--- 5. SISTEMA DE COMERCIO TEMATICO
+-- 4. SISTEMA DE COMERCIO
 -- ============================================================================
 
 wetlands_npcs.trades = {
     luke = {
-        {give = "mcl_core:stick 2", wants = "mcl_core:emerald 1"},       -- "Sable laser" (palos)
-        {give = "mcl_books:book 1", wants = "mcl_core:emerald 2"},       -- Textos Jedi
-        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},      -- Raciones
+        {give = "mcl_core:stick 2", wants = "mcl_core:emerald 1"},
+        {give = "mcl_books:book 1", wants = "mcl_core:emerald 2"},
+        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},
     },
     anakin = {
-        {give = "mcl_core:iron_ingot 3", wants = "mcl_core:emerald 2"},  -- Piezas mecanicas
-        {give = "mcl_core:stick 2", wants = "mcl_core:emerald 1"},       -- Sable laser
-        {give = "mcl_core:gold_ingot 1", wants = "mcl_core:emerald 3"},  -- Piezas de droide
+        {give = "mcl_core:iron_ingot 3", wants = "mcl_core:emerald 2"},
+        {give = "mcl_core:stick 2", wants = "mcl_core:emerald 1"},
+        {give = "mcl_core:gold_ingot 1", wants = "mcl_core:emerald 3"},
     },
     yoda = {
-        {give = "mcl_core:emerald 3", wants = "mcl_core:emerald 1"},     -- Multiplicador de Fuerza
-        {give = "mcl_books:book 2", wants = "mcl_core:emerald 3"},       -- Sabiduria antigua
-        {give = "mcl_farming:carrot_item 10", wants = "mcl_core:emerald 1"}, -- Snacks (le gustan)
+        {give = "mcl_core:emerald 3", wants = "mcl_core:emerald 1"},
+        {give = "mcl_books:book 2", wants = "mcl_core:emerald 3"},
+        {give = "mcl_farming:carrot_item 10", wants = "mcl_core:emerald 1"},
     },
     mandalorian = {
-        {give = "mcl_core:iron_ingot 5", wants = "mcl_core:emerald 2"},  -- Beskar (hierro)
-        {give = "mcl_core:diamond 1", wants = "mcl_core:emerald 5"},     -- Equipo raro
-        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},      -- Provisiones
+        {give = "mcl_core:iron_ingot 5", wants = "mcl_core:emerald 2"},
+        {give = "mcl_core:diamond 1", wants = "mcl_core:emerald 5"},
+        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},
     },
     leia = {
-        {give = "mcl_books:book 2", wants = "mcl_core:emerald 2"},       -- Diplomatic documents
-        {give = "mcl_core:gold_ingot 2", wants = "mcl_core:emerald 3"},  -- Royal Alderaan treasures
-        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},      -- Rebel rations
+        {give = "mcl_books:book 2", wants = "mcl_core:emerald 2"},
+        {give = "mcl_core:gold_ingot 2", wants = "mcl_core:emerald 3"},
+        {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},
     },
-    -- Clasicos
     farmer = {
         {give = "mcl_farming:carrot_item 5", wants = "mcl_core:emerald 1"},
         {give = "mcl_farming:potato_item 5", wants = "mcl_core:emerald 1"},
@@ -368,548 +151,65 @@ wetlands_npcs.trades = {
     },
 }
 
--- Mostrar formspec de interaccion
-local function show_interaction_formspec(player_name, npc_type, display_name)
-    if not player_name or not npc_type then
-        log("error", "show_interaction_formspec called with nil parameters")
-        return
-    end
-
-    local name_str = display_name or wetlands_npcs.display_names[npc_type] or npc_type
-    name_str = minetest.formspec_escape(name_str)
-
-    -- Botones dependen del tipo de NPC (English para Star Wars, Spanish para clasicos)
-    local third_button, btn_greet, btn_work, btn_trade, btn_close
-    if STAR_WARS_NPCS[npc_type] then
-        third_button = "button[0.5,3.5;9,0.8;play_iconic;Play iconic audio]"
-        btn_greet = "button[0.5,1.5;9,0.8;dialogue_greeting;Say hello]"
-        btn_work = "button[0.5,2.5;9,0.8;dialogue_work;About their story]"
-        btn_trade = "button[0.5,4.5;9,0.8;trade;Trade]"
-        btn_close = "button_exit[0.5,5.5;9,0.8;close;Close]"
-    else
-        third_button = "button[0.5,3.5;9,0.8;dialogue_education;Dato educativo]"
-        btn_greet = "button[0.5,1.5;9,0.8;dialogue_greeting;Saludar]"
-        btn_work = "button[0.5,2.5;9,0.8;dialogue_work;Sobre su historia]"
-        btn_trade = "button[0.5,4.5;9,0.8;trade;Comerciar]"
-        btn_close = "button_exit[0.5,5.5;9,0.8;close;Cerrar]"
-    end
-
-    local formspec = "formspec_version[4]" ..
-        "size[10,7]" ..
-        "label[0.5,0.5;" .. name_str .. "]" ..
-        btn_greet ..
-        btn_work ..
-        third_button ..
-        btn_trade ..
-        btn_close
-
-    local success, err = pcall(function()
-        minetest.show_formspec(player_name, "wetlands_npcs:interact_" .. npc_type, formspec)
-    end)
-
-    if not success then
-        log("error", "Failed to show formspec: " .. tostring(err))
-        minetest.chat_send_player(player_name, "[NPC] Error al mostrar dialogo. Intenta de nuevo.")
-    end
-end
-
--- Mostrar formspec de comercio
-local function show_trade_formspec(player_name, npc_type)
-    if not player_name or not npc_type then
-        log("error", "show_trade_formspec called with nil parameters")
-        return
-    end
-
-    local trades = wetlands_npcs.trades[npc_type]
-    if not trades then
-        minetest.chat_send_player(player_name, "[NPC] No tengo nada para comerciar ahora.")
-        return
-    end
-
-    local display = wetlands_npcs.display_names[npc_type] or npc_type
-    local formspec = "formspec_version[4]" ..
-        "size[12,11]" ..
-        "label[0.5,0.5;Comercio - " .. minetest.formspec_escape(display) .. "]" ..
-        "label[0.5,1;Ofrece esmeraldas por items:]" ..
-        "list[current_player;main;0.5,6;8,4;]"
-
-    local y = 2
-    for i, trade in ipairs(trades) do
-        formspec = formspec .. "label[0.5," .. y .. ";" .. i .. ". " ..
-                   minetest.formspec_escape(trade.give) .. " <- " ..
-                   minetest.formspec_escape(trade.wants) .. "]"
-        formspec = formspec .. "button[7," .. (y-0.2) .. ";3,0.8;trade_" .. i .. ";Comerciar]"
-        y = y + 1
-    end
-
-    minetest.show_formspec(player_name, "wetlands_npcs:trade_" .. npc_type, formspec)
-end
-
--- Manejar clicks en formspecs
-minetest.register_on_player_receive_fields(function(player, formname, fields)
-    -- Formspec de interaccion
-    if formname:find("^wetlands_npcs:interact_") then
-        local npc_type = formname:gsub("^wetlands_npcs:interact_", "")
-        local player_name = player:get_player_name()
-        local player_pos = player:get_pos()
-        local display = wetlands_npcs.display_names[npc_type] or npc_type
-
-        if fields.dialogue_greeting then
-            local msg = get_dialogue(npc_type, "greetings")
-            minetest.chat_send_player(player_name, "[" .. display .. "] " .. msg)
-            wetlands_npcs.play_npc_voice(npc_type, player_pos)
-        elseif fields.dialogue_work then
-            local msg = get_dialogue(npc_type, "about_work")
-            minetest.chat_send_player(player_name, "[" .. display .. "] " .. msg)
-            wetlands_npcs.play_npc_voice(npc_type, player_pos)
-        elseif fields.play_iconic then
-            -- Boton "Probar audio" - reproduce clip iconico de Star Wars
-            wetlands_npcs.play_npc_iconic(npc_type, player_pos)
-            local iconic_phrases = {
-                luke = "May the Force be with you...",
-                anakin = "I am your father.",
-                yoda = "Do or do not... there is no try.",
-                mandalorian = "This is the way.",
-                leia = "Help me, Obi-Wan Kenobi. You're my only hope.",
-            }
-            local phrase = iconic_phrases[npc_type] or "..."
-            minetest.chat_send_player(player_name, "[" .. display .. "] " .. phrase)
-        elseif fields.dialogue_education then
-            -- Boton "Dato educativo" (solo NPCs clasicos)
-            local msg = get_dialogue(npc_type, "education")
-            minetest.chat_send_player(player_name, "[" .. display .. "] " .. msg)
-            wetlands_npcs.play_npc_voice(npc_type, player_pos)
-        elseif fields.trade then
-            show_trade_formspec(player_name, npc_type)
-        end
-    end
-
-    -- Formspec de comercio
-    if formname:find("^wetlands_npcs:trade_") then
-        local npc_type = formname:gsub("^wetlands_npcs:trade_", "")
-        local trades = wetlands_npcs.trades[npc_type]
-        if not trades then return end
-
-        for field, _ in pairs(fields) do
-            if field:find("^trade_") then
-                local index_str = field:gsub("^trade_", "")
-                local trade_index = tonumber(index_str)
-                if not trade_index then break end
-                local trade = trades[trade_index]
-
-                if trade then
-                    local player_name = player:get_player_name()
-                    local inv = player:get_inventory()
-
-                    local wants_item, wants_count = trade.wants:match("(%S+)%s+(%d+)")
-                    wants_count = tonumber(wants_count) or 1
-
-                    if inv:contains_item("main", wants_item .. " " .. wants_count) then
-                        inv:remove_item("main", wants_item .. " " .. wants_count)
-                        inv:add_item("main", trade.give)
-                        minetest.chat_send_player(player_name, "[Comercio exitoso] Gracias por tu intercambio!")
-                    else
-                        minetest.chat_send_player(player_name, "[Comercio fallido] No tienes suficientes items.")
-                    end
-                end
-            end
-        end
-    end
-end)
-
 -- ============================================================================
--- 6. REGISTRO DE NPCs CON MCL_MOBS
+-- 5. CARGAR MODULOS (orden importa)
 -- ============================================================================
 
--- Animaciones del modelo humano (mcl_armor_character.b3d)
-local HUMAN_ANIMATION = {
-    stand_start = 0, stand_end = 79,
-    walk_start = 168, walk_end = 187, walk_speed = 30,
-    run_start = 440, run_end = 459, run_speed = 30,
-    sit_start = 81, sit_end = 160,
+-- Config (base para todo)
+dofile(modpath .. "/config.lua")
+log("info", "Config loaded")
+
+-- Persistencia (ModStorage para NPCs y jugadores)
+dofile(modpath .. "/persistence.lua")
+log("info", "Persistence loaded")
+
+-- Dialogos (desde archivos separados)
+dofile(modpath .. "/dialogues/loader.lua")
+log("info", "Dialogues loaded")
+
+-- Items unicos
+dofile(modpath .. "/items.lua")
+log("info", "Items loaded")
+
+-- Motor de misiones
+dofile(modpath .. "/quest_engine.lua")
+log("info", "Quest engine loaded")
+
+-- Comportamientos AI
+dofile(modpath .. "/ai_behaviors.lua")
+log("info", "AI Behaviors loaded (v" .. wetlands_npcs.behaviors.version .. ")")
+
+-- Registro de NPCs (usa todos los sistemas anteriores)
+dofile(modpath .. "/npc_registry.lua")
+log("info", "NPC registry loaded")
+
+-- Formspecs (UI, depende de todos los sistemas)
+dofile(modpath .. "/formspecs.lua")
+log("info", "Formspecs loaded")
+
+-- ============================================================================
+-- 6. COMANDOS DE ADMINISTRACION
+-- ============================================================================
+
+local FRIENDSHIP_NAMES = {
+    [0] = "Desconocido", [1] = "Conocido", [2] = "Amigo",
+    [3] = "Buen Amigo", [4] = "Confidente", [5] = "Mejor Amigo",
 }
-
-local function register_npc(name, def)
-    local full_name = modname .. ":" .. name
-
-    -- mcl_armor_character.b3d expects 3 texture layers: {skin, armor, cape}
-    local skin_tex = "wetlands_npc_luke.png"
-    if def.textures and type(def.textures) == "table" then
-        if type(def.textures[1]) == "table" then
-            skin_tex = def.textures[1][1] or skin_tex
-        elseif type(def.textures[1]) == "string" then
-            skin_tex = def.textures[1]
-        end
-    else
-        log("warning", "Missing textures for " .. name .. ", using default")
-    end
-    local validated_textures = {{skin_tex, "blank.png", "blank.png"}}
-
-    local mob_def = {
-        description = def.description or S(name),
-        type = "npc",
-        spawn_class = "passive",
-        passive = true,
-
-        xp_min = 0,
-        xp_max = 0,
-
-        initial_properties = {
-            hp_min = 10000,
-            hp_max = 10000,
-        },
-
-        collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
-        visual = "mesh",
-        mesh = "wetlands_npc_human.b3d",
-        textures = validated_textures,
-        makes_footstep_sound = true,
-
-        walk_velocity = wetlands_npcs.config.movement.walk_velocity,
-        run_velocity = wetlands_npcs.config.movement.run_velocity,
-
-        drops = {},
-        can_despawn = false,
-
-        animation = HUMAN_ANIMATION,
-
-        view_range = 16,
-        fear_height = 4,
-        jump = true,
-        walk_chance = 33,
-
-        custom_villager_type = name,
-
-        armor_groups = {immortal = 1, fleshy = 0},
-
-        on_activate = function(self, staticdata, dtime_s)
-            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            self.object:set_hp(self.object:get_properties().hp_max or 10000)
-        end,
-
-        do_custom = function(self, dtime)
-            -- Restaurar HP cada tick si fue daniado (y no es admin atacando)
-            if not self._admin_punching then
-                local hp = self.object:get_hp()
-                local max_hp = self.object:get_properties().hp_max or 10000
-                if hp < max_hp then
-                    self.object:set_hp(max_hp)
-                    self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                end
-            end
-
-            -- Re-check periodico de armor groups
-            self._immortal_check = (self._immortal_check or 0) + dtime
-            if self._immortal_check > 3 then
-                self._immortal_check = 0
-                if not self._admin_punching then
-                    local armor = self.object:get_armor_groups()
-                    if not armor.immortal or armor.immortal ~= 1 or (armor.fleshy or 0) ~= 0 then
-                        self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                    end
-                end
-            end
-        end,
-
-        on_rightclick = function(self, clicker)
-            if not clicker or not clicker:is_player() then return end
-
-            -- Auto-fix para NPCs sin tipo
-            if not self.custom_villager_type and self.name then
-                local npc_type = self.name:match("wetlands_npcs:(.+)")
-                if npc_type then
-                    self.custom_villager_type = npc_type
-                    log("warning", "Auto-fixed NPC type: " .. npc_type)
-                else
-                    log("error", "Could not extract NPC type from: " .. self.name)
-                    return
-                end
-            end
-
-            if not self.custom_villager_type then
-                log("error", "on_rightclick: NPC without type")
-                return
-            end
-
-            local player_name = clicker:get_player_name()
-            if not player_name or player_name == "" then return end
-
-            local display_name = wetlands_npcs.display_names[self.custom_villager_type]
-                or self.custom_villager_type
-
-            local pos = self.object:get_pos()
-            if pos then
-                wetlands_npcs.play_npc_voice(self.custom_villager_type, pos)
-            end
-
-            local success, err = pcall(function()
-                show_interaction_formspec(player_name, self.custom_villager_type, display_name)
-            end)
-
-            if not success then
-                log("error", "on_rightclick failed: " .. tostring(err))
-                minetest.chat_send_player(player_name, "[Servidor] Error al interactuar.")
-            end
-        end,
-
-        do_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-            if puncher and puncher:is_player() then
-                local player_name = puncher:get_player_name()
-
-                -- Admin con privilegio "server" puede destruir NPCs
-                if minetest.check_player_privs(player_name, {server = true}) then
-                    self._admin_punching = true
-                    self.object:set_armor_groups({fleshy = 100})
-                    minetest.after(1, function()
-                        if self.object and self.object:get_pos() then
-                            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                            self._admin_punching = nil
-                        end
-                    end)
-                    return true
-                end
-
-                -- Jugador normal: bloquear danio completamente
-                -- return false = mcl_mobs detiene TODO (incluido creative instakill en combat.lua:490)
-                self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                self.object:set_hp(self.object:get_properties().hp_max or 10000)
-                self.health = 10000
-                minetest.chat_send_player(player_name,
-                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles daño!"))
-                return false
-            end
-
-            -- Danio no-jugador: bloquear
-            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            self.object:set_hp(self.object:get_properties().hp_max or 10000)
-            self.health = 10000
-            return false
-        end,
-    }
-
-    -- Inyectar sistema de comportamientos AI
-    wetlands_npcs.behaviors.inject_into_mob(mob_def)
-
-    mcl_mobs.register_mob(full_name, mob_def)
-    log("info", "Registered Star Wars NPC: " .. name)
-end
-
--- ============================================================================
--- 6A. DEFINICION DE LOS 5 NPCs STAR WARS
--- ============================================================================
-
-register_npc("luke", {
-    description = S("Luke Skywalker"),
-    textures = {{"wetlands_npc_luke.png"}},
-})
-
-register_npc("anakin", {
-    description = S("Anakin Skywalker"),
-    textures = {{"wetlands_npc_anakin.png"}},
-})
-
-register_npc("yoda", {
-    description = S("Baby Yoda"),
-    textures = {{"wetlands_npc_yoda.png"}},
-})
-
-register_npc("mandalorian", {
-    description = S("Mandalorian"),
-    textures = {{"wetlands_npc_mandalorian.png"}},
-})
-
-register_npc("leia", {
-    description = S("Princess Leia"),
-    textures = {{"wetlands_npc_leia.png"}},
-})
-
--- ============================================================================
--- 6B. NPCs CLASICOS (modelo villager)
--- ============================================================================
-
--- Animaciones del modelo villager
-local VILLAGER_ANIMATION = {
-    stand_start = 0, stand_end = 0,
-    walk_start = 0, walk_end = 40, walk_speed = 25,
-    run_start = 0, run_end = 40, run_speed = 25,
-}
-
-local function register_classic_npc(name, def)
-    local full_name = modname .. ":" .. name
-
-    local validated_textures = def.textures
-    if type(validated_textures[1]) ~= "table" then
-        validated_textures = {validated_textures}
-    end
-
-    local mob_def = {
-        description = def.description or S(name),
-        type = "npc",
-        spawn_class = "passive",
-        passive = true,
-        xp_min = 0, xp_max = 0,
-        initial_properties = { hp_min = 10000, hp_max = 10000 },
-        collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
-        visual = "mesh",
-        mesh = "mobs_mc_villager.b3d",
-        textures = validated_textures,
-        makes_footstep_sound = true,
-        walk_velocity = wetlands_npcs.config.movement.walk_velocity,
-        run_velocity = wetlands_npcs.config.movement.run_velocity,
-        drops = {},
-        can_despawn = false,
-        animation = VILLAGER_ANIMATION,
-        view_range = 16,
-        fear_height = 4,
-        jump = true,
-        walk_chance = 33,
-        custom_villager_type = name,
-        armor_groups = {immortal = 1, fleshy = 0},
-
-        on_activate = function(self, staticdata, dtime_s)
-            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            self.object:set_hp(self.object:get_properties().hp_max or 10000)
-        end,
-
-        do_custom = function(self, dtime)
-            if not self._admin_punching then
-                local hp = self.object:get_hp()
-                local max_hp = self.object:get_properties().hp_max or 10000
-                if hp < max_hp then
-                    self.object:set_hp(max_hp)
-                    self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                end
-            end
-
-            self._immortal_check = (self._immortal_check or 0) + dtime
-            if self._immortal_check > 3 then
-                self._immortal_check = 0
-                if not self._admin_punching then
-                    local armor = self.object:get_armor_groups()
-                    if not armor.immortal or armor.immortal ~= 1 or (armor.fleshy or 0) ~= 0 then
-                        self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                    end
-                end
-            end
-        end,
-
-        on_rightclick = function(self, clicker)
-            if not clicker or not clicker:is_player() then return end
-            if not self.custom_villager_type and self.name then
-                local npc_type = self.name:match("wetlands_npcs:(.+)")
-                if npc_type then
-                    self.custom_villager_type = npc_type
-                end
-            end
-            if not self.custom_villager_type then return end
-            local player_name = clicker:get_player_name()
-            if not player_name or player_name == "" then return end
-            local display_name = wetlands_npcs.display_names[self.custom_villager_type]
-                or self.custom_villager_type
-            local pos = self.object:get_pos()
-            if pos then
-                wetlands_npcs.play_npc_voice(self.custom_villager_type, pos)
-            end
-            pcall(function()
-                show_interaction_formspec(player_name, self.custom_villager_type, display_name)
-            end)
-        end,
-
-        do_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-            if puncher and puncher:is_player() then
-                local player_name = puncher:get_player_name()
-
-                if minetest.check_player_privs(player_name, {server = true}) then
-                    self._admin_punching = true
-                    self.object:set_armor_groups({fleshy = 100})
-                    minetest.after(1, function()
-                        if self.object and self.object:get_pos() then
-                            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                            self._admin_punching = nil
-                        end
-                    end)
-                    return true
-                end
-
-                self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                self.object:set_hp(self.object:get_properties().hp_max or 10000)
-                self.health = 10000
-                minetest.chat_send_player(player_name,
-                    minetest.colorize("#FF6B6B", "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles daño!"))
-                return false
-            end
-
-            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            self.object:set_hp(self.object:get_properties().hp_max or 10000)
-            self.health = 10000
-            return false
-        end,
-    }
-
-    wetlands_npcs.behaviors.inject_into_mob(mob_def)
-    mcl_mobs.register_mob(full_name, mob_def)
-    log("info", "Registered classic NPC: " .. name)
-end
-
-register_classic_npc("farmer", {
-    description = S("Agricultor de Wetlands"),
-    textures = {{"wetlands_npc_farmer.png"}},
-})
-
-register_classic_npc("librarian", {
-    description = S("Bibliotecario de Wetlands"),
-    textures = {{"wetlands_npc_librarian.png"}},
-})
-
-register_classic_npc("teacher", {
-    description = S("Maestro de Wetlands"),
-    textures = {{"wetlands_npc_teacher.png"}},
-})
-
-register_classic_npc("explorer", {
-    description = S("Explorador de Wetlands"),
-    textures = {{"wetlands_npc_explorer.png"}},
-})
-
--- ============================================================================
--- 6C. MIGRACION DE ENTIDADES LEGACY (solo custom_villagers -> wetlands_npcs)
--- ============================================================================
-
-for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
-    minetest.register_entity(":custom_villagers:" .. vtype, {
-        on_activate = function(self, staticdata, dtime_s)
-            local pos = self.object:get_pos()
-            self.object:remove()
-            if pos then
-                minetest.add_entity(pos, "wetlands_npcs:" .. vtype)
-                log("info", "Migrated custom_villagers:" .. vtype .. " -> wetlands_npcs:" .. vtype)
-            end
-        end,
-    })
-end
-
-log("info", "Legacy entity migration registered")
-
--- ============================================================================
--- 7. COMANDOS DE ADMINISTRACION
--- ============================================================================
 
 local NPC_TYPES = {
-    -- Star Wars
-    luke        = "Luke Skywalker - Caballero Jedi, heroe de la Rebelion",
-    anakin      = "Anakin Skywalker - Jedi de las Guerras Clon, piloto legendario",
-    yoda        = "Baby Yoda (Grogu) - Pequenio pero poderoso en la Fuerza",
-    mandalorian = "Mandalorian (Din Djarin) - Cazarrecompensas con armadura beskar",
-    leia        = "Princess Leia - Rebel leader, diplomat and warrior",
-    -- Clasicos
-    farmer      = "Agricultor - cultiva vegetales y cuida la tierra",
-    librarian   = "Bibliotecario - guarda libros y conocimiento",
+    luke        = "Luke Skywalker - Caballero Jedi",
+    anakin      = "Anakin Skywalker - Piloto legendario",
+    yoda        = "Baby Yoda (Grogu) - Poderoso en la Fuerza",
+    mandalorian = "Mandalorian - Cazarrecompensas beskar",
+    leia        = "Princess Leia - Lider rebelde",
+    farmer      = "Agricultor - cultiva vegetales",
+    librarian   = "Bibliotecario - guarda conocimiento",
     teacher     = "Maestro - ensenia ciencia y compasion",
-    explorer    = "Explorador - viaja por el mundo descubriendo secretos",
+    explorer    = "Explorador - descubre el mundo",
 }
 
 minetest.register_chatcommand("spawn_npc", {
-    params = "<luke | anakin | yoda | mandalorian | leia | farmer | librarian | teacher | explorer>",
+    params = "<luke|anakin|yoda|mandalorian|leia|farmer|librarian|teacher|explorer>",
     description = "Spawnea un NPC de Wetlands",
     privs = {server = true},
     func = function(name, param)
@@ -919,12 +219,10 @@ minetest.register_chatcommand("spawn_npc", {
         local npc_type = param:lower():gsub("^%s+", ""):gsub("%s+$", "")
 
         if npc_type == "" then
-            local lines = {"=== NPCs Star Wars disponibles ==="}
+            local lines = {"=== NPCs disponibles ==="}
             for ntype, desc in pairs(NPC_TYPES) do
                 table.insert(lines, "  /spawn_npc " .. ntype .. " - " .. desc)
             end
-            table.insert(lines, "")
-            table.insert(lines, "Ejemplo: /spawn_npc luke")
             return true, table.concat(lines, "\n")
         end
 
@@ -940,7 +238,6 @@ minetest.register_chatcommand("spawn_npc", {
         pos.y = pos.y + 1
 
         local obj = minetest.add_entity(pos, modname .. ":" .. npc_type)
-
         if obj then
             local display = wetlands_npcs.display_names[npc_type] or npc_type
             return true, display .. " spawneado exitosamente!"
@@ -950,9 +247,9 @@ minetest.register_chatcommand("spawn_npc", {
     end,
 })
 
--- Mantener /spawn_villager como alias por compatibilidad
+-- Alias por compatibilidad
 minetest.register_chatcommand("spawn_villager", {
-    params = "<luke | anakin | yoda | mandalorian | leia | farmer | librarian | teacher | explorer>",
+    params = "<type>",
     description = "Alias de /spawn_npc",
     privs = {server = true},
     func = function(name, param)
@@ -962,7 +259,7 @@ minetest.register_chatcommand("spawn_villager", {
 
 minetest.register_chatcommand("npc_info", {
     params = "",
-    description = "Muestra info sobre los NPCs Star Wars",
+    description = "Muestra info sobre los NPCs",
     privs = {},
     func = function(name, param)
         local info = {
@@ -982,16 +279,81 @@ minetest.register_chatcommand("npc_info", {
             "- Explorador (/spawn_npc explorer)",
             "",
             "Click derecho para interactuar!",
+            "Cada NPC tiene misiones, comercio y sistema de amistad.",
         }
         return true, table.concat(info, "\n")
     end,
 })
 
+-- Comando para ver progreso del jugador
+minetest.register_chatcommand("mi_progreso", {
+    params = "",
+    description = "Ver tu progreso con los NPCs de Wetlands",
+    privs = {},
+    func = function(name, param)
+        local data = wetlands_npcs.persistence.load_player(name)
+        local lines = {
+            "=== Tu Progreso en Wetlands ===",
+            "",
+        }
+
+        -- Relaciones
+        local met_count = 0
+        for npc_type, rel in pairs(data.npc_relationships) do
+            met_count = met_count + 1
+            local display = wetlands_npcs.display_names[npc_type] or npc_type
+            local fname = FRIENDSHIP_NAMES[rel.friendship_level] or "Desconocido"
+            table.insert(lines, "  " .. display .. ": " .. fname ..
+                " (Nv." .. rel.friendship_level .. ", " ..
+                rel.friendship_xp .. " XP)")
+        end
+        if met_count == 0 then
+            table.insert(lines, "  Aun no has conocido a ningun NPC.")
+        end
+
+        -- Estadisticas
+        table.insert(lines, "")
+        table.insert(lines, "Estadisticas:")
+        table.insert(lines, "  Misiones completadas: " .. data.stats.total_quests_completed)
+        table.insert(lines, "  Intercambios: " .. data.stats.total_trades)
+        table.insert(lines, "  NPCs conocidos: " .. data.stats.total_npcs_met .. "/9")
+        table.insert(lines, "  Items unicos: " .. data.stats.total_unique_items)
+
+        -- Logros
+        local achievement_count = 0
+        for _ in pairs(data.achievements) do achievement_count = achievement_count + 1 end
+        if achievement_count > 0 then
+            table.insert(lines, "")
+            table.insert(lines, "Logros (" .. achievement_count .. "):")
+            for id, _ in pairs(data.achievements) do
+                local def = wetlands_npcs.persistence.achievement_defs[id]
+                if def then
+                    table.insert(lines, "  - " .. def.title)
+                end
+            end
+        end
+
+        -- Misiones activas
+        local active_count = 0
+        for _ in pairs(data.active_quests) do active_count = active_count + 1 end
+        if active_count > 0 then
+            table.insert(lines, "")
+            table.insert(lines, "Misiones activas (" .. active_count .. "):")
+            for quest_id, _ in pairs(data.active_quests) do
+                local def = wetlands_npcs.quests.find_definition(quest_id)
+                if def then
+                    table.insert(lines, "  - " .. def.title)
+                end
+            end
+        end
+
+        return true, table.concat(lines, "\n")
+    end,
+})
+
 -- ============================================================================
--- 8. FINALIZACION
+-- 7. FINALIZACION
 -- ============================================================================
 
-log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded successfully!")
-log("info", "9 NPCs: Luke, Anakin, Yoda, Mandalorian, Leia + Farmer, Librarian, Teacher, Explorer")
-log("info", "Voice system: talk + greeting OGG sounds")
-log("info", "Star Wars = player character model (64x32), Classics = villager model (64x64)")
+log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded!")
+log("info", "9 NPCs | Quests | Persistence | Friendship | Unique Items")

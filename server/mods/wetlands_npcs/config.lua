@@ -73,6 +73,12 @@ wetlands_npcs.config.behavior_weights = {
         work = 25,
         social = 10,
     },
+    leia = {
+        idle = 20,
+        wander = 25,
+        work = 30,
+        social = 25,    -- Leia es diplomática y social
+    },
     -- Classic NPCs
     farmer = {
         idle = 20,
@@ -146,6 +152,10 @@ wetlands_npcs.config.poi_types = {
     mandalorian = {
         "mcl_core:stone", "mcl_core:iron_ingot",
         "mcl_core:tree", "mcl_core:water_source",
+    },
+    leia = {
+        "mcl_books:bookshelf", "mcl_core:tree",
+        "mcl_flowers:poppy", "mcl_core:water_source",
     },
     -- Classic NPCs
     farmer = {
