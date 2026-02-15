@@ -865,55 +865,9 @@ local function do_seek_player(self, pos)
         local player_name = player:get_player_name()
         local villager_type = self.custom_villager_type or "villager"
 
-        -- Saludos con variantes por NPC (usa nombre real del jugador)
-        local greetings = {
-            -- Star Wars
-            luke = {
-                "Que la Fuerza te acompanie, %s!",
-                "Hey %s! Quieres entrenar con un sable laser?",
-                "Saludos %s! La galaxia te necesita!",
-            },
-            anakin = {
-                "Hola %s! Soy el mejor piloto de la galaxia!",
-                "%s! Quieres ver mi droide R2-D2?",
-                "Bienvenido %s! La Fuerza es fuerte en ti!",
-            },
-            yoda = {
-                "Hmm, %s! Bienvenido eres.",
-                "La Fuerza, en ti siento, %s!",
-                "%s! Cosas magicas, mostrarte puedo.",
-            },
-            mandalorian = {
-                "%s. Este es el Camino.",
-                "Saludos %s. Mi beskar te protegera.",
-                "%s, tengo una mision para ti.",
-            },
-            -- Clasicos
-            farmer = {
-                "Hola %s! La cosecha de hoy esta increible!",
-                "Bienvenido %s, quieres ver mi huerto?",
-                "Hey %s! Ven a ver mis cultivos!",
-            },
-            librarian = {
-                "Bienvenido %s. Tengo un libro nuevo.",
-                "Saludos %s, el conocimiento te espera.",
-                "%s! Pasa, tengo historias maravillosas.",
-            },
-            teacher = {
-                "Buenos dias %s! Listo para aprender?",
-                "Hola %s! Tengo algo fascinante que enseniarte.",
-                "Bienvenido %s! La educacion es poder.",
-            },
-            explorer = {
-                "Hey %s! Acabo de descubrir algo increible!",
-                "Aventurero %s, vamos a explorar!",
-                "%s! Tienes que ver lo que encontre!",
-            },
-        }
-
-        local type_greetings = greetings[villager_type] or {"Hola, %s!"}
-        local greeting = type_greetings[math.random(1, #type_greetings)]
-        minetest.chat_send_player(player_name, string.format(greeting, player_name))
+        -- Usar dialogos desde archivos separados (dialogues/*.lua)
+        local greeting = wetlands_npcs.get_seek_greeting(villager_type, player_name)
+        minetest.chat_send_player(player_name, greeting)
 
         -- Reproducir sonido de saludo (greeting) del NPC
         if wetlands_npcs.play_npc_greeting then
