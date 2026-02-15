@@ -18,8 +18,8 @@ return {
         "El agua cubre el 70% de la Tierra, pero solo el 3% es agua dulce.",
     },
     seek_player = {
-        "Buenos dias %s! Listo para aprender?",
-        "Hola %s! Tengo algo fascinante que enseniarte.",
-        "Bienvenido %s! La educacion es poder.",
+        "Buenos dias @1! Listo para aprender?",
+        "Hola @1! Tengo algo fascinante que enseniarte.",
+        "Bienvenido @1! La educacion es poder.",
     },
 }

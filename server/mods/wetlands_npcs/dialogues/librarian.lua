@@ -19,8 +19,8 @@ return {
         "La biblioteca mas grande del mundo tiene millones de libros.",
     },
     seek_player = {
-        "Bienvenido %s. Tengo un libro nuevo.",
-        "Saludos %s, el conocimiento te espera.",
-        "%s! Pasa, tengo historias maravillosas.",
+        "Bienvenido @1. Tengo un libro nuevo.",
+        "Saludos @1, el conocimiento te espera.",
+        "@1! Pasa, tengo historias maravillosas.",
     },
 }

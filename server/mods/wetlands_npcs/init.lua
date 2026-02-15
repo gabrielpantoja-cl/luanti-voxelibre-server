@@ -30,6 +30,7 @@ end
 -- Namespace global
 wetlands_npcs = {}
 wetlands_npcs.version = "2.0.0"
+wetlands_npcs.S = S
 
 local function log(level, message)
     minetest.log(level, "[" .. modname .. "] " .. message)
@@ -92,17 +93,17 @@ end
 -- ============================================================================
 
 wetlands_npcs.display_names = {
-    luke = "Luke Skywalker",
-    anakin = "Anakin Skywalker",
-    yoda = "Baby Yoda",
-    mandalorian = "Mandalorian",
-    leia = "Princess Leia",
-    splinter = "Maestro Splinter",
-    sensei_wu = "Sensei Wu",
-    farmer = "Agricultor",
-    librarian = "Bibliotecario",
-    teacher = "Maestro",
-    explorer = "Explorador",
+    luke = S("Luke Skywalker"),
+    anakin = S("Anakin Skywalker"),
+    yoda = S("Baby Yoda"),
+    mandalorian = S("Mandalorian"),
+    leia = S("Princesa Leia"),
+    splinter = S("Maestro Splinter"),
+    sensei_wu = S("Sensei Wu"),
+    farmer = S("Agricultor"),
+    librarian = S("Bibliotecario"),
+    teacher = S("Maestro"),
+    explorer = S("Explorador"),
 }
 
 -- ============================================================================
@@ -205,22 +206,22 @@ log("info", "Formspecs loaded")
 -- ============================================================================
 
 local FRIENDSHIP_NAMES = {
-    [0] = "Desconocido", [1] = "Conocido", [2] = "Amigo",
-    [3] = "Buen Amigo", [4] = "Confidente", [5] = "Mejor Amigo",
+    [0] = S("Desconocido"), [1] = S("Conocido"), [2] = S("Amigo"),
+    [3] = S("Buen Amigo"), [4] = S("Confidente"), [5] = S("Mejor Amigo"),
 }
 
 local NPC_TYPES = {
-    luke        = "Luke Skywalker - Caballero Jedi",
-    anakin      = "Anakin Skywalker - Piloto legendario",
-    yoda        = "Baby Yoda (Grogu) - Poderoso en la Fuerza",
-    mandalorian = "Mandalorian - Cazarrecompensas beskar",
-    leia        = "Princess Leia - Lider rebelde",
-    splinter    = "Maestro Splinter - Sabio sensei de las tortugas",
-    sensei_wu   = "Sensei Wu - Maestro de los ninjas de Ninjago",
-    farmer      = "Agricultor - cultiva vegetales",
-    librarian   = "Bibliotecario - guarda conocimiento",
-    teacher     = "Maestro - ensenia ciencia y compasion",
-    explorer    = "Explorador - descubre el mundo",
+    luke        = S("Luke Skywalker - Caballero Jedi"),
+    anakin      = S("Anakin Skywalker - Piloto legendario"),
+    yoda        = S("Baby Yoda (Grogu) - Poderoso en la Fuerza"),
+    mandalorian = S("Mandalorian - Cazarrecompensas beskar"),
+    leia        = S("Princesa Leia - Lider rebelde"),
+    splinter    = S("Maestro Splinter - Sabio sensei de las tortugas"),
+    sensei_wu   = S("Sensei Wu - Maestro de los ninjas de Ninjago"),
+    farmer      = S("Agricultor - cultiva vegetales"),
+    librarian   = S("Bibliotecario - guarda conocimiento"),
+    teacher     = S("Maestro - ensenia ciencia y compasion"),
+    explorer    = S("Explorador - descubre el mundo"),
 }
 
 minetest.register_chatcommand("spawn_npc", {
@@ -234,7 +235,7 @@ minetest.register_chatcommand("spawn_npc", {
         local npc_type = param:lower():gsub("^%s+", ""):gsub("%s+$", "")
 
         if npc_type == "" then
-            local lines = {"=== NPCs disponibles ==="}
+            local lines = {"*** " .. S("NPCs disponibles") .. " ***"}
             for ntype, desc in pairs(NPC_TYPES) do
                 table.insert(lines, "  /spawn_npc " .. ntype .. " - " .. desc)
             end
@@ -242,7 +243,7 @@ minetest.register_chatcommand("spawn_npc", {
         end
 
         if not NPC_TYPES[npc_type] then
-            local lines = {"'" .. npc_type .. "' no existe. NPCs disponibles:"}
+            local lines = {S("'@1' no existe. NPCs disponibles:", npc_type)}
             for ntype, desc in pairs(NPC_TYPES) do
                 table.insert(lines, "  " .. ntype .. " - " .. desc)
             end
@@ -255,9 +256,9 @@ minetest.register_chatcommand("spawn_npc", {
         local obj = minetest.add_entity(pos, modname .. ":" .. npc_type)
         if obj then
             local display = wetlands_npcs.display_names[npc_type] or npc_type
-            return true, display .. " spawneado exitosamente!"
+            return true, S("@1 spawneado exitosamente!", display)
         else
-            return false, "Error al spawnear NPC"
+            return false, S("Error al spawnear NPC")
         end
     end,
 })
@@ -278,25 +279,25 @@ minetest.register_chatcommand("npc_info", {
     privs = {},
     func = function(name, param)
         local info = {
-            "=== NPCs de Wetlands v" .. wetlands_npcs.version .. " ===",
+            "*** " .. S("NPCs de Wetlands v@1", wetlands_npcs.version) .. " ***",
             "",
             "Star Wars:",
             "- Luke Skywalker (/spawn_npc luke)",
             "- Anakin Skywalker (/spawn_npc anakin)",
             "- Baby Yoda (/spawn_npc yoda)",
             "- Mandalorian (/spawn_npc mandalorian)",
-            "- Princess Leia (/spawn_npc leia)",
+            "- " .. S("Princesa Leia") .. " (/spawn_npc leia)",
             "- Maestro Splinter (/spawn_npc splinter)",
             "- Sensei Wu (/spawn_npc sensei_wu)",
             "",
-            "Clasicos:",
-            "- Agricultor (/spawn_npc farmer)",
-            "- Bibliotecario (/spawn_npc librarian)",
-            "- Maestro (/spawn_npc teacher)",
-            "- Explorador (/spawn_npc explorer)",
+            S("Clasicos:"),
+            "- " .. S("Agricultor") .. " (/spawn_npc farmer)",
+            "- " .. S("Bibliotecario") .. " (/spawn_npc librarian)",
+            "- " .. S("Maestro") .. " (/spawn_npc teacher)",
+            "- " .. S("Explorador") .. " (/spawn_npc explorer)",
             "",
-            "Click derecho para interactuar!",
-            "Cada NPC tiene misiones, comercio y sistema de amistad.",
+            S("Click derecho para interactuar!"),
+            S("Cada NPC tiene misiones, comercio y sistema de amistad."),
         }
         return true, table.concat(info, "\n")
     end,
@@ -310,7 +311,7 @@ minetest.register_chatcommand("mi_progreso", {
     func = function(name, param)
         local data = wetlands_npcs.persistence.load_player(name)
         local lines = {
-            "=== Tu Progreso en Wetlands ===",
+            "*** " .. S("Tu Progreso en Wetlands") .. " ***",
             "",
         }
 
@@ -319,29 +320,29 @@ minetest.register_chatcommand("mi_progreso", {
         for npc_type, rel in pairs(data.npc_relationships) do
             met_count = met_count + 1
             local display = wetlands_npcs.display_names[npc_type] or npc_type
-            local fname = FRIENDSHIP_NAMES[rel.friendship_level] or "Desconocido"
+            local fname = FRIENDSHIP_NAMES[rel.friendship_level] or S("Desconocido")
             table.insert(lines, "  " .. display .. ": " .. fname ..
-                " (Nv." .. rel.friendship_level .. ", " ..
+                " (" .. S("Nv.") .. rel.friendship_level .. ", " ..
                 rel.friendship_xp .. " XP)")
         end
         if met_count == 0 then
-            table.insert(lines, "  Aun no has conocido a ningun NPC.")
+            table.insert(lines, "  " .. S("Aun no has conocido a ningun NPC."))
         end
 
         -- Estadisticas
         table.insert(lines, "")
-        table.insert(lines, "Estadisticas:")
-        table.insert(lines, "  Misiones completadas: " .. data.stats.total_quests_completed)
-        table.insert(lines, "  Intercambios: " .. data.stats.total_trades)
-        table.insert(lines, "  NPCs conocidos: " .. data.stats.total_npcs_met .. "/9")
-        table.insert(lines, "  Items unicos: " .. data.stats.total_unique_items)
+        table.insert(lines, S("Estadisticas:"))
+        table.insert(lines, "  " .. S("Misiones completadas:") .. " " .. data.stats.total_quests_completed)
+        table.insert(lines, "  " .. S("Intercambios:") .. " " .. data.stats.total_trades)
+        table.insert(lines, "  " .. S("NPCs conocidos:") .. " " .. data.stats.total_npcs_met .. "/11")
+        table.insert(lines, "  " .. S("Items unicos:") .. " " .. data.stats.total_unique_items)
 
         -- Logros
         local achievement_count = 0
         for _ in pairs(data.achievements) do achievement_count = achievement_count + 1 end
         if achievement_count > 0 then
             table.insert(lines, "")
-            table.insert(lines, "Logros (" .. achievement_count .. "):")
+            table.insert(lines, S("Logros (@1):", achievement_count))
             for id, _ in pairs(data.achievements) do
                 local def = wetlands_npcs.persistence.achievement_defs[id]
                 if def then
@@ -355,7 +356,7 @@ minetest.register_chatcommand("mi_progreso", {
         for _ in pairs(data.active_quests) do active_count = active_count + 1 end
         if active_count > 0 then
             table.insert(lines, "")
-            table.insert(lines, "Misiones activas (" .. active_count .. "):")
+            table.insert(lines, S("Misiones activas (@1):", active_count))
             for quest_id, _ in pairs(data.active_quests) do
                 local def = wetlands_npcs.quests.find_definition(quest_id)
                 if def then

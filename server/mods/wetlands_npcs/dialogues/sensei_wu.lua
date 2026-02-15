@@ -1,4 +1,4 @@
--- Dialogues for Sensei Wu (Ninjago)
+-- Dialogos de Sensei Wu (Ninjago)
 return {
     greetings = {
         "Bienvenido, joven ninja. Soy Sensei Wu, y tengo mucho que ensenarte.",
@@ -19,8 +19,8 @@ return {
     },
     iconic_phrase = "El mejor combate es el que se evita. Pero si debes luchar, hazlo con honor.",
     seek_player = {
-        "Ah, %s. Ven, tomemos un te mientras hablamos de sabiduria.",
-        "%s, joven ninja. Tengo una leccion para ti.",
-        "Bienvenido al spawn, %s. Los maestros estamos aqui para guiarte.",
+        "Ah, @1. Ven, tomemos un te mientras hablamos de sabiduria.",
+        "@1, joven ninja. Tengo una leccion para ti.",
+        "Bienvenido al spawn, @1. Los maestros estamos aqui para guiarte.",
     },
 }

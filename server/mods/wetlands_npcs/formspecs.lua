@@ -4,19 +4,21 @@
 
 wetlands_npcs.formspecs = {}
 
+local S = wetlands_npcs.S
+local F = minetest.formspec_escape
 local STAR_WARS_NPCS = wetlands_npcs.STAR_WARS_NPCS
 
 -- ============================================================================
--- HELPER: Nombres de niveles de amistad
+-- HELPER: Nombres de niveles de amistad (traducibles)
 -- ============================================================================
 
 local FRIENDSHIP_NAMES = {
-    [0] = "Desconocido",
-    [1] = "Conocido",
-    [2] = "Amigo",
-    [3] = "Buen Amigo",
-    [4] = "Confidente",
-    [5] = "Mejor Amigo",
+    [0] = S("Desconocido"),
+    [1] = S("Conocido"),
+    [2] = S("Amigo"),
+    [3] = S("Buen Amigo"),
+    [4] = S("Confidente"),
+    [5] = S("Mejor Amigo"),
 }
 
 local MOOD_COLORS = {
@@ -24,6 +26,13 @@ local MOOD_COLORS = {
     neutral = "#FFFF00",
     sad = "#FF8800",
     tired = "#FF4444",
+}
+
+local MOOD_NAMES = {
+    happy = S("feliz"),
+    neutral = S("neutral"),
+    sad = S("triste"),
+    tired = S("cansado"),
 }
 
 -- ============================================================================
@@ -56,37 +65,31 @@ function wetlands_npcs.formspecs.show_interaction(player_name, npc_type, display
     local active_quests = wetlands_npcs.quests.get_active(player_name, npc_type)
     local quest_badge = ""
     if #available_quests > 0 then
-        quest_badge = " [" .. #available_quests .. " nueva(s)]"
+        quest_badge = " [" .. S("@1 nueva(s)", #available_quests) .. "]"
     elseif #active_quests > 0 then
-        quest_badge = " [" .. #active_quests .. " activa(s)]"
+        quest_badge = " [" .. S("@1 activa(s)", #active_quests) .. "]"
     end
 
-    -- Botones segun tipo de NPC
-    local third_button, btn_greet, btn_work, btn_trade, btn_quests, btn_close
+    -- Botones (unificados en espaniol base, traducidos via i18n)
+    local third_button
     if STAR_WARS_NPCS[npc_type] then
-        third_button = "button[0.5,4;9,0.8;play_iconic;Play iconic audio]"
-        btn_greet = "button[0.5,2;9,0.8;dialogue_greeting;Say hello]"
-        btn_work = "button[0.5,3;9,0.8;dialogue_work;About their story]"
-        btn_trade = "button[0.5,5;9,0.8;trade;Trade]"
-        btn_quests = "button[0.5,6;9,0.8;quests;Missions" ..
-            minetest.formspec_escape(quest_badge) .. "]"
-        btn_close = "button_exit[0.5,7;9,0.8;close;Close]"
+        third_button = "button[0.5,4;9,0.8;play_iconic;" .. F(S("Reproducir audio iconico")) .. "]"
     else
-        third_button = "button[0.5,4;9,0.8;dialogue_education;Dato educativo]"
-        btn_greet = "button[0.5,2;9,0.8;dialogue_greeting;Saludar]"
-        btn_work = "button[0.5,3;9,0.8;dialogue_work;Sobre su historia]"
-        btn_trade = "button[0.5,5;9,0.8;trade;Comerciar]"
-        btn_quests = "button[0.5,6;9,0.8;quests;Misiones" ..
-            minetest.formspec_escape(quest_badge) .. "]"
-        btn_close = "button_exit[0.5,7;9,0.8;close;Cerrar]"
+        third_button = "button[0.5,4;9,0.8;dialogue_education;" .. F(S("Dato educativo")) .. "]"
     end
+
+    local btn_greet = "button[0.5,2;9,0.8;dialogue_greeting;" .. F(S("Saludar")) .. "]"
+    local btn_work = "button[0.5,3;9,0.8;dialogue_work;" .. F(S("Sobre su historia")) .. "]"
+    local btn_trade = "button[0.5,5;9,0.8;trade;" .. F(S("Comerciar")) .. "]"
+    local btn_quests = "button[0.5,6;9,0.8;quests;" .. F(S("Misiones") .. F(quest_badge)) .. "]"
+    local btn_close = "button_exit[0.5,7;9,0.8;close;" .. F(S("Cerrar")) .. "]"
 
     local formspec = "formspec_version[4]" ..
         "size[10,8.5]" ..
         "label[0.5,0.5;" .. name_str .. "]" ..
-        "label[0.5,1.1;Amistad: " .. minetest.formspec_escape(friendship_name) ..
-            " (Nv." .. friendship .. ")  |  Animo: " ..
-            minetest.colorize(mood_color, mood_text) .. "]" ..
+        "label[0.5,1.1;" .. F(S("Amistad")) .. ": " .. F(friendship_name) ..
+            " (" .. F(S("Nv.")) .. friendship .. ")  |  " .. F(S("Animo")) .. ": " ..
+            minetest.colorize(mood_color, F(MOOD_NAMES[mood_text] or mood_text)) .. "]" ..
         btn_greet ..
         btn_work ..
         third_button ..
@@ -107,28 +110,28 @@ function wetlands_npcs.formspecs.show_trade(player_name, npc_type)
 
     local trades = wetlands_npcs.trades[npc_type]
     if not trades then
-        minetest.chat_send_player(player_name, "[NPC] No tengo nada para comerciar ahora.")
+        minetest.chat_send_player(player_name, S("[NPC] No tengo nada para comerciar ahora."))
         return
     end
 
     local display = wetlands_npcs.display_names[npc_type] or npc_type
     local formspec = "formspec_version[4]" ..
         "size[12,11]" ..
-        "label[0.5,0.5;Comercio - " .. minetest.formspec_escape(display) .. "]" ..
-        "label[0.5,1;Ofrece esmeraldas por items:]" ..
+        "label[0.5,0.5;" .. F(S("Comercio")) .. " - " .. F(display) .. "]" ..
+        "label[0.5,1;" .. F(S("Ofrece esmeraldas por items:")) .. "]" ..
         "list[current_player;main;0.5,6;8,4;]"
 
     local y = 2
     for i, trade in ipairs(trades) do
         formspec = formspec .. "label[0.5," .. y .. ";" .. i .. ". " ..
-                   minetest.formspec_escape(trade.give) .. " <- " ..
-                   minetest.formspec_escape(trade.wants) .. "]"
-        formspec = formspec .. "button[7," .. (y-0.2) .. ";3,0.8;trade_" .. i .. ";Comerciar]"
+                   F(trade.give) .. " <- " ..
+                   F(trade.wants) .. "]"
+        formspec = formspec .. "button[7," .. (y-0.2) .. ";3,0.8;trade_" .. i .. ";" .. F(S("Comerciar")) .. "]"
         y = y + 1
     end
 
     -- Boton volver
-    formspec = formspec .. "button[0.5," .. (y + 0.3) .. ";3,0.8;back_to_interact;Volver]"
+    formspec = formspec .. "button[0.5," .. (y + 0.3) .. ";3,0.8;back_to_interact;" .. F(S("Volver")) .. "]"
 
     minetest.show_formspec(player_name,
         "wetlands_npcs:trade_" .. npc_type, formspec)
@@ -150,7 +153,7 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
 
     local formspec = "formspec_version[4]" ..
         "size[12,11]" ..
-        "label[0.5,0.4;Misiones - " .. minetest.formspec_escape(display) .. "]"
+        "label[0.5,0.4;" .. F(S("Misiones")) .. " - " .. F(display) .. "]"
 
     local y = 1.2
 
@@ -158,7 +161,7 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
     if #active > 0 then
         formspec = formspec ..
             "label[0.5," .. y .. ";" ..
-            minetest.colorize("#FFAA00", "MISIONES ACTIVAS:") .. "]"
+            minetest.colorize("#FFAA00", F(S("MISIONES ACTIVAS:"))) .. "]"
         y = y + 0.6
 
         for _, quest_data in ipairs(active) do
@@ -179,7 +182,7 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
                         local color = prog.completed and "#00FF00" or "#FFFF00"
                         local status_text = string.format("%d/%d",
                             prog.current, prog.target)
-                        local desc = obj.description or "Objetivo"
+                        local desc = obj.description or S("Objetivo")
                         formspec = formspec ..
                             "label[1," .. y .. ";" ..
                             minetest.colorize(color, status_text .. " " ..
@@ -192,7 +195,7 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
             if completable then
                 formspec = formspec ..
                     "button[7," .. (y - 0.3) .. ";4,0.7;complete_" .. def.id ..
-                    ";" .. minetest.colorize("#00FF00", "Entregar!") .. "]"
+                    ";" .. minetest.colorize("#00FF00", F(S("Entregar!"))) .. "]"
                 y = y + 0.5
             end
             y = y + 0.3
@@ -203,7 +206,7 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
     if #available > 0 then
         formspec = formspec ..
             "label[0.5," .. y .. ";" ..
-            minetest.colorize("#00CCFF", "MISIONES DISPONIBLES:") .. "]"
+            minetest.colorize("#00CCFF", F(S("MISIONES DISPONIBLES:"))) .. "]"
         y = y + 0.6
 
         for _, quest in ipairs(available) do
@@ -230,19 +233,19 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
                     end
                 end
                 if quest.rewards.unique_item then
-                    reward_text = reward_text .. minetest.colorize("#FFD700", "Item Unico!")
+                    reward_text = reward_text .. minetest.colorize("#FFD700", S("Item Unico!"))
                 end
             end
             if reward_text ~= "" then
                 formspec = formspec ..
-                    "label[1," .. y .. ";Recompensa: " ..
-                    minetest.formspec_escape(reward_text) .. "]"
+                    "label[1," .. y .. ";" .. F(S("Recompensa:")) .. " " ..
+                    F(reward_text) .. "]"
                 y = y + 0.4
             end
 
             formspec = formspec ..
                 "button[7," .. (y - 0.3) .. ";4,0.7;accept_" .. quest.id ..
-                "_" .. npc_type .. ";Aceptar]"
+                "_" .. npc_type .. ";" .. F(S("Aceptar")) .. "]"
             y = y + 0.6
         end
     end
@@ -252,13 +255,13 @@ function wetlands_npcs.formspecs.show_quests(player_name, npc_type)
         formspec = formspec ..
             "label[0.5," .. y .. ";" ..
             minetest.colorize("#888888",
-            "No hay misiones disponibles por ahora. Sube tu nivel de amistad!") .. "]"
+            F(S("No hay misiones disponibles por ahora. Sube tu nivel de amistad!"))) .. "]"
         y = y + 0.6
     end
 
     -- Boton volver
     formspec = formspec ..
-        "button[0.5," .. math.max(y + 0.3, 9.5) .. ";3,0.7;back_to_interact;Volver]"
+        "button[0.5," .. math.max(y + 0.3, 9.5) .. ";3,0.7;back_to_interact;" .. F(S("Volver")) .. "]"
 
     minetest.show_formspec(player_name,
         "wetlands_npcs:quests_" .. npc_type, formspec)
@@ -337,12 +340,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                         inv:remove_item("main", wants_item .. " " .. wants_count)
                         inv:add_item("main", trade.give)
                         minetest.chat_send_player(player_name,
-                            minetest.colorize("#00FF00", "[Comercio exitoso] Gracias por tu intercambio!"))
+                            minetest.colorize("#00FF00", S("[Comercio exitoso] Gracias por tu intercambio!")))
                         wetlands_npcs.persistence.update_relationship(
                             player_name, npc_type, "trade")
                     else
                         minetest.chat_send_player(player_name,
-                            minetest.colorize("#FF4444", "[Comercio fallido] No tienes suficientes items."))
+                            minetest.colorize("#FF4444", S("[Comercio fallido] No tienes suficientes items.")))
                     end
                 end
             end
@@ -378,7 +381,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 local ok, msg = wetlands_npcs.quests.complete(player_name, quest_id)
                 if not ok then
                     minetest.chat_send_player(player_name,
-                        minetest.colorize("#FF4444", "[Mision] " .. (msg or "Error")))
+                        minetest.colorize("#FF4444", S("[Mision] @1", msg or "Error")))
                 end
                 wetlands_npcs.formspecs.show_quests(player_name, npc_type)
             end

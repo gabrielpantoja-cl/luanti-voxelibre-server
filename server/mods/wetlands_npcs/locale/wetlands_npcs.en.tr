@@ -1,0 +1,391 @@
+# textdomain: wetlands_npcs
+
+# ============================================================================
+# Display Names
+# ============================================================================
+Luke Skywalker=Luke Skywalker
+Anakin Skywalker=Anakin Skywalker
+Baby Yoda=Baby Yoda
+Mandalorian=Mandalorian
+Princesa Leia=Princess Leia
+Maestro Splinter=Master Splinter
+Sensei Wu=Sensei Wu
+Agricultor=Farmer
+Bibliotecario=Librarian
+Maestro=Teacher
+Explorador=Explorer
+
+# ============================================================================
+# NPC Type Descriptions
+# ============================================================================
+Luke Skywalker - Caballero Jedi=Luke Skywalker - Jedi Knight
+Anakin Skywalker - Piloto legendario=Anakin Skywalker - Legendary Pilot
+Baby Yoda (Grogu) - Poderoso en la Fuerza=Baby Yoda (Grogu) - Powerful in the Force
+Mandalorian - Cazarrecompensas beskar=Mandalorian - Beskar Bounty Hunter
+Princesa Leia - Lider rebelde=Princess Leia - Rebel Leader
+Maestro Splinter - Sabio sensei de las tortugas=Master Splinter - Wise Turtle Sensei
+Sensei Wu - Maestro de los ninjas de Ninjago=Sensei Wu - Ninjago Ninja Master
+Agricultor - cultiva vegetales=Farmer - grows vegetables
+Bibliotecario - guarda conocimiento=Librarian - keeps knowledge
+Maestro - ensenia ciencia y compasion=Teacher - teaches science and compassion
+Explorador - descubre el mundo=Explorer - discovers the world
+
+# ============================================================================
+# Friendship Levels
+# ============================================================================
+Desconocido=Stranger
+Conocido=Acquaintance
+Amigo=Friend
+Buen Amigo=Good Friend
+Confidente=Confidant
+Mejor Amigo=Best Friend
+
+# ============================================================================
+# Mood Names
+# ============================================================================
+feliz=happy
+neutral=neutral
+triste=sad
+cansado=tired
+
+# ============================================================================
+# UI - Formspec Buttons
+# ============================================================================
+Saludar=Say Hello
+Sobre su historia=About Their Story
+Reproducir audio iconico=Play Iconic Audio
+Dato educativo=Fun Fact
+Comerciar=Trade
+Misiones=Missions
+Cerrar=Close
+Volver=Back
+Aceptar=Accept
+Entregar!=Turn In!
+
+# ============================================================================
+# UI - Formspec Labels
+# ============================================================================
+Amistad=Friendship
+Nv.=Lv.
+Animo=Mood
+Comercio=Trade
+Ofrece esmeraldas por items:=Offer emeralds for items:
+Recompensa:=Reward:
+Item Unico!=Unique Item!
+MISIONES ACTIVAS:=ACTIVE MISSIONS:
+MISIONES DISPONIBLES:=AVAILABLE MISSIONS:
+No hay misiones disponibles por ahora. Sube tu nivel de amistad!=No missions available right now. Raise your friendship level!
+Objetivo=Objective
+@1 nueva(s)=@1 new
+@1 activa(s)=@1 active
+
+# ============================================================================
+# Trade Messages
+# ============================================================================
+[NPC] No tengo nada para comerciar ahora.=[NPC] I have nothing to trade right now.
+[Comercio exitoso] Gracias por tu intercambio!=[Trade successful] Thanks for your exchange!
+[Comercio fallido] No tienes suficientes items.=[Trade failed] You don't have enough items.
+[Mision] @1=[Mission] @1
+
+# ============================================================================
+# NPC Registry & Command Outputs
+# ============================================================================
+Agricultor de Wetlands=Wetlands Farmer
+Bibliotecario de Wetlands=Wetlands Librarian
+Maestro de Wetlands=Wetlands Teacher
+Explorador de Wetlands=Wetlands Explorer
+[Admin] @1 es inmortal. Usa /npc_remove para eliminar NPCs.=[Admin] @1 is immortal. Use /npc_remove to remove NPCs.
+[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles dano!=[Server] Wetlands NPCs are your friends. You can't hurt them!
+
+NPCs disponibles=Available NPCs
+'@1' no existe. NPCs disponibles:='@1' does not exist. Available NPCs:
+@1 spawneado exitosamente!=@1 spawned successfully!
+Error al spawnear NPC=Error spawning NPC
+Clasicos:=Classics:
+Click derecho para interactuar!=Right-click to interact!
+Cada NPC tiene misiones, comercio y sistema de amistad.=Each NPC has missions, trading and a friendship system.
+NPCs de Wetlands v@1=Wetlands NPCs v@1
+Tu Progreso en Wetlands=Your Wetlands Progress
+Aun no has conocido a ningun NPC.=You haven't met any NPC yet.
+Estadisticas:=Statistics:
+Misiones completadas:=Missions completed:
+Intercambios:=Trades:
+NPCs conocidos:=NPCs met:
+Items unicos:=Unique items:
+Logros (@1):=Achievements (@1):
+Misiones activas (@1):=Active missions (@1):
+Hola, @1!=Hello, @1!
+
+# ============================================================================
+# Luke Skywalker - Greetings
+# ============================================================================
+Que la Fuerza te acompanie, amigo!=May the Force be with you, friend!
+Hola! Soy Luke. Has volado alguna vez un X-Wing? Tiene 4 alas que se abren en forma de X!=Hey! I'm Luke. Have you ever flown an X-Wing? It has 4 wings that open in an X shape!
+Bienvenido! La galaxia necesita heroes como tu.=Welcome! The galaxy needs heroes like you.
+Saludos! Sabias que creci en Tatooine? Tiene DOS soles, los atardeceres son dobles!=Greetings! Did you know I grew up on Tatooine? It has TWO suns, the sunsets are double!
+Hola! Mi padre fue Darth Vader, pero al final volvio al lado luminoso.=Hello! My father was Darth Vader, but in the end he came back to the light side.
+Hey! Sabias que la Estrella de la Muerte media 160 km de diametro? Mas grande que muchas lunas!=Hey! Did you know the Death Star was 160 km in diameter? Bigger than many moons!
+Hola! Han Solo hizo el recorrido de Kessel en menos de 12 parsecs con el Halcon Milenario!=Hello! Han Solo made the Kessel run in less than 12 parsecs with the Millennium Falcon!
+
+# Luke Skywalker - About Work
+Soy un Caballero Jedi. Mi maestro fue Yoda, el mas sabio de todos. Vivio 900 anios!=I'm a Jedi Knight. My master was Yoda, the wisest of all. He lived 900 years!
+Destrui la primera Estrella de la Muerte con un disparo imposible!=I destroyed the first Death Star with an impossible shot!
+Mi sable laser es verde. Lo construi con un cristal Kyber que encontre en una cueva de Dagobah.=My lightsaber is green. I built it with a Kyber crystal I found in a cave on Dagobah.
+Entreno nuevos Jedi. La Fuerza tiene un lado luminoso y uno oscuro, el equilibrio es la clave.=I train new Jedi. The Force has a light side and a dark side, balance is the key.
+Mi mejor amigo es Han Solo. Juntos salvamos la galaxia mas de una vez.=My best friend is Han Solo. Together we saved the galaxy more than once.
+Los sables laser funcionan con cristales Kyber. Cada Jedi encuentra el suyo en una cueva especial.=Lightsabers work with Kyber crystals. Every Jedi finds their own in a special cave.
+
+# Luke Skywalker - Iconic & Seek
+Que la Fuerza te acompanie...=May the Force be with you...
+Que la Fuerza te acompanie, @1!=May the Force be with you, @1!
+Hey @1! Quieres entrenar con un sable laser?=Hey @1! Want to train with a lightsaber?
+Saludos @1! La galaxia te necesita!=Greetings @1! The galaxy needs you!
+
+# ============================================================================
+# Anakin Skywalker - Greetings
+# ============================================================================
+Saludos! Soy Anakin, el mejor piloto de la galaxia.=Greetings! I'm Anakin, the best pilot in the galaxy.
+Hey! Quieres ver mis habilidades con el sable laser? Puede cortar casi cualquier material!=Hey! Wanna see my lightsaber skills? It can cut through almost any material!
+Bienvenido! Construi a C-3PO con partes recicladas cuando tenia 9 anios. Habla 6 millones de idiomas!=Welcome! I built C-3PO from recycled parts when I was 9. He speaks 6 million languages!
+Hola! La Fuerza es fuerte en ti, puedo sentirlo. Los midiclorianos no mienten.=Hello! The Force is strong with you, I can feel it. The midi-chlorians don't lie.
+Que bueno verte! Acabamos de ganar una batalla en las Guerras Clon.=Good to see you! We just won a battle in the Clone Wars.
+Hey! Sabias que los podracers alcanzan 900 km/h? Los motores son como cohetes gemelos!=Hey! Did you know podracers reach 900 km/h? The engines are like twin rockets!
+
+# Anakin Skywalker - About Work
+Soy Caballero Jedi y General en las Guerras Clon. Mi maestro es Obi-Wan.=I'm a Jedi Knight and General in the Clone Wars. My master is Obi-Wan.
+Cuando era ninio gane una carrera de pods en Tatooine. Fui el primer humano en lograrlo!=When I was a kid I won a podrace on Tatooine. I was the first human to do it!
+R2-D2 me ha salvado la vida como 100 veces. Es un droide que puede hackear cualquier computadora!=R2-D2 has saved my life like 100 times. He's a droid that can hack any computer!
+Lucho para proteger a los inocentes. Esa es la mision de un Jedi.=I fight to protect the innocent. That is the mission of a Jedi.
+Mi sable laser es azul, el color de los Jedi Guardianes. Solo el beskar puede resistir un corte.=My lightsaber is blue, the color of Jedi Guardians. Only beskar can resist a cut.
+Los Clones fueron creados en Kamino, un planeta oceano con tormentas constantes. Increible, no?=The Clones were created on Kamino, an ocean planet with constant storms. Incredible, right?
+El Templo Jedi en Coruscant tiene miles de anios y 5 torres enormes.=The Jedi Temple on Coruscant is thousands of years old and has 5 enormous towers.
+
+# Anakin Skywalker - Iconic & Seek
+Yo soy tu padre.=I am your father.
+Hola @1! Soy el mejor piloto de la galaxia!=Hello @1! I'm the best pilot in the galaxy!
+@1! Quieres ver mi droide R2-D2?=@1! Want to see my droid R2-D2?
+Bienvenido @1! La Fuerza es fuerte en ti!=Welcome @1! The Force is strong with you!
+
+# ============================================================================
+# Baby Yoda (Grogu) - Greetings
+# ============================================================================
+Hmm! Un visitante tenemos. Bienvenido eres.=Hmm! A visitor we have. Welcome you are.
+La Fuerza, en ti la siento. Fuerte es.=The Force, in you I sense. Strong it is.
+Hola! Cosas magicas, mostrarte puedo.=Hello! Magic things, show you I can.
+Pequenio soy, pero poderoso. Por mi tamanio juzgarme, no debes.=Small I am, but powerful. Judge me by my size, you should not.
+Guu guu! ...digo, bienvenido! Mi especie, un misterio es. Solo 3 hemos aparecido!=Goo goo! ...I mean, welcome! My species, a mystery it is. Only 3 have we appeared!
+Hmm! Los Jawas en Tatooine, droides viejos reciclan. Los mejores recicladores, son!=Hmm! The Jawas on Tatooine, old droids they recycle. The best recyclers, they are!
+
+# Baby Yoda - About Work
+Con la Fuerza, cosas mover puedo. Pesadas o ligeras, importa no.=With the Force, things move I can. Heavy or light, matters it does not.
+Maestros Jedi me cuidan. Din Djarin, mi protector es. Su beskar, sables laser bloquea!=Jedi Masters take care of me. Din Djarin, my protector he is. His beskar, lightsabers it blocks!
+Las ranas me gustan mucho. Deliciosas son! ...juzgarme, no debes.=Frogs I like very much. Delicious they are! ...judge me, do not.
+50 anios tengo, pero un bebe todavia soy. Mi especie, lentamente crece.=50 years old I am, but a baby still I am. My species, slowly it grows.
+La Fuerza, usarla sin pensar puedo. Los midiclorianos de Anakin, mas de 20,000 por celula eran!=The Force, use it without thinking I can. Anakin's midi-chlorians, over 20,000 per cell they were!
+El Halcon Milenario, chatarra parece, pero la nave mas rapida del universo es.=The Millennium Falcon, junk it looks like, but the fastest ship in the universe it is.
+Los Jedi mas antiguos, en fantasmas de la Fuerza convertirse podian. Increible, si.=The oldest Jedi, into Force ghosts they could turn. Incredible, yes.
+
+# Baby Yoda - Iconic & Seek
+Hazlo o no lo hagas... intentar no existe.=Do or do not... there is no try.
+Hmm, @1! Bienvenido eres.=Hmm, @1! Welcome you are.
+La Fuerza, en ti siento, @1!=The Force, in you I sense, @1!
+@1! Cosas magicas, mostrarte puedo.=@1! Magic things, show you I can.
+
+# ============================================================================
+# Mandalorian (Din Djarin) - Greetings
+# ============================================================================
+Este es el Camino.=This is the Way.
+Saludos. Nunca me quito el casco. Es tradicion. Jamas frente a otros.=Greetings. I never remove my helmet. It is tradition. Never in front of others.
+Bienvenido. Si necesitas proteccion, aqui estoy.=Welcome. If you need protection, I am here.
+Hola. Tengo una mision, pero puedo hablar un momento.=Hello. I have a mission, but I can talk for a moment.
+Soy Mandalorian. Mi honor es mi armadura. El beskar es mas valioso que el oro.=I am Mandalorian. My honor is my armor. Beskar is more valuable than gold.
+Boba Fett tambien usa beskar. Es el clon mas famoso de Jango Fett.=Boba Fett also wears beskar. He's the most famous clone of Jango Fett.
+
+# Mandalorian - About Work
+Soy cazarrecompensas. Pero ahora mi mision es proteger al Ninio.=I'm a bounty hunter. But now my mission is to protect the Child.
+Mi armadura es beskar puro, minado solo en Mandalore. Fue forjada por la Armera de mi clan.=My armor is pure beskar, mined only on Mandalore. It was forged by the Armorer of my clan.
+El Sable Oscuro fue creado por Tarre Vizsla, el primer Jedi Mandalorian. Tiene 1000 anios!=The Darksaber was created by Tarre Vizsla, the first Mandalorian Jedi. It's 1000 years old!
+He viajado por toda la galaxia. Cada planeta tiene sus peligros y maravillas.=I've traveled across the entire galaxy. Every planet has its dangers and wonders.
+Mi nave se llamaba la Razor Crest. Era vieja pero confiable. La extranio.=My ship was called the Razor Crest. She was old but reliable. I miss her.
+Los jetpacks Mandalorianos usan propulsion ionica. Alcanzan 145 km/h!=Mandalorian jetpacks use ionic propulsion. They reach 145 km/h!
+La Tribu Mandalorian vive oculta. Solo un guerrero sale a la vez por recursos.=The Mandalorian Tribe lives in hiding. Only one warrior goes out at a time for resources.
+Un parsec son 3.26 anios luz. El Halcon Milenario hizo el recorrido de Kessel en menos de 12.=A parsec is 3.26 light years. The Millennium Falcon made the Kessel run in less than 12.
+
+# Mandalorian - Iconic & Seek
+@1. Este es el Camino.=@1. This is the Way.
+Saludos @1. Mi beskar te protegera.=Greetings @1. My beskar will protect you.
+@1, tengo una mision para ti.=@1, I have a mission for you.
+
+# ============================================================================
+# Princess Leia - Greetings
+# ============================================================================
+Hola! Soy la Princesa Leia Organa de Alderaan. Bienvenido!=Hello! I'm Princess Leia Organa of Alderaan. Welcome!
+Saludos! La Rebelion siempre necesita almas valientes como tu.=Greetings! The Rebellion always needs brave souls like you.
+Hey! Sabias que Alderaan era uno de los planetas mas pacificos de la galaxia?=Hey! Did you know Alderaan was one of the most peaceful planets in the galaxy?
+Bienvenido! Soy Senadora y lider de la Alianza Rebelde.=Welcome! I'm a Senator and a leader of the Rebel Alliance.
+Hola! Ayudame, eres mi unica esperanza!=Hello! Help me, you're my only hope!
+Saludos! Una vez estrangule a un Hutt con mis propias cadenas. No me subestimes.=Greetings! I once strangled a Hutt with my own chains. Don't underestimate me.
+
+# Princess Leia - About Work
+Lidero la Alianza Rebelde contra el Imperio. La libertad vale la pena luchar por ella!=I lead the Rebel Alliance against the Empire. Freedom is worth fighting for!
+Soy diplomatica y guerrera. Mi punteria con el blaster es mejor que la de la mayoria de stormtroopers.=I'm a diplomat and a warrior. My blaster aim is better than most stormtroopers.
+Mi planeta natal Alderaan fue destruido por la Estrella de la Muerte. Lucho para que nunca vuelva a pasar.=My home planet Alderaan was destroyed by the Death Star. I fight so it never happens again.
+Luke es mi hermano gemelo! No lo supimos hasta mucho despues. La Fuerza actua de formas misteriosas.=Luke is my twin brother! We didn't find out until much later. The Force works in mysterious ways.
+Han Solo es... complicado. Pero volvio cuando importaba. Siempre lo hace.=Han Solo is... complicated. But he came back when it mattered. He always does.
+La base Rebelde en Hoth estaba oculta en cuevas de hielo. Hacia mucho frio pero nos teniamos los unos a los otros.=The Rebel base on Hoth was hidden in ice caves. It was freezing but we had each other.
+Yo tambien puedo sentir la Fuerza. Es algo de familia Skywalker.=I can feel the Force too. It runs in the Skywalker family.
+
+# Princess Leia - Iconic & Seek
+Ayudame, Obi-Wan Kenobi. Eres mi unica esperanza.=Help me, Obi-Wan Kenobi. You're my only hope.
+Hola @1! La Rebelion te necesita!=Hello @1! The Rebellion needs you!
+@1! Ven, tengo informacion importante.=@1! Come, I have important information.
+Bienvenido @1! Juntos derrotaremos al Imperio!=Welcome @1! Together we'll defeat the Empire!
+
+# ============================================================================
+# Maestro Splinter (TMNT) - Greetings
+# ============================================================================
+Bienvenido, joven. Yo soy Splinter, y este es nuestro hogar.=Welcome, young one. I am Splinter, and this is our home.
+La paciencia es la mayor de las virtudes. Bienvenido a Wetlands.=Patience is the greatest of virtues. Welcome to Wetlands.
+Un nuevo estudiante llega. El camino del aprendizaje no tiene fin.=A new student arrives. The path of learning has no end.
+Hola, joven guerrero. Aqui encontraras paz y conocimiento.=Hello, young warrior. Here you will find peace and knowledge.
+En este mundo, la compasion es mas fuerte que cualquier arma.=In this world, compassion is stronger than any weapon.
+Bienvenido. Recuerda: un verdadero maestro nunca deja de aprender.=Welcome. Remember: a true master never stops learning.
+
+# Maestro Splinter - About Work
+Entrene a cuatro tortugas para ser heroes. La disciplina y el amor fueron mis herramientas.=I trained four turtles to be heroes. Discipline and love were my tools.
+Leonardo lidera, Rafael es fuerte, Donatello es brillante, y Miguel Angel... el alegra nuestros corazones.=Leonardo leads, Raphael is strong, Donatello is brilliant, and Michelangelo... he brightens our hearts.
+Las artes marciales no son para la violencia. Son para proteger a quienes amamos.=Martial arts are not for violence. They are for protecting those we love.
+De una rata en las alcantarillas de Nueva York, me converti en maestro. Nunca subestimes a nadie.=From a rat in the sewers of New York, I became a master. Never underestimate anyone.
+La meditacion trae claridad. Sientate un momento y escucha el mundo.=Meditation brings clarity. Sit for a moment and listen to the world.
+Shredder era mi enemigo, pero el odio solo destruye a quien lo siente.=Shredder was my enemy, but hatred only destroys the one who feels it.
+La pizza... mis hijos la aman. Yo prefiero el te verde y la reflexion.=Pizza... my sons love it. I prefer green tea and reflection.
+
+# Maestro Splinter - Iconic & Seek
+Recuerda, la verdadera victoria es la que se gana sin luchar.=Remember, the true victory is the one won without fighting.
+Ah, @1. Ven, tengo sabiduria para compartir contigo.=Ah, @1. Come, I have wisdom to share with you.
+@1, joven alumno. La Fuerza... digo, la disciplina te guiara.=@1, young student. The Force... I mean, discipline will guide you.
+Bienvenido al spawn, @1. Este es un lugar seguro.=Welcome to spawn, @1. This is a safe place.
+
+# ============================================================================
+# Sensei Wu (Ninjago) - Greetings
+# ============================================================================
+Bienvenido, joven ninja. Soy Sensei Wu, y tengo mucho que ensenarte.=Welcome, young ninja. I am Sensei Wu, and I have much to teach you.
+El camino del ninja comienza con un solo paso. Bienvenido a Wetlands.=The ninja's path begins with a single step. Welcome to Wetlands.
+Ah, un nuevo estudiante. Recuerda: el ninja mas fuerte es el que controla su mente.=Ah, a new student. Remember: the strongest ninja is the one who controls their mind.
+Hola, joven. En Ninjago aprendimos que el trabajo en equipo vence cualquier obstaculo.=Hello, young one. In Ninjago we learned that teamwork overcomes any obstacle.
+Bienvenido. Un buen te y una buena leccion pueden cambiar tu dia.=Welcome. A good tea and a good lesson can change your day.
+Llegas justo a tiempo. Nunca es tarde para aprender algo nuevo.=You arrive just in time. It's never too late to learn something new.
+
+# Sensei Wu - About Work
+Entrene a Kai, Jay, Zane y Cole para ser los mejores ninjas. Cada uno tenia un elemento unico.=I trained Kai, Jay, Zane and Cole to be the best ninjas. Each one had a unique element.
+Kai domina el fuego, Jay el rayo, Zane el hielo, Cole la tierra, y Lloyd... Lloyd es el ninja dorado.=Kai masters fire, Jay lightning, Zane ice, Cole earth, and Lloyd... Lloyd is the golden ninja.
+Mi hermano Garmadon eligio el camino oscuro, pero al final, el amor por su hijo lo redimio.=My brother Garmadon chose the dark path, but in the end, love for his son redeemed him.
+El Spinjitzu es el arte marcial mas antiguo de Ninjago. Requiere equilibrio interior.=Spinjitzu is the most ancient martial art in Ninjago. It requires inner balance.
+Cada dia tomo mi te. La paciencia es una virtud que todos los ninjas deben cultivar.=Every day I drink my tea. Patience is a virtue that all ninjas must cultivate.
+Las Armas Doradas tienen un poder inmenso, pero la verdadera fuerza viene del corazon.=The Golden Weapons hold immense power, but true strength comes from the heart.
+Lloyd tuvo que enfrentar a su propio padre. A veces el mayor desafio es familiar.=Lloyd had to face his own father. Sometimes the greatest challenge is family.
+
+# Sensei Wu - Iconic & Seek
+El mejor combate es el que se evita. Pero si debes luchar, hazlo con honor.=The best fight is the one avoided. But if you must fight, do it with honor.
+Ah, @1. Ven, tomemos un te mientras hablamos de sabiduria.=Ah, @1. Come, let's have tea while we talk about wisdom.
+@1, joven ninja. Tengo una leccion para ti.=@1, young ninja. I have a lesson for you.
+Bienvenido al spawn, @1. Los maestros estamos aqui para guiarte.=Welcome to spawn, @1. The masters are here to guide you.
+
+# ============================================================================
+# Agricultor (Farmer) - Greetings
+# ============================================================================
+Hola! Cultivo vegetales frescos y saludables para la comunidad.=Hello! I grow fresh and healthy vegetables for the community.
+Buenos dias! Te gustaria aprender sobre agricultura sostenible?=Good morning! Would you like to learn about sustainable farming?
+Bienvenido! Cultivamos solo alimentos de origen vegetal.=Welcome! We only grow plant-based food.
+Que gusto verte! Hoy las zanahorias estan creciendo muy bien.=Nice to see you! The carrots are growing really well today.
+Hola! Las plantas necesitan luz... como los Jedi necesitan la Fuerza.=Hello! Plants need light... just like the Jedi need the Force.
+
+# Agricultor - About Work
+Trabajo la tierra cada dia. Las plantas necesitan agua, luz y cuidado.=I work the land every day. Plants need water, light and care.
+La agricultura sostenible alimenta al mundo sin daniar el planeta.=Sustainable farming feeds the world without harming the planet.
+Las abejas polinizan mis cultivos. Sin ellas no habria cosecha!=Bees pollinate my crops. Without them there would be no harvest!
+Compostar los restos de comida crea el mejor fertilizante natural.=Composting food scraps makes the best natural fertilizer.
+Incluso en Tatooine con dos soles se puede cultivar... bueno, casi.=Even on Tatooine with two suns you can farm... well, almost.
+
+# Agricultor - Education
+Las plantas liberan oxigeno durante el dia. Los arboles son los pulmones del planeta.=Plants release oxygen during the day. Trees are the lungs of the planet.
+Una semilla de trigo puede producir cientos de granos. La naturaleza es generosa!=A single wheat seed can produce hundreds of grains. Nature is generous!
+El agua subterranea alimenta las raices. Por eso cuidar los rios es tan importante.=Groundwater feeds the roots. That's why caring for rivers is so important.
+
+# Agricultor - Seek
+Hola @1! La cosecha de hoy esta increible!=Hello @1! Today's harvest is incredible!
+Bienvenido @1, quieres ver mi huerto?=Welcome @1, want to see my garden?
+Hey @1! Ven a ver mis cultivos!=Hey @1! Come see my crops!
+
+# ============================================================================
+# Bibliotecario (Librarian) - Greetings
+# ============================================================================
+Saludos! Guardo el conocimiento de nuestra comunidad.=Greetings! I keep the knowledge of our community.
+Hola! Buscas aprender algo nuevo hoy?=Hello! Looking to learn something new today?
+Bienvenido! Aqui encontraras libros sobre compasion y ciencia.=Welcome! Here you'll find books about compassion and science.
+Pasa, pasa! Tengo historias maravillosas que compartir.=Come in, come in! I have wonderful stories to share.
+Hola! Tengo un libro mas viejo que Yoda... bueno, casi. El vivio 900 anios!=Hello! I have a book older than Yoda... well, almost. He lived 900 years!
+
+# Bibliotecario - About Work
+Los libros preservan el conocimiento de generaciones.=Books preserve the knowledge of generations.
+La lectura expande tu mente y ayuda a entender el mundo.=Reading expands your mind and helps you understand the world.
+Cada libro es una ventana a un mundo diferente. Cual quieres abrir?=Every book is a window to a different world. Which one do you want to open?
+Dicen que los archivos del Templo Jedi tenian mas libros que cualquier biblioteca.=They say the Jedi Temple archives had more books than any library.
+
+# Bibliotecario - Education
+Sabias que leer 30 minutos al dia mejora tu vocabulario?=Did you know reading 30 minutes a day improves your vocabulary?
+Los primeros libros se escribian a mano. Tardaban meses en completarse!=The first books were written by hand. They took months to complete!
+La biblioteca mas grande del mundo tiene millones de libros.=The largest library in the world has millions of books.
+
+# Bibliotecario - Seek
+Bienvenido @1. Tengo un libro nuevo.=Welcome @1. I have a new book.
+Saludos @1, el conocimiento te espera.=Greetings @1, knowledge awaits you.
+@1! Pasa, tengo historias maravillosas.=@1! Come in, I have wonderful stories.
+
+# ============================================================================
+# Maestro (Teacher) - Greetings
+# ============================================================================
+Hola! Me encanta enseniar sobre ciencia y naturaleza.=Hello! I love teaching about science and nature.
+Buenos dias! Listo para aprender algo fascinante?=Good morning! Ready to learn something fascinating?
+La educacion es la herramienta mas poderosa para cambiar el mundo.=Education is the most powerful tool to change the world.
+Como diria cierto maestro verde: Hazlo o no lo hagas, no hay intentar.=As a certain green master would say: Do or do not, there is no try.
+
+# Maestro - About Work
+Ensenio ciencia, matematicas y compasion hacia todos los seres.=I teach science, math and compassion towards all beings.
+Mi trabajo es despertar la curiosidad en las mentes jovenes.=My job is to awaken curiosity in young minds.
+Ensenio que todos los seres merecen respeto y cuidado.=I teach that all beings deserve respect and care.
+Los midi-clorianos no son reales... pero las mitocondrias si! Son la fuerza de las celulas.=Midi-chlorians aren't real... but mitochondria are! They're the powerhouse of the cell.
+
+# Maestro - Education
+Sabias que los animales sienten emociones como nosotros?=Did you know animals feel emotions just like us?
+Tu cerebro tiene mas conexiones que estrellas hay en la galaxia!=Your brain has more connections than there are stars in the galaxy!
+El agua cubre el 70% de la Tierra, pero solo el 3% es agua dulce.=Water covers 70% of the Earth, but only 3% is fresh water.
+
+# Maestro - Seek
+Buenos dias @1! Listo para aprender?=Good morning @1! Ready to learn?
+Hola @1! Tengo algo fascinante que enseniarte.=Hello @1! I have something fascinating to teach you.
+Bienvenido @1! La educacion es poder.=Welcome @1! Education is power.
+
+# ============================================================================
+# Explorador (Explorer) - Greetings
+# ============================================================================
+Hola aventurero! He viajado por todos los biomas del mundo.=Hello adventurer! I've traveled through all the biomes in the world.
+Saludos! Te gustaria escuchar historias de mis viajes?=Greetings! Would you like to hear stories from my travels?
+Hola! Acabo de volver de explorar unas cuevas increibles.=Hello! I just got back from exploring some incredible caves.
+He explorado tantos biomas como planetas ha visitado el Mandalorian!=I've explored as many biomes as planets the Mandalorian has visited!
+
+# Explorador - About Work
+Exploro el mundo y estudio diferentes ecosistemas.=I explore the world and study different ecosystems.
+Cada bioma tiene plantas y animales unicos que merecen proteccion.=Every biome has unique plants and animals that deserve protection.
+Mi brujula y mi mapa son mis mejores amigos en las expediciones.=My compass and map are my best friends on expeditions.
+Me recuerdan a los exploradores de Kamino... pero con menos lluvia.=They remind me of the explorers from Kamino... but with less rain.
+
+# Explorador - Education
+Sabias que los bosques producen gran parte del oxigeno que respiramos?=Did you know forests produce a large part of the oxygen we breathe?
+La biodiversidad es fundamental para el equilibrio del planeta.=Biodiversity is fundamental for the planet's balance.
+Cada gota de agua que bebes ha existido desde que se formo la Tierra!=Every drop of water you drink has existed since the Earth was formed!
+
+# Explorador - Seek
+Hey @1! Acabo de descubrir algo increible!=Hey @1! I just discovered something incredible!
+Aventurero @1, vamos a explorar!=Adventurer @1, let's go explore!
+@1! Tienes que ver lo que encontre!=@1! You have to see what I found!
