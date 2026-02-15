@@ -57,6 +57,7 @@ end
 
 local STAR_WARS_NPCS = {
     luke = true, anakin = true, yoda = true, mandalorian = true, leia = true,
+    splinter = true, sensei_wu = true,
 }
 wetlands_npcs.STAR_WARS_NPCS = STAR_WARS_NPCS
 
@@ -96,6 +97,8 @@ wetlands_npcs.display_names = {
     yoda = "Baby Yoda",
     mandalorian = "Mandalorian",
     leia = "Princess Leia",
+    splinter = "Maestro Splinter",
+    sensei_wu = "Sensei Wu",
     farmer = "Agricultor",
     librarian = "Bibliotecario",
     teacher = "Maestro",
@@ -131,6 +134,16 @@ wetlands_npcs.trades = {
         {give = "mcl_books:book 2", wants = "mcl_core:emerald 2"},
         {give = "mcl_core:gold_ingot 2", wants = "mcl_core:emerald 3"},
         {give = "mcl_core:apple 10", wants = "mcl_core:emerald 1"},
+    },
+    splinter = {
+        {give = "mcl_books:book 3", wants = "mcl_core:emerald 1"},
+        {give = "mcl_core:stick 5", wants = "mcl_core:emerald 1"},
+        {give = "mcl_core:apple 5", wants = "mcl_core:emerald 2"},
+    },
+    sensei_wu = {
+        {give = "mcl_books:book 2", wants = "mcl_core:emerald 1"},
+        {give = "mcl_core:gold_ingot 1", wants = "mcl_core:emerald 3"},
+        {give = "mcl_core:stick 3", wants = "mcl_core:emerald 1"},
     },
     farmer = {
         {give = "mcl_farming:carrot_item 5", wants = "mcl_core:emerald 1"},
@@ -202,6 +215,8 @@ local NPC_TYPES = {
     yoda        = "Baby Yoda (Grogu) - Poderoso en la Fuerza",
     mandalorian = "Mandalorian - Cazarrecompensas beskar",
     leia        = "Princess Leia - Lider rebelde",
+    splinter    = "Maestro Splinter - Sabio sensei de las tortugas",
+    sensei_wu   = "Sensei Wu - Maestro de los ninjas de Ninjago",
     farmer      = "Agricultor - cultiva vegetales",
     librarian   = "Bibliotecario - guarda conocimiento",
     teacher     = "Maestro - ensenia ciencia y compasion",
@@ -271,6 +286,8 @@ minetest.register_chatcommand("npc_info", {
             "- Baby Yoda (/spawn_npc yoda)",
             "- Mandalorian (/spawn_npc mandalorian)",
             "- Princess Leia (/spawn_npc leia)",
+            "- Maestro Splinter (/spawn_npc splinter)",
+            "- Sensei Wu (/spawn_npc sensei_wu)",
             "",
             "Clasicos:",
             "- Agricultor (/spawn_npc farmer)",
@@ -404,7 +421,7 @@ minetest.register_chatcommand("npc_census", {
         end
 
         -- NPCs no encontrados
-        local all_types = {"luke","anakin","yoda","mandalorian","leia","farmer","librarian","teacher","explorer"}
+        local all_types = {"luke","anakin","yoda","mandalorian","leia","splinter","sensei_wu","farmer","librarian","teacher","explorer"}
         for _, t in ipairs(all_types) do
             if not counts[t] then
                 local display = wetlands_npcs.display_names[t] or t
@@ -566,10 +583,75 @@ minetest.register_chatcommand("npc_cleanup", {
     end,
 })
 
+-- /npc_removeall - Eliminar TODOS los NPCs del mundo
+minetest.register_chatcommand("npc_removeall", {
+    params = "[confirm]",
+    description = "Elimina TODOS los NPCs de Wetlands del mundo. Usa /npc_removeall confirm para ejecutar.",
+    privs = {server = true},
+    func = function(name, param)
+        -- Contar primero
+        local npcs = {}
+        local total = 0
+
+        for _, obj in pairs(minetest.object_refs) do
+            local entity = obj:get_luaentity()
+            if entity and entity.name and entity.name:find("wetlands_npcs:") then
+                local npc_type = entity.name:gsub("wetlands_npcs:", "")
+                local pos = obj:get_pos()
+                table.insert(npcs, {obj = obj, npc_type = npc_type, pos = pos})
+                total = total + 1
+            end
+        end
+
+        if total == 0 then
+            return true, "No hay NPCs de Wetlands en zonas activas."
+        end
+
+        -- Modo preview
+        if param ~= "confirm" then
+            local counts = {}
+            for _, npc in ipairs(npcs) do
+                counts[npc.npc_type] = (counts[npc.npc_type] or 0) + 1
+            end
+
+            local lines = {
+                "=== NPC REMOVEALL PREVIEW ===",
+                "Se eliminaran " .. total .. " NPCs:",
+                "",
+            }
+            for npc_type, count in pairs(counts) do
+                local display = wetlands_npcs.display_names[npc_type] or npc_type
+                table.insert(lines, "  " .. display .. ": " .. count)
+            end
+            table.insert(lines, "")
+            table.insert(lines, "Escribe /npc_removeall confirm para ejecutar.")
+            table.insert(lines, "NOTA: Solo afecta NPCs en chunks cargados (cerca de jugadores).")
+            return true, table.concat(lines, "\n")
+        end
+
+        -- Ejecutar eliminacion
+        local removed = 0
+        for _, npc in ipairs(npcs) do
+            if npc.obj and npc.obj:get_pos() then
+                npc.obj:remove()
+                removed = removed + 1
+                local display = wetlands_npcs.display_names[npc.npc_type] or npc.npc_type
+                if npc.pos then
+                    minetest.log("action", "[wetlands_npcs] RemoveAll: " .. display ..
+                        string.format(" at (%.1f, %.1f, %.1f) by %s", npc.pos.x, npc.pos.y, npc.pos.z, name))
+                end
+            end
+        end
+
+        minetest.log("action", "[wetlands_npcs] RemoveAll by " .. name .. ": " .. removed .. " NPCs eliminated")
+        return true, "REMOVEALL COMPLETADO: " .. removed .. " NPCs eliminados. Usa /spawn_npc para colocar nuevos."
+    end,
+})
+
 -- ============================================================================
 -- 8. FINALIZACION
 -- ============================================================================
 
 log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded!")
-log("info", "9 NPCs | Quests | Persistence | Friendship | Unique Items")
-log("info", "Admin commands: /npc_census, /npc_cleanup, /npc_remove, /spawn_npc")
+log("info", "11 NPCs | Quests | Persistence | Friendship | Unique Items")
+log("info", "Admin commands: /npc_census, /npc_cleanup, /npc_remove, /npc_removeall, /spawn_npc")

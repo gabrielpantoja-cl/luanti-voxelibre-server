@@ -77,7 +77,19 @@ wetlands_npcs.config.behavior_weights = {
         idle = 20,
         wander = 25,
         work = 30,
-        social = 25,    -- Leia es diplomática y social
+        social = 25,    -- Leia es diplomatica y social
+    },
+    splinter = {
+        idle = 55,      -- Splinter es muy contemplativo y estatico
+        wander = 10,    -- Casi no se mueve (esta en spawn)
+        work = 20,
+        social = 15,
+    },
+    sensei_wu = {
+        idle = 50,      -- Wu es meditativo y sabio
+        wander = 15,    -- Se mueve poco
+        work = 20,
+        social = 15,
     },
     -- Classic NPCs
     farmer = {
@@ -156,6 +168,14 @@ wetlands_npcs.config.poi_types = {
     leia = {
         "mcl_books:bookshelf", "mcl_core:tree",
         "mcl_flowers:poppy", "mcl_core:water_source",
+    },
+    splinter = {
+        "mcl_books:bookshelf", "mcl_core:tree",
+        "mcl_flowers:dandelion", "mcl_core:stone",
+    },
+    sensei_wu = {
+        "mcl_books:bookshelf", "mcl_core:tree",
+        "mcl_flowers:poppy", "mcl_core:gold_ingot",
     },
     -- Classic NPCs
     farmer = {
@@ -273,7 +293,9 @@ wetlands_npcs.config.movement = {
     walk_velocity = 1.2,     -- Caminar tranquilo
     run_velocity = 2.4,      -- Correr (si es necesario)
     jump_height = 5,         -- Altura de salto
-    stepheight = 1.1,        -- Subir escalones automáticamente
+    stepheight = 1.1,        -- Subir escalones automaticamente
+    max_wander_radius = 15,  -- Radio maximo de movimiento desde spawn point (home_pos)
+    return_home_threshold = 20, -- Si esta mas lejos que esto, forzar retorno
 }
 
 --[[

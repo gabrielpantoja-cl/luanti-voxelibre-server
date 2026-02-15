@@ -7,7 +7,7 @@ local modpath = minetest.get_modpath("wetlands_npcs")
 wetlands_npcs.dialogues = {}
 
 local NPC_LIST = {
-    "luke", "anakin", "yoda", "mandalorian", "leia",
+    "luke", "anakin", "yoda", "mandalorian", "leia", "splinter", "sensei_wu",
     "farmer", "librarian", "teacher", "explorer",
 }
 

@@ -220,6 +220,16 @@ wetlands_npcs.registry.register("leia", {
     model = "human",
 })
 
+wetlands_npcs.registry.register("splinter", {
+    description = S("Maestro Splinter"),
+    model = "human",
+})
+
+wetlands_npcs.registry.register("sensei_wu", {
+    description = S("Sensei Wu"),
+    model = "human",
+})
+
 -- Classic NPCs (modelo villager 64x64)
 wetlands_npcs.registry.register("farmer", {
     description = S("Agricultor de Wetlands"),
@@ -259,4 +269,4 @@ for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
     })
 end
 
-minetest.log("action", "[wetlands_npcs] NPC registry loaded (9 NPCs, legacy migration active)")
+minetest.log("action", "[wetlands_npcs] NPC registry loaded (11 NPCs, legacy migration active)")
