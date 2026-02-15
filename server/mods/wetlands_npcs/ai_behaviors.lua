@@ -445,7 +445,19 @@ local function should_override_state(self, current_state)
         end
     end
 
-    -- PRIORIDAD 4: Anti-stuck (cambiar a WANDER si atascado)
+    -- PRIORIDAD 4: Home tether - forzar WANDER (que ahora respeta home_pos)
+    if self.ai_memory and self.ai_memory.home_pos then
+        local pos = self.object:get_pos()
+        local home = self.ai_memory.home_pos
+        local return_threshold = wetlands_npcs.config.movement.return_home_threshold or 20
+        local dist_from_home = vector.distance(pos, home)
+
+        if dist_from_home > return_threshold and current_state ~= STATES.WANDER then
+            return STATES.WANDER  -- do_wander se encarga de volver a home
+        end
+    end
+
+    -- PRIORIDAD 5: Anti-stuck (cambiar a WANDER si atascado)
     if is_stuck(self) and current_state ~= STATES.WANDER then
         return STATES.WANDER
     end
@@ -519,16 +531,50 @@ end
     - Radio de exploración (10 bloques)
 --]]
 local function do_wander(self)
-    -- Cambiar dirección cada 20 ticks (~10 segundos)
+    -- Cambiar direccion cada 20 ticks (~10 segundos)
     if not self.ai_target or math.random(1, 20) == 1 then
         local pos = self.object:get_pos()
+        local home = self.ai_memory and self.ai_memory.home_pos
+        local max_radius = wetlands_npcs.config.movement.max_wander_radius or 15
 
-        -- Generar posición aleatoria cercana
-        local target = {
-            x = pos.x + math.random(-10, 10),
-            y = pos.y,
-            z = pos.z + math.random(-10, 10),
-        }
+        -- Si no tiene home_pos, usar posicion actual como home
+        if not home then
+            home = pos
+            if self.ai_memory then
+                self.ai_memory.home_pos = {x = pos.x, y = pos.y, z = pos.z}
+            end
+        end
+
+        -- Verificar si esta demasiado lejos de home -> forzar retorno
+        local dist_from_home = vector.distance(pos, home)
+        local return_threshold = wetlands_npcs.config.movement.return_home_threshold or 20
+
+        local target
+        if dist_from_home > return_threshold then
+            -- Demasiado lejos, volver hacia home
+            target = {
+                x = home.x + math.random(-3, 3),
+                y = home.y,
+                z = home.z + math.random(-3, 3),
+            }
+        else
+            -- Generar posicion aleatoria DENTRO del radio permitido desde home
+            local offset_x = math.random(-10, 10)
+            local offset_z = math.random(-10, 10)
+            target = {
+                x = home.x + offset_x,
+                y = pos.y,
+                z = home.z + offset_z,
+            }
+
+            -- Clamp al radio maximo desde home
+            local target_dist = math.sqrt(offset_x^2 + offset_z^2)
+            if target_dist > max_radius then
+                local scale = max_radius / target_dist
+                target.x = home.x + offset_x * scale
+                target.z = home.z + offset_z * scale
+            end
+        end
 
         self.ai_target = {pos = target, type = "wander"}
 
