@@ -352,8 +352,224 @@ minetest.register_chatcommand("mi_progreso", {
 })
 
 -- ============================================================================
--- 7. FINALIZACION
+-- 7. COMANDOS DE GESTION DE NPCs (admin)
+-- ============================================================================
+
+-- /npc_census - Contar todos los NPCs activos en el mundo
+minetest.register_chatcommand("npc_census", {
+    params = "",
+    description = "Muestra un censo de todos los NPCs activos en el mundo",
+    privs = {server = true},
+    func = function(name, param)
+        local counts = {}
+        local positions = {}
+        local total = 0
+
+        for _, obj in pairs(minetest.object_refs) do
+            local entity = obj:get_luaentity()
+            if entity and entity.name and entity.name:find("wetlands_npcs:") then
+                local npc_type = entity.name:gsub("wetlands_npcs:", "")
+                local pos = obj:get_pos()
+                counts[npc_type] = (counts[npc_type] or 0) + 1
+                total = total + 1
+
+                if not positions[npc_type] then positions[npc_type] = {} end
+                table.insert(positions[npc_type], {
+                    pos = pos,
+                    id = entity._npc_id or "none",
+                })
+            end
+        end
+
+        local lines = {
+            "=== NPC CENSUS: " .. total .. " entities cargadas ===",
+            "(Solo muestra NPCs en chunks activos cerca de jugadores)",
+            "",
+        }
+
+        local types_sorted = {}
+        for t in pairs(counts) do table.insert(types_sorted, t) end
+        table.sort(types_sorted)
+
+        for _, npc_type in ipairs(types_sorted) do
+            local display = wetlands_npcs.display_names[npc_type] or npc_type
+            local count = counts[npc_type]
+            local status = count == 1 and " OK" or " DUPLICADO!"
+            table.insert(lines, display .. ": " .. count .. status)
+            for i, info in ipairs(positions[npc_type]) do
+                local p = info.pos
+                table.insert(lines, string.format("  [%d] pos=(%.1f, %.1f, %.1f)",
+                    i, p.x, p.y, p.z))
+            end
+        end
+
+        -- NPCs no encontrados
+        local all_types = {"luke","anakin","yoda","mandalorian","leia","farmer","librarian","teacher","explorer"}
+        for _, t in ipairs(all_types) do
+            if not counts[t] then
+                local display = wetlands_npcs.display_names[t] or t
+                table.insert(lines, display .. ": 0 (no cargado en zona activa)")
+            end
+        end
+
+        minetest.log("action", "[wetlands_npcs] Census requested by " .. name .. ": " .. total .. " entities")
+        return true, table.concat(lines, "\n")
+    end,
+})
+
+-- /npc_remove - Eliminar el NPC mas cercano
+minetest.register_chatcommand("npc_remove", {
+    params = "[radius]",
+    description = "Elimina el NPC de Wetlands mas cercano a ti (default: 5 bloques)",
+    privs = {server = true},
+    func = function(name, param)
+        local player = minetest.get_player_by_name(name)
+        if not player then return false, "Jugador no encontrado" end
+
+        local radius = tonumber(param) or 5
+        if radius > 50 then radius = 50 end
+
+        local player_pos = player:get_pos()
+        local closest = nil
+        local closest_dist = radius + 1
+        local closest_type = nil
+
+        for _, obj in pairs(minetest.object_refs) do
+            local entity = obj:get_luaentity()
+            if entity and entity.name and entity.name:find("wetlands_npcs:") then
+                local pos = obj:get_pos()
+                if pos then
+                    local dist = vector.distance(player_pos, pos)
+                    if dist <= radius and dist < closest_dist then
+                        closest = obj
+                        closest_dist = dist
+                        closest_type = entity.name:gsub("wetlands_npcs:", "")
+                    end
+                end
+            end
+        end
+
+        if not closest then
+            return false, "No hay NPCs de Wetlands en " .. radius .. " bloques. Acercate mas o usa /npc_remove <radius>"
+        end
+
+        local pos = closest:get_pos()
+        local display = wetlands_npcs.display_names[closest_type] or closest_type
+        closest:remove()
+        minetest.log("action", "[wetlands_npcs] " .. name .. " removed " .. display ..
+            string.format(" at (%.1f, %.1f, %.1f)", pos.x, pos.y, pos.z))
+        return true, display .. string.format(" eliminado en (%.1f, %.1f, %.1f)", pos.x, pos.y, pos.z)
+    end,
+})
+
+-- /npc_cleanup - Eliminar duplicados, dejando 1 por tipo
+minetest.register_chatcommand("npc_cleanup", {
+    params = "[confirm]",
+    description = "Elimina NPCs duplicados (deja 1 por tipo). Usa /npc_cleanup confirm para ejecutar.",
+    privs = {server = true},
+    func = function(name, param)
+        -- Recopilar todos los NPCs por tipo
+        local by_type = {}
+        local total = 0
+
+        for _, obj in pairs(minetest.object_refs) do
+            local entity = obj:get_luaentity()
+            if entity and entity.name and entity.name:find("wetlands_npcs:") then
+                local npc_type = entity.name:gsub("wetlands_npcs:", "")
+                local pos = obj:get_pos()
+                if not by_type[npc_type] then by_type[npc_type] = {} end
+                table.insert(by_type[npc_type], {obj = obj, pos = pos})
+                total = total + 1
+            end
+        end
+
+        -- Contar duplicados
+        local duplicates = 0
+        local dup_details = {}
+        for npc_type, entities in pairs(by_type) do
+            if #entities > 1 then
+                duplicates = duplicates + (#entities - 1)
+                dup_details[npc_type] = #entities
+            end
+        end
+
+        if duplicates == 0 then
+            return true, "No hay duplicados! " .. total .. " NPCs, todos unicos."
+        end
+
+        -- Modo preview (sin "confirm")
+        if param ~= "confirm" then
+            local lines = {
+                "=== NPC CLEANUP PREVIEW ===",
+                "NPCs totales: " .. total,
+                "Duplicados a eliminar: " .. duplicates,
+                "",
+            }
+            for npc_type, count in pairs(dup_details) do
+                local display = wetlands_npcs.display_names[npc_type] or npc_type
+                table.insert(lines, "  " .. display .. ": " .. count .. " -> 1 (eliminar " .. (count-1) .. ")")
+            end
+            table.insert(lines, "")
+            table.insert(lines, "Escribe /npc_cleanup confirm para ejecutar.")
+            table.insert(lines, "Se mantendra el NPC mas cercano a ti de cada tipo.")
+            return true, table.concat(lines, "\n")
+        end
+
+        -- Modo ejecucion
+        local player = minetest.get_player_by_name(name)
+        if not player then return false, "Jugador no encontrado" end
+        local player_pos = player:get_pos()
+
+        local removed = 0
+        local kept = {}
+
+        for npc_type, entities in pairs(by_type) do
+            if #entities > 1 then
+                -- Ordenar por distancia al jugador (el mas cercano queda)
+                table.sort(entities, function(a, b)
+                    if not a.pos or not b.pos then return false end
+                    return vector.distance(player_pos, a.pos) < vector.distance(player_pos, b.pos)
+                end)
+
+                -- Mantener el primero (mas cercano), eliminar el resto
+                local keeper = entities[1]
+                local display = wetlands_npcs.display_names[npc_type] or npc_type
+                kept[npc_type] = keeper.pos
+
+                for i = 2, #entities do
+                    local e = entities[i]
+                    if e.obj and e.obj:get_pos() then
+                        e.obj:remove()
+                        removed = removed + 1
+                        if e.pos then
+                            minetest.log("action", "[wetlands_npcs] Cleanup: removed duplicate " ..
+                                display .. string.format(" at (%.1f, %.1f, %.1f)", e.pos.x, e.pos.y, e.pos.z))
+                        end
+                    end
+                end
+            end
+        end
+
+        local lines = {
+            "=== CLEANUP COMPLETADO ===",
+            "Duplicados eliminados: " .. removed,
+            "",
+            "NPCs conservados (mas cercanos a ti):",
+        }
+        for npc_type, pos in pairs(kept) do
+            local display = wetlands_npcs.display_names[npc_type] or npc_type
+            table.insert(lines, string.format("  %s en (%.1f, %.1f, %.1f)", display, pos.x, pos.y, pos.z))
+        end
+
+        minetest.log("action", "[wetlands_npcs] Cleanup by " .. name .. ": removed " .. removed .. " duplicates")
+        return true, table.concat(lines, "\n")
+    end,
+})
+
+-- ============================================================================
+-- 8. FINALIZACION
 -- ============================================================================
 
 log("info", "Wetlands NPCs v" .. wetlands_npcs.version .. " loaded!")
 log("info", "9 NPCs | Quests | Persistence | Friendship | Unique Items")
+log("info", "Admin commands: /npc_census, /npc_cleanup, /npc_remove, /spawn_npc")
