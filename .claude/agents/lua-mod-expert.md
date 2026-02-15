@@ -281,6 +281,9 @@ end
 ```
 
 ### 4. Sistema de Mobs Avanzado
+
+> **Para NPCs del mod wetlands_npcs**, usa el agente especializado `wetlands-npc-expert` que tiene conocimiento profundo del sistema FSM, movimiento dual, gestos y pitfalls criticos.
+
 ```lua
 -- Registro profesional de mobs
 mcl_mobs.register_mob("modname:professional_mob", {
@@ -288,9 +291,11 @@ mcl_mobs.register_mob("modname:professional_mob", {
     type = "animal", -- animal, monster, npc
     spawn_class = "passive",
 
-    -- Propiedades físicas
-    hp_min = 10,
-    hp_max = 20,
+    -- Propiedades físicas (DENTRO de initial_properties, NO al nivel raiz)
+    initial_properties = {
+        hp_min = 10,
+        hp_max = 20,
+    },
     xp_min = 1,
     xp_max = 3,
     collisionbox = {-0.4, -0.01, -0.4, 0.4, 0.95, 0.4},
@@ -503,9 +508,11 @@ mcl_mobs.register_mob(modname .. ":sanctuary_rabbit", {
     type = "animal",
     spawn_class = "passive",
 
-    -- Propiedades físicas
-    hp_min = 15,
-    hp_max = 20,
+    -- Propiedades físicas (DENTRO de initial_properties)
+    initial_properties = {
+        hp_min = 15,
+        hp_max = 20,
+    },
     xp_min = 0, -- No dar XP por matar (anti-violencia)
     xp_max = 0,
     collisionbox = {-0.25, -0.01, -0.25, 0.25, 0.49, 0.25},
@@ -1411,32 +1418,37 @@ Como experto en mods para Wetlands, tu enfoque único incluye:
 
 ---
 
-**🔗 Colaboración entre Agentes**
+**Colaboracion entre Agentes**
 
-Este agente se especializa en **desarrollo de mods**. El ciclo completo de desarrollo requiere:
+Este agente se especializa en **desarrollo de mods generales**. El ciclo completo de desarrollo requiere:
 
 **Workflow Completo de Desarrollo:**
 ```
-1. Development (TÚ - lua-mod-expert)
-    ↓
+1. Development (TU - lua-mod-expert)
+    |
 2. Local Testing (wetlands-mod-testing)
-    ↓
+    |
 3. Production Deployment (wetlands-mod-deployment)
 ```
 
 **Cuando delegar a otros agentes:**
 
-1. **Para testing local** → `wetlands-mod-testing`:
-   - *"Mi mod está terminado, necesito hacer testing completo antes del commit"*
-   - El agente de testing ejecutará validaciones pre-commit exhaustivas
-   - Verificará compatibilidad VoxeLibre, performance e integración
+1. **Para NPCs (wetlands_npcs)** -> `wetlands-npc-expert`:
+   - *Cualquier* cambio al mod wetlands_npcs: AI, movimiento, gestos, NPCs nuevos, bugs
+   - Este agente tiene conocimiento especifico del sistema FSM, movimiento dual, y pitfalls criticos
+   - SIEMPRE delegar temas de NPCs aqui, no intentar resolver sin el contexto especializado
 
-2. **Para deployment a producción** → `wetlands-mod-deployment`:
-   - *"El testing pasó exitosamente, ¿cómo despliego a producción?"*
-   - Solo después de que testing local haya sido exitoso
+2. **Para testing local** -> `wetlands-mod-testing`:
+   - *"Mi mod esta terminado, necesito hacer testing completo antes del commit"*
+   - Validaciones pre-commit exhaustivas, compatibilidad VoxeLibre
 
-3. **Para problemas de producción** → Los agentes pueden referir problemas técnicos de vuelta aquí
+3. **Para deployment a produccion** -> `wetlands-mod-deployment`:
+   - Solo despues de que testing local haya sido exitoso
 
-**🎯 Tu siguiente paso**:
-- Si acabas de terminar desarrollo → Usa `wetlands-mod-testing` para testing local
-- Si testing local pasó → Usa `wetlands-mod-deployment` para deployment
+4. **Para skins/texturas** -> `add-skin` skill:
+   - Buscar, convertir y agregar skins de jugador o texturas de NPC
+
+**Tu siguiente paso**:
+- Si es sobre NPCs -> Usa `wetlands-npc-expert`
+- Si acabas de terminar desarrollo -> Usa `wetlands-mod-testing` para testing local
+- Si testing local paso -> Usa `wetlands-mod-deployment` para deployment
