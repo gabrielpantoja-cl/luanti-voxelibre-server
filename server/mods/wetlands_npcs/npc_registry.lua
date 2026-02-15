@@ -85,7 +85,7 @@ function wetlands_npcs.registry.register(name, def)
         view_range = 16,
         fear_height = 4,
         jump = true,
-        walk_chance = 33,
+        walk_chance = def.walk_chance or 33,
         custom_villager_type = name,
         armor_groups = {immortal = 1, fleshy = 0},
 
@@ -223,11 +223,13 @@ wetlands_npcs.registry.register("leia", {
 wetlands_npcs.registry.register("splinter", {
     description = S("Maestro Splinter"),
     model = "human",
+    walk_chance = 0,  -- Casi estatico: mcl_mobs no lo mueve por su cuenta
 })
 
 wetlands_npcs.registry.register("sensei_wu", {
     description = S("Sensei Wu"),
     model = "human",
+    walk_chance = 0,  -- Casi estatico: mcl_mobs no lo mueve por su cuenta
 })
 
 -- Classic NPCs (modelo villager 64x64)
