@@ -86,10 +86,10 @@ wetlands_npcs.config.behavior_weights = {
         social = 10,    -- Solo socializa si alguien viene a el
     },
     sensei_wu = {
-        idle = 80,      -- Wu es meditativo, casi estatico
-        wander = 5,     -- Minimo movimiento
+        idle = 60,      -- Wu medita y hace gestos (gestures en idle)
+        wander = 15,    -- Da unos pasos cortos y vuelve (radius=4)
         work = 5,       -- Casi nunca busca POIs
-        social = 10,    -- Solo socializa si alguien viene a el
+        social = 20,    -- Social: le gusta interactuar con jugadores y NPCs
     },
     -- Classic NPCs
     farmer = {
@@ -308,10 +308,33 @@ wetlands_npcs.config.movement_overrides = {
         social_search_radius = 4,    -- Solo socializar con NPCs muy cercanos
     },
     sensei_wu = {
-        max_wander_radius = 3,      -- Solo 3 bloques desde spawn
-        return_home_threshold = 5,   -- Forzar retorno si se aleja 5+
-        poi_search_radius = 3,       -- Solo buscar POIs muy cercanos
-        social_search_radius = 4,    -- Solo socializar con NPCs muy cercanos
+        max_wander_radius = 4,      -- 4 bloques desde spawn (pasos cortos)
+        return_home_threshold = 6,   -- Forzar retorno si se aleja 6+
+        poi_search_radius = 4,       -- Solo buscar POIs cercanos
+        social_search_radius = 6,    -- Socializar con NPCs cercanos
+    },
+}
+
+-- Gestos/animaciones especiales cuando el NPC esta en IDLE cerca de jugadores
+-- Animaciones del modelo mcl_armor_character.b3d:
+--   stand=0-79, sit=81-160, lay=162-166, walk=168-187,
+--   mine=189-198 (swing brazo), walk_mine=200-219
+wetlands_npcs.config.idle_gestures = {
+    sensei_wu = {
+        enabled = true,
+        cooldown = 8,  -- segundos entre gestos
+        gestures = {
+            { name = "wave", frames = {x=189, y=198}, speed = 28, duration = 2.5 },
+            { name = "meditate", frames = {x=81, y=160}, speed = 15, duration = 4 },
+        },
+    },
+    splinter = {
+        enabled = true,
+        cooldown = 10,
+        gestures = {
+            { name = "wave", frames = {x=189, y=198}, speed = 28, duration = 2 },
+            { name = "meditate", frames = {x=81, y=160}, speed = 15, duration = 5 },
+        },
     },
 }
 

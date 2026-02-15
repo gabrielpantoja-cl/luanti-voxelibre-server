@@ -555,8 +555,45 @@ local function do_idle(self)
 
     local pos = self.object:get_pos()
     if not pos then return end
+    if not self.ai_memory then return end
 
-    -- Buscar jugador cercano para mirarlo (radio 8 bloques)
+    local villager_type = self.custom_villager_type or "farmer"
+
+    -- === SISTEMA DE GESTOS ===
+    -- Si hay un gesto activo, mantener la animacion y no interrumpir
+    if self.ai_memory._gesture_timer and self.ai_memory._gesture_timer > 0 then
+        self.ai_memory._gesture_timer = self.ai_memory._gesture_timer - 0.5
+
+        -- Mantener animacion del gesto cada tick (sobreescribe mcl_mobs)
+        local g = self.ai_memory._gesture_data
+        if g then
+            self.object:set_animation(g.frames, g.speed, 0, true)
+        end
+
+        -- Seguir mirando al jugador durante el gesto
+        local player = get_nearest_player(pos, 10)
+        if player then
+            local player_pos = player:get_pos()
+            local dir = vector.subtract(player_pos, pos)
+            local target_yaw = math.atan2(dir.z, dir.x) - math.pi / 2
+            self.object:set_yaw(target_yaw)
+        end
+
+        -- Cuando termina el gesto, volver a animacion stand
+        if self.ai_memory._gesture_timer <= 0 then
+            self.ai_memory._gesture_timer = nil
+            self.ai_memory._gesture_data = nil
+            self.object:set_animation({x=0, y=79}, 30, 0, true)
+        end
+        return
+    end
+
+    -- Decrementar cooldown de gestos
+    if self.ai_memory._gesture_cooldown and self.ai_memory._gesture_cooldown > 0 then
+        self.ai_memory._gesture_cooldown = self.ai_memory._gesture_cooldown - 0.5
+    end
+
+    -- === DETECCION DE JUGADOR Y ORIENTACION ===
     local player = get_nearest_player(pos, 8)
 
     if player then
@@ -566,14 +603,31 @@ local function do_idle(self)
         local target_yaw = math.atan2(dir.z, dir.x) - math.pi / 2
         local current_yaw = self.object:get_yaw() or 0
 
-        -- Interpolacion suave para que no gire de golpe
+        -- Interpolacion suave
         local diff = target_yaw - current_yaw
-        -- Normalizar diferencia a rango [-pi, pi]
         while diff > math.pi do diff = diff - 2 * math.pi end
         while diff < -math.pi do diff = diff + 2 * math.pi end
-        -- Girar 30% del angulo restante cada tick (suave)
         local new_yaw = current_yaw + diff * 0.3
         self.object:set_yaw(new_yaw)
+
+        -- === LANZAR GESTO SI CORRESPONDE ===
+        local gesture_config = wetlands_npcs.config.idle_gestures
+            and wetlands_npcs.config.idle_gestures[villager_type]
+
+        if gesture_config and gesture_config.enabled then
+            local cooldown = self.ai_memory._gesture_cooldown or 0
+            if cooldown <= 0 and math.random(1, 15) == 1 then
+                -- Elegir gesto aleatorio
+                local gestures = gesture_config.gestures
+                local g = gestures[math.random(1, #gestures)]
+
+                -- Activar gesto
+                self.ai_memory._gesture_timer = g.duration
+                self.ai_memory._gesture_data = g
+                self.ai_memory._gesture_cooldown = gesture_config.cooldown
+                self.object:set_animation(g.frames, g.speed, 0, true)
+            end
+        end
     else
         -- No hay jugador: mirar alrededor ocasionalmente (10% cada tick)
         if math.random(1, 10) == 1 then
