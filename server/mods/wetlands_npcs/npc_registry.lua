@@ -100,26 +100,22 @@ function wetlands_npcs.registry.register(name, def)
             self._npc_id = npc_id
         end,
 
-        -- Custom tick: mantener inmortalidad
+        -- Custom tick: mantener inmortalidad (siempre, sin excepciones)
         do_custom = function(self, dtime)
-            if not self._admin_punching then
-                local hp = self.object:get_hp()
-                local max_hp = self.object:get_properties().hp_max or 10000
-                if hp < max_hp then
-                    self.object:set_hp(max_hp)
-                    self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                end
+            local hp = self.object:get_hp()
+            local max_hp = self.object:get_properties().hp_max or 10000
+            if hp < max_hp then
+                self.object:set_hp(max_hp)
+                self.object:set_armor_groups({immortal = 1, fleshy = 0})
             end
 
             self._immortal_check = (self._immortal_check or 0) + dtime
             if self._immortal_check > 3 then
                 self._immortal_check = 0
-                if not self._admin_punching then
-                    local armor = self.object:get_armor_groups()
-                    if not armor.immortal or armor.immortal ~= 1
-                       or (armor.fleshy or 0) ~= 0 then
-                        self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                    end
+                local armor = self.object:get_armor_groups()
+                if not armor.immortal or armor.immortal ~= 1
+                   or (armor.fleshy or 0) ~= 0 then
+                    self.object:set_armor_groups({immortal = 1, fleshy = 0})
                 end
             end
         end,
@@ -161,35 +157,27 @@ function wetlands_npcs.registry.register(name, def)
             end)
         end,
 
-        -- Punch: bloquear danio (excepto admin)
+        -- Punch: bloquear danio para TODOS (incluido admin)
+        -- Para eliminar NPCs usar /npc_remove
         do_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-            if puncher and puncher:is_player() then
-                local player_name = puncher:get_player_name()
-
-                if minetest.check_player_privs(player_name, {server = true}) then
-                    self._admin_punching = true
-                    self.object:set_armor_groups({fleshy = 100})
-                    minetest.after(1, function()
-                        if self.object and self.object:get_pos() then
-                            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                            self._admin_punching = nil
-                        end
-                    end)
-                    return true
-                end
-
-                self.object:set_armor_groups({immortal = 1, fleshy = 0})
-                self.object:set_hp(self.object:get_properties().hp_max or 10000)
-                self.health = 10000
-                minetest.chat_send_player(player_name,
-                    minetest.colorize("#FF6B6B",
-                    "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles dano!"))
-                return false
-            end
-
+            -- Restaurar inmortalidad y HP siempre
             self.object:set_armor_groups({immortal = 1, fleshy = 0})
             self.object:set_hp(self.object:get_properties().hp_max or 10000)
             self.health = 10000
+
+            if puncher and puncher:is_player() then
+                local player_name = puncher:get_player_name()
+                local npc_display = wetlands_npcs.display_names[name] or name
+                if minetest.check_player_privs(player_name, {server = true}) then
+                    minetest.chat_send_player(player_name,
+                        minetest.colorize("#FFAA00",
+                        "[Admin] " .. npc_display .. " es inmortal. Usa /npc_remove para eliminar NPCs."))
+                else
+                    minetest.chat_send_player(player_name,
+                        minetest.colorize("#FF6B6B",
+                        "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles dano!"))
+                end
+            end
             return false
         end,
     }
