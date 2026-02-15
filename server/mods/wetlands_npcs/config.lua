@@ -80,16 +80,16 @@ wetlands_npcs.config.behavior_weights = {
         social = 25,    -- Leia es diplomatica y social
     },
     splinter = {
-        idle = 55,      -- Splinter es muy contemplativo y estatico
-        wander = 10,    -- Casi no se mueve (esta en spawn)
-        work = 20,
-        social = 15,
+        idle = 80,      -- Splinter es MUY contemplativo, casi estatico
+        wander = 5,     -- Minimo movimiento (solo gira en su sitio)
+        work = 5,       -- Casi nunca busca POIs
+        social = 10,    -- Solo socializa si alguien viene a el
     },
     sensei_wu = {
-        idle = 50,      -- Wu es meditativo y sabio
-        wander = 15,    -- Se mueve poco
-        work = 20,
-        social = 15,
+        idle = 80,      -- Wu es meditativo, casi estatico
+        wander = 5,     -- Minimo movimiento
+        work = 5,       -- Casi nunca busca POIs
+        social = 10,    -- Solo socializa si alguien viene a el
     },
     -- Classic NPCs
     farmer = {
@@ -296,6 +296,23 @@ wetlands_npcs.config.movement = {
     stepheight = 1.1,        -- Subir escalones automaticamente
     max_wander_radius = 15,  -- Radio maximo de movimiento desde spawn point (home_pos)
     return_home_threshold = 20, -- Si esta mas lejos que esto, forzar retorno
+}
+
+-- Overrides de movimiento por NPC (para NPCs que deben ser casi estaticos)
+-- Si un NPC tiene override aqui, sus valores reemplazan los globales
+wetlands_npcs.config.movement_overrides = {
+    splinter = {
+        max_wander_radius = 3,      -- Solo 3 bloques desde spawn
+        return_home_threshold = 5,   -- Forzar retorno si se aleja 5+
+        poi_search_radius = 3,       -- Solo buscar POIs muy cercanos
+        social_search_radius = 4,    -- Solo socializar con NPCs muy cercanos
+    },
+    sensei_wu = {
+        max_wander_radius = 3,      -- Solo 3 bloques desde spawn
+        return_home_threshold = 5,   -- Forzar retorno si se aleja 5+
+        poi_search_radius = 3,       -- Solo buscar POIs muy cercanos
+        social_search_radius = 4,    -- Solo socializar con NPCs muy cercanos
+    },
 }
 
 --[[
