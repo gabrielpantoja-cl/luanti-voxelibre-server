@@ -9,13 +9,13 @@
 
 ---
 
-## NPCs Colocados
+## Censo Actual: 3 NPCs Activos
 
 | # | NPC | Tipo | Modelo | Coordenadas | Zona | Fecha | Estado |
 |---|-----|------|--------|-------------|------|-------|--------|
-| 1 | Sensei Wu | sensei_wu | humano (64x32) | (2, 15, -10) | Spawn principal | 2026-02-15 | Activo |
-| 2 | Maestro Splinter | splinter | humano (64x32) | pendiente | Spawn principal | - | Por colocar |
-| 3 | Luke Skywalker | luke | humano (64x32) | pendiente | - | - | Por colocar |
+| 1 | Luke Skywalker | luke | humano (64x32) | Spawn principal | Spawn principal (caminando) | 2026-02-15 | Activo |
+| 2 | Sensei Wu | sensei_wu | humano (64x32) | (2, 15, -10) | Spawn principal (estatico) | 2026-02-15 | Activo |
+| 3 | Maestro Splinter | splinter | humano (64x32) | (82.2, 16.5, -41.1) | Edificio principal Wetlands (diorita, con ascensor) | 2026-02-15 | Activo |
 | 4 | Anakin Skywalker | anakin | humano (64x32) | pendiente | - | - | Por colocar |
 | 5 | Baby Yoda | yoda | humano (64x32) | pendiente | - | - | Por colocar |
 | 6 | Mandalorian | mandalorian | humano (64x32) | pendiente | - | - | Por colocar |
@@ -43,7 +43,7 @@
 - **Radio maximo**: 3 bloques desde spawn (return threshold: 5)
 - **Gestos**: Saludo (swing brazo, 2s) y meditacion (sentado, 5s) cuando un jugador se acerca
 - **Movimiento**: walk_chance=0, jump=false, controlado 100% por FSM
-- **Ubicacion**: Spawn principal (por colocar, junto a Sensei Wu)
+- **Ubicacion**: Edificio principal Wetlands (82.2, 16.5, -41.1) - Edificio de diorita con ascensor funcionando
 
 ### Star Wars (NPCs con modelo humano)
 
