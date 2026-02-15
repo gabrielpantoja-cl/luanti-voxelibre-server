@@ -1,27 +1,51 @@
-# Locale template for wetlands_npcs
-# Copy to es.tr for Spanish translations
+# textdomain: wetlands_npcs
 
-# Mod info
-Wetlands NPCs=
-Interactive NPCs with dialogue, trading and voice=
+# This is the translation template for wetlands_npcs.
+# Base language: Spanish (es)
+# Available translations: English (en) - see wetlands_npcs.en.tr
 
-# Villager types
-Farmer=
-Librarian=
-Teacher=
-Explorer=
+# To create a new translation:
+# 1. Copy this file as wetlands_npcs.<lang>.tr
+# 2. Fill in translations after each = sign
+# 3. See wetlands_npcs.en.tr for example
 
-# Dialogue categories
-Greetings=
-About Work=
-Education=
+# Display Names
+Luke Skywalker=
+Anakin Skywalker=
+Baby Yoda=
+Mandalorian=
+Princesa Leia=
+Maestro Splinter=
+Sensei Wu=
+Agricultor=
+Bibliotecario=
+Maestro=
+Explorador=
 
-# Trading
-Trade=
-Trading Menu=
-Not enough items=
-Trade successful=
+# Friendship Levels
+Desconocido=
+Conocido=
+Amigo=
+Buen Amigo=
+Confidente=
+Mejor Amigo=
 
-# Commands
-Spawn Villager=
-Villager Info=
+# UI Buttons
+Saludar=
+Sobre su historia=
+Reproducir audio iconico=
+Dato educativo=
+Comerciar=
+Misiones=
+Cerrar=
+Volver=
+Aceptar=
+Entregar!=
+
+# UI Labels
+Amistad=
+Nv.=
+Animo=
+Comercio=
+Recompensa:=
+Objetivo=

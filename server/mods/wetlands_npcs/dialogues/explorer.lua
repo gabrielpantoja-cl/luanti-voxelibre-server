@@ -18,8 +18,8 @@ return {
         "Cada gota de agua que bebes ha existido desde que se formo la Tierra!",
     },
     seek_player = {
-        "Hey %s! Acabo de descubrir algo increible!",
-        "Aventurero %s, vamos a explorar!",
-        "%s! Tienes que ver lo que encontre!",
+        "Hey @1! Acabo de descubrir algo increible!",
+        "Aventurero @1, vamos a explorar!",
+        "@1! Tienes que ver lo que encontre!",
     },
 }

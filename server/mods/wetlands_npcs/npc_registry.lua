@@ -171,11 +171,11 @@ function wetlands_npcs.registry.register(name, def)
                 if minetest.check_player_privs(player_name, {server = true}) then
                     minetest.chat_send_player(player_name,
                         minetest.colorize("#FFAA00",
-                        "[Admin] " .. npc_display .. " es inmortal. Usa /npc_remove para eliminar NPCs."))
+                        S("[Admin] @1 es inmortal. Usa /npc_remove para eliminar NPCs.", npc_display)))
                 else
                     minetest.chat_send_player(player_name,
                         minetest.colorize("#FF6B6B",
-                        "[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles dano!"))
+                        S("[Servidor] Los NPCs de Wetlands son tus amigos. No puedes hacerles dano!")))
                 end
             end
             return false
@@ -216,7 +216,7 @@ wetlands_npcs.registry.register("mandalorian", {
 })
 
 wetlands_npcs.registry.register("leia", {
-    description = S("Princess Leia"),
+    description = S("Princesa Leia"),
     model = "human",
 })
 

@@ -20,8 +20,8 @@ return {
         "El agua subterranea alimenta las raices. Por eso cuidar los rios es tan importante.",
     },
     seek_player = {
-        "Hola %s! La cosecha de hoy esta increible!",
-        "Bienvenido %s, quieres ver mi huerto?",
-        "Hey %s! Ven a ver mis cultivos!",
+        "Hola @1! La cosecha de hoy esta increible!",
+        "Bienvenido @1, quieres ver mi huerto?",
+        "Hey @1! Ven a ver mis cultivos!",
     },
 }

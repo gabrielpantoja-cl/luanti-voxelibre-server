@@ -1,4 +1,4 @@
--- Dialogues for Maestro Splinter (TMNT)
+-- Dialogos de Maestro Splinter (TMNT)
 return {
     greetings = {
         "Bienvenido, joven. Yo soy Splinter, y este es nuestro hogar.",
@@ -19,8 +19,8 @@ return {
     },
     iconic_phrase = "Recuerda, la verdadera victoria es la que se gana sin luchar.",
     seek_player = {
-        "Ah, %s. Ven, tengo sabiduria para compartir contigo.",
-        "%s, joven alumno. La Fuerza... digo, la disciplina te guiara.",
-        "Bienvenido al spawn, %s. Este es un lugar seguro.",
+        "Ah, @1. Ven, tengo sabiduria para compartir contigo.",
+        "@1, joven alumno. La Fuerza... digo, la disciplina te guiara.",
+        "Bienvenido al spawn, @1. Este es un lugar seguro.",
     },
 }
