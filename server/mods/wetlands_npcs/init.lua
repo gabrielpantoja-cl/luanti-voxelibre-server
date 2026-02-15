@@ -224,8 +224,8 @@ local NPC_TYPES = {
 }
 
 minetest.register_chatcommand("spawn_npc", {
-    params = "<luke|anakin|yoda|mandalorian|leia|farmer|librarian|teacher|explorer>",
-    description = "Spawnea un NPC de Wetlands",
+    params = "<luke|anakin|yoda|mandalorian|leia|splinter|sensei_wu|farmer|librarian|teacher|explorer>",
+    description = "Spawnea un NPC de Wetlands (11 disponibles)",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
