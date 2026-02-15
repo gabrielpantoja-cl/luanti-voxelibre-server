@@ -553,15 +553,33 @@ local function do_idle(self)
         self.object:set_velocity({x=0, y=vel.y, z=0})
     end
 
-    -- Mirar alrededor ocasionalmente (10% de probabilidad cada tick)
-    if math.random(1, 10) == 1 then
-        local yaw = math.random() * math.pi * 2
-        self.object:set_yaw(yaw)
-    end
+    local pos = self.object:get_pos()
+    if not pos then return end
 
-    -- Debug: Mostrar partícula si está activado
-    if wetlands_npcs.config.debug.enabled and wetlands_npcs.config.debug.level >= 3 then
-        -- Opcional: agregar partícula de debug
+    -- Buscar jugador cercano para mirarlo (radio 8 bloques)
+    local player = get_nearest_player(pos, 8)
+
+    if player then
+        -- Hay jugador cerca: girar hacia el suavemente
+        local player_pos = player:get_pos()
+        local dir = vector.subtract(player_pos, pos)
+        local target_yaw = math.atan2(dir.z, dir.x) - math.pi / 2
+        local current_yaw = self.object:get_yaw() or 0
+
+        -- Interpolacion suave para que no gire de golpe
+        local diff = target_yaw - current_yaw
+        -- Normalizar diferencia a rango [-pi, pi]
+        while diff > math.pi do diff = diff - 2 * math.pi end
+        while diff < -math.pi do diff = diff + 2 * math.pi end
+        -- Girar 30% del angulo restante cada tick (suave)
+        local new_yaw = current_yaw + diff * 0.3
+        self.object:set_yaw(new_yaw)
+    else
+        -- No hay jugador: mirar alrededor ocasionalmente (10% cada tick)
+        if math.random(1, 10) == 1 then
+            local yaw = math.random() * math.pi * 2
+            self.object:set_yaw(yaw)
+        end
     end
 end
 
