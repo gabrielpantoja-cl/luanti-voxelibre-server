@@ -703,15 +703,39 @@ local function do_wander(self)
         end
 
         self.ai_target = {pos = target, type = "wander"}
+    end
 
-        -- Navegar hacia el objetivo usando pathfinding de mcl_mobs
-        -- DEFENSIVE: Verificar que mcl_mobs existe y tiene gopath
-        if mcl_mobs and type(mcl_mobs.gopath) == "function" then
-            local success, err = pcall(function()
-                mcl_mobs:gopath(self, target)
-            end)
-            if not success and wetlands_npcs.config.debug.enabled then
-                minetest.log("warning", "[wetlands_npcs] gopath failed in wander: " .. tostring(err))
+    -- Mover hacia el objetivo directamente (no depende de walk_chance de mcl_mobs)
+    if self.ai_target and self.ai_target.pos then
+        local pos = self.object:get_pos()
+        if not pos then return end
+
+        local target = self.ai_target.pos
+        local dist = vector.distance(pos, target)
+
+        if dist < 1 then
+            -- Llego al objetivo, detenerse
+            local vel = self.object:get_velocity()
+            self.object:set_velocity({x=0, y=vel and vel.y or 0, z=0})
+            self.ai_target = nil
+        else
+            -- Caminar hacia el objetivo: calcular direccion y aplicar velocidad
+            local dir = vector.subtract(target, pos)
+            dir.y = 0  -- Solo movimiento horizontal
+            local len = math.sqrt(dir.x^2 + dir.z^2)
+            if len > 0 then
+                local speed = wetlands_npcs.config.movement.walk_velocity or 1.2
+                local vel = self.object:get_velocity()
+                self.object:set_velocity({
+                    x = (dir.x / len) * speed,
+                    y = vel and vel.y or 0,
+                    z = (dir.z / len) * speed,
+                })
+                -- Orientar hacia el objetivo
+                local yaw = math.atan2(dir.z, dir.x) - math.pi / 2
+                self.object:set_yaw(yaw)
+                -- Animacion de caminar
+                self.object:set_animation({x=168, y=187}, 30, 0, true)
             end
         end
     end
