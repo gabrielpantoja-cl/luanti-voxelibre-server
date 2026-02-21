@@ -3,13 +3,13 @@
 > Documento de control para el spawn manual y ubicacion de cada NPC del servidor.
 > Cada NPC se coloca manualmente con `/spawn_npc <tipo>` y se documenta aqui.
 
-**Ultima actualizacion**: 2026-02-15
+**Ultima actualizacion**: 2026-02-21
 **Version del mod**: wetlands_npcs v2.0.0 (11 NPCs registrados)
 **Spawn del mundo**: (0, 15, 0)
 
 ---
 
-## Censo Actual: 3 NPCs Activos
+## Censo Actual: 4 NPCs Activos
 
 | # | NPC | Tipo | Modelo | Coordenadas | Zona | Fecha | Estado |
 |---|-----|------|--------|-------------|------|-------|--------|
@@ -19,7 +19,7 @@
 | 4 | Anakin Skywalker | anakin | humano (64x32) | pendiente | - | - | Por colocar |
 | 5 | Baby Yoda | yoda | humano (64x32) | pendiente | - | - | Por colocar |
 | 6 | Mandalorian | mandalorian | humano (64x32) | pendiente | - | - | Por colocar |
-| 7 | Princesa Leia | leia | humano (64x32) | pendiente | - | - | Por colocar |
+| 7 | Princesa Leia | leia | humano (64x32) | Cerca de la casa de Gapi | Zona casa de Gapi (caminando) | 2026-02-21 | Activo |
 | 8 | Agricultor | farmer | villager (64x64) | pendiente | - | - | Por colocar |
 | 9 | Bibliotecario | librarian | villager (64x64) | pendiente | - | - | Por colocar |
 | 10 | Maestro | teacher | villager (64x64) | pendiente | - | - | Por colocar |
