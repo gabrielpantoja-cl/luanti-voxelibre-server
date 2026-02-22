@@ -54,6 +54,13 @@
 - **Bioma**: Tundra Nevada / Taiga Nevada                                          
 - **Características especiales**: Nieve natural, hielo, aldea en clima frío        
                                                                                    
+### 🌿 **JARDIN ZEN JAPONES** ⭐⭐
+- **Coordenadas**: `128, 18, -212`
+- **Descripción**: Jardin zen japones construido con WorldEdit sobre la ex-zona Halloween (quemada/TNT). Incluye estanque de agua, caminos de piedra, puente de madera, arboles de abeto, linternas y arena zen.
+- **Comando de teleportación**: `/teleport gabo 128 18 -212`
+- **Estado**: ✅ **CONFIRMADO ACTIVO** (Feb 22, 2026)
+- **Guia de construccion**: `docs/admin/GUIA_JARDIN_ZEN_WORLDEDIT.md`
+
 ## 🛠️ COMANDOS DE NAVEGACIÓN ESENCIALES                                             
                                                                                    
 ### **Teleportación Directa**                                                      
@@ -76,8 +83,11 @@
 # Tercera Aldea (CONFIRMADA)                                                       
 /teleport gabo 888 13 90                                                           
                                                                                    
-# Refugio en la Nieve (CONFIRMADA)                                                 
-/teleport gabo 38 99 1695                                                          
+# Refugio en la Nieve (CONFIRMADA)
+/teleport gabo 38 99 1695
+
+# Jardin Zen Japones (CONFIRMADA)
+/teleport gabo 128 18 -212                                                          
                                                                                    
 # Teleportación a coordenadas específicas                                          
 /teleport gabo <x> <y> <z>                                                         
@@ -155,6 +165,12 @@ Si necesitas acceso completo de administrador:
 ```                                                                                
                                                                                    
 ## 📝 REGISTRO DE CAMBIOS                                                           
+
+### **22 de Febrero, 2026**
+- ✅ **CONFIRMADO**: Jardin Zen Japones en coordenadas (128, 18, -212)
+- ✅ Construido con WorldEdit sobre la ex-zona Halloween (restauracion)
+- ✅ Comando de teleportación agregado al sistema de navegación
+- 🌿 Guia de construccion documentada en `docs/admin/GUIA_JARDIN_ZEN_WORLDEDIT.md`
 
 ### **27 de Noviembre, 2025**
 - ✅ **CONFIRMADO**: Nueva Ciudad - Expansión Oeste en coordenadas (-1770, 3, 902)
