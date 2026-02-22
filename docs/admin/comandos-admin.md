@@ -361,6 +361,16 @@ air                     - Aire (vacío)
 - `spawn` - Acceso a spawn
 - `creative` - Modo creativo
 
+## 📸 Screenshots (F12)
+
+Dentro de Luanti, presionar **F12** para capturar pantalla. Las capturas se guardan en:
+
+```
+C:\Users\gabri\Saved Games\luanti-5.15.0-win64\luanti-5.15.0-win64\screenshots\
+```
+
+> **Nota**: La tecla ImpPt (Print Screen) de Windows puede no funcionar dentro del juego. Usar F12 (nativo de Luanti) o Win+ImpPt.
+
 ## ⚠️ Notas Importantes
 
 1. **Nombres de usuario**: Usar nombres exactos, sensibles a mayúsculas
