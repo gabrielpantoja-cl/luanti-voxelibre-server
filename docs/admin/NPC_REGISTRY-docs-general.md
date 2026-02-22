@@ -9,7 +9,7 @@
 
 ---
 
-## Censo Actual: 4 NPCs Activos
+## Censo Actual: 5 NPCs Activos
 
 | # | NPC | Tipo | Modelo | Coordenadas | Zona | Fecha | Estado |
 |---|-----|------|--------|-------------|------|-------|--------|
@@ -17,7 +17,7 @@
 | 2 | Sensei Wu | sensei_wu | humano (64x32) | (2, 15, -10) | Spawn principal (estatico) | 2026-02-15 | Activo |
 | 3 | Maestro Splinter | splinter | humano (64x32) | (82.2, 16.5, -41.1) | Edificio principal Wetlands (diorita, con ascensor) | 2026-02-15 | Activo |
 | 4 | Anakin Skywalker | anakin | humano (64x32) | pendiente | - | - | Por colocar |
-| 5 | Baby Yoda | yoda | humano (64x32) | pendiente | - | - | Por colocar |
+| 5 | Baby Yoda | yoda | humano (64x32) | (-1624, 50, 1498) | Far West / Nueva Ciudad (caminando) | 2026-02-21 | Activo |
 | 6 | Mandalorian | mandalorian | humano (64x32) | pendiente | - | - | Por colocar |
 | 7 | Princesa Leia | leia | humano (64x32) | Cerca de la casa de Gapi | Zona casa de Gapi (caminando) | 2026-02-21 | Activo |
 | 8 | Agricultor | farmer | villager (64x64) | pendiente | - | - | Por colocar |
