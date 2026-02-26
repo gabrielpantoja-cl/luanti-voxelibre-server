@@ -8,7 +8,7 @@ BACKUP_DIR="/backups"
 WORLD_DIR="/worlds"
 DATE=$(date +%Y%m%d-%H%M%S)
 BACKUP_NAME="vegan_wetlands_backup_${DATE}"
-MAX_BACKUPS=10
+MAX_BACKUPS=8
 
 echo "🌱 [$(date)] Iniciando backup de Vegan Wetlands..."
 
