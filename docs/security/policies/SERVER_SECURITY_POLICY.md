@@ -1,4 +1,4 @@
-# 🛡️ POLÍTICA DE SEGURIDAD DEL SERVIDOR VEGAN WETLANDS
+# 🛡️ POLÍTICA DE SEGURIDAD DEL SERVIDOR WETLANDS
 
 **Servidor**: luanti.gabrielpantoja.cl:30000
 **Versión**: 1.0 (Post-Incidente HAKER)

@@ -1,4 +1,4 @@
-# 🛡️ Registro de Incidentes de Seguridad - Vegan Wetlands
+# 🛡️ Registro de Incidentes de Seguridad - Wetlands
 
 ## 📋 Índice de Incidentes
 

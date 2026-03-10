@@ -191,7 +191,7 @@ Total Disk Usage: 603MB (imagen base) + 52MB (datos)
 
 ---
 
-## Luanti Server (Vegan-Wetlands)
+## Luanti Server (Wetlands)
 
 ### Desglose de Espacio
 
@@ -262,7 +262,7 @@ El servidor Luanti tiene un sistema de backup automático que NO implementa rota
 
 #### 🔴 URGENTE: Rotación de Backups Luanti
 
-**Acción requerida:** Configurar política de retención en `/home/gabriel/Vegan-Wetlands/server/backups/`
+**Acción requerida:** Configurar política de retención en `/home/gabriel/luanti-voxelibre-server/server/backups/`
 
 **Recomendación:**
 ```bash
@@ -278,9 +278,9 @@ Ahorro: 15GB
 **Implementar script:**
 ```bash
 #!/bin/bash
-# /home/gabriel/Vegan-Wetlands/scripts/rotate-backups.sh
+# /home/gabriel/luanti-voxelibre-server/scripts/rotate-backups.sh
 
-BACKUP_DIR="/home/gabriel/Vegan-Wetlands/server/backups"
+BACKUP_DIR="/home/gabriel/luanti-voxelibre-server/server/backups"
 
 # Eliminar backups mayores a 30 días
 find "$BACKUP_DIR" -name "*.tar.gz" -mtime +30 -delete
@@ -292,7 +292,7 @@ ls -t "$BACKUP_DIR"/*.tar.gz | tail -n +11 | xargs -r rm
 **Configurar cron:**
 ```cron
 # Ejecutar rotación diariamente a las 4 AM
-0 4 * * * /home/gabriel/Vegan-Wetlands/scripts/rotate-backups.sh
+0 4 * * * /home/gabriel/luanti-voxelibre-server/scripts/rotate-backups.sh
 ```
 
 #### 🟡 Monitoreo de Disco
@@ -360,7 +360,7 @@ Esto eliminará:
 
 | Servicio/Directorio | Tamaño | % del Total | Estado |
 |---------------------|--------|-------------|--------|
-| **Vegan-Wetlands (Luanti)** | 24GB | 57% | ⚠️ Requiere rotación backups |
+| **Wetlands (Luanti)** | 24GB | 57% | ⚠️ Requiere rotación backups |
 | **Docker Images** | 2.51GB | 6% | ✅ Normal (limpiado) |
 | **degux.cl** | 1.6GB | 4% | ✅ Normal |
 | **System (/var)** | 3.8GB | 9% | ✅ Normal |
@@ -430,7 +430,7 @@ docker exec n8n-db pg_isready -U n8n
 
 # 7. Limpieza adicional si es necesario
 rm -rf /tmp/world /tmp/backup_extract /tmp/backup_*
-find /home/gabriel/Vegan-Wetlands/server/backups -name "*.tar.gz" -mtime +30 -delete
+find /home/gabriel/luanti-voxelibre-server/server/backups -name "*.tar.gz" -mtime +30 -delete
 
 # 8. Regenerar cliente Prisma (si está en desarrollo local)
 cd /home/gabriel/Documentos/degux.cl

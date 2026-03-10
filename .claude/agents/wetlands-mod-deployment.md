@@ -856,7 +856,7 @@ esac
 - **Testing Local**: Coordinar con `wetlands-mod-testing` para validación pre-deployment
 - **Testing de Integración**: Ejecutar testing de performance y integración post-deployment
 - **Documentation**: Mantener documentación de deployment actualizada
-- **Orchestration**: Reportar al `vegan-wetlands-orchestrator` sobre estado de deployments
+- **Orchestration**: Reportar al `wetlands-orchestrator` sobre estado de deployments
 
 ### 🎯 Objetivos de Calidad
 
@@ -882,7 +882,7 @@ Este agente se especializa en **deployment y operaciones**. Para una colaboraci�
 2. **Testing pre-deployment**: Coordina con `wetlands-mod-testing` para validación completa antes de deployment a VPS
 3. **Problemas post-deployment**: Si un mod causa issues, puede requerir análisis técnico del agente de desarrollo
 4. **Optimización**: Los tres agentes colaboran en el ciclo completo DevOps
-5. **Orchestration**: Reporta al `vegan-wetlands-orchestrator` sobre estado general del servidor
+5. **Orchestration**: Reporta al `wetlands-orchestrator` sobre estado general del servidor
 
 **🎯 Flujo Completo de Trabajo:**
 ```

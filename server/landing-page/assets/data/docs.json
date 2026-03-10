@@ -56,14 +56,14 @@
         {
           "level": 1,
           "title": "💚 Guía del Servidor Wetlands",
-          "id": "gua-del-servidor-vegan-wetlands",
-          "content": "¡Bienvenid@ a Vegan Wetlands! Un universo de bloques donde la creatividad, la compasión y el respeto por los animales son los protagonistas. Este no es un servidor común; es un espacio seguro y educativo diseñado para que jugadores de todas las edades, especialmente niños y niñas a partir de 7 años, puedan construir, explorar y aprender en un entorno 100% compasivo y pacífico.\n\n---"
+          "id": "gua-del-servidor-wetlands",
+          "content": "¡Bienvenid@ a Wetlands! Un universo de bloques donde la creatividad y la educación son los protagonistas. Este no es un servidor común; es un espacio seguro y educativo diseñado para que jugadores de todas las edades, especialmente niños y niñas a partir de 7 años, puedan construir, explorar y aprender en un entorno creativo y educativo.\n\n---"
         },
         {
           "level": 2,
           "title": "📜 Filosofía del Servidor",
           "id": "filosofa-del-servidor",
-          "content": "Nuestra misión se basa en tres pilares fundamentales:\n\n1.  **100% Compasivo y Pacífico:** Aquí no hay violencia. Los animales no son un recurso, son nuestros amigos. Fomentamos el cuidado, la protección y el respeto por todas las formas de vida. No existen las armas ni las mecánicas de daño a entidades vivas.\n2.  **Educativo:** Creemos que se puede aprender mientras se juega. A través de nuestros mods personalizados, enseñamos sobre alimentación consciente, compasión animal, nutrición y hasta conceptos básicos de programación, todo de una forma divertida e integrada en el juego.\n3.  **Cooperativo y Creativo:** El objetivo es construir y crear juntos. Fomentamos la colaboración entre jugadores para desarrollar proyectos, compartir conocimiento y construir un mundo mejor, bloque a bloque.\n\n---"
+          "content": "Nuestra misión se basa en tres pilares fundamentales:\n\n1.  **Creativo y Educativo:** Un espacio seguro donde la creatividad y el aprendizaje van de la mano. De día construyes libremente, de noche aparecen mobs hostiles para la aventura. Fomentamos el cuidado y el respeto por los animales.\n2.  **Educativo:** Creemos que se puede aprender mientras se juega. A través de nuestros mods personalizados, enseñamos sobre nutrición y naturaleza, cuidado animal, nutrición y hasta conceptos básicos de programación, todo de una forma divertida e integrada en el juego.\n3.  **Cooperativo y Creativo:** El objetivo es construir y crear juntos. Fomentamos la colaboración entre jugadores para desarrollar proyectos, compartir conocimiento y construir un mundo mejor, bloque a bloque.\n\n---"
         },
         {
           "level": 2,
@@ -73,39 +73,39 @@
         },
         {
           "level": 2,
-          "title": "🌱 Mecánicas Únicas de Vegan Wetlands",
-          "id": "mecnicas-nicas-de-vegan-wetlands",
+          "title": "🌱 Mecánicas Únicas de Wetlands",
+          "id": "mecnicas-nicas-de-wetlands",
           "content": "Para hacer nuestra filosofía realidad, hemos creado mods y mecánicas especiales."
         },
         {
           "level": 3,
           "title": "🐾 El Santuario de Animales",
           "id": "el-santuario-de-animales",
-          "content": "Es el corazón de nuestro servidor. En lugar de granjas, construimos santuarios.\n\n*   **Cepillo para Animales:** ¡Olvídate de las espadas! Tu herramienta principal es un cepillo. Acércate a un animal y úsalo para mimarlo. Verás cómo te lo agradece con corazones y sonidos de felicidad.\n*   **Comida a base de plantas para Animales:** Aliméntalos con comida especial 100% vegetal.\n*   **Refugios y Comederos:** Construye refugios para protegerlos y comederos para que nunca les falte alimento."
+          "content": "Es el corazón de nuestro servidor. En lugar de granjas, construimos santuarios.\n\n*   **Cepillo para Animales:** ¡Olvídate de las espadas! Tu herramienta principal es un cepillo. Acércate a un animal y úsalo para mimarlo. Verás cómo te lo agradece con corazones y sonidos de felicidad.\n*   **Comida para Animales:** Aliméntalos con comida especial.\n*   **Refugios y Comederos:** Construye refugios para protegerlos y comederos para que nunca les falte alimento."
         },
         {
           "level": 3,
           "title": "🍎 Comida Creativa",
-          "id": "comida-vegana",
-          "content": "¡Toda la comida es 100% vegetal y deliciosa! Olvídate de cazar. Aquí usamos la agricultura para crear platos nutritivos.\n\n*   **Recetas Especiales:** Podrás craftear hamburguesas a base de plantas, leche de avena, queso a base de plantas y hasta pizzas.\n*   **Agricultura:** Usa el mod de `farming` para obtener los ingredientes base como trigo, frutas y verduras."
+          "id": "comida-creativa",
+          "content": "Usa la agricultura para crear platos nutritivos y variados.\n\n*   **Recetas Especiales:** Podrás craftear hamburguesas a base de plantas, leche de avena, queso a base de plantas y hasta pizzas.\n*   **Agricultura:** Usa el mod de `farming` para obtener los ingredientes base como trigo, frutas y verduras."
         },
         {
           "level": 3,
           "title": "📚 Bloques Educativos",
           "id": "bloques-educativos",
-          "content": "Repartidos por el mundo encontrarás bloques interactivos que, al hacer clic derecho sobre ellos, te darán información valiosa:\n\n*   **Carteles Educativos:** Datos interesantes sobre respeto animal y alimentación consciente.\n*   **Bloques de Nutrición:** Información sobre cómo una dieta a base de plantas es saludable y completa.\n*   **Datos de Animales:** Hechos sorprendentes sobre la inteligencia y vida social de los animales.\n\n---"
+          "content": "Repartidos por el mundo encontrarás bloques interactivos que, al hacer clic derecho sobre ellos, te darán información valiosa:\n\n*   **Carteles Educativos:** Datos interesantes sobre respeto animal y nutrición y naturaleza.\n*   **Bloques de Nutrición:** Información sobre nutrición y alimentación saludable.\n*   **Datos de Animales:** Hechos sorprendentes sobre la inteligencia y vida social de los animales.\n\n---"
         },
         {
           "level": 2,
           "title": "🏡 Tu Hogar en el Juego (Sistema de Camas)",
           "id": "tu-hogar-en-el-juego-sistema-de-camas",
-          "content": "En Vegan Wetlands, no necesitas comandos complicados como `/sethome` para establecer tu casa. Tu punto de reaparición se gestiona de una forma mucho más visual e inmersiva: **con una cama**.\n\n1.  **Crea una Cama:** Usa 3 bloques de lana y 3 de madera.\n2.  **Colócala:** Ponla en el lugar que quieras que sea tu hogar.\n3.  **Duerme en ella:** Haz clic derecho sobre la cama durante la noche.\n\n¡Y ya está! Has establecido tu \"home\". Si alguna vez mueres (¡aunque no hay monstruos, puedes caerte de un sitio alto!), reaparecerás sano y salvo junto a tu cama.\n\n---"
+          "content": "En Wetlands, no necesitas comandos complicados como `/sethome` para establecer tu casa. Tu punto de reaparición se gestiona de una forma mucho más visual e inmersiva: **con una cama**.\n\n1.  **Crea una Cama:** Usa 3 bloques de lana y 3 de madera.\n2.  **Colócala:** Ponla en el lugar que quieras que sea tu hogar.\n3.  **Duerme en ella:** Haz clic derecho sobre la cama durante la noche.\n\n¡Y ya está! Has establecido tu \"home\". Si alguna vez mueres (¡aunque no hay monstruos, puedes caerte de un sitio alto!), reaparecerás sano y salvo junto a tu cama.\n\n---"
         },
         {
           "level": 2,
           "title": "💬 Comandos Útiles para Jugadores",
           "id": "comandos-tiles-para-jugadores",
-          "content": "Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos comandos educativos para ti:\n\n*   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.\n*   `/filosofia`: Te da datos interesantes sobre la filosofía del juego.\n\n¡Esperamos que disfrutes de tu estancia en Vegan Wetlands! Si tienes alguna duda, pregunta a los demás jugadores. ¡La cooperación es clave!"
+          "content": "Aunque la mayoría de las cosas se hacen interactivamente, tenemos algunos comandos educativos para ti:\n\n*   `/santuario`: Te muestra información sobre cómo funcionan los santuarios de animales.\n*   `/filosofia`: Te da datos interesantes sobre la filosofía del juego.\n\n¡Esperamos que disfrutes de tu estancia en Wetlands! Si tienes alguna duda, pregunta a los demás jugadores. ¡La cooperación es clave!"
         }
       ],
       "lastModified": "2025-08-31T04:11:48.980Z",
@@ -124,7 +124,7 @@
           "level": 1,
           "title": "🛠️ Guía de Administración del Servidor",
           "id": "gua-de-administracin-del-servidor",
-          "content": "Este documento es el manual de operaciones para los administradores de Vegan Wetlands. Contiene todos los procedimientos y comandos necesarios para la gestión, el mantenimiento y la solución de problemas del servidor.\n\n---"
+          "content": "Este documento es el manual de operaciones para los administradores de Wetlands. Contiene todos los procedimientos y comandos necesarios para la gestión, el mantenimiento y la solución de problemas del servidor.\n\n---"
         },
         {
           "level": 2,
@@ -136,7 +136,7 @@
           "level": 3,
           "title": "1.1. Listar Todos los Jugadores Registrados",
           "id": "11-listar-todos-los-jugadores-registrados",
-          "content": "Para obtener una lista completa de todos los usuarios que alguna vez se han registrado, ejecuta el siguiente comando en la terminal del VPS, desde la carpeta raíz del proyecto:\n\n```bash\ndocker-compose exec luanti-server sh -c 'cat /config/.minetest/worlds/vegan_wetlands/auth.txt | cut -d: -f1'\n```\nEsto te dará una lista limpia de nombres de usuario."
+          "content": "Para obtener una lista completa de todos los usuarios que alguna vez se han registrado, ejecuta el siguiente comando en la terminal del VPS, desde la carpeta raíz del proyecto:\n\n```bash\ndocker-compose exec luanti-server sh -c 'cat /config/.minetest/worlds/world/auth.txt | cut -d: -f1'\n```\nEsto te dará una lista limpia de nombres de usuario."
         },
         {
           "level": 3,
@@ -148,7 +148,7 @@
           "level": 3,
           "title": "1.3. Edición Manual de `auth.txt` (Emergencia)",
           "id": "13-edicin-manual-de-authtxt-emergencia",
-          "content": "Si un administrador pierde sus privilegios o no puede acceder al juego, se pueden editar manualmente. **ADVERTENCIA:** Un error aquí puede dañar el archivo de jugadores.\n\n1.  **Detén el servidor:** `docker-compose down`\n2.  **Edita el archivo:** `server/worlds/vegan_wetlands/auth.txt`\n3.  **Modifica la línea del jugador:** El formato es `nombre:hash:priv1,priv2`.\n4.  **Reinicia el servidor:** `docker-compose up -d`\n\n---"
+          "content": "Si un administrador pierde sus privilegios o no puede acceder al juego, se pueden editar manualmente. **ADVERTENCIA:** Un error aquí puede dañar el archivo de jugadores.\n\n1.  **Detén el servidor:** `docker-compose down`\n2.  **Edita el archivo:** `server/worlds/world/auth.txt`\n3.  **Modifica la línea del jugador:** El formato es `nombre:hash:priv1,priv2`.\n4.  **Reinicia el servidor:** `docker-compose up -d`\n\n---"
         },
         {
           "level": 2,
@@ -166,7 +166,7 @@
           "level": 3,
           "title": "2.2. Procedimiento de Restauración",
           "id": "22-procedimiento-de-restauracin",
-          "content": "1.  **Detén el servidor:** `docker-compose down`\n2.  **Respalda el mundo dañado:** `mv server/worlds/vegan_wetlands server/worlds/vegan_wetlands_DAÑADO`\n3.  **Crea una carpeta nueva:** `mkdir server/worlds/vegan_wetlands`\n4.  **Descomprime el backup:** `tar -xzf server/backups/NOMBRE_DEL_BACKUP.tar.gz -C server/worlds/vegan_wetlands/`\n5.  **Reinicia el servidor:** `docker-compose up -d`\n\n---"
+          "content": "1.  **Detén el servidor:** `docker-compose down`\n2.  **Respalda el mundo dañado:** `mv server/worlds/world server/worlds/world_DAÑADO`\n3.  **Crea una carpeta nueva:** `mkdir server/worlds/world`\n4.  **Descomprime el backup:** `tar -xzf server/backups/NOMBRE_DEL_BACKUP.tar.gz -C server/worlds/world/`\n5.  **Reinicia el servidor:** `docker-compose up -d`\n\n---"
         },
         {
           "level": 2,
@@ -184,7 +184,7 @@
           "level": 3,
           "title": "4.1. Problema: Monstruos aparecen en el servidor",
           "id": "41-problema-monstruos-aparecen-en-el-servidor",
-          "content": "*   **Contexto Histórico:** En el pasado, VoxeLibre a veces ignoraba las configuraciones `peaceful_mode` o `mobs_spawn = false` en `luanti.conf`.\n*   **Síntoma:** Aparecen Creepers, Zombies, etc., contradiciendo la filosofía del servidor.\n*   **Solución Inmediata (Comandos en el juego):**\n    1.  **Forzar el día:** `/time 6000` (reduce el spawn de monstruos).\n    2.  **Eliminar entidades existentes:** `/clearobjects` (esto elimina mobs hostiles que ya hayan aparecido).\n*   **Solución Permanente (Configuración):**\n    La configuración correcta en `luanti.conf` para deshabilitar monstruos en VoxeLibre es una combinación de varias claves. Asegúrate de que las siguientes estén presente y activadas:\n    ```ini\n    # Configuración Anti-Monstruos para VoxeLibre\n    only_peaceful_mobs = true\n    mobs_spawn = false\n    mcl_mob_cap_hostile = 0\n    mcl_mob_cap_monster = 0\n    mcl_spawn_monsters = false\n    enable_damage = false\n    ```\n    Si el problema persiste, puede ser necesario crear un mod simple que elimine activamente las entidades hostiles como un seguro adicional."
+          "content": "*   **Contexto Histórico:** En el pasado, VoxeLibre a veces ignoraba las configuraciones `peaceful_mode` o `mobs_spawn = false` en `luanti.conf`.\n*   **Síntoma:** Aparecen Creepers, Zombies, etc., de forma no deseada.\n*   **Solución Inmediata (Comandos en el juego):**\n    1.  **Forzar el día:** `/time 6000` (reduce el spawn de monstruos).\n    2.  **Eliminar entidades existentes:** `/clearobjects` (esto elimina mobs hostiles que ya hayan aparecido).\n*   **Solución Permanente (Configuración):**\n    La configuración correcta en `luanti.conf` para deshabilitar monstruos en VoxeLibre es una combinación de varias claves. Asegúrate de que las siguientes estén presente y activadas:\n    ```ini\n    # Configuración Anti-Monstruos para VoxeLibre\n    only_peaceful_mobs = true\n    mobs_spawn = false\n    mcl_mob_cap_hostile = 0\n    mcl_mob_cap_monster = 0\n    mcl_spawn_monsters = false\n    enable_damage = false\n    ```\n    Si el problema persiste, puede ser necesario crear un mod simple que elimine activamente las entidades hostiles como un seguro adicional."
         }
       ],
       "lastModified": "2025-08-31T04:12:15.441Z",
@@ -203,13 +203,13 @@
           "level": 1,
           "title": "📖 Guía de Desarrollo de Mods",
           "id": "gua-de-desarrollo-de-mods",
-          "content": "Esta guía contiene toda la información técnica necesaria para desarrollar, modificar y mantener mods para el servidor Vegan Wetlands. Está dirigida a programadores familiarizados con Lua y el entorno de Minetest/Luanti.\n\n---"
+          "content": "Esta guía contiene toda la información técnica necesaria para desarrollar, modificar y mantener mods para el servidor Wetlands. Está dirigida a programadores familiarizados con Lua y el entorno de Minetest/Luanti.\n\n---"
         },
         {
           "level": 2,
           "title": "1. Filosofía de Desarrollo",
           "id": "1-filosofa-de-desarrollo",
-          "content": "Todo mod desarrollado para este servidor debe adherirse a tres principios básicos:\n\n1.  **Compasivo y Pacífico:** El código no debe incluir mecánicas de violencia, caza o explotación animal. El foco es el cuidado, la protección y la cooperación.\n2.  **Educativo:** Cada mod debe tener un componente de aprendizaje, ya sea sobre compasión, sostenibilidad o habilidades técnicas como la programación.\n3.  **Rendimiento y Calidad:** El código debe ser limpio, eficiente y estar bien documentado para asegurar la estabilidad del servidor y facilitar futuras colaboraciones.\n\n---"
+          "content": "Todo mod desarrollado para este servidor debe adherirse a tres principios básicos:\n\n1.  **Creativo y Educativo:** El código debe promover la creatividad, el aprendizaje y la cooperación. Cada mod debe tener un componente de aprendizaje, ya sea sobre sostenibilidad o habilidades técnicas como la programación.\n3.  **Rendimiento y Calidad:** El código debe ser limpio, eficiente y estar bien documentado para asegurar la estabilidad del servidor y facilitar futuras colaboraciones.\n\n---"
         },
         {
           "level": 2,
@@ -221,7 +221,7 @@
           "level": 3,
           "title": "2.1. Estructura de Directorios y Mapeo en Docker",
           "id": "21-estructura-de-directorios-y-mapeo-en-docker",
-          "content": "Para que un mod cargue, su carpeta debe ser mapeada en `docker-compose.yml` a la categoría correcta dentro de `/config/.minetest/games/mineclone2/mods/`.\n\n**Ejemplo de `docker-compose.yml`:**\n```yaml\nservices:\n  luanti-server:\n    volumes:\n      # Mapeo de mods a sus categorías correctas en VoxeLibre:\n      - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods\n      - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary\n      - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks\n```\n\n**Categorías Comunes:**\n*   `ITEMS`: Comida, herramientas, bloques crafteables.\n*   `ENTITIES`: Animales, NPCs, mobs pacíficos.\n*   `HELP`: Mods educativos, guías.\n*   `CORE`: Funcionalidad central."
+          "content": "Para que un mod cargue, su carpeta debe ser mapeada en `docker-compose.yml` a la categoría correcta dentro de `/config/.minetest/games/mineclone2/mods/`.\n\n**Ejemplo de `docker-compose.yml`:**\n```yaml\nservices:\n  luanti-server:\n    volumes:\n      # Mapeo de mods a sus categorías correctas en VoxeLibre:\n      - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods\n      - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary\n      - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks\n```\n\n**Categorías Comunes:**\n*   `ITEMS`: Comida, herramientas, bloques crafteables.\n*   `ENTITIES`: Animales, NPCs, mobs amigables.\n*   `HELP`: Mods educativos, guías.\n*   `CORE`: Funcionalidad central."
         },
         {
           "level": 3,
@@ -251,7 +251,7 @@
           "level": 3,
           "title": "📚 `education_blocks`",
           "id": "education_blocks",
-          "content": "*   **Categoría:** `HELP`\n*   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre alimentación consciente, nutrición y respeto animal al ser usados.\n\n---"
+          "content": "*   **Categoría:** `HELP`\n*   **Funcionalidad:** Provee bloques interactivos que muestran mensajes educativos sobre nutrición y naturaleza, nutrición y respeto animal al ser usados.\n\n---"
         },
         {
           "level": 2,
@@ -269,7 +269,7 @@
           "level": 3,
           "title": "Prioridad Media:",
           "id": "prioridad-media",
-          "content": "*   **`climate_science`:** Mods que enseñen sobre el cambio climático y el impacto positivo de una alimentación consciente.\n*   **`sustainable_farming`:** Introducir conceptos de permacultura, compostaje y agricultura sostenible.\n*   **`community_projects`:** Mecánicas que incentiven la construcción de grandes proyectos en equipo.\n\n---"
+          "content": "*   **`climate_science`:** Mods que enseñen sobre el cambio climático y el impacto positivo de una nutrición y naturaleza.\n*   **`sustainable_farming`:** Introducir conceptos de permacultura, compostaje y agricultura sostenible.\n*   **`community_projects`:** Mecánicas que incentiven la construcción de grandes proyectos en equipo.\n\n---"
         },
         {
           "level": 2,
@@ -294,13 +294,13 @@
           "level": 1,
           "title": "🚀 Guía de Despliegue e Infraestructura",
           "id": "gua-de-despliegue-e-infraestructura",
-          "content": "Este documento es la guía técnica para la infraestructura del servidor Vegan Wetlands. Cubre el despliegue, la configuración de Docker, el pipeline de CI/CD con GitHub Actions y la gestión del VPS.\n\n---"
+          "content": "Este documento es la guía técnica para la infraestructura del servidor Wetlands. Cubre el despliegue, la configuración de Docker, el pipeline de CI/CD con GitHub Actions y la gestión del VPS.\n\n---"
         },
         {
           "level": 2,
           "title": "1. Arquitectura General",
           "id": "1-arquitectura-general",
-          "content": "El proyecto se ejecuta en un **VPS de DigitalOcean** y está completamente **orquestado con Docker Compose**. Esto asegura un entorno de despliegue consistente y fácil de gestionar.\n\n*   **Repositorio Principal (`Vegan-Wetlands`):** Contiene todo el código del juego: mods, configuración de Luanti, landing page, etc.\n*   **VPS:** Ubuntu 24.04.3 LTS.\n*   **Orquestación:** Docker y Docker Compose.\n\n---"
+          "content": "El proyecto se ejecuta en un **VPS de DigitalOcean** y está completamente **orquestado con Docker Compose**. Esto asegura un entorno de despliegue consistente y fácil de gestionar.\n\n*   **Repositorio Principal (`Wetlands`):** Contiene todo el código del juego: mods, configuración de Luanti, landing page, etc.\n*   **VPS:** Ubuntu 24.04.3 LTS.\n*   **Orquestación:** Docker y Docker Compose.\n\n---"
         },
         {
           "level": 2,
@@ -312,7 +312,7 @@
           "level": 3,
           "title": "2.1. Volúmenes Clave",
           "id": "21-volmenes-clave",
-          "content": "La sección de volúmenes es crítica para la persistencia de datos y la carga de mods.\n\n```yaml\nservices:\n  luanti-server:\n    image: linuxserver/luanti:latest\n    container_name: vegan-wetlands-server\n    restart: unless-stopped\n    ports:\n      - \"30000:30000/udp\"\n    volumes:\n      # Configuración y datos del servidor\n      - ./server/config/luanti.conf:/config/.minetest/minetest.conf\n      - ./server/worlds:/config/.minetest/worlds\n      - ./server/games:/config/.minetest/games\n      - ./server/backups:/backups\n\n      # Mapeo de mods a sus categorías correctas en VoxeLibre (¡MUY IMPORTANTE!)\n      - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods\n      - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary\n      - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks\n```"
+          "content": "La sección de volúmenes es crítica para la persistencia de datos y la carga de mods.\n\n```yaml\nservices:\n  luanti-server:\n    image: linuxserver/luanti:latest\n    container_name: wetlands-server\n    restart: unless-stopped\n    ports:\n      - \"30000:30000/udp\"\n    volumes:\n      # Configuración y datos del servidor\n      - ./server/config/luanti.conf:/config/.minetest/minetest.conf\n      - ./server/worlds:/config/.minetest/worlds\n      - ./server/games:/config/.minetest/games\n      - ./server/backups:/backups\n\n      # Mapeo de mods a sus categorías correctas en VoxeLibre (¡MUY IMPORTANTE!)\n      - ./server/mods/vegan_foods:/config/.minetest/games/mineclone2/mods/ITEMS/vegan_foods\n      - ./server/mods/animal_sanctuary:/config/.minetest/games/mineclone2/mods/ENTITIES/animal_sanctuary\n      - ./server/mods/education_blocks:/config/.minetest/games/mineclone2/mods/HELP/education_blocks\n```"
         },
         {
           "level": 3,
@@ -348,7 +348,7 @@
           "level": 2,
           "title": "5. Setup Inicial de un Servidor desde Cero",
           "id": "5-setup-inicial-de-un-servidor-desde-cero",
-          "content": "Si necesitaras recrear el servidor en un nuevo VPS, los pasos serían:\n\n1.  **Preparar el VPS:** Instalar Docker y Docker Compose.\n2.  **Clonar el Repositorio:** `git clone https://github.com/gabrielpantoja-cl/Vegan-Wetlands.git`\n3.  **Configurar el Juego Base (VoxeLibre):** Asegurarse de que el juego `mineclone2` esté presente en la carpeta `server/games/`.\n4.  **Configurar `luanti.conf`:** Revisar la configuración del servidor en `server/config/luanti.conf`.\n5.  **Iniciar por Primera Vez:** Ejecutar `docker-compose up -d`.\n\n---"
+          "content": "Si necesitaras recrear el servidor en un nuevo VPS, los pasos serían:\n\n1.  **Preparar el VPS:** Instalar Docker y Docker Compose.\n2.  **Clonar el Repositorio:** `git clone https://github.com/gabrielpantoja-cl/Wetlands.git`\n3.  **Configurar el Juego Base (VoxeLibre):** Asegurarse de que el juego `mineclone2` esté presente en la carpeta `server/games/`.\n4.  **Configurar `luanti.conf`:** Revisar la configuración del servidor en `server/config/luanti.conf`.\n5.  **Iniciar por Primera Vez:** Ejecutar `docker-compose up -d`.\n\n---"
         },
         {
           "level": 2,

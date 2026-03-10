@@ -1,4 +1,4 @@
-# 🛡️ Guía Completa: Sistema de Protección de Bloques en Vegan Wetlands
+# 🛡️ Guía Completa: Sistema de Protección de Bloques en Wetlands
 
 ## 📋 Índice
 1. [¿Qué es el Sistema de Protección?](#qué-es-el-sistema-de-protección)
@@ -17,7 +17,7 @@
 
 ## 🔒 ¿Qué es el Sistema de Protección?
 
-El **Sistema de Protección de Bloques** en Vegan Wetlands permite a los jugadores proteger sus construcciones y áreas específicas contra modificaciones no autorizadas. Es ideal para:
+El **Sistema de Protección de Bloques** en Wetlands permite a los jugadores proteger sus construcciones y áreas específicas contra modificaciones no autorizadas. Es ideal para:
 
 - 🏠 Proteger casas y construcciones
 - 🌱 Asegurar granjas y jardines
@@ -453,7 +453,7 @@ El mod protector también puede incluir:
 
 ### 🌟 Casos de Uso Específicos
 
-**Para Vegan Wetlands:**
+**Para Wetlands:**
 
 1. **Santuarios de Animales:**
    - Protege áreas de animales pacíficos
@@ -506,6 +506,6 @@ El mod protector también puede incluir:
 
 ---
 
-**🌱 ¡Protege tus construcciones y crea espacios seguros para toda la comunidad Vegan Wetlands!**
+**🌱 ¡Protege tus construcciones y crea espacios seguros para toda la comunidad Wetlands!**
 
-*Documentación actualizada para servidor Vegan Wetlands - Septiembre 2025*
+*Documentación actualizada para servidor Wetlands - Septiembre 2025*

@@ -207,7 +207,7 @@ echo "1.2 Verificando compatibilidad VoxeLibre..."
 
 echo ""
 echo "1.3 Verificando contenido educativo..."
-if ! grep -rq "compasión\|educativ\|santuario\|vegano" "server/mods/$MOD_NAME/" 2>/dev/null; then
+if ! grep -rq "educativ\|creativ\|santuario" "server/mods/$MOD_NAME/" 2>/dev/null; then
     echo "⚠️ Advertencia: No se detectó contenido educativo explícito"
     echo "   ¿Es este un mod educativo para Wetlands?"
 fi
@@ -427,8 +427,8 @@ docker compose restart luanti-server
 sleep 15
 
 # Medir uso de recursos baseline
-BASELINE_MEM=$(docker stats --no-stream --format "{{.MemUsage}}" vegan-wetlands-server | awk '{print $1}')
-BASELINE_CPU=$(docker stats --no-stream --format "{{.CPUPerc}}" vegan-wetlands-server)
+BASELINE_MEM=$(docker stats --no-stream --format "{{.MemUsage}}" wetlands-server | awk '{print $1}')
+BASELINE_CPU=$(docker stats --no-stream --format "{{.CPUPerc}}" wetlands-server)
 
 echo "   Memoria baseline: $BASELINE_MEM"
 echo "   CPU baseline: $BASELINE_CPU"
@@ -443,8 +443,8 @@ docker compose restart luanti-server
 sleep 15
 
 # Medir uso de recursos con mod
-MOD_MEM=$(docker stats --no-stream --format "{{.MemUsage}}" vegan-wetlands-server | awk '{print $1}')
-MOD_CPU=$(docker stats --no-stream --format "{{.CPUPerc}}" vegan-wetlands-server)
+MOD_MEM=$(docker stats --no-stream --format "{{.MemUsage}}" wetlands-server | awk '{print $1}')
+MOD_CPU=$(docker stats --no-stream --format "{{.CPUPerc}}" wetlands-server)
 
 echo "   Memoria con mod: $MOD_MEM"
 echo "   CPU con mod: $MOD_CPU"

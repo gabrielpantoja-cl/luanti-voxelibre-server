@@ -18,23 +18,19 @@ export function Footer() {
                         <li>Versión: VoxeLibre (MineClone2)</li>
                         <li>Idioma: Español</li>
                         <li>Máximo jugadores: 20</li>
-                        <li>Tipo: Creativo, Sin PvP</li>
+                        <li>Tipo: Creativo, PvP solo en arenas</li>
                     </ul>
                 </div>
 
                 <div class="footer-section">
-                    <h4>⚡ Comandos Mágicos</h4>
+                    <h4>Comandos</h4>
                     <ul>
-                        <li><code>/back_to_spawn</code> - Volver al inicio 🏠</li>
-                        <li><code>/area_pos1</code> - Marcar esquina 1 🛡️</li>
-                        <li><code>/area_pos2</code> - Marcar esquina 2 🛡️</li>
-                        <li><code>/protect [nombre]</code> - Proteger área 🔒</li>
-                        <li><code>/reglas</code> - Ver reglas importantes 📋</li>
-                        <li><code>/sit</code> - Sentarse cómodamente 🪑</li>
-                        <li><code>/santuario</code> - Cuidar animalitos 🐾</li>
-                        <li><code>/filosofia</code> - Conocer nuestra misión 🌟</li>
-                        <li><code>/lay</code> - Recostarse en pasto 🌱</li>
-                        <li><code>/?</code> - Ver todos los comandos ✨</li>
+                        <li><code>/back_to_spawn</code> - Volver al spawn</li>
+                        <li><code>/reglas</code> - Ver las reglas</li>
+                        <li><code>/protect [nombre]</code> - Proteger tu construccion</li>
+                        <li><code>/sit</code> - Sentarse</li>
+                        <li><code>/lay</code> - Recostarse</li>
+                        <li><code>/?</code> - Ver todos los comandos</li>
                     </ul>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-name: Deploy Vegan Wetlands Server
+name: Deploy Wetlands Server
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT || 22 }}
         script: |
-          echo "🌱 Iniciando despliegue de Vegan Wetlands..."
+          echo "🌱 Iniciando despliegue de Wetlands..."
           
           # Crear directorio si no existe (primer despliegue)
           if [ ! -d "/opt/luanti-voxelibre-server" ]; then
@@ -41,9 +41,9 @@ jobs:
             cd /opt/luanti-voxelibre-server
             
             # Hacer backup del mundo actual antes de actualizar
-            if [ -d "server/worlds/vegan_wetlands" ] && sudo docker-compose ps | grep -q "luanti-server.*Up"; then
+            if [ -d "server/worlds/world" ] && sudo docker-compose ps | grep -q "luanti-server.*Up"; then
               echo "🔄 Creando backup del mundo antes de actualizar..."
-              sudo docker-compose exec luanti-server tar -czf /backups/pre-update-$(date +%Y%m%d-%H%M%S).tar.gz -C /var/lib/luanti/.luanti/worlds vegan_wetlands || true
+              sudo docker-compose exec luanti-server tar -czf /backups/pre-update-$(date +%Y%m%d-%H%M%S).tar.gz -C /var/lib/luanti/.luanti/worlds world || true
             fi
             
             echo "📥 Descargando código actualizado..."
@@ -72,13 +72,13 @@ jobs:
           echo "🔍 Verificando puerto UDP 30000..."
           sudo ss -tulpn | grep :30000 || echo "⚠️ Puerto 30000 no detectado"
           
-          echo "🌱 ¡Vegan Wetlands desplegado exitosamente!"
+          echo "🌱 ¡Wetlands desplegado exitosamente!"
 
     - name: Notify Discord (optional)
       if: always()
       run: |
         if [ "${{ job.status }}" == "success" ]; then
-          echo "✅ Despliegue exitoso de Vegan Wetlands"
+          echo "✅ Despliegue exitoso de Wetlands"
         else
-          echo "❌ Error en despliegue de Vegan Wetlands"
+          echo "❌ Error en despliegue de Wetlands"
         fi

@@ -1,6 +1,6 @@
 # 🚨 PROCEDIMIENTOS DE RESPUESTA A INCIDENTES DE SEGURIDAD
 
-**Servidor**: Vegan Wetlands (luanti.gabrielpantoja.cl:30000)
+**Servidor**: Wetlands (luanti.gabrielpantoja.cl:30000)
 **Última Actualización**: 2025-09-22 (Post-Incidente HAKER)
 
 ---
