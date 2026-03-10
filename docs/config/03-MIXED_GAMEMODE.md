@@ -674,7 +674,7 @@ pepelomo|basic_privs, creative, debug, fast, fly, give, home, interact, noclip, 
 |---------|--------|
 | **Modo** | Creativo |
 | **Privilegios** | `creative, give, fly, fast, noclip, teleport, settime, debug, basic_privs` |
-| **Inventario** | ~60 ítems esenciales creativos/veganos |
+| **Inventario** | ~60 ítems esenciales creativos/educativos |
 | **Vuelo** | ✅ Habilitado |
 | **Daño** | ✅ Inmune a todo daño |
 | **Mensaje bienvenida** | 🌱 Modo creativo - construye sin límites |

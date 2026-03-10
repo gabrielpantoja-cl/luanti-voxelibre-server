@@ -18,7 +18,7 @@ Este cambio puede tener implicaciones en scripts, configuraciones de Docker y ot
 
 ### Áreas a Revisar:
 1.  **Configuraciones de Docker Compose**: Asegurarse de que los `container_name` y las rutas de volúmenes en `docker-compose.yml` estén actualizadas. (Ya se realizó una actualización en `docker-compose.yml` para reflejar esto).
-2.  **Scripts de Shell**: Cualquier script (`.sh`) que haga referencia a la ruta `/home/gabriel/Vegan-Wetlands` o al nombre `Vegan-Wetlands` debe ser actualizado. (Ya se realizó una actualización en los scripts de `scripts/` para reflejar esto).
+2.  **Scripts de Shell**: Cualquier script (`.sh`) que haga referencia a la ruta `/home/gabriel/Vegan-Wetlands` o al nombre `Vegan-Wetlands` (nombre anterior) debe ser actualizado. (Ya se realizó una actualización en los scripts de `scripts/` para reflejar esto).
 3.  **Archivos de Configuración**: Otros archivos de configuración que puedan contener la ruta anterior.
 4.  **Tareas Programadas (Cron Jobs)**: Si existen cron jobs que usen la ruta anterior, deben ser actualizados.
 5.  **Documentación**: Actualizar cualquier documentación que haga referencia al nombre de la carpeta anterior.

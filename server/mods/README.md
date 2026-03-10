@@ -97,7 +97,7 @@ volumes:
 
 3. **Deployment VPS**
    ```bash
-   ssh gabriel@<VPS_IP> "cd /home/gabriel/Vegan-Wetlands && git pull origin main && docker-compose restart luanti-server"
+   ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && git pull origin main && docker-compose restart luanti-server"
    ```
 
 4. **Verificación**
