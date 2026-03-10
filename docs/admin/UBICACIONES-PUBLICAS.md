@@ -54,6 +54,14 @@
 - **Bioma**: Tundra Nevada / Taiga Nevada                                          
 - **Características especiales**: Nieve natural, hielo, aldea en clima frío        
                                                                                    
+### 🏦 **BANCO GAPI** ⭐⭐
+- **Coordenadas**: `58, 19, -206`
+- **Coordenadas exactas**: `58.3, 19.5, -205.9`
+- **Descripcion**: Banco para intercambio de items - En construccion
+- **Comando de teleportacion**: `/teleport gabo 58 19 -206`
+- **Estado**: 🔨 **EN CONSTRUCCION** (Mar 10, 2026)
+- **Caracteristicas**: Sistema de intercambio de items entre jugadores
+
 ### 🌿 **JARDIN ZEN JAPONES** ⭐⭐
 - **Coordenadas**: `128, 18, -212`
 - **Descripción**: Jardin zen japones construido con WorldEdit sobre la ex-zona Halloween (quemada/TNT). Incluye estanque de agua, caminos de piedra, puente de madera, arboles de abeto, linternas y arena zen.
@@ -85,6 +93,9 @@
                                                                                    
 # Refugio en la Nieve (CONFIRMADA)
 /teleport gabo 38 99 1695
+
+# Banco Gapi (EN CONSTRUCCION)
+/teleport gabo 58 19 -206
 
 # Jardin Zen Japones (CONFIRMADA)
 /teleport gabo 128 18 -212                                                          
@@ -165,6 +176,11 @@ Si necesitas acceso completo de administrador:
 ```                                                                                
                                                                                    
 ## 📝 REGISTRO DE CAMBIOS                                                           
+
+### **10 de Marzo, 2026**
+- 🔨 **EN CONSTRUCCION**: Banco Gapi en coordenadas (58, 19, -206)
+- 🏦 Sistema de intercambio de items entre jugadores
+- ✅ Comando de teleportacion agregado al sistema de navegacion
 
 ### **22 de Febrero, 2026**
 - ✅ **CONFIRMADO**: Jardin Zen Japones en coordenadas (128, 18, -212)
