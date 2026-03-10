@@ -11,9 +11,9 @@ minetest.register_chatcommand("reglas", {
         local reglas = {
             "🌱 REGLAS DE WETLANDS 🌱",
             "",
-            "🏠 SERVIDOR EDUCATIVO Y COMPASIVO",
+            "🏠 SERVIDOR CREATIVO Y EDUCATIVO",
             "Diseñado especialmente para niños 7+ años",
-            "Mundo pacífico sin violencia, solo diversión",
+            "Construye, explora y aprende con amigos",
             "",
             "📝 REGLAS BÁSICAS (OBLIGATORIAS):",
             "",
@@ -90,8 +90,8 @@ minetest.register_on_joinplayer(function(player)
         -- Mensaje de bienvenida mejorado
         minetest.chat_send_player(name, "🌈 ════════════════════════════════════ 🌈")
         minetest.chat_send_player(name, "🌱 ¡Bienvenid@ a Wetlands, " .. name .. "! 🌱")
-        minetest.chat_send_player(name, "🏠 Servidor Educativo y Compasivo (7+ años)")
-        minetest.chat_send_player(name, "🕊️ Modo Pacífico: Solo diversión, sin violencia")
+        minetest.chat_send_player(name, "🏠 Servidor Creativo y Educativo (7+ años)")
+        minetest.chat_send_player(name, "🎮 De día construye, de noche sobrevive. PvP solo en arenas.")
         minetest.chat_send_player(name, "🌈 ════════════════════════════════════ 🌈")
         minetest.chat_send_player(name, "")
 
@@ -128,19 +128,19 @@ minetest.register_on_newplayer(function(player)
         minetest.chat_send_player(name, "🌱 Bienvenido a tu primer día en Wetlands")
         minetest.chat_send_player(name, "")
         minetest.chat_send_player(name, "🎯 QUÉ HACE ESPECIAL A NUESTRO SERVIDOR:")
-        minetest.chat_send_player(name, "• 🕊️ Mundo pacífico: Sin monstruos ni violencia")
-        minetest.chat_send_player(name, "• 🌱 Educación compasiva sobre animales")
+        minetest.chat_send_player(name, "• 🏗️ Modo creativo: construye sin limites")
+        minetest.chat_send_player(name, "• 🌙 Mobs hostiles de noche para la aventura")
         minetest.chat_send_player(name, "• 🌈 Comunidad amigable para familias")
-        minetest.chat_send_player(name, "• 🏠 Santuarios virtuales para animales")
+        minetest.chat_send_player(name, "• ⚔️ Arena PvP dedicada para combatir")
         minetest.chat_send_player(name, "")
         minetest.chat_send_player(name, "🚀 TU AVENTURA COMIENZA:")
-        minetest.chat_send_player(name, "1. 👾 Explora y observa a los animales felices")
-        minetest.chat_send_player(name, "2. 🏠 Construye refugios cómodos para ellos")
-        minetest.chat_send_player(name, "3. 🌾 Planta cultivos y crea jardines bonitos")
-        minetest.chat_send_player(name, "4. 🥗 Prueba alimentos a base de plantas deliciosos")
+        minetest.chat_send_player(name, "1. 🏗️ Construye tu casa y protegela con /protect_area")
+        minetest.chat_send_player(name, "2. 🌍 Explora biomas, cuevas y estructuras")
+        minetest.chat_send_player(name, "3. 🌾 Planta cultivos y crea jardines")
+        minetest.chat_send_player(name, "4. ⚔️ Pelea en la arena PvP con /arena_tp")
         minetest.chat_send_player(name, "5. 🤝 Haz amigos y construyan proyectos juntos")
         minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "💚 ¡Disfruta tu aventura compasiva!")
+        minetest.chat_send_player(name, "💚 ¡Disfruta tu aventura!")
     end)
 end)
 
