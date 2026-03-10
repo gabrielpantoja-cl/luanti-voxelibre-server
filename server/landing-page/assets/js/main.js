@@ -1,4 +1,4 @@
-// ===== MAIN JAVASCRIPT FOR VEGAN WETLANDS LANDING PAGE =====
+// ===== MAIN JAVASCRIPT FOR WETLANDS LANDING PAGE =====
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeAnimations();
@@ -520,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
             // Service worker registration would go here
-            console.log('🌱 Vegan Wetlands Landing Page loaded successfully!');
+            console.log('Wetlands Landing Page loaded successfully!');
         });
     }
 });

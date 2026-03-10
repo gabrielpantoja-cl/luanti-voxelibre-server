@@ -12,7 +12,7 @@
 
 - **Compasion Animal:** Cuidamos a los animales, no los daniamos.
 - **Educacion Creativa:** Aprende sobre sostenibilidad y alimentacion consciente mientras juegas.
-- **Violencia Controlada:** El modo survival y los mobs hostiles estan desactivados para que explores sin miedo. Existe una arena PvP dedicada donde puedes combatir con otros jugadores si lo deseas, pero el resto del mundo es pacifico.
+- **Aventura Controlada:** De dia exploras y construyes libremente. De noche aparecen mobs hostiles (excepto Creepers). Existe una arena PvP dedicada donde puedes combatir con otros jugadores si lo deseas.
 
 ## Como Unirte
 

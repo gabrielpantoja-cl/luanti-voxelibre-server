@@ -1,13 +1,13 @@
-# 🔧 Jerarquía de Configuración de Luanti - Vegan Wetlands
+# 🔧 Jerarquía de Configuración de Luanti - Wetlands
 
 ## 📋 Resumen Ejecutivo
 
-El servidor Vegan Wetlands utiliza una **jerarquía de configuración en cascada** donde diferentes archivos tienen distintos niveles de autoridad. Entender esta jerarquía es **crítico** para administrar correctamente el servidor.
+El servidor Wetlands utiliza una **jerarquía de configuración en cascada** donde diferentes archivos tienen distintos niveles de autoridad. Entender esta jerarquía es **crítico** para administrar correctamente el servidor.
 
 ## 🏗️ Jerarquía de Autoridad (Mayor a Menor)
 
 ### 1. **`luanti.conf`** - **AUTORIDAD MÁXIMA** 🎯
-**Ubicación**: `/home/gabriel/Vegan-Wetlands/server/config/luanti.conf`
+**Ubicación**: `/home/gabriel/luanti-voxelibre-server/server/config/luanti.conf`
 **Docker**: `/config/.minetest/minetest.conf`
 
 **Características**:
@@ -17,7 +17,7 @@ El servidor Vegan Wetlands utiliza una **jerarquía de configuración en cascada
 - ✅ **Configuración de red, privilegios por defecto, modo de juego**
 
 ### 2. **`world.mt`** - **Configuración de Mundo** 🌍
-**Ubicación**: `/home/gabriel/Vegan-Wetlands/server/worlds/world/world.mt`
+**Ubicación**: `/home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt`
 **Docker**: `/config/.minetest/worlds/world/world.mt`
 
 **Características**:
@@ -93,7 +93,7 @@ cat server/config/luanti.conf | grep creative
 # Output: creative_mode = false  <-- ¡AQUÍ ESTÁ EL CONFLICTO!
 
 # Paso 3: Ver resultado en el servidor
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose logs luanti-server | grep creative"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server | grep creative"
 ```
 
 **✅ SOLUCIÓN**:
@@ -146,13 +146,13 @@ echo "load_mod_nombre_del_mod = true" >> server/worlds/world/world.mt
 ### Verificar Estado Actual del Servidor
 ```bash
 # Conectar al VPS y ver configuración activa
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
 
 # Ver qué mods están cargados
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && cat server/worlds/world/world.mt | grep load_mod"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && cat server/worlds/world/world.mt | grep load_mod"
 
 # Ver logs del servidor para errores de configuración
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=50 luanti-server | grep -i error"
+ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=50 luanti-server | grep -i error"
 ```
 
 ### Aplicar Cambios de Configuración

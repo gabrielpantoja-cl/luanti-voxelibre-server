@@ -25,7 +25,7 @@
     },
     {
       "id": "comandos-utiles",
-      "title": "⚡ Comandos Mágicos",
+      "title": "⚡ Comandos del Servidor",
       "description": "Los comandos más útiles que necesitas saber",
       "icon": "⚡",
       "audience": "jugadores"
@@ -84,13 +84,13 @@
           "id": "bienvenida",
           "title": "🎉 ¡Bienvenido a Wetlands!",
           "level": 1,
-          "content": "¡Felicidades! Ya estás en nuestro servidor súper especial.\n\n**En Wetlands puedes:**\n- 🏗️ Construir casas increíbles\n- 🐰 Cuidar animalitos adorables\n- 🌱 Plantar jardines hermosos\n- 👥 Hacer nuevos amigos\n- 🎓 Aprender cosas geniales\n\n**¡Y lo mejor: SIN violencia, solo diversión!**"
+          "content": "¡Felicidades! Ya estás en nuestro servidor súper especial.\n\n**En Wetlands puedes:**\n- 🏗️ Construir casas increíbles\n- 🐰 Cuidar animalitos adorables\n- 🌱 Plantar jardines hermosos\n- 👥 Hacer nuevos amigos\n- 🎓 Aprender cosas geniales\n\n**¡Y lo mejor: creatividad y aventura!**"
         },
         {
           "id": "controles-basicos",
           "title": "🎮 Controles Súper Fáciles",
           "level": 1,
-          "content": "**Moverse es súper fácil:**\n- **W, A, S, D**: Caminar (como en otros juegos)\n- **Espacio**: Saltar y volar hacia arriba\n- **Shift**: Agacharse y volar hacia abajo\n- **F**: ¡Activa el poder de volar! 🦅\n- **J**: ¡Súper velocidad! ⚡\n\n**Para interactuar:**\n- **Clic izquierdo**: Romper bloques\n- **Clic derecho**: Poner bloques\n- **I**: Ver tu mochila mágica\n- **T**: Hablar con otros jugadores"
+          "content": "**Moverse es súper fácil:**\n- **W, A, S, D**: Caminar (como en otros juegos)\n- **Espacio**: Saltar y volar hacia arriba\n- **Shift**: Agacharse y volar hacia abajo\n- **F**: ¡Activa el poder de volar! 🦅\n- **J**: ¡Súper velocidad! ⚡\n\n**Para interactuar:**\n- **Clic izquierdo**: Romper bloques\n- **Clic derecho**: Poner bloques\n- **I**: Ver tu inventario\n- **T**: Hablar con otros jugadores"
         },
         {
           "id": "primera-casa",
@@ -108,7 +108,7 @@
     },
     "comandos-utiles": {
       "id": "comandos-utiles",
-      "title": "⚡ Comandos Mágicos del Servidor",
+      "title": "⚡ Comandos del Servidor del Servidor",
       "icon": "⚡",
       "audience": "jugadores",
       "wordCount": 315,
@@ -129,7 +129,7 @@
           "id": "como-usar-comandos",
           "title": "💡 ¿Cómo Usar los Comandos?",
           "level": 1,
-          "content": "¡Es súper fácil usar comandos!\n\n**Pasos simples:**\n1. **Presiona T** para abrir el chat\n2. **Escribe el comando** exactamente como está escrito\n3. **Presiona Enter** y ¡magia!\n\n**Ejemplo:** Si escribes `/sit` y presionas Enter, ¡tu personaje se sentará!\n\n🔥 **Truco:** Puedes usar comandos en cualquier momento mientras juegas"
+          "content": "¡Es súper fácil usar comandos!\n\n**Pasos simples:**\n1. **Presiona T** para abrir el chat\n2. **Escribe el comando** exactamente como está escrito\n3. **Presiona Enter** y ¡listo!\n\n**Ejemplo:** Si escribes `/sit` y presionas Enter, ¡tu personaje se sentará!\n\n🔥 **Truco:** Puedes usar comandos en cualquier momento mientras juegas"
         }
       ]
     },
@@ -189,7 +189,7 @@
           "id": "chat-amigable",
           "title": "💬 Chat Súper Amigable",
           "level": 1,
-          "content": "**Reglas para hablar genial en el chat:**\n\n**✅ Palabras mágicas:**\n- \"Por favor\" y \"Gracias\"\n- \"¡Qué construcción tan genial!\"\n- \"¿Puedo ayudarte?\"\n- \"¡Bienvenido al servidor!\"\n\n**❌ No uses:**\n- Palabras groseras o feas\n- Mensajes que lastimen a otros\n- MAYÚSCULAS TODO EL TIEMPO (es como gritar)\n- Spam (repetir el mismo mensaje)\n\n**¡Recuerda: hay niños jugando!**"
+          "content": "**Reglas para hablar genial en el chat:**\n\n**✅ Buenas palabras:**\n- \"Por favor\" y \"Gracias\"\n- \"¡Qué construcción tan genial!\"\n- \"¿Puedo ayudarte?\"\n- \"¡Bienvenido al servidor!\"\n\n**❌ No uses:**\n- Palabras groseras o feas\n- Mensajes que lastimen a otros\n- MAYÚSCULAS TODO EL TIEMPO (es como gritar)\n- Spam (repetir el mismo mensaje)\n\n**¡Recuerda: hay niños jugando!**"
         },
         {
           "id": "animales-felices",

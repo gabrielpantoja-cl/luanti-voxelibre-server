@@ -28,7 +28,7 @@ default_privs = creative,interact,shout,home,spawn,give,fly,fast,noclip,teleport
 give_initial_stuff = true
 initial_stuff = mcl_core:stone 64,mcl_core:wood 64,mcl_wool:white 64,mcl_tools:pick_iron,mcl_tools:shovel_iron,mcl_tools:axe_iron,mcl_buckets:bucket_empty,mcl_core:apple 64,mcl_farming:bread 64
 
-# NUCLEAR OVERRIDE - VEGAN WETLANDS CREATIVE FORCE
+# NUCLEAR OVERRIDE - WETLANDS CREATIVE FORCE
 creative_mode = true
 enable_damage = false
 enable_pvp = false
@@ -60,12 +60,12 @@ mcl_mobs_peaceful_only = true
 
 ### 1. Hacer Backup del Archivo Original:
 ```bash
-ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server cp /config/.minetest/games/mineclone2/minetest.conf /config/.minetest/games/mineclone2/minetest.conf.backup'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cp /config/.minetest/games/mineclone2/minetest.conf /config/.minetest/games/mineclone2/minetest.conf.backup'
 ```
 
 ### 2. Aplicar Override Nuclear Enhanced:
 ```bash
-ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server tee -a /config/.minetest/games/mineclone2/minetest.conf << EOF
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server tee -a /config/.minetest/games/mineclone2/minetest.conf << EOF
 
 # NUCLEAR OVERRIDE ENHANCED - COMPLETE NEW USER EXPERIENCE
 # Usuarios nuevos comienzan con gamemode creative y todos los privilegios
@@ -73,7 +73,7 @@ default_privs = creative,interact,shout,home,spawn,give,fly,fast,noclip,teleport
 give_initial_stuff = true
 initial_stuff = mcl_core:stone 64,mcl_core:wood 64,mcl_wool:white 64,mcl_tools:pick_iron,mcl_tools:shovel_iron,mcl_tools:axe_iron,mcl_buckets:bucket_empty,mcl_core:apple 64,mcl_farming:bread 64
 
-# NUCLEAR OVERRIDE - VEGAN WETLANDS CREATIVE FORCE
+# NUCLEAR OVERRIDE - WETLANDS CREATIVE FORCE
 creative_mode = true
 enable_damage = false
 enable_pvp = false
@@ -105,24 +105,24 @@ EOF'
 
 ### 3. Reiniciar Servidor:
 ```bash
-ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose restart luanti-server'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server'
 ```
 
 ### 4. Otorgar TODOS los Privilegios Creativos a Usuarios Existentes:
 ```bash
-ssh gabriel@<VPS_HOST_IP> 'sleep 5 && cd /home/gabriel/Vegan-Wetlands && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
+ssh gabriel@<VPS_HOST_IP> 'sleep 5 && cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
 ```
 
 ## 🔍 Verificación
 
 ### Verificar Estado del Servidor:
 ```bash
-ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose ps'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose ps'
 ```
 
 ### Verificar Ausencia de Mobs Hostiles:
 ```bash
-ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/Vegan-Wetlands && docker-compose logs --tail=50 luanti-server | grep -E "(zombie|skeleton|spider|creeper|died|damage)"'
+ssh gabriel@<VPS_HOST_IP> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=50 luanti-server | grep -E "(zombie|skeleton|spider|creeper|died|damage)"'
 ```
 
 **✅ ÉXITO:** No debería aparecer actividad de mobs hostiles en logs recientes.
@@ -185,7 +185,7 @@ Modificar **directamente** el archivo `minetest.conf` de VoxeLibre dentro del co
 - **🚫 Cero monstruos nocturonos:** Sin zombies, esqueletos, arañas
 - **🎮 Modo creativo 100%:** Inventario infinito, vuelo libre
 - **🛡️ Sin daño:** Jugadores inmortales
-- **🌱 Enfoque vegano:** Solo animales pacíficos para santuarios
+- **🌱 Enfoque educativo:** Solo animales pacíficos para santuarios
 - **👨‍👩‍👧‍👦 Seguro para niños:** Experiencia no violenta completa
 - **🎁 Nuevos usuarios completos:** Todos los privilegios + kit de inicio automático
 - **📦 Kit de inicio enhanced:** 64 items esenciales + herramientas + comida vegana
