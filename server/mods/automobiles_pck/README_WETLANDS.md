@@ -16,7 +16,7 @@ Este es el **modpack Automobiles Pack** originalmente creado por **apercy**, aho
 
 ### ❌ Eliminación de Biofuel
 - **Problema original:** Dependencia crítica del mod `biofuel` (causaba corrupción de texturas)
-- **Solución:** Sistema de combustible completamente vegano usando items nativos de VoxeLibre
+- **Solución:** Sistema de combustible completamente renovable usando items nativos de VoxeLibre
 
 ### 🌾 Sistema de Combustible Vegano
 Los vehículos ahora funcionan con **energías renovables y plant-based**:
@@ -103,7 +103,7 @@ Todas las recetas han sido adaptadas a **VoxeLibre (MineClone2)**.
 ## 🔧 Recargar Combustible
 
 1. Sube al vehículo
-2. Equipa un item de combustible vegano (trigo, zanahoria, esmeralda, etc.)
+2. Equipa un item de combustible renovable (trigo, zanahoria, esmeralda, etc.)
 3. **Click derecho** mientras estás montado
 4. ¡Verás un mensaje educativo!
 
@@ -125,7 +125,7 @@ Todas las recetas han sido adaptadas a **VoxeLibre (MineClone2)**.
 
 ### Cambios Realizados
 - ✅ Eliminación dependencia `biofuel`
-- ✅ Sistema de combustible vegano con items VoxeLibre
+- ✅ Sistema de combustible renovable con items VoxeLibre
 - ✅ Recetas adaptadas a VoxeLibre (`mcl_core:*`, `mcl_farming:*`)
 - ✅ Sistema de mensajes educativos en español
 - ✅ Comando `/transporte_sostenible`

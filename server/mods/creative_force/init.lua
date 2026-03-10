@@ -72,7 +72,7 @@ local function give_all_items_to_player(player)
     inv:set_size("main", 36)
     inv:set_list("main", {})
     
-    -- Essential VoxeLibre items for creative building and vegan gameplay
+    -- Essential VoxeLibre items for creative building and educational gameplay
     local essential_items = {
         -- Building blocks
         "mcl_core:stone", "mcl_core:cobble", "mcl_core:dirt", "mcl_core:grass_path",
@@ -87,7 +87,7 @@ local function give_all_items_to_player(player)
         "mcl_wool:white", "mcl_wool:red", "mcl_wool:green", "mcl_wool:blue",
         "mcl_wool:yellow", "mcl_wool:orange", "mcl_wool:purple", "mcl_wool:pink",
         
-        -- Plant-based foods (vegan-friendly)
+        -- Plant-based foods (compassion-friendly)
         "mcl_core:apple", "mcl_farming:bread", "mcl_farming:carrot", "mcl_farming:potato",
         "mcl_farming:beetroot", "mcl_farming:pumpkin_pie", "mcl_core:sugar",
         

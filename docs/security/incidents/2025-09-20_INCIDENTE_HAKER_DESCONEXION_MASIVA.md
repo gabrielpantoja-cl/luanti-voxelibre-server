@@ -10,7 +10,7 @@
 
 ## 📋 RESUMEN EJECUTIVO
 
-El 20 de septiembre de 2025, el servidor Vegan Wetlands experimentó una **desconexión masiva automática** de todos los jugadores conectados cuando el usuario "HAKER" se conectó desde la IP `200.83.160.80`. Inicialmente se sospechó de actividad maliciosa, pero la investigación técnica profunda reveló que fue causado por un **mecanismo de protección automática** del motor Luanti activado por exceso de objetos por bloque (`max_objects_per_block`).
+El 20 de septiembre de 2025, el servidor Wetlands experimentó una **desconexión masiva automática** de todos los jugadores conectados cuando el usuario "HAKER" se conectó desde la IP `200.83.160.80`. Inicialmente se sospechó de actividad maliciosa, pero la investigación técnica profunda reveló que fue causado por un **mecanismo de protección automática** del motor Luanti activado por exceso de objetos por bloque (`max_objects_per_block`).
 
 ### ⚡ Hallazgos Clave
 - **NO hubo actividad maliciosa** del usuario "HAKER"

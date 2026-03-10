@@ -13,7 +13,7 @@ Esta guía unifica toda la información técnica necesaria para desarrollar, mod
 Todo mod desarrollado para Wetlands debe adherirse a principios fundamentales:
 
 ### 📋 Principios Básicos
-1. **🌿 Compasivo y Pacífico**: Sin mecánicas de violencia, caza o explotación animal. Enfoque en cuidado, protección y cooperación.
+1. **🌿 Compasivo y Educativo**: Sin mecánicas de violencia, caza o explotación animal. Enfoque en cuidado, protección y cooperación.
 2. **📚 Educativo**: Cada mod debe enseñar sobre compasión, sostenibilidad o habilidades técnicas.
 3. **⚡ Rendimiento y Calidad**: Código limpio, eficiente y bien documentado para estabilidad del servidor.
 4. **👶 Apropiado para niños**: Contenido seguro y constructivo para edades 7+ años.
@@ -489,7 +489,7 @@ Desarrollo Local → Commit/Push → Pull VPS → Habilitar Mod → Restart Serv
 ### 1️⃣ Desarrollo Local
 ```bash
 # Crear estructura del mod
-cd /home/gabriel/Documentos/Vegan-Wetlands/server/mods/
+cd /home/gabriel/Documentos/luanti-voxelibre-server/server/mods/
 mkdir mi_mod_educativo
 cd mi_mod_educativo
 
@@ -504,7 +504,7 @@ lua -c init.lua  # Verificar sintaxis básica
 ### 2️⃣ Commit y Push
 ```bash
 # En directorio raíz del proyecto
-cd /home/gabriel/Documentos/Vegan-Wetlands/
+cd /home/gabriel/Documentos/luanti-voxelibre-server/
 
 # Agregar archivos al staging
 git add server/mods/mi_mod_educativo/
@@ -541,7 +541,7 @@ git push origin main
 ssh gabriel@167.172.251.27
 
 # Navegar al directorio
-cd /home/gabriel/Vegan-Wetlands
+cd /home/gabriel/luanti-voxelibre-server
 
 # Pull oficial desde GitHub
 git pull origin main

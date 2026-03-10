@@ -1,6 +1,6 @@
 -- Vegan Replacements Mod
 -- Elimina items no veganos y los reemplaza con alternativas veganas
--- Para el servidor Vegan Wetlands
+-- Para el servidor Wetlands
 
 local S = minetest.get_translator("vegan_replacements")
 
@@ -201,7 +201,7 @@ minetest.register_on_mods_loaded(function()
         minetest.log("info", "[Vegan Replacements] ✅ Mod cargado exitosamente. " .. eliminated_count .. "/" .. #non_vegan_items .. " items no veganos eliminados.")
         
         -- Enviar mensaje a todos los jugadores conectados
-        minetest.chat_send_all(minetest.colorize("#90EE90", "🌱 Servidor Vegan Wetlands: " .. eliminated_count .. " items no veganos eliminados."))
+        minetest.chat_send_all(minetest.colorize("#90EE90", "🌱 Servidor Wetlands: " .. eliminated_count .. " items no veganos eliminados."))
     end)
 end)
 
