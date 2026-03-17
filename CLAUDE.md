@@ -17,7 +17,7 @@ This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods
 - **Mods**: Lua scripts in `server/mods/`
 - **Config**: `.conf` files, not JSON/YAML
 - **Deploy**: GitHub Actions CI/CD + manual `git pull` on VPS
-- **VPS**: `ssh gabriel@<VPS_IP>`
+- **VPS**: `ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP>` (Oracle Cloud, ARM aarch64)
 - **Port**: 30000/UDP (game), 80/443 (landing page via nginx)
 - **Language**: Spanish (es)
 
