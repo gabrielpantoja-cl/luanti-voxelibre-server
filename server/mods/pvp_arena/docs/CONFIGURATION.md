@@ -309,7 +309,7 @@ Como administrador en el juego:
 
 Editar manualmente el archivo:
 ```bash
-ssh gabriel@<VPS_IP>
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server
 nano server/worlds/world/pvp_arenas.txt
 ```

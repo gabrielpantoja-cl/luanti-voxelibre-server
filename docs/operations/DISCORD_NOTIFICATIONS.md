@@ -95,7 +95,7 @@ cd /ruta/a/luanti-voxelibre-server
 bash scripts/send-discord-test.sh "Tu mensaje de prueba"
 
 # Desde el VPS
-ssh gabriel@<VPS_IP>
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server
 bash scripts/send-discord-test.sh "Prueba desde VPS"
 ```

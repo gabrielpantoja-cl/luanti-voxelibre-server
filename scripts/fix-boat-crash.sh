@@ -5,7 +5,7 @@ echo "🔧 Script de Recuperación: Botes Corruptos"
 echo "========================================"
 
 # Variables
-VPS="gabriel@<VPS_IP>"
+VPS="gabriel@${VPS_HOST}"
 PROJECT_DIR="/home/gabriel/luanti-voxelibre-server"
 BACKUP_DIR="$PROJECT_DIR/server/worlds/world_BACKUP_$(date +%Y%m%d_%H%M%S)"
 

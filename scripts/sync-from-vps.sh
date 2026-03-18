@@ -9,7 +9,7 @@ set -e
 
 # Configuración
 VPS_USER="gabriel"
-VPS_HOST="<VPS_IP>"
+VPS_HOST="${VPS_HOST}"
 VPS_PATH="/home/gabriel/luanti-voxelibre-server"
 TMP_DIR="/tmp/vps-sync-$(date +%s)"
 DRY_RUN=false

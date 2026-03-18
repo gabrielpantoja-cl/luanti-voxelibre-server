@@ -215,7 +215,7 @@ Y=14: [Buffer]
 2. **Verificar logs del servidor**:
    ```bash
    # Desde tu terminal local
-   ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
+   ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
    ```
 
 3. **Resetear el controller**:
