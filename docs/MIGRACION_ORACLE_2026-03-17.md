@@ -6,7 +6,7 @@
 
 ## Resumen
 
-El servidor Luanti (Vegan Wetlands) fue migrado de DigitalOcean ($33/mes) a Oracle Cloud Free Tier ($0/mes) el 17 de marzo de 2026. La migracion fue exitosa sin perdida de datos.
+El servidor Luanti (Wetlands) fue migrado de DigitalOcean ($33/mes) a Oracle Cloud Free Tier ($0/mes) el 17 de marzo de 2026. La migracion fue exitosa sin perdida de datos.
 
 ## Antes y despues
 
