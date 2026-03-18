@@ -97,7 +97,7 @@ Ubicación del archivo de configuración:
 
 ```bash
 # SSH al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Crear backup
 sudo cp /etc/nginx/sites-available/luanti.gabrielpantoja.cl \
@@ -210,16 +210,16 @@ curl -I https://luanti.gabrielpantoja.cl/assets/images/AUTO-AMARILLO.png | grep 
 
 ```bash
 # Ver logs de nginx
-ssh gabriel@167.172.251.27 'sudo tail -50 /var/log/nginx/luanti_error.log'
+ssh gabriel@<IP_VPS_ANTERIOR> 'sudo tail -50 /var/log/nginx/luanti_error.log'
 
 # Ver estado de git en VPS
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && git log --oneline -5'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && git log --oneline -5'
 
 # Verificar archivos en VPS
-ssh gabriel@167.172.251.27 'ls -lh /home/gabriel/luanti-voxelibre-server/server/landing-page/assets/images/AUTO-AMARILLO.png'
+ssh gabriel@<IP_VPS_ANTERIOR> 'ls -lh /home/gabriel/luanti-voxelibre-server/server/landing-page/assets/images/AUTO-AMARILLO.png'
 
 # Verificar JSON en VPS
-ssh gabriel@167.172.251.27 'cat /home/gabriel/luanti-voxelibre-server/server/landing-page/assets/data/gallery-data.json | head -30'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cat /home/gabriel/luanti-voxelibre-server/server/landing-page/assets/data/gallery-data.json | head -30'
 
 # Test HTTP directo
 curl -s https://luanti.gabrielpantoja.cl/assets/data/gallery-data.json | python3 -c "import sys, json; print(f\"Total: {len(json.load(sys.stdin)['images'])} imágenes\")"

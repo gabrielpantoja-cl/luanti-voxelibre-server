@@ -97,12 +97,12 @@ volumes:
 
 3. **Deployment VPS**
    ```bash
-   ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main && docker-compose restart luanti-server"
+   ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git pull origin main && docker-compose restart luanti-server"
    ```
 
 4. **Verificación**
    ```bash
-   ssh gabriel@167.172.251.27 "docker-compose logs --tail=50 luanti-server | grep mi_mod"
+   ssh gabriel@<IP_VPS_ANTERIOR> "docker-compose logs --tail=50 luanti-server | grep mi_mod"
    ```
 
 ### ✅ Ventajas de este sistema

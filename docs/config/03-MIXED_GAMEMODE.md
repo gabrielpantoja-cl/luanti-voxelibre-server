@@ -237,7 +237,7 @@ Comentar o eliminar la entrada del jugador en:
 ### Paso 2: Limpiar Privilegios en Base de Datos
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
 ```
@@ -247,7 +247,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 ### Paso 3: Reiniciar Servidor
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
 ```
 
 ### Paso 4: El Jugador Debe Reconectar
@@ -273,7 +273,7 @@ git push origin main
 # Esperar ~2 minutos
 
 # 3. Verificar en VPS
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose logs --tail=20 luanti-server | grep -i 'survival\|creative'"
 ```
 
@@ -282,19 +282,19 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 ```bash
 # 1. Copiar creative_force actualizado
 cat "/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/creative_force/init.lua" | \
-  ssh gabriel@167.172.251.27 "cat > /home/gabriel/luanti-voxelibre-server/server/mods/creative_force/init.lua"
+  ssh gabriel@<IP_VPS_ANTERIOR> "cat > /home/gabriel/luanti-voxelibre-server/server/mods/creative_force/init.lua"
 
 # 2. Copiar pvp_arena actualizado
 cat "/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/pvp_arena/init.lua" | \
-  ssh gabriel@167.172.251.27 "cat > /home/gabriel/luanti-voxelibre-server/server/mods/pvp_arena/init.lua"
+  ssh gabriel@<IP_VPS_ANTERIOR> "cat > /home/gabriel/luanti-voxelibre-server/server/mods/pvp_arena/init.lua"
 
 # 3. Limpiar privilegios del jugador
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
 
 # 4. Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
 ```
 
 ---
@@ -322,7 +322,7 @@ interact, shout, home, spawn, creative, give, fly, fast, noclip, teleport, setti
 ### 6.1.2. Desde Terminal
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"nombre_jugador\");'"
 ```
@@ -330,7 +330,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 ## 6.2. Revisar Logs del Servidor
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose logs --tail=50 luanti-server | grep -i 'jugador\|survival\|creative_force\|pvp.*arena'"
 ```
 
@@ -379,7 +379,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 
 **Solución**: Siempre reiniciar el servidor después de modificar archivos `.lua`:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
 ```
 
 ### Problema 4: Mod creative_force No Carga
@@ -388,7 +388,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker c
 
 **Solución**: Habilitar manualmente
 ```bash
-ssh gabriel@167.172.251.27 "echo 'load_mod_creative_force = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "echo 'load_mod_creative_force = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
 docker compose restart luanti-server
 ```
 
@@ -581,7 +581,7 @@ local survival_players = {
 
 **Comando ejecutado**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"pepelomo\");'"
 ```
@@ -593,14 +593,14 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 ```bash
 # 1. Copiar creative_force actualizado
 cat "/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/creative_force/init.lua" | \
-  ssh gabriel@167.172.251.27 "cat > /home/gabriel/luanti-voxelibre-server/server/mods/creative_force/init.lua"
+  ssh gabriel@<IP_VPS_ANTERIOR> "cat > /home/gabriel/luanti-voxelibre-server/server/mods/creative_force/init.lua"
 
 # 2. Copiar pvp_arena actualizado
 cat "/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/pvp_arena/init.lua" | \
-  ssh gabriel@167.172.251.27 "cat > /home/gabriel/luanti-voxelibre-server/server/mods/pvp_arena/init.lua"
+  ssh gabriel@<IP_VPS_ANTERIOR> "cat > /home/gabriel/luanti-voxelibre-server/server/mods/pvp_arena/init.lua"
 
 # 3. Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
 ```
 
 **Resultado**:
@@ -615,7 +615,7 @@ Container luanti-voxelibre-server  Started
 
 **Solución Aplicada**:
 ```bash
-ssh gabriel@167.172.251.27 "echo 'load_mod_creative_force = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "echo 'load_mod_creative_force = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
 docker compose restart luanti-server
 ```
 
@@ -629,7 +629,7 @@ docker compose restart luanti-server
 
 **Consulta de verificación**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'SELECT a.name, GROUP_CONCAT(up.privilege, \", \") as privileges FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name=\"pepelomo\" GROUP BY a.name;'"
 ```
@@ -716,19 +716,19 @@ Si se necesita replicar este proceso con otro jugador:
 # server/mods/pvp_arena/init.lua (líneas 5-8)
 
 # 2. Limpiar privilegios
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
 
 # 3. Copiar archivos al VPS
-cat "server/mods/creative_force/init.lua" | ssh gabriel@167.172.251.27 "cat > /home/gabriel/luanti-voxelibre-server/server/mods/creative_force/init.lua"
-cat "server/mods/pvp_arena/init.lua" | ssh gabriel@167.172.251.27 "cat > /home/gabriel/luanti-voxelibre-server/server/mods/pvp_arena/init.lua"
+cat "server/mods/creative_force/init.lua" | ssh gabriel@<IP_VPS_ANTERIOR> "cat > /home/gabriel/luanti-voxelibre-server/server/mods/creative_force/init.lua"
+cat "server/mods/pvp_arena/init.lua" | ssh gabriel@<IP_VPS_ANTERIOR> "cat > /home/gabriel/luanti-voxelibre-server/server/mods/pvp_arena/init.lua"
 
 # 4. Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-server"
 
 # 5. Verificar creative_force está habilitado
-ssh gabriel@167.172.251.27 "grep -q 'load_mod_creative_force' /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt || echo 'load_mod_creative_force = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "grep -q 'load_mod_creative_force' /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt || echo 'load_mod_creative_force = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
 
 # 6. Pedir al jugador que se desconecte y vuelva a conectar
 ```

@@ -10,7 +10,7 @@ set -e
 # Configuración
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORLD_BACKUP_DIR="$REPO_DIR/world-snapshots"
-VPS_HOST="gabriel@167.172.251.27"
+VPS_HOST="gabriel@${VPS_HOST}"
 VPS_WORLD_PATH="/home/gabriel/luanti-voxelibre-server/server/worlds"
 DATE=$(date +%Y%m%d-%H%M%S)
 SNAPSHOT_NAME="world-snapshot-${DATE}"

@@ -93,7 +93,7 @@ para activar el nuevo sistema de Arena PVP.
 docker-compose restart luanti-server
 
 # Opción B: VPS (producción)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 ```
 
 **Tiempo de reinicio**: ~30 segundos

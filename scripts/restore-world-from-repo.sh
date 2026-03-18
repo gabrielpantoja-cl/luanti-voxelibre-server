@@ -9,7 +9,7 @@ set -e
 # Configuración
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORLD_BACKUP_DIR="$REPO_DIR/world-snapshots"
-VPS_HOST="gabriel@167.172.251.27"
+VPS_HOST="gabriel@${VPS_HOST}"
 VPS_WORLD_PATH="/home/gabriel/luanti-voxelibre-server/server/worlds"
 
 # Función de ayuda
@@ -120,7 +120,7 @@ if ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && docker-compose p
     echo "🛡️  Backup de emergencia disponible en: worlds_${EMERGENCY_BACKUP}"
 else
     echo "❌ Error: Servidor no está funcionando después de la restauración"
-    echo "🔧 Revisa los logs: ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server'"
+    echo "🔧 Revisa los logs: ssh gabriel@${VPS_HOST} 'cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server'"
     exit 1
 fi
 

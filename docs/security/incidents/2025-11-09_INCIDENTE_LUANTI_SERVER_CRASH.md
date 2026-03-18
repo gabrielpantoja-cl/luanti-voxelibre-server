@@ -1,7 +1,7 @@
 # Reporte de Incidente: Servidor Luanti - Crasheos Recurrentes
 
 **Fecha del Incidente**: 09 de Noviembre de 2025
-**Servidor**: luanti-voxelibre-server (VPS 167.172.251.27)
+**Servidor**: luanti-voxelibre-server (VPS <IP_VPS_ANTERIOR>)
 **Estado**: RESUELTO - Diagnóstico Completo
 **Severidad**: MEDIA (crasheos con auto-restart funcional)
 
@@ -19,7 +19,7 @@ El servidor de Luanti (VoxeLibre/MineClone2) experimentó múltiples crasheos du
 ## Contexto del Sistema
 
 ### Infraestructura
-- **VPS**: Digital Ocean 167.172.251.27
+- **VPS**: Digital Ocean <IP_VPS_ANTERIOR>
 - **SO**: Ubuntu/Debian en Docker
 - **Contenedor**: `luanti-voxelibre-server` (linuxserver/luanti:latest)
 - **Estado actual**: Running (Up 10 hours) - Health: healthy
@@ -263,7 +263,7 @@ end
 **Pasos de implementación**:
 ```bash
 # 1. SSH al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # 2. Acceder al contenedor
 docker exec -it luanti-voxelibre-server bash
@@ -298,7 +298,7 @@ docker logs -f luanti-voxelibre-server
 **Implementación**:
 ```bash
 # 1. SSH al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # 2. Backup del juego actual
 docker exec luanti-voxelibre-server tar czf /config/voxelibre-0.90.1-backup.tar.gz \
@@ -348,7 +348,7 @@ docker restart luanti-voxelibre-server
 **Implementación**:
 ```bash
 # SSH al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Deshabilitar mcl_boats
 docker exec luanti-voxelibre-server sh -c \
@@ -389,7 +389,7 @@ docker restart luanti-voxelibre-server
 **Implementación**:
 ```bash
 # Agregar cron job para monitorear crashes
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Crear script de monitoreo
 cat > ~/monitor-luanti.sh << 'EOF'
@@ -430,7 +430,7 @@ chmod +x ~/monitor-luanti.sh
 
 2. **Backup preventivo**
    ```bash
-   ssh gabriel@167.172.251.27
+   ssh gabriel@<IP_VPS_ANTERIOR>
    docker exec luanti-voxelibre-server tar czf \
      /config/backup-pre-patch-$(date +%Y%m%d).tar.gz \
      /config/.minetest/games/mineclone2 \
@@ -440,7 +440,7 @@ chmod +x ~/monitor-luanti.sh
 3. **Monitorear 24 horas**
    ```bash
    # Terminal dedicado para logs en tiempo real
-   ssh gabriel@167.172.251.27
+   ssh gabriel@<IP_VPS_ANTERIOR>
    docker logs -f luanti-voxelibre-server | grep -E "ERROR|WARNING|Server: Shutting down"
    ```
 
@@ -612,7 +612,7 @@ git push origin main
 
 **Paso 1: Verificación del estado**
 ```bash
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server
 docker-compose ps | grep luanti-voxelibre-server
 # Resultado: Up (healthy) - Pero con crashes recurrentes

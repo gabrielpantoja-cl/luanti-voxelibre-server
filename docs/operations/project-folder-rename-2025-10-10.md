@@ -5,7 +5,7 @@ El 10 de octubre de 2025, la carpeta principal del proyecto en el VPS fue renomb
 
 ## Detalles del Cambio
 - **Fecha del Cambio**: 10 de Octubre de 2025
-- **Ubicación**: VPS (gabriel@167.172.251.27)
+- **Ubicación**: VPS (gabriel@<IP_VPS_ANTERIOR>)
 - **Ruta Afectada**: `/home/gabriel/`
 - **Nombre Anterior**: `luanti-voxelibre-server`
 - **Nuevo Nombre**: `luanti-voxelibre-server`

@@ -94,7 +94,7 @@ Aplicar el protocolo de emergencia documentado en `CLAUDE.md`:
 
 ```bash
 # PASO 1: BACKUP CRÍTICO DEL MUNDO
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
 # PASO 2: DETENER SERVIDOR

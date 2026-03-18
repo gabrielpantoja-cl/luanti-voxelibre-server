@@ -47,14 +47,14 @@ cd /home/gabriel/Documentos/luanti-voxelibre-server
 ```bash
 # Copiar el nuevo skin al servidor
 scp server/worlds/world/_world_folder_media/textures/granjero_vegano.png \
-    gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
+    gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
 
 # Copiar el skins.txt actualizado
 scp server/worlds/world/skins.txt \
-    gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/
+    gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/
 
 # Reiniciar el servidor
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server'
 ```
 
 ### Paso 4: Verificar en el Juego

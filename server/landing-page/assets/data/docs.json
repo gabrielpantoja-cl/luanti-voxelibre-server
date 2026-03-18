@@ -330,7 +330,7 @@
           "level": 3,
           "title": "3.1. Configuración de Secrets",
           "id": "31-configuracin-de-secrets",
-          "content": "Para que el workflow funcione, el repositorio de GitHub necesita los siguientes \"Secrets\" (en `Settings > Secrets and variables > Actions`):\n\n| Secret | Valor de Ejemplo | Descripción |\n|---|---|---|\n| `VPS_HOST` | `167.172.251.27` | La IP de tu VPS. |\n| `VPS_USER` | `gabriel` | El usuario con el que se conectará por SSH. |\n| `VPS_SSH_KEY`| (El contenido de `~/.ssh/id_rsa`) | La clave SSH privada para acceder al VPS sin contraseña. |"
+          "content": "Para que el workflow funcione, el repositorio de GitHub necesita los siguientes \"Secrets\" (en `Settings > Secrets and variables > Actions`):\n\n| Secret | Valor de Ejemplo | Descripción |\n|---|---|---|\n| `VPS_HOST` | `<IP_VPS_ANTERIOR>` | La IP de tu VPS. |\n| `VPS_USER` | `gabriel` | El usuario con el que se conectará por SSH. |\n| `VPS_SSH_KEY`| (El contenido de `~/.ssh/id_rsa`) | La clave SSH privada para acceder al VPS sin contraseña. |"
         },
         {
           "level": 3,

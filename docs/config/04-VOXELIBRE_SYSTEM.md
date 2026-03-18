@@ -288,7 +288,7 @@ core.register_craft({
 ### Paso 1: Verificar Carga de Mods
 ```bash
 # En el VPS
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose logs luanti-server | grep -i 'error\|warn\|conflict'"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose logs luanti-server | grep -i 'error\|warn\|conflict'"
 ```
 
 ### Paso 2: Verificar Estructura de Directorios
@@ -438,7 +438,7 @@ kick_msg_shutdown = "Servidor en mantenimiento - vuelve pronto 🌱"
 ### Comando de Verificación
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose ps && ss -tulpn | grep :30000"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose ps && ss -tulpn | grep :30000"
 ```
 
 ## 3.4. Monitoreo Continuo
@@ -527,7 +527,7 @@ docker compose logs luanti-server | grep -i "unknown item\|not registered"
 
 ```bash
 # 1. Backup del mundo
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && ./scripts/backup.sh"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && ./scripts/backup.sh"
 
 # 2. Verificar logs de errores
 docker compose logs --since 7d luanti-server | grep -i "error\|critical"

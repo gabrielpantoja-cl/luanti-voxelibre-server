@@ -21,7 +21,7 @@ Synchronize VPS changes to local repository when:
 
 ```bash
 # SSH to VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Navigate to Luanti directory
 cd /home/gabriel/luanti-voxelibre-server
@@ -40,8 +40,8 @@ From your local machine:
 
 ```bash
 # Download specific files to temporary location for comparison
-scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/docker-compose.yml /tmp/docker-compose-vps.yml
-scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/scripts/rotate-backups-container.sh /tmp/rotate-backups-vps.sh
+scp gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/docker-compose.yml /tmp/docker-compose-vps.yml
+scp gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/scripts/rotate-backups-container.sh /tmp/rotate-backups-vps.sh
 ```
 
 ### Step 3: Compare Local vs VPS Files
@@ -98,7 +98,7 @@ git push origin main
 
 ```bash
 # SSH to VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Pull latest changes from repository
 cd /home/gabriel/luanti-voxelibre-server
@@ -120,8 +120,8 @@ git pull origin main
 **Sync process**:
 ```bash
 # Download both files
-scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/docker-compose.yml /tmp/
-scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/scripts/rotate-backups-container.sh /tmp/
+scp gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/docker-compose.yml /tmp/
+scp gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/scripts/rotate-backups-container.sh /tmp/
 
 # Compare and apply changes
 diff -u docker-compose.yml /tmp/docker-compose.yml
@@ -144,7 +144,7 @@ git push origin main
 **Sync process**:
 ```bash
 # Download server config
-scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/config/luanti.conf /tmp/
+scp gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/config/luanti.conf /tmp/
 
 # Compare and apply
 diff -u server/config/luanti.conf /tmp/luanti.conf
@@ -189,7 +189,7 @@ Create a script to detect when VPS has uncommitted changes:
 
 echo "🔍 Checking for configuration drift..."
 
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && git status --porcelain'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && git status --porcelain'
 
 if [ $? -eq 0 ]; then
   echo "✅ VPS and local repository are in sync"
@@ -203,7 +203,7 @@ fi
 Periodically run this on VPS:
 
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && git status'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && git status'
 ```
 
 If output shows modified files → sync is needed.
@@ -231,13 +231,13 @@ If output shows modified files → sync is needed.
 **Solution**:
 ```bash
 # On VPS, commit changes locally first
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server
 git add -A
 git commit -m "VPS-side changes from $(date '+%Y-%m-%d')"
 
 # Then sync from local
-scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/docker-compose.yml /tmp/
+scp gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/docker-compose.yml /tmp/
 # Review and merge changes manually
 ```
 
@@ -246,7 +246,7 @@ scp gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/docker-compose.
 **Solution**:
 ```bash
 # Reset VPS to match remote repository
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server
 git reset --hard origin/main
 docker-compose restart
@@ -257,10 +257,10 @@ docker-compose restart
 **Solution**:
 ```bash
 # View detailed diff of all changes
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && git diff'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && git diff'
 
 # View file-by-file changes
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && git status -v'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && git status -v'
 ```
 
 ## Related Documentation

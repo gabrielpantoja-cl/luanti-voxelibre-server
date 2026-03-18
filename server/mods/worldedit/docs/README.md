@@ -48,7 +48,7 @@ World Edit es una **herramienta poderosa de edición de mundos** para Luanti (Mi
 **Opción 1: Desde ContentDB** (Recomendado)
 ```bash
 # Conectarse al servidor
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Navegar a directorio de mods
 cd /home/gabriel/luanti-voxelibre-server/server/mods/

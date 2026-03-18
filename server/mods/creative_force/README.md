@@ -78,7 +78,7 @@ local survival_players = {
 
 2. **Limpiar privilegios existentes** (si ya estaba en creativo):
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose stop luanti-server && docker compose run --rm luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"jugador_nuevo\");' && docker compose up -d luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose stop luanti-server && docker compose run --rm luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"jugador_nuevo\");' && docker compose up -d luanti-server"
 ```
 
 3. **El jugador debe reconectar** para que los cambios apliquen
@@ -120,7 +120,7 @@ Los jugadores en supervivencia **NO pueden**:
 **Solución**:
 ```bash
 # Limpiar privilegio creative
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker compose stop luanti-server && docker compose run --rm luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"jugador\") AND privilege=\"creative\";' && docker compose up -d luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker compose stop luanti-server && docker compose run --rm luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"jugador\") AND privilege=\"creative\";' && docker compose up -d luanti-server"
 ```
 
 ### Documentación Completa

@@ -427,7 +427,7 @@ git add server/mods/mi_mod/
 git commit -m "✨ Update mi_mod: nueva funcionalidad"
 git push
 # En VPS
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git pull && docker-compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git pull && docker-compose restart luanti-server"
 ```
 
 ---

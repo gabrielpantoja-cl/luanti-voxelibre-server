@@ -12,7 +12,7 @@ El servidor Luanti (Wetlands) fue migrado de DigitalOcean ($33/mes) a Oracle Clo
 
 | Campo | DigitalOcean (antes) | Oracle Cloud (ahora) |
 |-------|---------------------|---------------------|
-| IP | 167.172.251.27 | **159.112.138.229** |
+| IP | <IP_VPS_ANTERIOR> | **<IP_VPS>** |
 | CPU | 2 vCPU x86 AMD | 4 OCPU ARM Ampere A1 |
 | RAM | 4 GB (compartida) | 24 GB (compartida) |
 | Disco | 80 GB SSD | 200 GB block storage |
@@ -44,7 +44,7 @@ El servidor Luanti (Wetlands) fue migrado de DigitalOcean ($33/mes) a Oracle Clo
 - Oracle tiene iptables restrictivas por defecto que fueron limpiadas
 
 ### DNS
-- `luanti.gabrielpantoja.cl` -> 159.112.138.229 (Cloudflare, DNS only, TTL auto)
+- `luanti.gabrielpantoja.cl` -> <IP_VPS> (Cloudflare, DNS only, TTL auto)
 - DNS only (nube gris) es necesario porque Cloudflare proxy no soporta UDP
 
 ### SSL
@@ -73,7 +73,7 @@ El servidor Luanti (Wetlands) fue migrado de DigitalOcean ($33/mes) a Oracle Clo
 
 ```bash
 # Como gabriel (usuario admin)
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229
+ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS>
 
 # Directorio del servidor
 cd /home/gabriel/luanti-voxelibre-server
@@ -99,6 +99,6 @@ docker compose restart luanti-server
 ## Rollback
 
 Si algo falla, los datos originales siguen en DO:
-1. Cambiar DNS en Cloudflare: luanti.gabrielpantoja.cl -> 167.172.251.27
+1. Cambiar DNS en Cloudflare: luanti.gabrielpantoja.cl -> <IP_VPS_ANTERIOR>
 2. En DO: `cd /home/gabriel/luanti-voxelibre-server && docker compose up -d`
 3. Los datos del mundo no fueron eliminados de DO

@@ -638,13 +638,13 @@ git status
 git log -1
 
 # 2. Verificar que VPS tiene última versión
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git log -1"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git log -1"
 
 # 3. Forzar reload de caché del navegador
 Ctrl + Shift + R (Chrome/Firefox)
 
 # 4. Verificar nginx está sirviendo archivos correctos
-ssh gabriel@167.172.251.27 "ls -la /home/gabriel/luanti-voxelibre-server/server/landing-page/"
+ssh gabriel@<IP_VPS_ANTERIOR> "ls -la /home/gabriel/luanti-voxelibre-server/server/landing-page/"
 ```
 
 ### Problema: Imágenes no cargan

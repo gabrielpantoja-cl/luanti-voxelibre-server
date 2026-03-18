@@ -82,10 +82,10 @@ return {
 
 ```bash
 # Copiar textura al servidor
-scp mi_skin.png gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
+scp mi_skin.png gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
 
 # O via SSH
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
 # Subir archivo aquí
 ```
@@ -93,7 +93,7 @@ cd /home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media
 ### Paso 3: Actualizar skins.txt
 
 ```bash
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server/server/worlds/world
 nano skins.txt
 # Agregar entrada de skin según formato
@@ -102,7 +102,7 @@ nano skins.txt
 ### Paso 4: Reiniciar Servidor
 
 ```bash
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 cd /home/gabriel/luanti-voxelibre-server
 docker-compose restart luanti-server
 ```
@@ -171,8 +171,8 @@ Esto abrirá el menú de personalización donde pueden:
 
 3. **Subir al servidor y reiniciar**:
    ```bash
-   scp panda.png gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
-   ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+   scp panda.png gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
+   ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
    ```
 
 4. **Limpiar caché del cliente** (si es necesario):
@@ -198,7 +198,7 @@ Esto abrirá el menú de personalización donde pueden:
 1. **Renombrar el archivo del skin** a un nombre simple sin guiones ni caracteres especiales:
    ```bash
    # En el servidor VPS
-   ssh gabriel@167.172.251.27
+   ssh gabriel@<IP_VPS_ANTERIOR>
    cd /home/gabriel/luanti-voxelibre-server
    docker-compose exec -T luanti-server sh -c 'cd /config/.minetest/worlds/world/_world_folder_media/textures/ && mv minecraftskins_panda-panda-23030559.png panda.png'
    ```

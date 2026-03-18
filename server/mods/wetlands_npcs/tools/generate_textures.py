@@ -212,7 +212,7 @@ def main():
     if not os.path.exists(REF_BASE):
         print(f"ERROR: Base villager texture not found at: {REF_BASE}")
         print("Run this first on VPS:")
-        print("  scp gabriel@167.172.251.27:.../textures/mobs_mc_villager.png raw_skins/ref_villager_base.png")
+        print("  scp gabriel@<IP_VPS_ANTERIOR>:.../textures/mobs_mc_villager.png raw_skins/ref_villager_base.png")
         return
 
     base_img = Image.open(REF_BASE).convert("RGBA")

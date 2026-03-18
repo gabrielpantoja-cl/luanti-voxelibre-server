@@ -504,7 +504,7 @@ Si ya validaste el sistema con 3 pisos, solo necesitas:
 
 ```bash
 # Ejecutar desde tu terminal local
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'places node celevator:car_glassback at' | tail -20"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'places node celevator:car_glassback at' | tail -20"
 
 # Esto muestra las últimas 20 veces que se colocó una cabina
 # Ejemplo de salida:
@@ -562,7 +562,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-c
 
 ```bash
 # PASO 1: Reiniciar el servidor (MÉTODO RECOMENDADO)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # PASO 2: Esperar 10 segundos para que el servidor reinicie
 # PASO 3: Reconectar al servidor desde el cliente Luanti
@@ -838,10 +838,10 @@ Floor 13: Y = 77
 
 ```bash
 # Ver logs del servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
 
 # Verificar última acción de machine
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
 ```
 
 ### Teleportaciones Clave

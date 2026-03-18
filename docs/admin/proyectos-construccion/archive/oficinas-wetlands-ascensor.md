@@ -286,7 +286,7 @@ Estos son todos los items necesarios para un ascensor de 13 pisos. Pídele a un 
 **Verificación Post-Instalación**:
 ```bash
 # Ver logs en tiempo real para verificar que no hay errores
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
 ```
 
 **Si aún no funciona**:
@@ -330,7 +330,7 @@ end
 
 Ejecuta este comando para ver el historial completo de cambios:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep -E '(celevator|machine|drive|controller)' | tail -30"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep -E '(celevator|machine|drive|controller)' | tail -30"
 ```
 
 #### **Historial Cronológico de Cambios (Verificado desde Logs)**
@@ -588,7 +588,7 @@ Si quieres ver los logs en tiempo real durante las pruebas:
 
 ```bash
 # Ejecutar en tu terminal local (fuera del juego)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server | grep celevator"
 
 # Verás mensajes como:
 # - "Controller scanning for drive..."
@@ -856,16 +856,16 @@ Si quieres permitir que otros jugadores usen el ascensor:
 ### Depuración del Sistema
 ```bash
 # Ver logs del servidor en tiempo real
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs -f luanti-server"
 
 # Buscar acciones específicas del ascensor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep celevator | tail -50"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep celevator | tail -50"
 
 # Verificar última posición de la machine
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
 
 # Verificar posición de jugador en base de datos
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \"SELECT name, posX, posY, posZ FROM player WHERE name='gabo';\""
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \"SELECT name, posX, posY, posZ FROM player WHERE name='gabo';\""
 ```
 
 ---

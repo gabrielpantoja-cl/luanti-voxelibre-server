@@ -114,7 +114,7 @@ Following multiple severe texture corruption incidents, including the latest Doc
 3. **🚫 NEVER make changes without world backup**
    ```bash
    # MANDATORY before ANY changes:
-   ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d_%H%M%S)"
+   ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d_%H%M%S)"
    ```
 
 **🛠️ EMERGENCY TEXTURE RECOVERY PROTOCOL (Proven Sep 9, 2025)**
@@ -129,25 +129,25 @@ Following multiple severe texture corruption incidents, including the latest Doc
 
 ```bash
 # STEP 1: EMERGENCY WORLD BACKUP (CRITICAL!)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && du -sh server/worlds/* && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
 # STEP 2: REVERT PROBLEMATIC docker-compose CHANGES
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git reset --hard HEAD~1"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git reset --hard HEAD~1"
 
 # STEP 3: CLEAN CONTAINER STATE COMPLETELY
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose down && docker system prune -f"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose down && docker system prune -f"
 
 # STEP 4: REMOVE CORRUPTED VOXELIBRE
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
 
 # STEP 5: DOWNLOAD FRESH VOXELIBRE (56MB)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
 
 # STEP 6: RESTART WITH CLEAN STATE
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose up -d"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose up -d"
 
 # STEP 7: VERIFY RECOVERY
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && sleep 10 && docker-compose ps && du -sh server/worlds/world"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && sleep 10 && docker-compose ps && du -sh server/worlds/world"
 ```
 
 **📊 Recovery Success Metrics (Last: Sep 9, 2025):**

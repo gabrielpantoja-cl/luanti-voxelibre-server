@@ -147,7 +147,7 @@ Remover los privilegios que permiten bypass a usuarios que no deberían tenerlos
 
 ```bash
 # Conectar al servidor
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Entrar al contenedor
 cd /home/gabriel/luanti-voxelibre-server
@@ -198,7 +198,7 @@ Pero **SÍ incluya**:
 ### Comando para verificar privilegios actualizados
 
 ```bash
-ssh gabriel@167.172.251.27 'cd /home/gabriel/luanti-voxelibre-server && docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT a.name, GROUP_CONCAT(up.privilege, \", \") FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name IN (\"gabo\", \"pepelomo\", \"gaelsin\", \"loxos\") GROUP BY a.name;"'
+ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT a.name, GROUP_CONCAT(up.privilege, \", \") FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name IN (\"gabo\", \"pepelomo\", \"gaelsin\", \"loxos\") GROUP BY a.name;"'
 ```
 
 **Resultado esperado después de aplicar Opción 1**:

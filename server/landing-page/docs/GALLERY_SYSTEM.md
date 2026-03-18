@@ -58,7 +58,7 @@ git commit -m "Agregar [descripcion] en galeria"
 git push origin main
 
 # Actualizar VPS (nginx sirve desde este repo via docker volume)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git fetch origin main && git reset --hard origin/main"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git fetch origin main && git reset --hard origin/main"
 ```
 
 > **Nota**: nginx cachea JSON por 5 minutos. Los cambios se veran en produccion despues de ese periodo.
@@ -160,7 +160,7 @@ VPS: /home/gabriel/luanti-voxelibre-server/server/landing-page
 1. Hacer commit y push a `main`
 2. Actualizar el repo en VPS:
    ```bash
-   ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git fetch origin main && git reset --hard origin/main"
+   ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git fetch origin main && git reset --hard origin/main"
    ```
 3. Esperar ~5 minutos para que expire el cache de nginx (JSON)
 
@@ -206,7 +206,7 @@ curl -I https://luanti.gabrielpantoja.cl
 ### Cambios no visibles en produccion
 
 1. Verificar que el push a GitHub se completo
-2. Confirmar que el repo en VPS esta actualizado: `ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git log -1 --oneline"`
+2. Confirmar que el repo en VPS esta actualizado: `ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git log -1 --oneline"`
 3. Esperar 5 minutos por cache de JSON en nginx
 4. Forzar recarga en navegador: Ctrl+Shift+R
 

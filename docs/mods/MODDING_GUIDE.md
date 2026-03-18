@@ -538,7 +538,7 @@ git push origin main
 ### 3️⃣ Deployment en VPS
 ```bash
 # Conectar al VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Navegar al directorio
 cd /home/gabriel/luanti-voxelibre-server

@@ -21,7 +21,7 @@ echo "=========================================="
 
 # Verificar conectividad SSH
 echo "🔍 Verificando conectividad SSH..."
-if ! ssh -o ConnectTimeout=5 gabriel@167.172.251.27 "echo 'SSH OK'" >/dev/null 2>&1; then
+if ! ssh -o ConnectTimeout=5 gabriel@${VPS_HOST} "echo 'SSH OK'" >/dev/null 2>&1; then
     echo "❌ Error: No se puede conectar al VPS via SSH"
     exit 1
 fi
@@ -32,17 +32,17 @@ echo "📦 Creando backup de configuraciones..."
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # Backup luanti.conf
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && cp server/config/luanti.conf server/config/luanti.conf.backup.unblock_$TIMESTAMP"
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && cp server/config/luanti.conf server/config/luanti.conf.backup.unblock_$TIMESTAMP"
 
 # Backup ipban.txt (si existe)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c 'if [ -f /config/.minetest/worlds/world/ipban.txt ]; then cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$TIMESTAMP; echo \"ipban.txt backed up\"; else echo \"ipban.txt no existe\"; fi'"
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c 'if [ -f /config/.minetest/worlds/world/ipban.txt ]; then cp /config/.minetest/worlds/world/ipban.txt /config/.minetest/worlds/world/ipban.txt.backup.$TIMESTAMP; echo \"ipban.txt backed up\"; else echo \"ipban.txt no existe\"; fi'"
 
 echo "✅ Backups creados con timestamp: $TIMESTAMP"
 
 # Paso 2: Verificar que la IP está bloqueada
 echo "🔍 Verificando estado actual del bloqueo..."
-LUANTI_CONF_BLOCK=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && grep 'deny_access.$IP_TO_UNBLOCK' server/config/luanti.conf || echo 'NO_FOUND'")
-IPBAN_BLOCK=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt 2>/dev/null || echo 'NO_FOUND'")
+LUANTI_CONF_BLOCK=$(ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && grep 'deny_access.$IP_TO_UNBLOCK' server/config/luanti.conf || echo 'NO_FOUND'")
+IPBAN_BLOCK=$(ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt 2>/dev/null || echo 'NO_FOUND'")
 
 echo "📋 Estado en luanti.conf: $LUANTI_CONF_BLOCK"
 echo "📋 Estado en ipban.txt: $IPBAN_BLOCK"
@@ -59,10 +59,10 @@ fi
 
 # Paso 3: Remover de luanti.conf
 echo "🔧 Removiendo IP de luanti.conf..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && sed -i '/deny_access\.$IP_TO_UNBLOCK/d' server/config/luanti.conf"
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && sed -i '/deny_access\.$IP_TO_UNBLOCK/d' server/config/luanti.conf"
 
 # Verificar remoción
-VERIFY_LUANTI=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && grep '$IP_TO_UNBLOCK' server/config/luanti.conf || echo 'REMOVED'")
+VERIFY_LUANTI=$(ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && grep '$IP_TO_UNBLOCK' server/config/luanti.conf || echo 'REMOVED'")
 if [ "$VERIFY_LUANTI" = "REMOVED" ]; then
     echo "✅ IP removida exitosamente de luanti.conf"
 else
@@ -71,10 +71,10 @@ fi
 
 # Paso 4: Remover de ipban.txt
 echo "🔧 Removiendo IP de ipban.txt..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp 2>/dev/null && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt 2>/dev/null || echo 'ipban.txt procesado'\""
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c \"grep -v '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt > /tmp/ipban_temp 2>/dev/null && mv /tmp/ipban_temp /config/.minetest/worlds/world/ipban.txt 2>/dev/null || echo 'ipban.txt procesado'\""
 
 # Verificar remoción
-VERIFY_IPBAN=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt 2>/dev/null || echo 'REMOVED'")
+VERIFY_IPBAN=$(ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '$IP_TO_UNBLOCK' /config/.minetest/worlds/world/ipban.txt 2>/dev/null || echo 'REMOVED'")
 if [ "$VERIFY_IPBAN" = "REMOVED" ]; then
     echo "✅ IP removida exitosamente de ipban.txt"
 else
@@ -83,14 +83,14 @@ fi
 
 # Paso 5: Reiniciar servidor
 echo "🔄 Reiniciando servidor Luanti..."
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # Esperar que el servidor se inicie
 echo "⏳ Esperando 10 segundos para que el servidor se inicie..."
 sleep 10
 
 # Verificar estado del servidor
-SERVER_STATUS=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps luanti-server --format 'table {{.Status}}'" | tail -1)
+SERVER_STATUS=$(ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps luanti-server --format 'table {{.Status}}'" | tail -1)
 echo "📊 Estado del servidor: $SERVER_STATUS"
 
 # Paso 6: Documentar reversión
@@ -98,10 +98,10 @@ echo "📝 Documentando reversión..."
 UNBLOCK_LOG="docs/IP_UNBLOCK_LOG.md"
 
 # Crear archivo de log si no existe
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && [ ! -f $UNBLOCK_LOG ] && echo '# Log de IPs Desbloqueadas' > $UNBLOCK_LOG"
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && [ ! -f $UNBLOCK_LOG ] && echo '# Log de IPs Desbloqueadas' > $UNBLOCK_LOG"
 
 # Añadir entrada al log
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && cat >> $UNBLOCK_LOG << 'EOF'
+ssh gabriel@${VPS_HOST} "cd /home/gabriel/luanti-voxelibre-server && cat >> $UNBLOCK_LOG << 'EOF'
 ## $(date '+%Y-%m-%d %H:%M:%S')
 - **IP**: $IP_TO_UNBLOCK
 - **Razón**: $REASON

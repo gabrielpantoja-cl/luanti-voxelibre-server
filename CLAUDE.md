@@ -17,7 +17,7 @@ This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods
 - **Mods**: Lua scripts in `server/mods/`
 - **Config**: `.conf` files, not JSON/YAML
 - **Deploy**: GitHub Actions CI/CD + manual `git pull` on VPS
-- **VPS**: `ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229` (Oracle Cloud, ARM aarch64)
+- **VPS**: `ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS>` (Oracle Cloud, ARM aarch64)
 - **Port**: 30000/UDP (game), 80/443 (landing page via nginx)
 - **Language**: Spanish (es)
 
@@ -81,15 +81,15 @@ docker-compose down                         # Stop
 ```bash
 # Standard deploy flow: local -> GitHub -> VPS
 git push origin main
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
+ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # Verify after restart (use --since to avoid old log noise)
-ssh gabriel@167.172.251.27 "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
+ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
 
 # Enable a mod on VPS (world.mt must be edited in BOTH host and container)
-ssh gabriel@167.172.251.27 "echo 'load_mod_my_mod = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
-ssh gabriel@167.172.251.27 "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
+ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "echo 'load_mod_my_mod = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
 ```
 
 **IMPORTANT:** When checking logs after restart, always use `--since='2m'` or `--since='5m'` to filter only recent entries. The full log contains thousands of historical entries that will pollute search results.

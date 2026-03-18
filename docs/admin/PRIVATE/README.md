@@ -115,7 +115,7 @@ Documentación con **datos sensibles**:
 cp -r docs/admin/PRIVATE/ ~/backups/wetlands-private-docs-$(date +%Y%m%d)/
 
 # Backup en VPS (si es necesario)
-scp -r docs/admin/PRIVATE/ gabriel@167.172.251.27:~/wetlands-private-backups/
+scp -r docs/admin/PRIVATE/ gabriel@<IP_VPS_ANTERIOR>:~/wetlands-private-backups/
 ```
 
 **⚠️ NUNCA hacer commit de archivos de `PRIVATE/` excepto este README.**
@@ -143,7 +143,7 @@ git reset HEAD docs/admin/PRIVATE/archivo-sensible.md
 
 Si necesitas acceso a documentación privada:
 - **Administrador:** Gabriel Pantoja
-- **Ubicación física:** VPS 167.172.251.27 (solo SSH)
+- **Ubicación física:** VPS <IP_VPS_ANTERIOR> (solo SSH)
 - **Backup local:** ~/Documentos/luanti-voxelibre-server/docs/admin/PRIVATE/
 
 ---

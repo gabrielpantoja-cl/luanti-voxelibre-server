@@ -5,7 +5,7 @@
 set -euo pipefail  # Exit on error, undefined vars, pipe failures
 
 # ===== CONFIGURATION =====
-VPS_HOST="167.172.251.27"
+VPS_HOST="${VPS_HOST}"
 VPS_USER="gabriel"
 VPS_PATH="/home/gabriel/vps-do/nginx/www/luanti-landing"
 LOCAL_PATH="server/landing-page"

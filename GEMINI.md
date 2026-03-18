@@ -17,7 +17,7 @@ This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods
 - **Mods**: Lua scripts in `server/mods/`
 - **Config**: `.conf` files, not JSON/YAML
 - **Deploy**: GitHub Actions CI/CD + manual `git pull` on VPS
-- **VPS**: `ssh gabriel@167.172.251.27`
+- **VPS**: `ssh gabriel@<IP_VPS_ANTERIOR>`
 - **Port**: 30000/UDP (game), 80/443 (landing page via nginx)
 - **Language**: Spanish (es)
 
@@ -65,11 +65,11 @@ docker-compose restart luanti-server        # Restart
 
 # VPS deployment flow: local -> GitHub -> VPS
 git push origin main
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # Check logs on VPS
-ssh gabriel@167.172.251.27 "docker logs --tail=50 luanti-voxelibre-server 2>&1 | grep -i error"
+ssh gabriel@<IP_VPS_ANTERIOR> "docker logs --tail=50 luanti-voxelibre-server 2>&1 | grep -i error"
 ```
 
 ## Texture & Asset Rules
@@ -82,11 +82,11 @@ ssh gabriel@167.172.251.27 "docker logs --tail=50 luanti-voxelibre-server 2>&1 |
 
 **Emergency Recovery Protocol:**
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose down && docker system prune -f"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose up -d"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && cp -r server/worlds server/worlds_EMERGENCY_BACKUP_$(date +%Y%m%d_%H%M%S)"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose down && docker system prune -f"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && rm -rf server/games/mineclone2 && rm -f voxelibre.zip"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && wget https://content.luanti.org/packages/Wuzzy/mineclone2/releases/32301/download/ -O voxelibre.zip && unzip voxelibre.zip -d server/games/ && mv server/games/mineclone2-* server/games/mineclone2"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose up -d"
 ```
 
 ## VoxeLibre Critical Pitfalls

@@ -165,7 +165,7 @@ git push origin main
 ### Step 3: VPS Deployment
 ```bash
 # SSH to VPS
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 
 # Pull latest changes
 cd /home/gabriel/luanti-voxelibre-server

@@ -43,7 +43,7 @@ Swap Usado:   279Mi / 2.0Gi
 
 ## Resumen Ejecutivo
 
-El VPS de producción (167.172.251.27) alcanzó el 100% de capacidad de disco, causando que PostgreSQL (n8n-db) crasheara con error `could not write init file: No space left on device`. La base de datos entró en modo recovery automático, dejando inaccesibles los servicios de degux.cl y N8N.
+El VPS de producción (<IP_VPS_ANTERIOR>) alcanzó el 100% de capacidad de disco, causando que PostgreSQL (n8n-db) crasheara con error `could not write init file: No space left on device`. La base de datos entró en modo recovery automático, dejando inaccesibles los servicios de degux.cl y N8N.
 
 **Espacio Liberado Total:** 17.29 GB
 **Estado Final:** 74% de uso (42GB/58GB)
@@ -408,7 +408,7 @@ Esto eliminará:
 
 ```bash
 # 1. Verificar estado del disco
-ssh gabriel@167.172.251.27
+ssh gabriel@<IP_VPS_ANTERIOR>
 df -h /
 
 # 2. Identificar consumidores principales
@@ -441,15 +441,15 @@ npx prisma generate
 
 - **Administrador VPS:** Gabriel Pantoja
 - **VPS Provider:** Digital Ocean
-- **IP VPS:** 167.172.251.27
-- **Portainer UI:** https://167.172.251.27:9443
+- **IP VPS:** <IP_VPS_ANTERIOR>
+- **Portainer UI:** https://<IP_VPS_ANTERIOR>:9443
 
 ---
 
 ## Referencias
 
 - **Logs PostgreSQL:** `docker logs n8n-db`
-- **Monitoreo Docker:** https://167.172.251.27:9443 (Portainer)
+- **Monitoreo Docker:** https://<IP_VPS_ANTERIOR>:9443 (Portainer)
 - **Digital Ocean Panel:** https://cloud.digitalocean.com/
 - **Repositorio degux.cl:** https://github.com/gabrielpantoja-cl/degux.cl
 - **Repositorio Luanti:** https://github.com/gabrielpantoja-cl/Vegan-Wetlands

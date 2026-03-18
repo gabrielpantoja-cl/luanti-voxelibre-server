@@ -217,13 +217,13 @@ default_privs = interact,shout,give,fly,fast,noclip,home,areas,areas_high_limit,
 
 ```bash
 scp /home/gabriel/Documentos/luanti-voxelibre-server/server/config/luanti.conf \
-  gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/config/luanti.conf
+  gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/config/luanti.conf
 ```
 
 ### Paso 3: Deshabilitar Mod en VPS
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   mkdir -p server/mods_backup && \
   mv server/mods/creative_force.disabled server/mods_backup/creative_force"
 ```
@@ -231,7 +231,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 ### Paso 4: Reiniciar Servidor
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose restart luanti-server"
 ```
 
@@ -268,7 +268,7 @@ docker-compose up -d
 ### 7.1.1. Desde Terminal
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose exec -T luanti-server grep -E '^creative_mode|^mcl_enable_creative_mode|^give_initial_stuff' /config/.minetest/minetest.conf"
 ```
 
@@ -282,7 +282,7 @@ give_initial_stuff = false
 ### 7.1.2. Verificar Mod Deshabilitado
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   ls -la server/mods/ | grep creative_force"
 ```
 
@@ -312,7 +312,7 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 ## 7.3. Verificar Logs
 
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose logs --tail=50 luanti-server | grep -i 'creative\|started\|listening'"
 ```
 
@@ -340,14 +340,14 @@ Server for gameid="mineclone2" listening on [::]:30000.
 
 **Diagnóstico**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose exec -T luanti-server cat /config/.minetest/minetest.conf | grep mcl_enable_creative"
 ```
 
 **Solución**:
 ```bash
 # Verificar que esté en true
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   sed -i 's/mcl_enable_creative_mode = false/mcl_enable_creative_mode = true/' server/config/luanti.conf && \
   docker-compose restart luanti-server"
 ```
@@ -358,13 +358,13 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 
 **Diagnóstico**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose exec -T luanti-server cat /config/.minetest/minetest.conf | grep give_initial"
 ```
 
 **Solución**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   sed -i 's/give_initial_stuff = true/give_initial_stuff = false/' server/config/luanti.conf && \
   sed -i 's/initial_stuff = .*/initial_stuff =/' server/config/luanti.conf && \
   docker-compose restart luanti-server"
@@ -376,14 +376,14 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 
 **Diagnóstico**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose logs --tail=30 luanti-server | grep creative_force"
 ```
 
 **Solución**:
 ```bash
 # Mover mod fuera de directorio activo
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   mkdir -p server/mods_backup && \
   mv server/mods/creative_force* server/mods_backup/ && \
   docker-compose restart luanti-server"
@@ -395,13 +395,13 @@ ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
 
 **Diagnóstico**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose exec -T luanti-server cat /config/.minetest/minetest.conf | grep enable_damage"
 ```
 
 **Solución**:
 ```bash
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   sed -i 's/enable_damage = true/enable_damage = false/' server/config/luanti.conf && \
   sed -i 's/damage_enabled = true/damage_enabled = false/' server/config/luanti.conf && \
   docker-compose restart luanti-server"
@@ -554,12 +554,12 @@ Si el modo creativo no funciona, verificar:
 
 ```bash
 # 1. Verificar privilegios del jugador
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
   'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"JUGADOR\");'" | grep creative
 
 # 2. Verificar gamemode en metadata
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && \
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
   docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \
   'SELECT value FROM player_metadata WHERE player=\"JUGADOR\" AND metadata=\"gamemode\";'"
 

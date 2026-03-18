@@ -37,7 +37,7 @@ luanti-voxelibre-server/ (Repository Principal)
 
 ### 🐳 Stack Tecnológico
 - **Containerización**: Docker Compose con `linuxserver/luanti:latest`
-- **VPS**: DigitalOcean con SSH access (gabriel@167.172.251.27)
+- **VPS**: DigitalOcean con SSH access (gabriel@<IP_VPS_ANTERIOR>)
 - **Repositorio**: GitHub con GitHub Actions
 - **Networking**: Puerto 30000/UDP para Luanti, 80/443 para landing page
 - **Backup**: Automatizado cada 6 horas + backup manual
@@ -112,7 +112,7 @@ echo "✅ Código subido a GitHub"
 
 # Deployment en VPS
 echo "🚀 Iniciando deployment en VPS..."
-VPS_HOST="167.172.251.27"
+VPS_HOST="<IP_VPS_ANTERIOR>"
 VPS_USER="gabriel"
 PROJECT_PATH="/home/gabriel/luanti-voxelibre-server"
 
@@ -220,13 +220,13 @@ echo "🚨 DEPLOYMENT DE EMERGENCIA: $MOD_NAME"
 echo "🔥 Issue: $ISSUE_DESCRIPTION"
 
 # Backup crítico
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && ./scripts/backup.sh"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && ./scripts/backup.sh"
 
 # Deployment directo (saltando CI/CD)
-rsync -avz --progress server/mods/$MOD_NAME/ gabriel@167.172.251.27:/home/gabriel/luanti-voxelibre-server/server/mods/$MOD_NAME/
+rsync -avz --progress server/mods/$MOD_NAME/ gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/mods/$MOD_NAME/
 
 # Restart inmediato
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 echo "⚡ Hotfix aplicado. Verificar funcionamiento y crear commit post-facto."
 ```
@@ -330,7 +330,7 @@ services:
 echo "🔍 DIAGNÓSTICO COMPLETO WETLANDS"
 echo "================================"
 
-VPS_HOST="167.172.251.27"
+VPS_HOST="<IP_VPS_ANTERIOR>"
 VPS_USER="gabriel"
 PROJECT_PATH="/home/gabriel/luanti-voxelibre-server"
 
@@ -677,7 +677,7 @@ fi
 #!/bin/bash
 # manage-mods.sh - Gestión avanzada de mods
 
-VPS_HOST="167.172.251.27"
+VPS_HOST="<IP_VPS_ANTERIOR>"
 VPS_USER="gabriel"
 PROJECT_PATH="/home/gabriel/luanti-voxelibre-server"
 
@@ -998,19 +998,19 @@ echo "load_mod_nuevo_mod = true" >> /config/.minetest/worlds/world/world.mt
 
 ```bash
 # 1. Ver configuración completa de world.mt
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt"
 
 # 2. Listar solo mods habilitados
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep 'load_mod.*= true' /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep 'load_mod.*= true' /config/.minetest/worlds/world/world.mt"
 
 # 3. Listar solo mods deshabilitados
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep 'load_mod.*= false' /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep 'load_mod.*= false' /config/.minetest/worlds/world/world.mt"
 
 # 4. Verificar estado de un mod específico
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_animal_sanctuary' /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_animal_sanctuary' /config/.minetest/worlds/world/world.mt"
 
 # 5. Buscar duplicados (líneas que aparecen más de una vez)
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | sort | uniq -d"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | sort | uniq -d"
 ```
 
 ### ✅ Checklist de Validación Post-Deployment
@@ -1028,7 +1028,7 @@ echo "============================================="
 
 # 1. Verificar que el mod existe en directorio
 echo "📂 Verificando existencia del mod en directorio..."
-if ssh gabriel@167.172.251.27 "test -d /home/gabriel/luanti-voxelibre-server/server/mods/$MOD_NAME"; then
+if ssh gabriel@<IP_VPS_ANTERIOR> "test -d /home/gabriel/luanti-voxelibre-server/server/mods/$MOD_NAME"; then
     echo "✅ Mod existe en server/mods/$MOD_NAME/"
 else
     echo "❌ ERROR: Mod NO existe en server/mods/"
@@ -1038,7 +1038,7 @@ fi
 # 2. Verificar configuración en world.mt
 echo ""
 echo "⚙️ Verificando configuración en world.mt..."
-MOD_CONFIG=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt")
+MOD_CONFIG=$(ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt")
 
 if [ -z "$MOD_CONFIG" ]; then
     echo "❌ ERROR: Mod NO está configurado en world.mt"
@@ -1057,12 +1057,12 @@ else
 fi
 
 # 4. Verificar que no hay duplicados
-DUPLICATE_COUNT=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt | wc -l")
+DUPLICATE_COUNT=$(ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt | wc -l")
 
 if [ "$DUPLICATE_COUNT" -gt 1 ]; then
     echo "❌ ERROR: Mod configurado $DUPLICATE_COUNT veces (duplicado)"
     echo "📋 Líneas duplicadas:"
-    ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
+    ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
     exit 1
 else
     echo "✅ Sin duplicados en configuración"
@@ -1071,7 +1071,7 @@ fi
 # 5. Verificar en logs del servidor
 echo ""
 echo "📋 Verificando carga en logs del servidor..."
-MOD_LOAD_LOG=$(ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=100 luanti-server | grep -i '$MOD_NAME'")
+MOD_LOAD_LOG=$(ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=100 luanti-server | grep -i '$MOD_NAME'")
 
 if [ -n "$MOD_LOAD_LOG" ]; then
     echo "✅ Mod aparece en logs del servidor:"
@@ -1096,30 +1096,30 @@ echo "🎉 Validación completada para: $MOD_NAME"
 
 ```bash
 # PASO 1: Verificar estado actual
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt"
 
 # PASO 2: Buscar configuración existente del mod
 MOD_NAME="animal_sanctuary"
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
 
 # PASO 3: Si existe, actualizar; si no, agregar
 if [ $? -eq 0 ]; then
     # Mod ya existe, actualizar
-    ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sed -i 's/^load_mod_$MOD_NAME = .*/load_mod_$MOD_NAME = true/' /config/.minetest/worlds/world/world.mt"
+    ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sed -i 's/^load_mod_$MOD_NAME = .*/load_mod_$MOD_NAME = true/' /config/.minetest/worlds/world/world.mt"
 else
     # Mod nuevo, agregar
-    ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
+    ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server sh -c 'echo \"load_mod_$MOD_NAME = true\" >> /config/.minetest/worlds/world/world.mt'"
 fi
 
 # PASO 4: Verificar cambio aplicado
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose exec -T luanti-server grep '^load_mod_$MOD_NAME' /config/.minetest/worlds/world/world.mt"
 
 # PASO 5: Reiniciar servidor
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # PASO 6: Validar que el servidor inició correctamente
 sleep 15
-ssh gabriel@167.172.251.27 "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps | grep luanti-server"
+ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps | grep luanti-server"
 ```
 
 ---

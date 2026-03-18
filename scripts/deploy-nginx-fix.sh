@@ -7,7 +7,7 @@
 
 set -e
 
-VPS_HOST="gabriel@167.172.251.27"
+VPS_HOST="gabriel@${VPS_HOST}"
 LOCAL_SCRIPT="./fix-nginx-cache.sh"
 REMOTE_SCRIPT="/home/gabriel/fix-nginx-cache.sh"
 

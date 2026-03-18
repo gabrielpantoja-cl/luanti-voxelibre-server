@@ -7,7 +7,7 @@
 set -e
 
 # Configuración
-VPS_HOST="gabriel@167.172.251.27"
+VPS_HOST="gabriel@${VPS_HOST}"
 VPS_BACKUP_PATH="/home/gabriel/luanti-voxelibre-server/server/backups"
 EXPECTED_BACKUP_INTERVAL_HOURS=6
 MAX_BACKUP_AGE_HOURS=8  # Permitir 2h de retraso
