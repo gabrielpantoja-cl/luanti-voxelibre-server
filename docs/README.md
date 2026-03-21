@@ -57,7 +57,12 @@ Operaciones diarias y mantenimiento del servidor
 - **[Troubleshooting](operations/troubleshooting.md)** - Solución de problemas comunes
 - **[Texture Recovery](operations/texture-recovery.md)** - Recuperación de corrupción de texturas
 - **[VPS Sync Workflow](operations/VPS_SYNC_WORKFLOW.md)** - Sincronización de cambios VPS ↔ Repositorio
+- **[Migracion Oracle Cloud](operations/MIGRACION_ORACLE_2026-03-17.md)** - Migracion de VPS a Oracle Cloud ARM
 - **[Playwright MCP Setup](operations/PLAYWRIGHT_MCP_SETUP.md)** - Configuración de herramientas de testing
+
+### 🗺️ [projects/](projects/)
+Proyectos especiales y expansiones del servidor
+- **[Proyecto Valdivia](projects/proyecto-valdivia-luanti.md)** - Recreacion de Valdivia desde OpenStreetMap con Arnis
 
 ### 🌐 [web/](web/)
 Frontend y desarrollo web
@@ -192,7 +197,7 @@ ssh gabriel@<VPS_HOST_IP>
 
 ---
 
-**📅 Última actualización**: 15 de Enero, 2026
+**📅 Ultima actualizacion**: 21 de Marzo, 2026
 **👥 Mantenido por**: Equipo Wetlands
-**📊 Versión**: 2.1 (Sistema de Modos Mixtos)
+**📊 Version**: 3.0 (Dual World: Wetlands + Valdivia 2.0)
 **🔗 Repositorio**: https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git
