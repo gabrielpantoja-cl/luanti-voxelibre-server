@@ -47,6 +47,16 @@ secrets/
 world-snapshots/*.tar.gz
 server/worlds/world/
 
+# Valdivia world data (generado por Arnis, muy grande para git)
+server/worlds/valdivia/map.sqlite
+server/worlds/valdivia/auth.sqlite
+server/worlds/valdivia/players.sqlite
+server/worlds/valdivia/mod_storage.sqlite
+server/worlds/valdivia/env_meta.txt
+server/worlds/valdivia/force_loaded.txt
+server/worlds/valdivia/ipban.txt
+server/worlds/valdivia/map_meta.txt
+
 # ==========================================
 # Documentación Administrativa Privada
 # ==========================================
