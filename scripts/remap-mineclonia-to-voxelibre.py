@@ -33,6 +33,8 @@ REMAP = {
     b"mcl_trees:wood_jungle": b"mcl_core:junglewood",
     b"mcl_trees:wood_acacia": b"mcl_core:acaciawood",
     b"mcl_trees:wood_dark_oak": b"mcl_core:darkwood",
+    # Bamboo scaffolding -> oak planks (no equivalent in VoxeLibre)
+    b"mcl_bamboo:scaffolding": b"mcl_core:wood",
 }
 
 
