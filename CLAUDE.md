@@ -17,22 +17,27 @@ This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods
 - **Mods**: Lua scripts in `server/mods/`
 - **Config**: `.conf` files, not JSON/YAML
 - **Deploy**: GitHub Actions CI/CD + manual `git pull` on VPS
-- **VPS**: `ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS>` (Oracle Cloud, ARM aarch64)
-- **Port**: 30000/UDP (game), 80/443 (landing page via nginx)
+- **VPS**: `ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229` (Oracle Cloud, ARM aarch64)
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 80/443 (landing page via nginx)
 - **Language**: Spanish (es)
 
 ## File Structure
 
 ```
-docker-compose.yml              # Container orchestration
-server/config/luanti.conf       # Server config (creative, no damage, PvP in arenas only)
-server/games/mineclone2/        # VoxeLibre game files
+docker-compose.yml              # Container orchestration (dual: Wetlands + Valdivia)
+server/config/luanti.conf       # Wetlands server config (creative, no damage, PvP in arenas only)
+server/config/luanti-valdivia.conf  # Valdivia server config (creative, no mobs, singlenode mapgen)
+server/games/mineclone2/        # VoxeLibre game files (shared by both worlds)
 server/mods/                    # Custom + third-party mods
 server/worlds/world/world.mt    # LOCAL REFERENCE COPY (real one lives on VPS)
+server/worlds/valdivia/         # Valdivia world (world.mt + map.sqlite + worldmods/arnis_mapgen/)
 server/skins/                   # Player skins (64x32 PNG)
 server/landing-page/            # Web landing page (HTML/CSS/JS)
 server/backups/                 # Automated backup storage
 scripts/                        # start.sh, backup.sh, deploy-landing.sh, etc.
+scripts/remap-mineclonia-to-voxelibre.py  # Node name remapper for Arnis-generated worlds
+scripts/setup-arnis.sh          # Install Rust + compile Arnis PR #808
+scripts/generate-valdivia.sh    # Generate Valdivia world with bbox presets
 docs/                           # Detailed documentation (see index below)
 .env                            # Local secrets (gitignored) - admin credentials
 ```
@@ -81,18 +86,44 @@ docker-compose down                         # Stop
 ```bash
 # Standard deploy flow: local -> GitHub -> VPS
 git push origin main
-ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
-ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # Verify after restart (use --since to avoid old log noise)
-ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
 
 # Enable a mod on VPS (world.mt must be edited in BOTH host and container)
-ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "echo 'load_mod_my_mod = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
-ssh -i ~/.ssh/id_ed25519 gabriel@<IP_VPS> "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "echo 'load_mod_my_mod = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
 ```
 
 **IMPORTANT:** When checking logs after restart, always use `--since='2m'` or `--since='5m'` to filter only recent entries. The full log contains thousands of historical entries that will pollute search results.
+
+### Valdivia World (port 30001)
+```bash
+# Start both servers
+docker-compose up -d
+
+# View Valdivia logs
+docker-compose logs -f luanti-valdivia
+
+# Restart Valdivia only
+docker-compose restart luanti-valdivia
+
+# Deploy Valdivia map.sqlite to VPS (70MB, not in git)
+scp -i ~/.ssh/id_ed25519 server/worlds/valdivia/map.sqlite \
+  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+
+# Fix permissions after uploading (container user abc = UID 911)
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 \
+  "sudo chown -R 911:911 /home/gabriel/luanti-voxelibre-server/server/worlds/"
+
+# Generate a new Valdivia world locally (requires Arnis compiled)
+./scripts/generate-valdivia.sh full
+
+# Remap Mineclonia node names to VoxeLibre
+python3 scripts/remap-mineclonia-to-voxelibre.py server/worlds/valdivia/map.sqlite
+```
 
 ## Development Workflow
 
@@ -232,6 +263,17 @@ The `wetlands_npcs` mod uses **two different 3D models** depending on NPC type:
 - **Spawn**: 0,15,0 (static)
 - **World Gen**: v7 with caves, dungeons, biomes
 - **New Player Privileges**: interact, shout, fly, fast, noclip, give, creative, spawn (via `wetlands_newplayer` mod)
+
+## Dual World Architecture
+
+The server runs **two independent worlds** via Docker Compose:
+
+| World | Container | Port | Config | Purpose |
+|-------|-----------|------|--------|---------|
+| Wetlands | `luanti-server` | 30000/UDP | `luanti.conf` | Main creative/educational world with NPCs, mods, arenas |
+| Valdivia 2.0 | `luanti-valdivia` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap data |
+
+Both share the same VoxeLibre game files and mods directory. The Valdivia world uses `singlenode` mapgen with a pre-generated `map.sqlite` (70MB, not in git). Details: `docs/projects/proyecto-valdivia-luanti.md`.
 
 ## Enabled Mods (from world.mt)
 

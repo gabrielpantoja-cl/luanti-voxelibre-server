@@ -62,7 +62,7 @@ Operaciones diarias y mantenimiento del servidor
 
 ### 🗺️ [projects/](projects/)
 Proyectos especiales y expansiones del servidor
-- **[Proyecto Valdivia](projects/proyecto-valdivia-luanti.md)** - Recreacion de Valdivia desde OpenStreetMap con Arnis
+- **[Proyecto Valdivia](projects/proyecto-valdivia-luanti.md)** - Recreacion de Valdivia desde OpenStreetMap con Arnis (EN PRODUCCION, puerto 30001)
 
 ### 🌐 [web/](web/)
 Frontend y desarrollo web
@@ -76,19 +76,25 @@ Documentación histórica y archivos reorganizados
 
 ## 🎯 Información del Proyecto
 
-### Servidor en Vivo
-- **URL**: `luanti.gabrielpantoja.cl:30000`
+### Servidores en Vivo
+
+| Servidor | Direccion | Descripcion |
+|----------|-----------|-------------|
+| **Wetlands** | `luanti.gabrielpantoja.cl:30000` | Mundo principal creativo/educativo con NPCs, arenas PVP, mods |
+| **Valdivia 2.0** | `luanti.gabrielpantoja.cl:30001` | Recreacion real de Valdivia, Chile desde OpenStreetMap (Arnis) |
+
 - **Landing Page**: https://luanti.gabrielpantoja.cl
-- **Modo**: Modos mixtos (Creativo + Supervivencia coexistiendo)
-- **Público**: Niños de 7+ años
-- **Idioma**: Español
-- **Capacidad**: Hasta 20 jugadores
+- **Modo Wetlands**: Modos mixtos (Creativo + Supervivencia coexistiendo)
+- **Modo Valdivia**: Creativo puro, sin mobs, vuelo libre
+- **Publico**: Ninos de 7+ anos
+- **Idioma**: Espanol
+- **Capacidad**: Hasta 20 jugadores por servidor
 
 ### Repositorio y Arquitectura
 - **Repo principal**: https://github.com/gabrielpantoja-cl/Wetlands-Valdivia.git
 - **Referencia técnica**: [CLAUDE.md](../CLAUDE.md) (archivo principal para Claude Code)
 - **Tecnologías**: Docker Compose + Luanti + VoxeLibre
-- **VPS**: DigitalOcean (<VPS_HOST_IP>)
+- **VPS**: Oracle Cloud Free Tier (159.112.138.229, ARM aarch64)
 
 ### Filosofía del Proyecto
 🌱 **Compasión**: Sin violencia hacia animales ni jugadores
@@ -133,7 +139,7 @@ docker-compose logs -f luanti-server
 docker-compose restart luanti-server
 
 # Acceso SSH al VPS
-ssh gabriel@<VPS_HOST_IP>
+ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229
 ```
 
 ## 📊 Métricas del Proyecto
