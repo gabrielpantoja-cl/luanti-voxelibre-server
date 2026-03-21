@@ -1,32 +1,109 @@
 # Proyecto Valdivia -- Recreacion en Luanti/Minetest
 
-**Estado:** Planificacion
+**Estado:** En implementacion (primera generacion completada)
 **Fecha:** Marzo 2026
-**Ultima investigacion:** 21 marzo 2026
+**Ultima actualizacion:** 21 marzo 2026
 **Objetivo:** Recrear la ciudad de Valdivia, Chile (2026) en el servidor Wetlands de Luanti, incluyendo rios, humedales, edificaciones y geografia real.
 
 ---
 
 ## Resumen Ejecutivo
 
-Crear una recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y modelos de elevacion SRTM. **La via principal es Arnis con soporte nativo Luanti** (PR #808, abierto 21-mar-2026), que genera directamente mundos Luanti desde OSM sin necesidad de conversion intermedia. Como fallback, se puede generar un mundo Minecraft con Arnis y convertirlo con MC2MT (ROllerozxa).
+Crear una recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y modelos de elevacion SRTM. **La via principal es Arnis con soporte nativo Luanti** (PR #808, branch `luanti-support`), que genera directamente mundos Luanti desde OSM sin necesidad de conversion intermedia. El PR fue compilado y testeado exitosamente el 21 de marzo de 2026. La primera generacion (Colegio Planeta Azul, Valdivia) esta completa y funcional.
 
 ---
 
-## Hallazgo clave: Arnis PR #808 -- Soporte nativo Luanti
+## Arnis PR #808 -- TESTEADO Y FUNCIONAL
 
 **PR:** https://github.com/louis-e/arnis/pull/808
 **Autor:** 3rd3 | **Fecha:** 21 marzo 2026 | **Estado:** Open (en review)
 
-Este PR agrega generacion directa de mundos Luanti sin pasar por Minecraft:
-- Nuevo modulo `luanti.rs` (568 lineas) -- serializa `map.sqlite` con formato mapblock v29 + compresion zstd
-- Modulo `luanti_block_map.rs` (719 lineas) -- tablas de mapeo dual para **minetest_game** Y **mineclonia**
-- Flag CLI: `--luanti --luanti-game mineclonia`
-- Genera `world.mt`, `map_meta.txt`, `env_meta.txt` automaticamente
-- Usa `singlenode` mapgen + worldmod Lua para recalcular iluminacion
-- Dependencias: `rusqlite`, `zstd`
+### Compilacion exitosa
 
-**Impacto:** Si se mergea, elimina completamente la Fase 2 (conversion) del plan original. Pipeline se reduce a: Arnis -> mundo Luanti listo.
+- **Plataforma:** x86_64 Linux Mint
+- **Rust:** 1.94.0
+- **Tiempo de compilacion:** ~6 minutos (`cargo build --release`)
+- **Dependencias del sistema requeridas:**
+  ```
+  libglib2.0-dev libgtk-3-dev libwebkit2gtk-4.1-dev
+  libjavascriptcoregtk-4.1-dev libsoup-3.0-dev libssl-dev
+  ```
+
+### Uso CLI confirmado
+
+```bash
+./target/release/arnis \
+  --luanti \
+  --luanti-game mineclonia \
+  --terrain \
+  --output-dir=/ruta/existente \
+  --bbox="-39.8387,-73.2600,-39.8332,-73.2540"
+```
+
+**Notas importantes:**
+- Requiere flag `--output-dir` (el directorio debe existir previamente)
+- Output va a `<output-dir>/Arnis Luanti World 1/` (nota: espacio en el nombre de carpeta)
+- Genera automaticamente: `map.sqlite`, `world.mt`, `map_meta.txt`, `env_meta.txt`
+- Incluye un worldmod `arnis_mapgen` que maneja spawn, respawn, y fix de iluminacion en primer load
+- Usa `singlenode` mapgen + compresion zstd
+
+---
+
+## Primera Generacion: Colegio Planeta Azul
+
+### Datos de la generacion
+
+| Aspecto | Valor |
+|---------|-------|
+| **Ubicacion** | -39.835957, -73.257018 (Valdivia, Chile) |
+| **Bbox** | `-39.8387,-73.2600,-39.8332,-73.2540` |
+| **Area** | ~600 x 500 metros |
+| **Mapblocks iniciales** | 1,549 |
+| **Mapblocks en map.sqlite** | 36,708 |
+| **Tamano archivo** | 716 KB |
+| **Spawn generado por Arnis** | 256, -56, -306 |
+| **Rango de elevacion** | 8.1 metros (realista para tierras bajas de Valdivia) |
+| **Tiempo de generacion** | ~30 segundos |
+
+### Cobertura OSM del area
+
+- Colegio Planeta Azul **NO** esta mapeado por nombre en OSM (solo Colegio San Lucas cercano)
+- Buena cobertura general: calles (Arica, Pedro Ruiz Manriquez), arboles con datos de especie, parques, cancha deportiva, piscina, grifos, ciclovias
+- Edificios aparecen como estructuras pero sin nombres especificos
+
+---
+
+## Incompatibilidad de Nodos: Mineclonia vs VoxeLibre (LECCION CRITICA)
+
+### El problema
+
+Arnis PR #808 genera nodos con nombres de **Mineclonia**, NO de VoxeLibre. Son forks del mismo codebase (MineClone2) pero han divergido en nombres de nodos:
+
+| Mineclonia (generado por Arnis) | VoxeLibre (nuestro servidor) |
+|--------------------------------|------------------------------|
+| `mcl_trees:tree_oak` | `mcl_core:tree` |
+| `mcl_trees:leaves_oak` | `mcl_core:leaves` |
+| `mcl_trees:tree_birch` | `mcl_core:birchtree` |
+| `mcl_trees:leaves_birch` | `mcl_core:birchleaves` |
+| `mcl_trees:tree_spruce` | `mcl_core:sprucetree` |
+| `mcl_trees:leaves_spruce` | `mcl_core:spruceleaves` |
+| `mcl_trees:wood_oak` | `mcl_core:wood` |
+
+**Otros nodos** (`mcl_colorblocks`, `mcl_stairs`, `mcl_flowers`, `mcl_doors`, etc.) ya son compatibles con VoxeLibre.
+
+### Solucion implementada: Script de remapeo
+
+Script Python `scripts/remap-mineclonia-to-voxelibre.py` que:
+1. Lee mapblocks de map.sqlite
+2. Salta el byte de version (0x1d = 29) antes de descomprimir zstd
+3. Encuentra strings de nombres de nodos con prefijo de longitud en la tabla name-id mapping
+4. Reemplaza nombres Mineclonia por equivalentes VoxeLibre
+5. Recomprime con zstd
+6. **Resultado:** 467 de 36,708 mapblocks remapeados exitosamente
+
+### Correccion de gameid en world.mt
+
+Arnis genera `gameid = mineclonia` pero VoxeLibre requiere `gameid = mineclone2`. Se debe cambiar manualmente despues de cada generacion.
 
 ---
 
@@ -37,47 +114,42 @@ Este PR agrega generacion directa de mundos Luanti sin pasar por Minecraft:
 | Factor | Minetest Game | VoxeLibre/Mineclonia |
 |--------|---------------|----------------------|
 | Equivalencia de bloques MC | Parcial (necesita muchos mods extra) | Casi completa (nativo) |
-| Bloques "Unknown" post-import | Muchos (lapis, quartz, nether, etc.) | Muy pocos |
-| Herramientas de conversion | mcimport (antiguo, Python) | MC2MT ROllerozxa (C++, rapido) |
+| Bloques "Unknown" post-import | Muchos (lapis, quartz, nether, etc.) | Muy pocos (solo 7 nodos mcl_trees necesitan remapeo) |
 | Arnis PR #808 | Soportado (`--luanti-game minetest_game`) | Soportado (`--luanti-game mineclonia`) |
 | Experiencia de juego | Basica, menos bloques | Completa, similar a Minecraft |
 | Compatibilidad con Wetlands | Requiere servidor separado con otro juego | Mismo juego, mismos mods |
 
-**Conclusion:** Contra-intuitivamente, VoxeLibre es la mejor opcion porque tiene equivalentes nativos para casi todos los bloques de Minecraft. Con Minetest Game necesitarias instalar docenas de mods adicionales para evitar bloques "Unknown". Ademas, al usar el mismo juego base que Wetlands, los mods existentes funcionan sin cambios.
-
-**Nota importante:** Mineclonia y VoxeLibre son forks del mismo codebase (MineClone2), pero han divergido en algunos nombres de nodos. Sera necesario auditar la tabla de mapeo del PR #808 contra los nombres actuales de VoxeLibre v0.90.1.
+**Conclusion:** VoxeLibre es la mejor opcion. La mayoria de nodos generados por Arnis son directamente compatibles. Solo 7 nodos de tipo `mcl_trees` requieren remapeo, lo cual se resuelve con el script Python.
 
 ---
 
-## Expansion incremental: Empezar pequeno y crecer
+## Expansion incremental: Confirmado viable
 
-### Respuesta: SI, es totalmente viable
+### Como funciona `map.sqlite`
 
-**Como funciona `map.sqlite`:**
 - Almacena mapblocks individuales de 16x16x16 nodos, indexados por hash de posicion
 - Cada mapblock es independiente -- se pueden INSERT nuevos sin afectar los existentes
 - No hay limite practico de expansion (coord. limit: 31000 en cada eje)
 
-**Estrategia de expansion:**
-1. Generar area pequena (ej: centro de Valdivia, ~2 km2)
-2. Verificar que funciona correctamente
-3. Generar areas adyacentes con Arnis
-4. Insertar los nuevos mapblocks en el mismo `map.sqlite`
-5. **Requisito critico:** las tablas de mapeo nombre-a-ID deben ser consistentes entre generaciones
+### Requisito critico
 
-**Problema de bordes:**
+Las tablas de mapeo nombre-a-ID deben ser consistentes entre generaciones al mergear map.sqlite de diferentes areas.
+
+### Estrategia de expansion (presets en generate-valdivia.sh)
+
+| Preset | Area | Bbox | Tamano aprox |
+|--------|------|------|-------------|
+| `colegio` | Colegio Planeta Azul (completado) | `-39.8387,-73.2600,-39.8332,-73.2540` | ~600 x 500 m |
+| `mvp` | Centro + Costanera + Mercado Fluvial | `-39.825,-73.255,-39.810,-73.235` | ~1.5 x 2 km |
+| `exp1` | + Isla Teja + Puentes | `-39.840,-73.265,-39.805,-73.225` | ~3.5 x 4 km |
+| `exp2` | + Barrios Las Animas, Jardin | `-39.855,-73.275,-39.795,-73.200` | ~6.5 x 7.5 km |
+| `full` | Ciudad completa + Humedal Rio Cruces | `-39.870,-73.280,-39.780,-73.180` | ~10 x 10 km |
+
+### Problema de bordes
+
 - Arnis usa `singlenode` mapgen -> areas fuera de la generacion son VACIO (aire)
 - Los jugadores que caminen mas alla del area generada caen al vacio
-- **Solucion:** Mod Lua que genera terreno natural basico (pasto, arboles) fuera del area de la ciudad, o barrera invisible con mensaje "Zona en construccion"
-
-**Estrategia recomendada de expansion:**
-
-| Fase | Area | Bbox aproximado | Tamano |
-|------|------|-----------------|--------|
-| MVP | Centro + Costanera + Mercado Fluvial | `-39.825,-73.255,-39.810,-73.235` | ~1.5 x 2 km |
-| Expansion 1 | + Isla Teja + Puentes | `-39.840,-73.265,-39.805,-73.225` | ~3.5 x 4 km |
-| Expansion 2 | + Barrios Las Animas, Jardin | `-39.855,-73.275,-39.795,-73.200` | ~6.5 x 7.5 km |
-| Completa | Ciudad completa + Humedal Rio Cruces | `-39.870,-73.280,-39.780,-73.180` | ~10 x 10 km |
+- **Solucion futura:** Mod Lua con barrera invisible y mensaje "Zona en expansion..."
 
 ---
 
@@ -92,21 +164,6 @@ max_lat: -39.780
 max_lng: -73.180
 ```
 
-**Coordenadas bbox MVP (centro):**
-```
-min_lat: -39.825
-min_lng: -73.255
-max_lat: -39.810
-max_lng: -73.235
-```
-
-**Cobertura MVP:**
-- Mercado Fluvial y costanera
-- Plaza de la Republica
-- Calle General Lagos (casonas patrimoniales)
-- Muelle Schuster
-- Ribera del rio Valdivia
-
 **Cobertura completa (futuro):**
 - Centro historico, Isla Teja (UACh, Parque Saval)
 - Humedal Rio Cruces
@@ -115,19 +172,56 @@ max_lng: -73.235
 
 ---
 
-## Stack Tecnologico (actualizado)
+## Infraestructura Creada
 
-### Via principal: Arnis con soporte Luanti nativo (PR #808)
+### Archivos en el repositorio
+
+| Archivo | Proposito |
+|---------|-----------|
+| `docker-compose.yml` | Arquitectura dual: puerto 30000 (Wetlands) + puerto 30001 (Valdivia) |
+| `server/config/luanti-valdivia.conf` | Config dedicada (creative, no mobs, singlenode mapgen) |
+| `server/worlds/valdivia/world.mt` | Metadata del mundo Valdivia |
+| `scripts/setup-arnis.sh` | Instala Rust, clona Arnis, compila desde PR #808 |
+| `scripts/generate-valdivia.sh` | Genera mundo con presets de bbox (colegio, mvp, exp1, exp2, full) |
+| `scripts/remap-mineclonia-to-voxelibre.py` | Corrige incompatibilidad de nombres de nodos |
+
+### Arquitectura del servidor dual
+
+```yaml
+# docker-compose.yml (simplificado)
+luanti-server:        # Wetlands - puerto 30000
+luanti-valdivia:      # Valdivia - puerto 30001
+  image: linuxserver/luanti:latest
+  ports: ["30001:30000/udp"]
+  volumes:
+    - ./server/config/luanti-valdivia.conf:/config/.minetest/minetest.conf
+    - ./server/worlds/valdivia:/config/.minetest/worlds/valdivia
+    - ./server/games:/config/.minetest/games
+    - ./server/mods:/config/.minetest/mods
+  environment:
+    - CLI_ARGS=--worldname valdivia
+```
+
+**Ventajas de mundo separado:**
+- Cero riesgo para el servidor Wetlands principal
+- Configuracion independiente
+- Se puede apagar/encender sin afectar Wetlands
+
+---
+
+## Stack Tecnologico
+
+### Via principal: Arnis con soporte Luanti nativo (PR #808) -- CONFIRMADO FUNCIONAL
 
 | Componente | Detalle |
 |------------|---------|
 | **Arnis** | v2.5.0 "Metropolis Update" (feb 2026). 1,489 commits, muy activo |
 | **Repo** | https://github.com/louis-e/arnis |
 | **PR Luanti** | https://github.com/louis-e/arnis/pull/808 |
-| **Lenguaje** | Rust (99.8%) + Tauri GUI |
+| **Lenguaje** | Rust 1.94.0 (99.8%) + Tauri GUI |
 | **Datos** | OSM (Overpass API) + AWS Terrain Tiles (elevacion) |
 | **Output** | `map.sqlite` nativo Luanti (v29 mapblocks + zstd) |
-| **Target** | `--luanti-game mineclonia` (compatible VoxeLibre) |
+| **Target** | `--luanti-game mineclonia` (requiere remapeo para VoxeLibre) |
 | **Licencia** | Apache 2.0 |
 
 ### Via fallback: Arnis (MC) + MC2MT conversion
@@ -158,117 +252,38 @@ max_lng: -73.235
 
 ---
 
-## Plan de Implementacion (revisado)
+## Plan de Implementacion (actualizado con progreso real)
 
-### FASE 0 -- Preparacion (1-2 dias)
+### FASE 0 -- Preparacion -- COMPLETADA
 
-#### 0.1 Monitorear PR #808
-```bash
-# Verificar estado del PR
-gh pr view 808 --repo louis-e/arnis
-```
-- Si esta mergeado: seguir con Fase 1A (via directa)
-- Si no esta mergeado: compilar desde el branch del PR, o usar Fase 1B (via fallback)
+- [x] Compilar Arnis desde branch PR #808 en PC local (x86_64)
+- [x] Instalar dependencias del sistema (libglib2.0-dev, libgtk-3-dev, etc.)
+- [x] `cargo build --release` exitoso (~6 min)
 
-#### 0.2 Compilar Arnis desde branch del PR (si no esta mergeado)
-```bash
-# En PC local (x86_64) -- NO en VPS ARM para evitar complicaciones
-git clone https://github.com/louis-e/arnis
-cd arnis
-git fetch origin pull/808/head:luanti-support
-git checkout luanti-support
-cargo build --release
-```
+### FASE 1 -- Primera generacion -- COMPLETADA
 
-### FASE 1A -- Generacion directa Luanti (via principal)
+- [x] Generar area de prueba: Colegio Planeta Azul (~600x500m)
+- [x] Verificar output: map.sqlite, world.mt, arnis_mapgen worldmod
+- [x] Descubrir incompatibilidad de nodos Mineclonia vs VoxeLibre
+- [x] Crear script de remapeo `remap-mineclonia-to-voxelibre.py`
+- [x] Remapear 467 mapblocks exitosamente
+- [x] Corregir gameid en world.mt (mineclonia -> mineclone2)
 
-```bash
-# Generar MVP: solo centro de Valdivia (~1.5 x 2 km)
-./target/release/arnis \
-  --luanti \
-  --luanti-game mineclonia \
-  --terrain \
-  --bbox="-39.825,-73.255,-39.810,-73.235"
-```
+### FASE 2 -- Infraestructura de servidor -- COMPLETADA
 
-**Output esperado:** `~/.minetest/worlds/arnis/` con `map.sqlite`, `world.mt`, etc.
+- [x] Crear `docker-compose.yml` con arquitectura dual (puerto 30000 + 30001)
+- [x] Crear `server/config/luanti-valdivia.conf`
+- [x] Crear `server/worlds/valdivia/world.mt`
+- [x] Crear scripts de automatizacion (`setup-arnis.sh`, `generate-valdivia.sh`)
 
-### FASE 1B -- Via fallback (MC + MC2MT)
+### FASE 3 -- Expansion a MVP centro (PENDIENTE)
 
-Solo si PR #808 no funciona:
+- [ ] Generar bbox MVP: centro + Costanera + Mercado Fluvial
+- [ ] Verificar con minetestmapper + Luanti local en singleplayer
+- [ ] Remapear nodos con script existente
+- [ ] Desplegar en VPS como mundo paralelo en puerto 30001
 
-```bash
-# Paso 1: Generar mundo Minecraft
-./target/release/arnis \
-  --terrain \
-  --path="/tmp/valdivia-mc/saves/valdivia" \
-  --bbox="-39.825,-73.255,-39.810,-73.235"
-
-# Paso 2: Downgrade a formato MC 1.12 con Amulet (si necesario)
-pip install amulet-core amulet-nbt
-# (script de conversion)
-
-# Paso 3: Convertir con MC2MT de ROllerozxa
-git clone https://github.com/ROllerozxa/MC2MT
-cd MC2MT
-make
-./MC2MT /tmp/valdivia-mc/saves/valdivia/ ~/.minetest/worlds/valdivia/
-```
-
-### FASE 2 -- Verificacion y ajustes (2-3 dias)
-
-#### 2.1 Verificar mundo generado
-```bash
-# Vista top-down con minetestmapper
-minetestmapper -i ~/.minetest/worlds/valdivia/ -o valdivia-map.png
-
-# Abrir en Luanti local (singleplayer) y recorrer
-```
-
-#### 2.2 Auditar nombres de nodos
-Comparar los nombres de nodos generados (Mineclonia) vs VoxeLibre v0.90.1:
-```bash
-# Listar nodos unicos en el mundo generado
-sqlite3 ~/.minetest/worlds/valdivia/map.sqlite \
-  "SELECT DISTINCT name FROM ... " # (requiere deserializar mapblocks)
-
-# Comparar con nodos registrados en VoxeLibre
-grep -r "minetest.register_node" server/games/mineclone2/mods/ | head -50
-```
-
-Si hay diferencias, crear script Python para renombrar nodos en `map.sqlite`.
-
-### FASE 3 -- Integracion en servidor Wetlands (1 semana)
-
-#### Opcion A: Mundo paralelo (RECOMENDADA)
-```yaml
-# Agregar en docker-compose.yml:
-luanti-valdivia:
-  image: linuxserver/luanti:latest
-  container_name: luanti-valdivia-server
-  ports:
-    - "30001:30000/udp"
-  volumes:
-    - ./server/config/luanti-valdivia.conf:/config/.minetest/minetest.conf
-    - ./server/worlds/valdivia:/config/.minetest/worlds/valdivia
-    - ./server/games:/config/.minetest/games
-    - ./server/mods:/config/.minetest/mods
-  environment:
-    - CLI_ARGS=--worldname valdivia
-```
-
-**Ventajas:**
-- Cero riesgo para el servidor Wetlands principal
-- Configuracion independiente (puede tener reglas diferentes)
-- Se puede apagar/encender sin afectar Wetlands
-
-#### Opcion B: Zona remota en mismo mundo
-- Insertar mapblocks en coordenadas lejanas (X=50000, Z=50000) del mundo principal
-- Portal de teletransporte desde spawn de Wetlands
-- **Riesgo:** si algo sale mal, corrompe el mundo principal
-- **No recomendada** para la fase inicial
-
-### FASE 4 -- Mod de bordes y navegacion
+### FASE 4 -- Mod de bordes y navegacion (PENDIENTE)
 
 #### 4.1 Mod `valdivia_borders` -- Barrera de bordes
 ```lua
@@ -284,7 +299,7 @@ luanti-valdivia:
 -- Comando /valdivia_tp <lugar> para teletransportarse a hitos
 ```
 
-### FASE 5 -- Enriquecimiento manual con WorldEdit (continuo)
+### FASE 5 -- Enriquecimiento manual con WorldEdit (FUTURO)
 
 #### 5.1 Hitos historicos y culturales
 - [ ] **Mercado Fluvial** -- estructura con puestos de artesanias y mariscos
@@ -304,7 +319,7 @@ luanti-valdivia:
 - [ ] **Calle General Lagos** -- casonas patrimoniales estilo aleman
 - [ ] **Costanera** -- paseo peatonal con bancas y faroles
 
-### FASE 6 -- Mods especificos de Valdivia (futuro)
+### FASE 6 -- Mods especificos de Valdivia (FUTURO)
 
 #### 6.1 Mod `valdivia_fauna`
 - Coipo (nutria de rio) -- humedales
@@ -325,43 +340,44 @@ luanti-valdivia:
 
 ---
 
-## Datos tecnicos
+## Datos tecnicos (actualizados con datos reales)
 
-| Aspecto | MVP (centro) | Ciudad completa |
-|---------|-------------|-----------------|
-| Area | ~3 km2 | ~100 km2 |
-| Dimension en bloques | ~1,500 x 2,000 | ~10,000 x 10,000 |
-| Tamano disco estimado | ~200 MB - 1 GB | ~3-8 GB |
-| RAM para generar | 4 GB | 8 GB |
-| Tiempo generacion Arnis | ~5-15 min | ~30-60 min |
-| Conversion (si fallback) | ~10 min | ~1-2 horas |
+| Aspecto | Colegio (real) | MVP (estimado) | Ciudad completa (estimado) |
+|---------|---------------|----------------|---------------------------|
+| Area | ~600 x 500 m | ~1.5 x 2 km | ~10 x 10 km |
+| Mapblocks | 36,708 | ~150,000 | ~2,000,000+ |
+| Tamano disco | 716 KB | ~5-20 MB | ~500 MB - 2 GB |
+| Tiempo generacion | ~30 seg | ~5-15 min | ~30-60 min |
+| Elevacion | 8.1 m rango | Similar | Variable (cerros al este) |
 
 ---
 
-## Riesgos y mitigaciones (actualizado)
+## Riesgos y mitigaciones (actualizado con experiencia real)
 
-| Riesgo | Prob. | Impacto | Mitigacion |
-|--------|-------|---------|------------|
-| PR #808 no se mergea pronto | Media | Retrasa el inicio | Compilar desde branch del PR directamente |
-| PR #808 tiene bugs con Mineclonia | Media | Bloques incorrectos | Auditar tabla de mapeo, corregir con script |
-| Nombres de nodos Mineclonia != VoxeLibre | Alta | Bloques "Unknown" | Script Python para renombrar en map.sqlite |
-| Arnis crashea con areas grandes | Media | No genera ciudad completa | Empezar con MVP pequeno, expandir incrementalmente |
-| Edificios OSM incompletos (multi-polygon) | Media | Faltan estructuras | Enriquecer manualmente con WorldEdit |
-| Bordes del mundo generado = vacio | Cierta | Jugadores caen | Mod `valdivia_borders` con barrera y mensaje |
+| Riesgo | Prob. | Impacto | Estado/Mitigacion |
+|--------|-------|---------|-------------------|
+| PR #808 no se mergea pronto | Media | Ninguno | **MITIGADO:** Compilamos desde branch directamente |
+| Nombres de nodos Mineclonia != VoxeLibre | Cierta | Bloques "Unknown" | **RESUELTO:** Script `remap-mineclonia-to-voxelibre.py` funciona. Solo 7 nodos mcl_trees necesitan remapeo |
+| gameid incorrecto en world.mt | Cierta | Mundo no carga | **RESUELTO:** Cambiar `mineclonia` a `mineclone2` post-generacion |
+| Arnis crashea con areas grandes | Media | No genera ciudad completa | Empezar con area pequena, expandir incrementalmente |
+| Edificios OSM incompletos | Media | Faltan estructuras | Colegio Planeta Azul no aparece por nombre en OSM. Enriquecer con WorldEdit |
+| Bordes del mundo generado = vacio | Cierta | Jugadores caen | Mod `valdivia_borders` pendiente |
 | Compilacion Arnis en ARM (VPS) | Baja | No compila | Generar en PC local (x86), subir map.sqlite al VPS |
 | Impacto en servidor Wetlands | Ninguno | -- | Mundo completamente separado (puerto 30001) |
+| Espacio en nombre de carpeta output | Cierta | Confunde scripts | **CONOCIDO:** Output va a `Arnis Luanti World 1/`, scripts deben manejar esto |
 
 ---
 
 ## Proximos pasos inmediatos
 
-1. **[ ] Monitorear PR #808** -- https://github.com/louis-e/arnis/pull/808
-2. **[ ] Compilar Arnis desde branch PR #808** en PC local (x86)
-3. **[ ] Test MVP** -- generar solo centro de Valdivia (bbox reducido ~1.5x2 km)
-4. **[ ] Verificar** con minetestmapper + Luanti local en singleplayer
-5. **[ ] Auditar nodos** -- comparar Mineclonia vs VoxeLibre v0.90.1
-6. **[ ] Si funciona** -- subir al VPS como mundo paralelo en puerto 30001
-7. **[ ] Si PR #808 no funciona** -- probar via fallback (Arnis MC + MC2MT ROllerozxa)
+1. **[x] Compilar Arnis desde branch PR #808** -- exitoso, Rust 1.94.0
+2. **[x] Primera generacion de prueba** -- Colegio Planeta Azul completado
+3. **[x] Resolver incompatibilidad de nodos** -- Script de remapeo funcional
+4. **[x] Crear infraestructura de servidor dual** -- docker-compose, configs, scripts
+5. **[ ] Generar MVP centro de Valdivia** -- bbox mas grande con landmarks principales
+6. **[ ] Verificar MVP** con minetestmapper + Luanti local en singleplayer
+7. **[ ] Desplegar en VPS** como mundo paralelo en puerto 30001
+8. **[ ] Crear mod `valdivia_borders`** para prevenir caidas al vacio
 
 ---
 
@@ -372,7 +388,7 @@ luanti-valdivia:
 | Herramienta | Tipo | Estado | Target | URL |
 |-------------|------|--------|--------|-----|
 | **Arnis v2.5** | OSM+DEM -> MC | Activo (1489 commits) | Minecraft Java/Bedrock | https://github.com/louis-e/arnis |
-| **Arnis PR #808** | OSM+DEM -> Luanti | En review (nuevo) | minetest_game + Mineclonia | https://github.com/louis-e/arnis/pull/808 |
+| **Arnis PR #808** | OSM+DEM -> Luanti | **Testeado, funcional** | minetest_game + Mineclonia | https://github.com/louis-e/arnis/pull/808 |
 | realterrain | DEM -> Luanti | Roto | Minetest Game | https://github.com/ubc-minetest-classroom/realterrain |
 | geo-mapgen | GeoTIFF -> Luanti | Abandonado (2018) | Minetest Game | https://github.com/gaelysam/geo-mapgen |
 
@@ -385,6 +401,14 @@ luanti-valdivia:
 | mc2mineclone | Python | MineClone2 | 1.12.2 | WIP | https://github.com/DavidRotert/mc2mineclone |
 | mcimport | Python | MTG / MCL2 | Varios | Deprecated | https://github.com/minetest-tools/mcimport |
 | mc2mt (dgm3333) | Python | Desconocido | Antiguo | Abandonado | https://github.com/dgm3333/mc2mt |
+
+### Herramientas propias creadas
+
+| Script | Lenguaje | Proposito |
+|--------|----------|-----------|
+| `scripts/setup-arnis.sh` | Bash | Instala Rust, clona y compila Arnis PR #808 |
+| `scripts/generate-valdivia.sh` | Bash | Genera mundo con presets de bbox |
+| `scripts/remap-mineclonia-to-voxelibre.py` | Python | Remplaza nombres de nodos Mineclonia por VoxeLibre en map.sqlite |
 
 ### Visualizacion y verificacion
 
@@ -419,4 +443,4 @@ luanti-valdivia:
 ---
 
 *Documento creado por Gabriel Pantoja + Claude -- Marzo 2026*
-*Investigacion actualizada: 21 marzo 2026*
+*Ultima actualizacion: 21 marzo 2026 -- Primera generacion completada*
