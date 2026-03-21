@@ -72,6 +72,30 @@ services:
     networks:
       - luanti-network
 
+  # =============================================
+  # VALDIVIA 2.0 - Ciudad real desde OpenStreetMap
+  # =============================================
+  luanti-valdivia:
+    image: linuxserver/luanti:latest
+    container_name: luanti-valdivia-server
+    restart: unless-stopped
+    ports:
+      - "30001:30000/udp"
+    volumes:
+      - ./server/config/luanti-valdivia.conf:/config/.minetest/minetest.conf
+      - ./server/mods:/config/.minetest/mods
+      - ./server/worlds/valdivia:/config/.minetest/worlds/valdivia
+      - ./server/games:/config/.minetest/games
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santiago
+      - CLI_ARGS=--worldname valdivia
+    depends_on:
+      - luanti-server
+    networks:
+      - luanti-network
+
 networks:
   luanti-network:
     driver: bridge
