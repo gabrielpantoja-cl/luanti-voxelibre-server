@@ -14,6 +14,7 @@
 | **Supermercado Trebol** | `/teleport 3358,-42,-3537` | ~-39.842, -73.246 | Av Simpson / Circunvalacion |
 | **Plaza Civica Guacamayo** | `/teleport 2715,-47,-4381` | ~-39.849, -73.253 | |
 | **<CASA_REDACTED> (<BARRIO_REDACTED>)** | `/teleport 5798,-45,-1222` | <LAT_REDACTED>, <LNG_REDACTED> | Pendiente verificar Y |
+| **Circunvalacion / San Luis** | `/teleport 5473,-53.5,-3842` | | Cruce Circunvalacion con San Luis |
 
 ## Lugares por descubrir
 
