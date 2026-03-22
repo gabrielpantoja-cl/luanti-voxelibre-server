@@ -20,6 +20,8 @@
 | **Pasaje Argelia** | `/teleport 5810,-51,-4551` | | Barrio Santa Elena |
 | **Los Fundadores** | `/teleport 4360,-51,-4211` | | |
 | **Plaza Londres (Huachocopihue)** | `/teleport 3761,-43,-3170` | | |
+| **Colegio Windsor** | `/teleport 3727,-44,-2619` | | Francia / Simpson |
+| **Puente Pedro de Valdivia** | `/teleport 3111,-50,-176` | | Cruza el Rio Valdivia |
 
 ## Lugares por descubrir
 
