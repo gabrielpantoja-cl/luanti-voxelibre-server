@@ -47,6 +47,8 @@ REMAP = {
     b"mcl_core:sandstone_carved": b"mcl_core:sandstonecarved",
     b"mcl_core:redsandstone_smooth": b"mcl_core:redsandstonesmooth",
     b"mcl_core:redsandstone_carved": b"mcl_core:redsandstonecarved",
+    # Grey/gray color variants (Arnis uses British "grey", VoxeLibre uses American "gray")
+    b"mcl_core:glass_grey": b"mcl_core:glass_gray",
     # Chain (Arnis uses mcl_core:chain, VoxeLibre uses mcl_lanterns:chain)
     b"mcl_core:chain": b"mcl_lanterns:chain",
     # Redstone block (Arnis uses mcl_core:redstone_block, VoxeLibre uses mesecons_torch:redstoneblock)
