@@ -15,6 +15,9 @@
 | **Plaza Civica Guacamayo** | `/teleport 2715,-47,-4381` | ~-39.849, -73.253 | |
 | **Casa Gabriel (Barrio Santa Elena)** | `/teleport 5798,-45,-1222` | -39.850988, -73.216807 | Pendiente verificar Y |
 | **Circunvalacion / San Luis** | `/teleport 5473,-53.5,-3842` | | Cruce Circunvalacion con San Luis |
+| **Schneider / Circunvalacion** | `/teleport 5747,-44,-4000` | | Cruce Schneider con Circunvalacion |
+| **Sede Junta de Vecinos Bº Santa Elena** | `/teleport 6189,-49,-4424` | | Junta de vecinos Barrio Santa Elena |
+| **Pasaje Argelia** | `/teleport 5810,-51,-4551` | | Barrio Santa Elena |
 
 ## Lugares por descubrir
 
