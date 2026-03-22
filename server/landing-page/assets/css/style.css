@@ -2661,3 +2661,116 @@ body {
     justify-content: center;
   }
 }
+
+/* ===== WORLDS SELECTOR (Hero) ===== */
+.worlds-selector {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.world-option {
+  position: relative;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--minecraft-green);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 160px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.world-option:hover {
+  transform: translateY(-2px);
+  border-color: var(--online-green);
+}
+
+.world-option.world-new {
+  border-color: #ff9800;
+  animation: glow-new 2s ease-in-out infinite;
+}
+
+@keyframes glow-new {
+  0%, 100% { box-shadow: 0 0 8px rgba(255, 152, 0, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 152, 0, 0.8); }
+}
+
+.world-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #ff5722;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulse-badge 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.world-icon {
+  font-size: 1.5rem;
+}
+
+.world-name {
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.world-desc {
+  color: var(--pixel-light-gray);
+  font-size: 0.75rem;
+}
+
+.world-port {
+  color: var(--online-green);
+  font-size: 0.8rem;
+  font-family: var(--pixel-font);
+  background: rgba(85, 255, 85, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Feature card NEW highlight */
+.feature-card.feature-new {
+  border: 2px solid #ff9800;
+  position: relative;
+}
+
+.feature-card.feature-new::after {
+  content: "NUEVO";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff5722;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .worlds-selector {
+    flex-direction: column;
+    align-items: center;
+  }
+  .world-option {
+    width: 100%;
+    max-width: 250px;
+  }
+}
