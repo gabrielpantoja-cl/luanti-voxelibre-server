@@ -2,8 +2,8 @@
 -- Procesa el mundo en chunks para no crashear el servidor
 -- Uso: /fixlight_world
 
-local CHUNK_SIZE = 80  -- nodos por lado por chunk (5 mapblocks)
-local EMERGE_DELAY = 0.5  -- segundos entre chunks
+local CHUNK_SIZE = 32  -- nodos por lado por chunk (2 mapblocks)
+local EMERGE_DELAY = 2.0  -- segundos entre chunks (evita timeout de jugadores)
 
 local running = false
 
