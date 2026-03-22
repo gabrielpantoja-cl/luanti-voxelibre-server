@@ -315,20 +315,12 @@ minetest.register_chatcommand("discord", {
     end
 })
 
--- Recordatorio periódico más educativo (cada 20 minutos)
+-- Anuncio del nuevo mundo Valdivia 2.0
 local timer = 0
 minetest.register_globalstep(function(dtime)
     timer = timer + dtime
-    if timer >= 1200 then -- 20 minutos = 1200 segundos
+    if timer >= 5 then
         timer = 0
-        local mensajes_rotativos = {
-            "🌱 Usa /ayuda para ver toda la información del servidor",
-            "💚 Recuerda: duerme en una cama para establecer tu spawn",
-            "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas",
-            "🌐 Visita nuestra página web: https://luanti.gabrielpantoja.cl",
-            "💬 ¡Únete a nuestra comunidad Discord! Usa /discord para más info"
-        }
-        local mensaje = mensajes_rotativos[math.random(1, #mensajes_rotativos)]
-        minetest.chat_send_all(mensaje)
+        minetest.chat_send_all("** NUEVO MUNDO ** Valdivia - Ciudad real de Chile recreada a escala! Conectate a luanti.gabrielpantoja.cl:30001 y explorala! **")
     end
 end)
