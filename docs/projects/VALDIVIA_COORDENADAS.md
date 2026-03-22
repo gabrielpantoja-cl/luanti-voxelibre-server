@@ -18,6 +18,8 @@
 | **Schneider / Circunvalacion** | `/teleport 5747,-44,-4000` | | Cruce Schneider con Circunvalacion |
 | **Sede Junta de Vecinos Bº Santa Elena** | `/teleport 6189,-49,-4424` | | Junta de vecinos Barrio Santa Elena |
 | **Pasaje Argelia** | `/teleport 5810,-51,-4551` | | Barrio Santa Elena |
+| **Los Fundadores** | `/teleport 4360,-51,-4211` | | |
+| **Plaza Londres (Huachocopihue)** | `/teleport 3761,-43,-3170` | | |
 
 ## Lugares por descubrir
 
