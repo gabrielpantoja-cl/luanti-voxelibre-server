@@ -53,6 +53,14 @@ REMAP = {
     b"mcl_core:chain": b"mcl_lanterns:chain",
     # Redstone block (Arnis uses mcl_core:redstone_block, VoxeLibre uses mesecons_torch:redstoneblock)
     b"mcl_core:redstone_block": b"mesecons_torch:redstoneblock",
+    # Stairs: Arnis uses _oak suffix, VoxeLibre uses plain "wood" for oak
+    b"mcl_stairs:stair_wood_oak": b"mcl_stairs:stair_wood",
+    b"mcl_stairs:stair_wood_oak_inner": b"mcl_stairs:stair_wood_inner",
+    b"mcl_stairs:stair_wood_oak_outer": b"mcl_stairs:stair_wood_outer",
+    # Slabs: same _oak pattern
+    b"mcl_stairs:slab_wood_oak": b"mcl_stairs:slab_wood",
+    b"mcl_stairs:slab_wood_oak_top": b"mcl_stairs:slab_wood_top",
+    b"mcl_stairs:slab_wood_oak_double": b"mcl_stairs:slab_wood_double",
 }
 
 
