@@ -61,6 +61,7 @@ services:
     environment:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-voxelibre-server
+      - SERVER_LABEL=Wetlands 🌱
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
@@ -69,6 +70,29 @@ services:
       "
     depends_on:
       - luanti-server
+    networks:
+      - luanti-network
+
+  # Discord notifier para Valdivia 2.0
+  discord-notifier-valdivia:
+    image: alpine:latest
+    container_name: luanti-discord-notifier-valdivia
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts:/scripts:ro
+    environment:
+      - TZ=America/Santiago
+      - CONTAINER_NAME=luanti-valdivia-server
+      - SERVER_LABEL=Valdivia 2.0 🏙️
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    command: >
+      sh -c "
+        apk add --no-cache curl docker-cli bash &&
+        bash /scripts/discord-notifier.sh
+      "
+    depends_on:
+      - luanti-valdivia
     networks:
       - luanti-network
 
