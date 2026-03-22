@@ -1,40 +1,44 @@
-# 🔔 Sistema de Notificaciones Discord - Luanti Wetlands
+# Sistema de Notificaciones Discord - Luanti Wetlands
 
-## Descripción
+## Descripcion
 
-Sistema automático de notificaciones que envía alertas a Discord cuando:
-- 🟢 Un jugador se conecta al servidor
-- 🔴 Un jugador se desconecta del servidor
-- 🤖 El monitor se inicia o se detiene
+Sistema automatico de notificaciones que envia alertas a Discord cuando:
+- Un jugador se conecta al servidor
+- Un jugador se desconecta del servidor
+- El monitor se inicia o se detiene
+
+**Cobertura:** Ambos mundos -- Wetlands (puerto 30000) y Valdivia 2.0 (puerto 30001).
 
 ## Arquitectura
 
 ```
-┌─────────────────────┐
-│  Luanti Server      │
-│  (Docker Container) │
-└──────────┬──────────┘
-           │ logs
-           ▼
-┌─────────────────────┐
-│  Discord Notifier   │
-│  (Docker Container) │
-│  - Monitorea logs   │
-│  - Detecta eventos  │
-└──────────┬──────────┘
-           │ HTTP POST
-           ▼
-┌─────────────────────┐
-│  Discord Webhook    │
-│  (API)              │
-└──────────┬──────────┘
-           │
-           ▼
-┌─────────────────────┐
-│  Canal Discord      │
-│  (Tu celular)       │
-└─────────────────────┘
+┌──────────────────────┐     ┌──────────────────────┐
+│  Wetlands Server     │     │  Valdivia Server     │
+│  (puerto 30000)      │     │  (puerto 30001)      │
+└──────────┬───────────┘     └──────────┬───────────┘
+           │ logs                       │ logs
+           ▼                            ▼
+┌──────────────────────┐     ┌──────────────────────────────┐
+│  discord-notifier    │     │  discord-notifier-valdivia   │
+│  SERVER_LABEL=       │     │  SERVER_LABEL=               │
+│  "Wetlands"          │     │  "Valdivia 2.0"              │
+└──────────┬───────────┘     └──────────┬───────────────────┘
+           │                            │
+           └──────────┬─────────────────┘
+                      │ HTTP POST (mismo webhook)
+                      ▼
+           ┌─────────────────────┐
+           │  Discord Webhook    │
+           │  (Canal conexiones) │
+           └─────────────────────┘
 ```
+
+Ambos notificadores usan el mismo script (`scripts/discord-notifier.sh`) con variables de entorno distintas:
+
+| Variable | discord-notifier | discord-notifier-valdivia |
+|----------|-----------------|--------------------------|
+| `CONTAINER_NAME` | `luanti-voxelibre-server` | `luanti-valdivia-server` |
+| `SERVER_LABEL` | `Wetlands` | `Valdivia 2.0` |
 
 ## Configuración Inicial
 
@@ -75,16 +79,16 @@ El sistema se inicia automáticamente con Docker Compose:
 docker-compose up -d
 ```
 
-El contenedor `luanti-discord-notifier` empezará a monitorear automáticamente.
+Los contenedores `luanti-discord-notifier` y `luanti-discord-notifier-valdivia` empezaran a monitorear automaticamente.
 
 ### Verificar Estado
 
 ```bash
-# Ver logs del notificador
-docker-compose logs -f discord-notifier
+# Ver logs de ambos notificadores
+docker compose logs -f discord-notifier discord-notifier-valdivia
 
-# Ver si está corriendo
-docker-compose ps discord-notifier
+# Ver si estan corriendo
+docker compose ps discord-notifier discord-notifier-valdivia
 ```
 
 ### Enviar Notificación de Prueba
@@ -112,19 +116,24 @@ docker-compose down
 
 ## Ejemplos de Notificaciones
 
-### Conexión de Jugador
+### Conexion desde Wetlands
 ```
 🟢 Jugador Conectado: gabrielpantoja se ha conectado al servidor 🎮 | Servidor: Wetlands 🌱
 ```
 
-### Desconexión de Jugador
+### Conexion desde Valdivia
+```
+🟢 Jugador Conectado: pepelomo se ha conectado al servidor 🎮 | Servidor: Valdivia 2.0 🏙️
+```
+
+### Desconexion
 ```
 🔴 Jugador Desconectado: gabrielpantoja se ha desconectado del servidor 👋 | Servidor: Wetlands 🌱
 ```
 
 ### Monitor Iniciado
 ```
-🤖 Monitor Iniciado: Sistema de notificaciones activado correctamente ✅ | Servidor: Wetlands 🌱
+🤖 Monitor Iniciado: Sistema de notificaciones activado correctamente ✅ | Servidor: Valdivia 2.0 🏙️
 ```
 
 ## Scripts Disponibles
@@ -303,5 +312,5 @@ git push origin main
 ---
 
 **Creado:** 2025-10-25
-**Última actualización:** 2025-10-25
+**Ultima actualizacion:** 2026-03-22
 **Mantenedor:** Gabriel Pantoja

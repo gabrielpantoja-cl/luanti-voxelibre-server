@@ -52,4 +52,4 @@ Y = probar entre -30 y -55 (depende de elevacion del terreno)
 ---
 
 *Documento vivo - Actualizar con cada nueva ubicacion descubierta*
-*Ultima actualizacion: 21 marzo 2026*
+*Ultima actualizacion: 22 marzo 2026*
