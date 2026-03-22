@@ -1,118 +1,64 @@
 # Issue: Puerto 30001 - Servidor Valdivia 2.0 no acepta conexiones externas
 
-**Estado:** EN INVESTIGACION
+**Estado:** RESUELTO
 **Fecha:** 21 marzo 2026
 **Afecta:** Servidor Valdivia 2.0 (puerto 30001)
-**No afecta:** Servidor Wetlands (puerto 30000, funciona correctamente)
 
 ## Sintoma
 
-Los jugadores no pueden conectarse a `luanti.gabrielpantoja.cl:30001` desde el cliente Luanti.
-El servidor Wetlands en puerto 30000 funciona sin problemas.
-El servidor Valdivia SI funciono brevemente (usuario gabo7 se conecto exitosamente a las 19:57 UTC del 21 marzo).
+Los jugadores no podian conectarse a `luanti.gabrielpantoja.cl:30001` desde el cliente Luanti.
+El servidor Wetlands en puerto 30000 funcionaba sin problemas.
+El cliente reportaba "Connection timed out".
 
-## Lo que funciona
+## Causa raiz
 
-- El contenedor Docker esta corriendo (`docker ps` muestra `Up`, puerto `0.0.0.0:30001->30000/udp`)
-- El servidor Luanti dentro del contenedor esta listening (`Server for gameid="mineclone2" listening on [::]:30000`)
-- Oracle Cloud Security List tiene regla UDP 30001 con source 0.0.0.0/0
-- Los paquetes UDP llegan al VPS (confirmado con tcpdump en `enp0s6`)
-- El DNAT funciona (paquetes se reenvian de 30001 a 172.18.0.x:30000 dentro del bridge Docker)
-- Los paquetes llegan al contenedor (confirmado con tcpdump en bridge y veth)
+El archivo `auth.sqlite` del mundo Valdivia estaba **vacio (0 bytes)** — existia pero sin tablas SQLite.
 
-## Lo que NO funciona
-
-- El servidor Luanti dentro del contenedor **no responde** a los paquetes UDP
-- tcpdump muestra paquetes entrantes pero ningun paquete de respuesta
-
-## Diagnostico detallado
-
-### 1. Comparacion Wetlands vs Valdivia
-
-| Aspecto | Wetlands (funciona) | Valdivia (no funciona) |
-|---------|--------------------|-----------------------|
-| Puerto host | 30000 | 30001 |
-| Puerto interno | 30000 | 30000 |
-| bind_address config | comentado (default) | comentado (default) |
-| Listening socket | `udp :::30000` | `udp :::30000` |
-| Config file usado | `/config/.minetest/main-config/minetest.conf` | `/config/.minetest/main-config/minetest.conf` |
-| Proceso | `luantiserver --port 30000 --worldname world` | `luantiserver --port 30000 --worldname valdivia` |
-| world.mt gameid | mineclone2 | mineclone2 |
-
-### 2. Red / Firewall
+Cuando un jugador intentaba conectarse, el callback `on_prejoinplayer` ejecutaba:
+```
+SELECT id, name, password, last_login FROM auth WHERE name = ?
+```
+Esto fallaba con `no such table: auth`, causando un crash silencioso del handler de conexion. El servidor seguia corriendo y escuchando UDP, pero no podia completar el handshake con ningun cliente.
 
 ```
-# iptables INPUT: ACCEPT para UDP 30001 (regla 1)
-# nftables: DNAT de 30001 a container_ip:30000
-# Docker FORWARD: ACCEPT para container_ip:30000
-# Oracle Cloud Security List: UDP 30001 from 0.0.0.0/0
+ERROR[Main]: ServerError: AsyncErr: Lua: Runtime error from mod '*builtin*'
+  in callback on_prejoinplayer():
+  "Failed to prepare query ... no such table: auth"
 ```
 
-### 3. Paquetes capturados (tcpdump)
+## Por que fue dificil de diagnosticar
 
+1. El contenedor aparecia como `Up` en `docker ps`
+2. El servidor escuchaba en `[::]:30000` y respondia a paquetes UDP basicos
+3. `nc -u` con protocolo Luanti obtenia respuesta del handshake inicial
+4. tcpdump confirmaba paquetes de ida y vuelta
+5. El error solo ocurria en el paso de autenticacion (despues del handshake UDP), invisible sin revisar logs completos
+
+## Solucion
+
+```bash
+# 1. Eliminar auth.sqlite vacio
+sudo rm ~/luanti-voxelibre-server/server/worlds/valdivia/auth.sqlite
+
+# 2. Reiniciar el contenedor
+docker restart luanti-valdivia-server
+
+# Luanti crea automaticamente un auth.sqlite nuevo con las tablas correctas
+# cuando el primer jugador se conecta
 ```
-# Paquete llega al VPS:
-enp0s6 In  IP client.port > vps.30001: UDP, length 5
 
-# Se reenvía al bridge Docker:
-br-xxxxx Out IP 172.18.0.1.port > 172.18.0.x.30000: UDP, length 5
+## Acciones adicionales tomadas durante diagnostico
 
-# Sale por el veth al contenedor:
-vethxxxx Out IP 172.18.0.1.port > 172.18.0.x.30000: UDP, length 5
+- Regla iptables para UDP 30001 agregada a `ufw-user-input` y persistida en `/etc/ufw/user.rules`
+- Force-recreate del contenedor Valdivia
+- Swap test confirmando que el problema era del container/config, no del puerto
 
-# NO HAY PAQUETE DE RESPUESTA
-```
+## Leccion aprendida
 
-### 4. Hallazgo: bind_address
-
-- Con `bind_address = 0.0.0.0` el servidor escucha en `udp 0.0.0.0:30000` (IPv4 only)
-- Sin bind_address (default) escucha en `udp :::30000` (IPv6 + IPv4, dual stack)
-- Wetlands no tiene bind_address configurado y funciona
-- Valdivia se cambio a default pero sigue sin funcionar
-
-### 5. Config del contenedor linuxserver/luanti
-
-El contenedor `linuxserver/luanti:latest` tiene un comportamiento particular:
-- No usa directamente el archivo montado en `/config/.minetest/minetest.conf`
-- Copia la config a `/config/.minetest/main-config/minetest.conf` en el primer inicio
-- El proceso luantiserver usa `--config /config/.minetest/main-config/minetest.conf`
-- Cambios en el archivo montado NO se reflejan automaticamente, hay que copiar manualmente
-
-## Acciones tomadas
-
-1. Verificar Oracle Cloud Security List - OK (UDP 30001 desde 0.0.0.0/0)
-2. Agregar regla iptables INPUT UDP 30001 - Hecho
-3. Agregar regla ufw-user-input UDP 30001 - Hecho
-4. Reiniciar Docker daemon - Hecho
-5. docker compose down/up completo - Hecho (red recreada)
-6. Copiar config a main-config/ - Hecho
-7. Comentar bind_address para usar default - Hecho
-8. Verificar con tcpdump que paquetes llegan - Confirmado
-9. Restaurar mundo v3 (que funcionaba) - Probado, mismo problema
-
-## Hipotesis pendientes
-
-1. **El contenedor necesita ser recreado con `docker compose up --force-recreate`** despues del cambio de config
-2. **Conflicto de puertos internos**: ambos contenedores usan puerto 30000 internamente, podria haber conflicto a nivel de respuesta UDP (source port)
-3. **El minetest.conf montado (volume bind) esta sobreescribiendo main-config en cada restart** con la version vieja que tenia bind_address
-4. **Problema de MTU o fragmentacion UDP** especifico al puerto 30001 pero no al 30000
-5. **Rate limiting o conntrack** de Oracle Cloud que descarta UDP en puertos no-standard
-
-## Proximos pasos
-
-1. Probar `docker compose up --force-recreate luanti-valdivia`
-2. Probar cambiar el puerto de Valdivia a 30002 o 30010 (descartar problema especifico del 30001)
-3. Probar sin el volumen de config montado (dejar que el contenedor use su config default)
-4. Revisar si hay conntrack rules que bloquean
-5. Probar exponer Valdivia en puerto 30000 temporalmente (apagando Wetlands) para confirmar que el contenedor funciona
-
-## Workaround temporal
-
-Si el problema persiste, se puede usar el servidor Valdivia localmente:
-- `docker compose up -d luanti-valdivia` en PC local
-- Conectar via `localhost:30001`
-- Los ninos no podran acceder remotamente hasta resolver el issue
+- Un `auth.sqlite` de 0 bytes no es lo mismo que ausencia del archivo. Luanti crea las tablas si el archivo no existe, pero falla si existe vacio.
+- Los errores de `on_prejoinplayer` no impiden que el servidor escuche UDP ni responda al handshake inicial — solo fallan al autenticar, haciendo que el cliente vea "Connection timed out".
+- Siempre revisar los logs completos (`docker logs`) buscando `ERROR` antes de diagnosticar red/firewall.
 
 ---
 
-*Documento de troubleshooting - 21 marzo 2026*
+*Resuelto: 21 marzo 2026*
