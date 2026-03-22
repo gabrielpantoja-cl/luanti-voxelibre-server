@@ -2,7 +2,7 @@
 
 **Estado:** En produccion (servidor publico activo en puerto 30001)
 **Fecha:** Marzo 2026
-**Ultima actualizacion:** 21 marzo 2026
+**Ultima actualizacion:** 22 marzo 2026
 **Objetivo:** Recrear la ciudad de Valdivia, Chile (2026) en el servidor Wetlands de Luanti, incluyendo rios, humedales, edificaciones y geografia real.
 
 ---
@@ -549,4 +549,9 @@ min_lng: -73.280   max_lng: -73.180
 ---
 
 *Documento creado por Gabriel Pantoja + Claude -- Marzo 2026*
-*Ultima actualizacion: 21 marzo 2026 -- Servidor en produccion (v3, puerto 30001)*
+*Ultima actualizacion: 22 marzo 2026 -- Remap texturas, 10 vehiculos, Discord notifier, landing page dual*
+
+### Historial de sesiones
+
+- **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/operations/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
+- **21 marzo 2026:** Servidor Valdivia v3 en produccion (puerto 30001), generacion con Arnis PR #808
