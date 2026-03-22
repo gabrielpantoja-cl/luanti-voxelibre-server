@@ -10,6 +10,7 @@
 |-------|-----------------|--------------------------|-------|
 | **Colegio Planeta Azul** (spawn) | `/teleport 2389,-55,-2887` | -39.835957, -73.257018 | Spawn del servidor |
 | **Plaza estacionamiento Colegio** | `/teleport 2343,-56,-3148` | ~-39.838, -73.257 | Donde nos estacionamos para ir al colegio |
+| **Av Pedro Montt / Circunvalacion** | `/teleport 4517,-48,-3885` | ~-39.845, -73.233 | Cruce de avenidas |
 | **Supermercado Trebol** | `/teleport 3358,-42,-3537` | ~-39.842, -73.246 | Av Simpson / Circunvalacion |
 | **Plaza Civica Guacamayo** | `/teleport 2715,-47,-4381` | ~-39.849, -73.253 | |
 | **<CASA_REDACTED> (<BARRIO_REDACTED>)** | `/teleport 5798,-45,-1222` | <LAT_REDACTED>, <LNG_REDACTED> | Pendiente verificar Y |
