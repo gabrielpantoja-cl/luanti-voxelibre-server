@@ -33,8 +33,20 @@ REMAP = {
     b"mcl_trees:wood_jungle": b"mcl_core:junglewood",
     b"mcl_trees:wood_acacia": b"mcl_core:acaciawood",
     b"mcl_trees:wood_dark_oak": b"mcl_core:darkwood",
+    # Arnis mcl_core:wood_* variants (not valid in VoxeLibre)
+    b"mcl_core:wood_oak": b"mcl_core:wood",
+    b"mcl_core:wood_birch": b"mcl_core:birchwood",
+    b"mcl_core:wood_spruce": b"mcl_core:sprucewood",
+    b"mcl_core:wood_jungle": b"mcl_core:junglewood",
+    b"mcl_core:wood_acacia": b"mcl_core:acaciawood",
+    b"mcl_core:wood_dark_oak": b"mcl_core:darkwood",
     # Bamboo scaffolding -> oak planks (no equivalent in VoxeLibre)
     b"mcl_bamboo:scaffolding": b"mcl_core:wood",
+    # Sandstone variants (Arnis uses underscores, VoxeLibre doesn't)
+    b"mcl_core:sandstone_smooth": b"mcl_core:sandstonesmooth",
+    b"mcl_core:sandstone_carved": b"mcl_core:sandstonecarved",
+    b"mcl_core:redsandstone_smooth": b"mcl_core:redsandstonesmooth",
+    b"mcl_core:redsandstone_carved": b"mcl_core:redsandstonecarved",
     # Chain (Arnis uses mcl_core:chain, VoxeLibre uses mcl_lanterns:chain)
     b"mcl_core:chain": b"mcl_lanterns:chain",
     # Redstone block (Arnis uses mcl_core:redstone_block, VoxeLibre uses mesecons_torch:redstoneblock)
