@@ -328,7 +328,26 @@ air                     - Aire (vacío)
 4. **Prueba primero** en áreas pequeñas
 5. **El comando `//size`** te ayuda a verificar el tamaño antes de ejecutar
 
-## 🔍 Comandos de Depuración (Admin)
+## Invocar Entidades (Mobs/Bosses)
+
+### Invocar mob o entidad
+```
+/summon <nombre_entidad>
+```
+Spawnea la entidad en tu posicion actual.
+
+**Ejemplos**:
+- `/summon mobs_mc:enderdragon` - Ender Dragon (invocar en el End)
+- `/summon mobs_mc:wither` - Wither
+- `/summon mobs_mc:enderman` - Enderman
+- `/summon mobs_mc:pig` - Cerdo
+- `/summon mobs_mc:cow` - Vaca
+
+**Nota sobre el Ender Dragon:** El dragon NO spawnea automaticamente si el End fue generado con `only_peaceful_mobs = true` activo (config nuclear). En ese caso hay que invocarlo manualmente con `/summon mobs_mc:enderdragon` estando en el End.
+
+**Coordenadas del End:** `/teleport 0,-27003,0` (isla central con torretas y portal de salida)
+
+## Comandos de Depuracion (Admin)
 
 ### Encontrar y Teletransportarse a Bioma
 ```
