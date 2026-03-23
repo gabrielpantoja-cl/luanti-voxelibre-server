@@ -319,7 +319,7 @@ minetest.register_chatcommand("discord", {
 local timer = 0
 minetest.register_globalstep(function(dtime)
     timer = timer + dtime
-    if timer >= 5 then
+    if timer >= 60 then
         timer = 0
         minetest.chat_send_all("** NUEVO MUNDO ** Valdivia - Ciudad real de Chile recreada a escala! Conectate a luanti.gabrielpantoja.cl:30001 y explorala! **")
     end
