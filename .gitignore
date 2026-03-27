@@ -58,33 +58,30 @@ server/worlds/valdivia/ipban.txt
 server/worlds/valdivia/map_meta.txt
 
 # ==========================================
-# Documentación Administrativa Privada
+# Documentación Privada
+# Movida a: gabrielpantoja.cl/docs/luanti-privado/
 # ==========================================
-# NUEVA ESTRUCTURA: Todo lo sensible va a docs/admin/PRIVATE/
-# Este directorio completo está protegido excepto su README.md
 
-# Ignorar TODO el directorio PRIVATE excepto README y .gitkeep
+# Directorio PRIVATE local (archivos no versionados)
 docs/admin/PRIVATE/*
 !docs/admin/PRIVATE/README.md
 !docs/admin/PRIVATE/.gitkeep
 !docs/admin/PRIVATE/**/README.md
 
-# Archivos de incidentes con datos sensibles (legacy)
-docs/security/incidents/2025-09-20_HAKER_ATTACK/
-docs/security/incidents/2025-09-20_INCIDENTE_HAKER_DESCONEXION_MASIVA.md
+# Directorios completos ya removidos del repo (movidos a privado)
+docs/legacy/
+docs/security/incidents/
 
-# Legacy docs con posible información sensible
-docs/legacy/FORENSIC_*.md
-docs/legacy/COMPLETE_SECURITY_INCIDENT_FINAL_20250920.md
-docs/legacy/SECURITY_INCIDENT_CONSOLIDATED_20250920.md
-docs/legacy/IP_BLOCKING_MANUAL.md
+# Archivos admin sensibles ya removidos del repo
+docs/admin/CARCEL_DE_BANEO.md
+docs/admin/USER_PRIVILEGES.md
+docs/admin/manual-administracion.md
+docs/admin/POSTMORTEM_*.md
 
-# Archivos individuales sensibles (legacy - migrar a PRIVATE/)
+# Otros archivos potencialmente sensibles
 docs/admin/SISTEMA_ACTUAL_VPS_*.md
 docs/admin/DNS_CONFIG.md
 docs/admin/*-usuarios-*.md
 docs/admin/*-seguridad-*.md
 docs/admin/*-coordenadas-*.md
-
-# Mantener resto de documentación pública
-# (guías técnicas, mods, configuración general)
+docs/operations/MIGRACION_ORACLE_*.md
