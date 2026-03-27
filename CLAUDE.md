@@ -17,7 +17,7 @@ This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods
 - **Mods**: Lua scripts in `server/mods/`
 - **Config**: `.conf` files, not JSON/YAML
 - **Deploy**: GitHub Actions CI/CD + manual `git pull` on VPS
-- **VPS**: `ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229` (Oracle Cloud, ARM aarch64)
+- **VPS**: `ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP>` (Oracle Cloud, ARM aarch64)
 - **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 80/443 (landing page via nginx)
 - **Language**: Spanish (es)
 
@@ -68,7 +68,7 @@ There are TWO config files. Both contain `load_mod_*` entries. Understanding whi
 
 ### Reference copy:
 - A local copy of `world.mt` exists at `server/worlds/world/world.mt` for reference only (gitignored)
-- The real `world.mt` lives on the VPS at `/home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt`
+- The real `world.mt` lives on the VPS at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt`
 
 Details: `docs/config/01-CONFIGURATION_HIERARCHY.md`
 
@@ -86,15 +86,15 @@ docker-compose down                         # Stop
 ```bash
 # Standard deploy flow: local -> GitHub -> VPS
 git push origin main
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull origin main"
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker-compose restart luanti-server"
 
 # Verify after restart (use --since to avoid old log noise)
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
 
 # Enable a mod on VPS (world.mt must be edited in BOTH host and container)
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "echo 'load_mod_my_mod = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "echo 'load_mod_my_mod = true' >> /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt"
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
 ```
 
 **IMPORTANT:** When checking logs after restart, always use `--since='2m'` or `--since='5m'` to filter only recent entries. The full log contains thousands of historical entries that will pollute search results.
@@ -112,11 +112,11 @@ docker-compose restart luanti-valdivia
 
 # Deploy Valdivia map.sqlite to VPS (70MB, not in git)
 scp -i ~/.ssh/id_ed25519 server/worlds/valdivia/map.sqlite \
-  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+  <VPS_USER>@<VPS_IP>:/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/valdivia/
 
 # Fix permissions after uploading (container user abc = UID 911)
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 \
-  "sudo chown -R 911:911 /home/gabriel/luanti-voxelibre-server/server/worlds/"
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
+  "sudo chown -R 911:911 /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/"
 
 # Generate a new Valdivia world locally (requires Arnis compiled)
 ./scripts/generate-valdivia.sh full

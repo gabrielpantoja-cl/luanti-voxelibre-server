@@ -94,7 +94,7 @@ Documentación histórica y archivos reorganizados
 - **Repo principal**: https://github.com/gabrielpantoja-cl/Wetlands-Valdivia.git
 - **Referencia técnica**: [CLAUDE.md](../CLAUDE.md) (archivo principal para Claude Code)
 - **Tecnologías**: Docker Compose + Luanti + VoxeLibre
-- **VPS**: Oracle Cloud Free Tier (159.112.138.229, ARM aarch64)
+- **VPS**: Oracle Cloud Free Tier (<VPS_IP>, ARM aarch64)
 
 ### Filosofía del Proyecto
 🌱 **Compasión**: Sin violencia hacia animales ni jugadores
@@ -139,7 +139,7 @@ docker-compose logs -f luanti-server
 docker-compose restart luanti-server
 
 # Acceso SSH al VPS
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229
+ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP>
 ```
 
 ## 📊 Métricas del Proyecto

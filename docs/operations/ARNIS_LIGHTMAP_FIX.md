@@ -82,13 +82,13 @@ python3 scripts/remap-mineclonia-to-voxelibre.py server/worlds/valdivia/map.sqli
 
 # 3. Subir al VPS
 scp -i ~/.ssh/id_rsa server/worlds/valdivia/map.sqlite \
-  gabriel@159.112.138.229:/tmp/valdivia_map.sqlite
-ssh -i ~/.ssh/id_rsa gabriel@159.112.138.229 \
+  gabriel@<VPS_IP>:/tmp/valdivia_map.sqlite
+ssh -i ~/.ssh/id_rsa gabriel@<VPS_IP> \
   "sudo cp /tmp/valdivia_map.sqlite /home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/map.sqlite && \
    sudo chown 911:911 /home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/map.sqlite"
 
 # 4. Reiniciar servidor
-ssh -i ~/.ssh/id_rsa gabriel@159.112.138.229 \
+ssh -i ~/.ssh/id_rsa gabriel@<VPS_IP> \
   "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-valdivia"
 
 # 5. Conectarse y ejecutar /fixlight_world (idealmente sin otros jugadores)

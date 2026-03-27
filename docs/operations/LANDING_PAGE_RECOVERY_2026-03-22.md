@@ -6,12 +6,12 @@ La landing page https://luanti.gabrielpantoja.cl estaba caida despues de la migr
 
 ## Diagnostico
 
-### Estado inicial del VPS (159.112.138.229)
+### Estado inicial del VPS (<VPS_IP>)
 
 | Componente | Estado | Detalle |
 |-----------|--------|---------|
 | SSH | OK | Conectado como gabriel |
-| DNS | OK | luanti.gabrielpantoja.cl -> 159.112.138.229 |
+| DNS | OK | luanti.gabrielpantoja.cl -> <VPS_IP> |
 | Nginx | Instalado y corriendo | v1.24.0, activo desde 2026-03-17 |
 | Certbot | Instalado | v2.9.0 |
 | Certificado SSL | Valido | Expira 2026-06-15 |

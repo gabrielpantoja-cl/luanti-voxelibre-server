@@ -46,11 +46,11 @@ Distancia spawn -> Valdivia: ~20 km (inalcanzable caminando, solo por portal)
 
 ```bash
 # 1. Descargar backup del mundo Wetlands de produccion
-scp -i ~/.ssh/id_rsa gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite \
+scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite \
   server/worlds/world/map.sqlite
 
 # 2. Descargar auth.sqlite (jugadores y privilegios)
-scp -i ~/.ssh/id_rsa gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite \
+scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite \
   server/worlds/world/auth.sqlite
 
 # 3. Verificar que Valdivia local ya tiene fixlight + remap aplicados
@@ -157,26 +157,26 @@ cp server/worlds/world/map.sqlite.backup-pre-merge server/worlds/world/map.sqlit
 ```bash
 # 1. Subir mundo mergeado al VPS
 scp -i ~/.ssh/id_rsa server/worlds/world/map.sqlite \
-  gabriel@159.112.138.229:/tmp/wetlands_merged.sqlite
+  gabriel@<VPS_IP>:/tmp/wetlands_merged.sqlite
 
 # 2. Detener ambos servidores
-ssh gabriel@159.112.138.229 \
+ssh gabriel@<VPS_IP> \
   "cd /home/gabriel/luanti-voxelibre-server && docker compose down"
 
 # 3. Backup del mundo actual en VPS
-ssh gabriel@159.112.138.229 \
+ssh gabriel@<VPS_IP> \
   "cp /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite \
       /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite.backup-pre-merge-$(date +%Y%m%d)"
 
 # 4. Reemplazar mundo
-ssh gabriel@159.112.138.229 \
+ssh gabriel@<VPS_IP> \
   "sudo cp /tmp/wetlands_merged.sqlite \
       /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite && \
    sudo chown 911:911 /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite"
 
 # 5. Colocar portales en el juego (coordenadas exactas TBD)
 # 6. Iniciar solo Wetlands (Valdivia ya no necesita su propio contenedor)
-ssh gabriel@159.112.138.229 \
+ssh gabriel@<VPS_IP> \
   "cd /home/gabriel/luanti-voxelibre-server && docker compose up -d luanti-server"
 
 # 7. Verificar y anunciar a jugadores

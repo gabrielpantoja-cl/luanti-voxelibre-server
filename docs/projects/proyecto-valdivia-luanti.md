@@ -204,7 +204,7 @@ luanti-valdivia:      # Valdivia - puerto 30001
 
 | Aspecto | Valor |
 |---------|-------|
-| **IP** | 159.112.138.229 |
+| **IP** | <VPS_IP> |
 | **Proveedor** | Oracle Cloud Free Tier |
 | **Arquitectura** | ARM aarch64 |
 | **Puerto Wetlands** | 30000/UDP |
@@ -217,26 +217,26 @@ luanti-valdivia:      # Valdivia - puerto 30001
 git push origin main
 
 # 2. Pull en VPS
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 \
+ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP> \
   "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
 
 # 3. Subir map.sqlite (70MB, no esta en git)
 scp -i ~/.ssh/id_ed25519 server/worlds/valdivia/map.sqlite \
-  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+  gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
 
 # 4. Fix de permisos (container user abc = UID 911)
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 \
+ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP> \
   "sudo chown -R 911:911 /home/gabriel/luanti-voxelibre-server/server/worlds/"
 
 # 5. Levantar ambos servidores
-ssh -i ~/.ssh/id_ed25519 gabriel@159.112.138.229 \
+ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP> \
   "cd /home/gabriel/luanti-voxelibre-server && docker compose up -d"
 ```
 
 ### Requisitos de red
 
 - **Oracle Cloud Security List:** Regla de ingreso para UDP 30001 (ademas de la existente para UDP 30000)
-- **DNS:** `luanti.gabrielpantoja.cl` apunta a 159.112.138.229
+- **DNS:** `luanti.gabrielpantoja.cl` apunta a <VPS_IP>
 
 ### Servidores activos 24/7
 
