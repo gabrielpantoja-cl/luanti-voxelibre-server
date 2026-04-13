@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git check-ignore *)",
+      "Bash(git fetch *)",
+      "Bash(docker-compose ps *)",
+      "Bash(docker-compose logs *)",
+      "Bash(ls *)",
+      "Bash(python *)",
+      "Bash(ffmpeg *)",
+      "Bash(ffprobe *)",
+      "Bash(node *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "WebFetch(domain:docs.anthropic.com)"
+    ]
+  }
+}
