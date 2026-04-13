@@ -12,8 +12,9 @@ debug.txt
 .env
 .env.local
 
-# Claude Code configuración local
+# Claude Code configuración local (personal, no compartida)
 .claude/settings.local.json
+CLAUDE.local.md
 
 # Sistema
 .DS_Store
