@@ -32,7 +32,7 @@
 
 ```bash
 # Navegar al directorio del proyecto
-cd /home/gabriel/Documentos/luanti-voxelibre-server
+cd <PROJECT_DIR>
 
 # Agregar skin con nombre automático
 ./scripts/add-skin.sh ~/Downloads/minecraftskins_farmer-12345.png
@@ -47,14 +47,14 @@ cd /home/gabriel/Documentos/luanti-voxelibre-server
 ```bash
 # Copiar el nuevo skin al servidor
 scp server/worlds/world/_world_folder_media/textures/granjero_vegano.png \
-    gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/_world_folder_media/textures/
+    <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/world/_world_folder_media/textures/
 
 # Copiar el skins.txt actualizado
 scp server/worlds/world/skins.txt \
-    gabriel@<IP_VPS_ANTERIOR>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/
+    <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/world/
 
 # Reiniciar el servidor
-ssh gabriel@<IP_VPS_ANTERIOR> 'cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server'
+ssh <VPS_USER>@<VPS_IP> 'cd <PROJECT_PATH> && docker-compose restart luanti-server'
 ```
 
 ### Paso 4: Verificar en el Juego
@@ -265,6 +265,4 @@ load_mod_mcl_custom_world_skins = true
 
 ---
 
-**Mantenedor**: Gabriel Pantoja
-**Servidor**: Wetlands (luanti.gabrielpantoja.cl:30000)
 **Última actualización**: 2026-01-15

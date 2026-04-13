@@ -167,7 +167,7 @@ Para ver los cambios en desarrollo local:
 
 ```bash
 # Opción recomendada: Servidor HTTP con Python
-cd /home/gabriel/Documentos/Wetlands-Valdivia/server/landing-page
+cd $PROJECT_PATH/server/landing-page
 python3 -m http.server 8080
 # Abrir http://localhost:8080
 
@@ -182,13 +182,13 @@ xdg-open index.html
 **Paso 1: Hacer cambios locales**
 ```bash
 # Editar archivos en tu máquina local
-cd /home/gabriel/Documentos/Wetlands-Valdivia/server/landing-page/
+cd $PROJECT_PATH/server/landing-page/
 # Modificar index.html, CSS, JS o agregar imágenes
 ```
 
 **Paso 2: Commit y push al repositorio**
 ```bash
-cd /home/gabriel/Documentos/Wetlands-Valdivia/
+cd $PROJECT_PATH/
 git add server/landing-page/
 git commit -m "Actualizar landing page: [descripción de cambios]"
 git push origin main
@@ -197,13 +197,13 @@ git push origin main
 **Paso 3: Actualizar en el VPS**
 ```bash
 # SSH al VPS y hacer pull
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/Wetlands-Valdivia && git pull origin main"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && git pull origin main"
 ```
 
 **Paso 4: Reiniciar nginx (si es necesario)**
 ```bash
 # Solo si hay cambios estructurales importantes
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/vps-do && docker-compose restart nginx"
+ssh <VPS_USER>@<VPS_IP> "cd $VPS_INFRA_PATH && docker-compose restart nginx"
 ```
 
 **Paso 5: Verificar deployment**
@@ -218,7 +218,7 @@ curl -I http://luanti.gabrielpantoja.cl
 ```yaml
 # En vps-do/docker-compose.yml
 volumes:
-  - /home/gabriel/Wetlands-Valdivia/server/landing-page:/var/www/luanti-landing:ro
+  - $PROJECT_PATH/server/landing-page:/var/www/luanti-landing:ro
 ```
 
 **Esto significa**:
@@ -237,7 +237,7 @@ volumes:
 
 **Si hay errores 404**:
 1. Verificar que los archivos existen en el VPS
-2. Comprobar la configuración nginx en `/home/gabriel/vps-do/nginx/conf.d/luanti-landing.conf`
+2. Comprobar la configuración nginx en `$VPS_INFRA_PATH/nginx/conf.d/luanti-landing.conf`
 3. Ver logs: `docker-compose logs nginx`
 
 ## 🎯 Próximas Mejoras Sugeridas

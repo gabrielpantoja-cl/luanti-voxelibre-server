@@ -295,7 +295,7 @@ Aumentar clearance_height:
 
 ```bash
 # 1. Pull de cambios
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 git pull origin main
 
 # 2. Reiniciar servidor

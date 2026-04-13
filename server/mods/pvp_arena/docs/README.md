@@ -56,7 +56,7 @@ Mod personalizado para el servidor Wetlands que permite **combate entre jugadore
 ### Paso 1: Preparar Configuración
 
 ```bash
-cd /home/gabriel/Documentos/luanti-voxelibre-server
+cd $PROJECT_PATH
 
 # Opción A: Script automático (recomendado)
 ./scripts/deploy-pvp-arena.sh
@@ -93,7 +93,7 @@ para activar el nuevo sistema de Arena PVP.
 docker-compose restart luanti-server
 
 # Opción B: VPS (producción)
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose restart luanti-server"
 ```
 
 **Tiempo de reinicio**: ~30 segundos

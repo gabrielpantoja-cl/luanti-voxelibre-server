@@ -48,10 +48,10 @@ World Edit es una **herramienta poderosa de edición de mundos** para Luanti (Mi
 **Opción 1: Desde ContentDB** (Recomendado)
 ```bash
 # Conectarse al servidor
-ssh gabriel@<IP_VPS_ANTERIOR>
+ssh <VPS_USER>@<VPS_IP>
 
 # Navegar a directorio de mods
-cd /home/gabriel/luanti-voxelibre-server/server/mods/
+cd $PROJECT_PATH/server/mods/
 
 # Descargar WorldEdit
 wget https://content.luanti.org/packages/sfan5/worldedit/releases/latest/download/ -O worldedit.zip
@@ -66,7 +66,7 @@ rm worldedit.zip
 
 **Opción 2: Git Clone**
 ```bash
-cd /home/gabriel/luanti-voxelibre-server/server/mods/
+cd $PROJECT_PATH/server/mods/
 git clone https://github.com/Uberi/Minetest-WorldEdit.git worldedit
 ```
 

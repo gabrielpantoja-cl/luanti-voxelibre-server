@@ -232,7 +232,7 @@ The `mobs_mc_villager.b3d` model uses the **Minecraft villager UV layout** (64x6
 - Villager textures must be **recolored from the base**, never drawn from scratch
 - Online converter: https://godly.github.io/minetest-skin-converter/
 
-Recovery protocol: `docs/operations/texture-recovery.md`
+Recovery protocol: See private docs repo (`infra/privado/luanti/docs/operations/texture-recovery.md`)
 
 ### NPC Dual Model System (wetlands_npcs)
 The `wetlands_npcs` mod uses **two different 3D models** depending on NPC type:
@@ -309,12 +309,6 @@ Both share the same VoxeLibre game files and mods directory. The Valdivia world 
 
 Detailed docs live in `docs/`. Read these when you need specifics:
 
-### Operations
-- `docs/operations/deploy.md` -- CI/CD pipeline and deployment process
-- `docs/operations/backups.md` -- Backup system and recovery
-- `docs/operations/VPS_SYNC_WORKFLOW.md` -- VPS synchronization workflow
-- `docs/operations/texture-recovery.md` -- Emergency texture corruption recovery
-
 ### Configuration
 - `docs/config/01-CONFIGURATION_HIERARCHY.md` -- Config file hierarchy (luanti.conf vs world.mt)
 - `docs/config/02-NUCLEAR_CONFIG.md` -- Nuclear config (no monsters)
@@ -323,7 +317,6 @@ Detailed docs live in `docs/`. Read these when you need specifics:
 - `docs/config/08-CREATIVE_NATIVE_MODE.md` -- Creative mode config
 
 ### Admin
-- `docs/admin/USER_PRIVILEGES.md` -- User privileges and SQLite admin
 - `docs/admin/QUICK_ADD_SKINS.md` -- Adding player skins
 - `docs/admin/comandos-admin.md` -- Admin commands reference
 
@@ -336,6 +329,7 @@ Detailed docs live in `docs/`. Read these when you need specifics:
 ### Web
 - `docs/web/landing-page.md` -- Landing page architecture and deployment
 
-### Security
-- `docs/security/policies/SERVER_SECURITY_POLICY.md` -- Security policy
-- `docs/security/procedures/INCIDENT_RESPONSE.md` -- Incident response
+### Private Docs (separate repo: `infra/privado/luanti/`)
+- Operations: deploy, backups, VPS sync, texture recovery
+- Security: policies, procedures, incident response
+- Admin: user privileges, locations, NPC registry

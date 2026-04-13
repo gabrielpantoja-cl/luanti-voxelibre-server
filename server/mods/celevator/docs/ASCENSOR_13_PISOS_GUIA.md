@@ -364,7 +364,7 @@ Si no tienes todos los materiales:
 ### Backup del Mundo
 Antes de hacer cambios grandes:
 ```bash
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && ./scripts/backup.sh"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && ./scripts/backup.sh"
 ```
 
 ---

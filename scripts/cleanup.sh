@@ -8,7 +8,7 @@
 set -e
 
 # Configuración
-LOG_DIR="/home/gabriel/luanti-voxelibre-server/logs"
+LOG_DIR="$PROJECT_PATH/logs"
 LOG_FILE="$LOG_DIR/cleanup.log"
 TEMP_DIR="/tmp"
 TEMP_RETENTION_DAYS=7

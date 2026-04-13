@@ -7,8 +7,8 @@
 set -e
 
 # Configuración
-VPS_HOST="gabriel@${VPS_HOST}"
-VPS_BACKUP_PATH="/home/gabriel/luanti-voxelibre-server/server/backups"
+VPS_HOST="$VPS_USER@$VPS_HOST"
+VPS_BACKUP_PATH="$PROJECT_PATH/server/backups"
 EXPECTED_BACKUP_INTERVAL_HOURS=6
 MAX_BACKUP_AGE_HOURS=8  # Permitir 2h de retraso
 MIN_BACKUPS_REQUIRED=3
@@ -48,7 +48,7 @@ fi
 
 # 2. Verificar contenedor de backup
 log_info "Verificando contenedor de backup..."
-BACKUP_CONTAINER_STATUS=$(ssh "$VPS_HOST" "cd /home/gabriel/luanti-voxelibre-server && docker-compose ps -q backup-cron | wc -l" 2>/dev/null || echo "0")
+BACKUP_CONTAINER_STATUS=$(ssh "$VPS_HOST" "cd $PROJECT_PATH && docker-compose ps -q backup-cron | wc -l" 2>/dev/null || echo "0")
 
 if [ "$BACKUP_CONTAINER_STATUS" = "1" ]; then
     log_success "Contenedor de backup: Activo"
@@ -119,8 +119,8 @@ fi
 
 # 5. Verificar integridad del mundo actual
 log_info "Verificando mundo actual..."
-CURRENT_WORLD_SIZE_MB=$(ssh "$VPS_HOST" "du -m /home/gabriel/luanti-voxelibre-server/server/worlds 2>/dev/null | cut -f1" || echo "0")
-AUTH_DB_EXISTS=$(ssh "$VPS_HOST" "[ -f /home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite ] && echo 'YES' || echo 'NO'")
+CURRENT_WORLD_SIZE_MB=$(ssh "$VPS_HOST" "du -m $PROJECT_PATH/server/worlds 2>/dev/null | cut -f1" || echo "0")
+AUTH_DB_EXISTS=$(ssh "$VPS_HOST" "[ -f $PROJECT_PATH/server/worlds/world/auth.sqlite ] && echo 'YES' || echo 'NO'")
 
 if [ "$CURRENT_WORLD_SIZE_MB" -ge "$EXPECTED_WORLD_MIN_SIZE_MB" ]; then
     log_success "Tamaño del mundo actual: ${CURRENT_WORLD_SIZE_MB}MB (OK)"
@@ -133,7 +133,7 @@ if [ "$AUTH_DB_EXISTS" = "YES" ]; then
     log_success "Base de datos de usuarios: Presente"
 
     # Verificar usuarios en DB
-    USER_COUNT=$(ssh "$VPS_HOST" "sqlite3 /home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite 'SELECT COUNT(*) FROM auth;' 2>/dev/null" || echo "0")
+    USER_COUNT=$(ssh "$VPS_HOST" "sqlite3 $PROJECT_PATH/server/worlds/world/auth.sqlite 'SELECT COUNT(*) FROM auth;' 2>/dev/null" || echo "0")
     if [ "$USER_COUNT" -gt 0 ]; then
         log_success "Usuarios registrados: $USER_COUNT"
     else

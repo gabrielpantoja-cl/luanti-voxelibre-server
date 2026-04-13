@@ -35,7 +35,7 @@ server {
     server_name luanti.gabrielpantoja.cl;
 
     # Root directory for static files
-    root /home/gabriel/luanti-voxelibre-server/server/landing-page;
+    root $PROJECT_PATH/server/landing-page;
     index index.html;
 
     # Main location

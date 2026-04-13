@@ -402,7 +402,7 @@ Los mods base se actualizan cuando actualizamos VoxeLibre:
 
 ```bash
 # En VPS
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 # Actualizar VoxeLibre (proceso manual)
 docker-compose restart luanti-server
 ```
@@ -427,7 +427,7 @@ git add server/mods/mi_mod/
 git commit -m "✨ Update mi_mod: nueva funcionalidad"
 git push
 # En VPS
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git pull && docker-compose restart luanti-server"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && git pull && docker-compose restart luanti-server"
 ```
 
 ---

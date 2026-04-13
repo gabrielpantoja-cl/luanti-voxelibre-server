@@ -77,7 +77,7 @@ def create_disc_texture(text, output_path, bg_color=(255, 255, 255), text_color=
 
 if __name__ == "__main__":
     # Configuración para el disco "TE QUEDAS"
-    output_path = "/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/wetlands-music/textures/wetlands_music_te_quedas.png"
+    output_path = "$PROJECT_PATH/server/mods/wetlands-music/textures/wetlands_music_te_quedas.png"
 
     # Crear textura con iniciales "JD" en estilo minimalista
     create_disc_texture(

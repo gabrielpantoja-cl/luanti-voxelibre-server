@@ -8,10 +8,10 @@
 set -e
 
 # Configuración
-DISK_PATH="/home/gabriel/luanti-voxelibre-server"
+DISK_PATH="$PROJECT_PATH"
 WARNING_THRESHOLD=80
 CRITICAL_THRESHOLD=90
-LOG_DIR="/home/gabriel/luanti-voxelibre-server/logs"
+LOG_DIR="$PROJECT_PATH/logs"
 LOG_FILE="$LOG_DIR/disk-monitor.log"
 
 # Crear directorio de logs si no existe

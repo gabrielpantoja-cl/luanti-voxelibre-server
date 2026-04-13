@@ -6,7 +6,7 @@
 ```
 /teleport <nombre_jugador> <tu_nombre>
 ```
-**Ejemplo**: `/teleport Juan gabriel_admin`
+**Ejemplo**: `/teleport Juan admin_name`
 
 **Nota**: También funciona la forma corta:
 ```
@@ -345,7 +345,7 @@ Spawnea la entidad en tu posicion actual.
 
 **Nota sobre el Ender Dragon:** El dragon NO spawnea automaticamente si el End fue generado con `only_peaceful_mobs = true` activo (config nuclear). En ese caso hay que invocarlo manualmente con `/summon mobs_mc:enderdragon` estando en el End.
 
-**Coordenadas del End:** `/teleport 0,-27003,0` (isla central con torretas y portal de salida)
+**Coordenadas del End:** `/teleport <player> 0,-27003,0` (isla central con torretas y portal de salida)
 
 ## Comandos de Depuracion (Admin)
 
@@ -382,11 +382,7 @@ Spawnea la entidad en tu posicion actual.
 
 ## 📸 Screenshots (F12)
 
-Dentro de Luanti, presionar **F12** para capturar pantalla. Las capturas se guardan en:
-
-```
-C:\Users\gabri\Saved Games\luanti-5.15.0-win64\luanti-5.15.0-win64\screenshots\
-```
+Dentro de Luanti, presionar **F12** para capturar pantalla.
 
 > **Nota**: La tecla ImpPt (Print Screen) de Windows puede no funcionar dentro del juego. Usar F12 (nativo de Luanti) o Win+ImpPt.
 

@@ -25,22 +25,22 @@ load_mod_wetlands_npcs = true
 
 **world.mt en VPS** (ambos: host y contenedor):
 ```bash
-ssh gabriel@<IP_VPS_ANTERIOR> "echo 'load_mod_wetlands_npcs = true' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt"
-ssh gabriel@<IP_VPS_ANTERIOR> "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_wetlands_npcs = true\" >> /config/.minetest/worlds/world/world.mt'"
+ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_wetlands_npcs = true' >> $PROJECT_PATH/server/worlds/world/world.mt"
+ssh <VPS_USER>@<VPS_IP> "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_wetlands_npcs = true\" >> /config/.minetest/worlds/world/world.mt'"
 ```
 
 ### 2. Push y deploy
 
 ```bash
 git push origin main
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git pull origin main"
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && git pull origin main"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose restart luanti-server"
 ```
 
 ### 3. Verificar
 
 ```bash
-ssh gabriel@<IP_VPS_ANTERIOR> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep wetlands_npcs"
+ssh <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep wetlands_npcs"
 ```
 
 **Salida esperada**:

@@ -10,7 +10,7 @@ Eres un especialista senior en desarrollo web front-end, enfocado exclusivamente
 
 ## 🎯 Ámbito de Responsabilidad
 
-**Directorio de Trabajo**: `/home/gabriel/Documentos/luanti-voxelibre-server/server/landing-page/`
+**Directorio de Trabajo**: `<PROJECT_PATH>/server/landing-page/`
 
 **URL de Producción**: https://luanti.gabrielpantoja.cl
 
@@ -405,7 +405,7 @@ git push origin main
 
 # 3. GitHub Actions hace el resto automáticamente:
 # - Clona repositorio en VPS
-# - Actualiza archivos en /home/gabriel/luanti-voxelibre-server
+# - Actualiza archivos en <PROJECT_PATH>
 # - Nginx sirve automáticamente (volume mapping)
 # - No requiere reinicio de servicios
 
@@ -417,7 +417,7 @@ git push origin main
 # En vps-do/docker-compose.yml:
 nginx-proxy:
   volumes:
-    - /home/gabriel/luanti-voxelibre-server/server/landing-page:/var/www/luanti-landing:ro
+    - <PROJECT_PATH>/server/landing-page:/var/www/luanti-landing:ro
 ```
 
 **Flujo Completo**:
@@ -638,13 +638,13 @@ git status
 git log -1
 
 # 2. Verificar que VPS tiene última versión
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && git log -1"
+ssh <VPS_USER>@<VPS_IP> "cd <PROJECT_PATH> && git log -1"
 
 # 3. Forzar reload de caché del navegador
 Ctrl + Shift + R (Chrome/Firefox)
 
 # 4. Verificar nginx está sirviendo archivos correctos
-ssh gabriel@<IP_VPS_ANTERIOR> "ls -la /home/gabriel/luanti-voxelibre-server/server/landing-page/"
+ssh <VPS_USER>@<VPS_IP> "ls -la <PROJECT_PATH>/server/landing-page/"
 ```
 
 ### Problema: Imágenes no cargan

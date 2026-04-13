@@ -49,10 +49,10 @@ Esto ocurre específicamente en la función `make_invisible()` línea 1717 de `f
 
 ```bash
 # En el VPS
-echo 'load_mod_mcl_potions = false' >> /home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt
+echo 'load_mod_mcl_potions = false' >> $PROJECT_PATH/server/worlds/world/world.mt
 
 # Reiniciar servidor
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 docker compose restart luanti-server
 ```
 
@@ -110,7 +110,7 @@ Verificar si versiones más recientes de VoxeLibre tienen el fix:
 
 ```bash
 #!/bin/bash
-# /home/gabriel/luanti-voxelibre-server/scripts/monitor-errors.sh
+# $PROJECT_PATH/scripts/monitor-errors.sh
 
 ERRORS=$(docker compose logs --tail=100 luanti-server | grep -c "ERROR\[Main\]: ServerError")
 

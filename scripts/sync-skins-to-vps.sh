@@ -11,8 +11,8 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Configuración
-VPS_HOST="gabriel@${VPS_HOST}"
-VPS_PATH="/home/gabriel/luanti-voxelibre-server"
+VPS_HOST="$VPS_USER@$VPS_HOST"
+VPS_PATH="$PROJECT_PATH"
 LOCAL_TEXTURES="server/worlds/world/_world_folder_media/textures"
 LOCAL_SKINS_CONFIG="server/worlds/world/skins.txt"
 

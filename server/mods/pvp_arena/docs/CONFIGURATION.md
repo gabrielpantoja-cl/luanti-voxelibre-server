@@ -265,7 +265,7 @@ cat server/worlds/world/pvp_arenas.txt
 ### En el Servidor VPS
 
 ```
-/home/gabriel/luanti-voxelibre-server/
+$PROJECT_PATH/
 ├── server/
 │   ├── config/
 │   │   └── luanti.conf                 # Configuración principal
@@ -309,8 +309,8 @@ Como administrador en el juego:
 
 Editar manualmente el archivo:
 ```bash
-ssh gabriel@<IP_VPS_ANTERIOR>
-cd /home/gabriel/luanti-voxelibre-server
+ssh <VPS_USER>@<VPS_IP>
+cd $PROJECT_PATH
 nano server/worlds/world/pvp_arenas.txt
 ```
 

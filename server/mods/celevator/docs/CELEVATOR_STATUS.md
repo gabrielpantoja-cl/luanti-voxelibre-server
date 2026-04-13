@@ -94,11 +94,11 @@ Aplicar el protocolo de emergencia documentado en `CLAUDE.md`:
 
 ```bash
 # PASO 1: BACKUP CRÍTICO DEL MUNDO
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && \
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
 # PASO 2: DETENER SERVIDOR
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 docker compose down
 
 # PASO 3: ELIMINAR VOXELIBRE CORRUPTO

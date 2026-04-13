@@ -8,7 +8,7 @@ import os
 import re
 from pathlib import Path
 
-MODPACK_PATH = Path("/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/automobiles_pck")
+MODPACK_PATH = Path("$PROJECT_PATH/server/mods/automobiles_pck")
 
 # Item name conversions from Minetest vanilla to VoxeLibre
 ITEM_CONVERSIONS = {

@@ -345,7 +345,7 @@ wetlands_npcs.registry.register("name", {
 # En chat del juego: /npc_census
 
 # Ver logs de AI en tiempo real
-ssh gabriel@<IP_VPS_ANTERIOR> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'npc\|behavior\|wetlands'"
+ssh <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'npc\|behavior\|wetlands'"
 
 # Verificar posicion especifica
 # En chat: /npc_debug sensei_wu

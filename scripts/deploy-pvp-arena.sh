@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script de deployment para PVP Arena Mod
-# Autor: gabo (Gabriel Pantoja)
+# Autor: Wetlands Team
 # NO reinicia el servidor automáticamente - requiere confirmación del admin
 
 set -e
@@ -85,8 +85,7 @@ echo ""
 
 echo -e "${YELLOW}📋 PASO 3: Verificando privilegios de admin${NC}"
 echo -e "${GREEN}ℹ️  Después del deployment, otorga privilegios con:${NC}"
-echo -e "   ${GREEN}/grant gabo arena_admin${NC}"
-echo -e "   ${GREEN}/grant pepelomo arena_admin${NC}"
+echo -e "   ${GREEN}/grant <admin_user> arena_admin${NC}"
 echo ""
 
 echo -e "${YELLOW}📋 PASO 4: Resumen de configuración${NC}"
@@ -108,7 +107,7 @@ if docker-compose ps | grep -q "Up"; then
     echo -e "   1. Avisa a los jugadores"
     echo -e "   2. Ejecuta: ${GREEN}docker-compose restart luanti-server${NC}"
     echo -e "   3. Verifica con: ${GREEN}docker-compose logs -f luanti-server${NC}"
-    echo -e "   4. En el juego: ${GREEN}/grant gabo arena_admin${NC}"
+    echo -e "   4. En el juego: ${GREEN}/grant <admin_user> arena_admin${NC}"
     echo ""
 else
     echo -e "${RED}❌ Servidor no está corriendo${NC}"

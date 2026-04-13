@@ -139,7 +139,7 @@ docker-compose logs -f luanti-server
 docker-compose restart luanti-server
 
 # Acceso SSH al VPS
-ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP>
+ssh -i ~/.ssh/id_ed25519 $VPS_USER@<VPS_IP>
 ```
 
 ## 📊 Métricas del Proyecto

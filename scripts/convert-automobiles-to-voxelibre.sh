@@ -3,7 +3,7 @@
 # Script to convert automobiles_pck crafting recipes to VoxeLibre compatibility
 # Created for Wetlands Luanti Server - VoxeLibre adaptation
 
-MODPACK_PATH="/home/gabriel/Documentos/luanti-voxelibre-server/server/mods/automobiles_pck"
+MODPACK_PATH="$PROJECT_PATH/server/mods/automobiles_pck"
 
 echo "🔧 Converting automobiles_pck recipes to VoxeLibre..."
 echo ""

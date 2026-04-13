@@ -144,7 +144,7 @@ elseif automobiles_lib.is_mcl then
 ### Step 1: Local Repository Fix
 ```bash
 # Apply fixes to modpack files
-cd /home/gabriel/Documentos/luanti-voxelibre-server
+cd $PROJECT_PATH
 sed -i 's/airutils\.is_mcl/automobiles_lib.is_mcl/g' \
   server/mods/automobiles_pck/automobiles_lib/init.lua \
   server/mods/automobiles_pck/automobiles_vespa/vespa_player.lua \
@@ -165,10 +165,10 @@ git push origin main
 ### Step 3: VPS Deployment
 ```bash
 # SSH to VPS
-ssh gabriel@<IP_VPS_ANTERIOR>
+ssh <VPS_USER>@<VPS_IP>
 
 # Pull latest changes
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 git pull
 
 # Apply fixes to extracted mods (critical for active server)

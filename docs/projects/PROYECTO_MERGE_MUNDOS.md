@@ -46,11 +46,11 @@ Distancia spawn -> Valdivia: ~20 km (inalcanzable caminando, solo por portal)
 
 ```bash
 # 1. Descargar backup del mundo Wetlands de produccion
-scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite \
+scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:$PROJECT_PATH/server/worlds/world/map.sqlite \
   server/worlds/world/map.sqlite
 
 # 2. Descargar auth.sqlite (jugadores y privilegios)
-scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/worlds/world/auth.sqlite \
+scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:$PROJECT_PATH/server/worlds/world/auth.sqlite \
   server/worlds/world/auth.sqlite
 
 # 3. Verificar que Valdivia local ya tiene fixlight + remap aplicados
@@ -160,24 +160,24 @@ scp -i ~/.ssh/id_rsa server/worlds/world/map.sqlite \
   gabriel@<VPS_IP>:/tmp/wetlands_merged.sqlite
 
 # 2. Detener ambos servidores
-ssh gabriel@<VPS_IP> \
-  "cd /home/gabriel/luanti-voxelibre-server && docker compose down"
+ssh $VPS_USER@<VPS_IP> \
+  "cd $PROJECT_PATH && docker compose down"
 
 # 3. Backup del mundo actual en VPS
-ssh gabriel@<VPS_IP> \
-  "cp /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite \
-      /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite.backup-pre-merge-$(date +%Y%m%d)"
+ssh $VPS_USER@<VPS_IP> \
+  "cp $PROJECT_PATH/server/worlds/world/map.sqlite \
+      $PROJECT_PATH/server/worlds/world/map.sqlite.backup-pre-merge-$(date +%Y%m%d)"
 
 # 4. Reemplazar mundo
-ssh gabriel@<VPS_IP> \
+ssh $VPS_USER@<VPS_IP> \
   "sudo cp /tmp/wetlands_merged.sqlite \
-      /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite && \
-   sudo chown 911:911 /home/gabriel/luanti-voxelibre-server/server/worlds/world/map.sqlite"
+      $PROJECT_PATH/server/worlds/world/map.sqlite && \
+   sudo chown 911:911 $PROJECT_PATH/server/worlds/world/map.sqlite"
 
 # 5. Colocar portales en el juego (coordenadas exactas TBD)
 # 6. Iniciar solo Wetlands (Valdivia ya no necesita su propio contenedor)
-ssh gabriel@<VPS_IP> \
-  "cd /home/gabriel/luanti-voxelibre-server && docker compose up -d luanti-server"
+ssh $VPS_USER@<VPS_IP> \
+  "cd $PROJECT_PATH && docker compose up -d luanti-server"
 
 # 7. Verificar y anunciar a jugadores
 ```

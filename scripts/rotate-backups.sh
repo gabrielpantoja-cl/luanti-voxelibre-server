@@ -8,9 +8,9 @@
 set -e
 
 # Configuración
-BACKUP_DIR="/home/gabriel/luanti-voxelibre-server/server/backups"
+BACKUP_DIR="$PROJECT_PATH/server/backups"
 RETENTION_DAYS=10
-LOG_DIR="/home/gabriel/luanti-voxelibre-server/logs"
+LOG_DIR="$PROJECT_PATH/logs"
 LOG_FILE="$LOG_DIR/backup-rotation.log"
 
 # Crear directorio de logs si no existe

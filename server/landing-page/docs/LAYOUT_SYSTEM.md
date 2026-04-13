@@ -65,7 +65,7 @@ El footer incluye estos comandos del servidor:
 Abrir directamente los archivos HTML en el navegador:
 
 ```bash
-cd /home/gabriel/Documentos/luanti-voxelibre-server/server/landing-page
+cd $PROJECT_PATH/server/landing-page
 firefox index.html
 firefox galeria.html
 ```
@@ -73,7 +73,7 @@ firefox galeria.html
 Para probar con un servidor HTTP local (necesario si se activa el footer dinamico en el futuro):
 
 ```bash
-cd /home/gabriel/Documentos/luanti-voxelibre-server/server/landing-page
+cd $PROJECT_PATH/server/landing-page
 python3 -m http.server 8000
 # Abrir http://localhost:8000
 ```

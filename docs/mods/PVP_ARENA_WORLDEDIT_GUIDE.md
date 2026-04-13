@@ -510,7 +510,7 @@
 **Recomendación**: Siempre hacer backup antes de limpiar:
 ```bash
 # En el VPS
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 ./scripts/backup.sh
 ```
 

@@ -5,8 +5,8 @@
 
 set -e  # Salir si hay errores
 
-VPS_HOST="gabriel@${VPS_HOST}"
-VPS_PATH="/home/gabriel/luanti-voxelibre-server"
+VPS_HOST="$VPS_USER@$VPS_HOST"
+VPS_PATH="$PROJECT_PATH"
 
 echo "🚨 APLICANDO CONFIGURACIÓN NUCLEAR ANTI-MOBS..."
 echo "========================================"

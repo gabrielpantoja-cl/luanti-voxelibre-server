@@ -7,7 +7,7 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 ## 🏗️ Jerarquía de Autoridad (Mayor a Menor)
 
 ### 1. **`luanti.conf`** - **AUTORIDAD MÁXIMA** 🎯
-**Ubicación**: `/home/gabriel/luanti-voxelibre-server/server/config/luanti.conf`
+**Ubicación**: `$PROJECT_PATH/server/config/luanti.conf`
 **Docker**: `/config/.minetest/minetest.conf`
 
 **Características**:
@@ -17,7 +17,7 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 - ✅ **Configuración de red, privilegios por defecto, modo de juego**
 
 ### 2. **`world.mt`** - **Configuración de Mundo** 🌍
-**Ubicación**: `/home/gabriel/luanti-voxelibre-server/server/worlds/world/world.mt`
+**Ubicación**: `$PROJECT_PATH/server/worlds/world/world.mt`
 **Docker**: `/config/.minetest/worlds/world/world.mt`
 
 **Características**:
@@ -93,7 +93,7 @@ cat server/config/luanti.conf | grep creative
 # Output: creative_mode = false  <-- ¡AQUÍ ESTÁ EL CONFLICTO!
 
 # Paso 3: Ver resultado en el servidor
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs luanti-server | grep creative"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs luanti-server | grep creative"
 ```
 
 **✅ SOLUCIÓN**:
@@ -146,13 +146,13 @@ echo "load_mod_nombre_del_mod = true" >> server/worlds/world/world.mt
 ### Verificar Estado Actual del Servidor
 ```bash
 # Conectar al VPS y ver configuración activa
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
 
 # Ver qué mods están cargados
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && cat server/worlds/world/world.mt | grep load_mod"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && cat server/worlds/world/world.mt | grep load_mod"
 
 # Ver logs del servidor para errores de configuración
-ssh gabriel@<VPS_HOST_IP> "cd /home/gabriel/luanti-voxelibre-server && docker-compose logs --tail=50 luanti-server | grep -i error"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs --tail=50 luanti-server | grep -i error"
 ```
 
 ### Aplicar Cambios de Configuración

@@ -12,7 +12,7 @@ Guías para administradores del servidor Wetlands Valdivia sobre gestión de usu
 ## ⚠️ Acceso Requerido
 
 Para ejecutar comandos administrativos necesitas:
-- Acceso SSH al VPS: `ssh gabriel@<VPS_HOST_IP>`
+- Acceso SSH al VPS: `ssh <VPS_USER>@<VPS_IP>`
 - Privilegios de administrador en el servidor Luanti
 - Conocimiento de la base de datos SQLite del servidor
 

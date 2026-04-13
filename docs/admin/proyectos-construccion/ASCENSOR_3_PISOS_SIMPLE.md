@@ -253,7 +253,7 @@ Speed: 5
 **Solución**: Reiniciar el servidor y reconectar al juego arregla el problema.
 ```bash
 # Reiniciar el servidor
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose restart luanti-server"
 ```
 
 ### Panel Negro Persistente
@@ -261,7 +261,7 @@ ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docke
 **Solución**:
 ```bash
 # Reiniciar el servidor
-ssh gabriel@<IP_VPS_ANTERIOR> "cd /home/gabriel/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose restart luanti-server"
 
 # Reconectar al juego
 # El panel debe desaparecer

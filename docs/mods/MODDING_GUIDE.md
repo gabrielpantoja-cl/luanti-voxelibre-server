@@ -489,7 +489,7 @@ Desarrollo Local → Commit/Push → Pull VPS → Habilitar Mod → Restart Serv
 ### 1️⃣ Desarrollo Local
 ```bash
 # Crear estructura del mod
-cd /home/gabriel/Documentos/luanti-voxelibre-server/server/mods/
+cd $PROJECT_PATH/server/mods/
 mkdir mi_mod_educativo
 cd mi_mod_educativo
 
@@ -504,7 +504,7 @@ lua -c init.lua  # Verificar sintaxis básica
 ### 2️⃣ Commit y Push
 ```bash
 # En directorio raíz del proyecto
-cd /home/gabriel/Documentos/luanti-voxelibre-server/
+cd $PROJECT_PATH/
 
 # Agregar archivos al staging
 git add server/mods/mi_mod_educativo/
@@ -538,10 +538,10 @@ git push origin main
 ### 3️⃣ Deployment en VPS
 ```bash
 # Conectar al VPS
-ssh gabriel@<IP_VPS_ANTERIOR>
+ssh <VPS_USER>@<VPS_IP>
 
 # Navegar al directorio
-cd /home/gabriel/luanti-voxelibre-server
+cd $PROJECT_PATH
 
 # Pull oficial desde GitHub
 git pull origin main
