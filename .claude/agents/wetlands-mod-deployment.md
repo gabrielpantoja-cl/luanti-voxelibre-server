@@ -113,7 +113,7 @@ echo "✅ Código subido a GitHub"
 # Deployment en VPS
 echo "🚀 Iniciando deployment en VPS..."
 VPS_HOST="<IP_VPS_ANTERIOR>"
-VPS_USER="gabriel"
+VPS_USER="$VPS_USER"
 PROJECT_PATH="<PROJECT_PATH>"
 
 # Función para ejecutar comandos en VPS
@@ -331,7 +331,7 @@ echo "🔍 DIAGNÓSTICO COMPLETO WETLANDS"
 echo "================================"
 
 VPS_HOST="<IP_VPS_ANTERIOR>"
-VPS_USER="gabriel"
+VPS_USER="$VPS_USER"
 PROJECT_PATH="<PROJECT_PATH>"
 
 # Función helper
@@ -678,7 +678,7 @@ fi
 # manage-mods.sh - Gestión avanzada de mods
 
 VPS_HOST="<IP_VPS_ANTERIOR>"
-VPS_USER="gabriel"
+VPS_USER="$VPS_USER"
 PROJECT_PATH="<PROJECT_PATH>"
 
 # Función para ejecutar comandos en VPS

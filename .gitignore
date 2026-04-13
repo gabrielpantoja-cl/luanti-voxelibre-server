@@ -60,29 +60,49 @@ server/worlds/valdivia/map_meta.txt
 
 # ==========================================
 # Documentación Privada
-# Movida a: gabrielpantoja.cl/docs/luanti-privado/
+# Movida a: infra/privado/luanti/
 # ==========================================
 
-# Directorio PRIVATE local (archivos no versionados)
-docs/admin/PRIVATE/*
-!docs/admin/PRIVATE/README.md
-!docs/admin/PRIVATE/.gitkeep
-!docs/admin/PRIVATE/**/README.md
+# Directorio PRIVATE local
+docs/admin/PRIVATE/
 
-# Directorios completos ya removidos del repo (movidos a privado)
+# Seguridad (todo movido a repo privado)
+docs/security/
 docs/legacy/
-docs/security/incidents/
 
-# Archivos admin sensibles ya removidos del repo
+# Operaciones sensibles (VPS, deploy, backups - movidos a repo privado)
+docs/operations/deploy.md
+docs/operations/backups.md
+docs/operations/VPS_SYNC_WORKFLOW.md
+docs/operations/texture-recovery.md
+docs/operations/troubleshooting.md
+docs/operations/DISCORD_NOTIFICATIONS.md
+docs/operations/ARNIS_LIGHTMAP_FIX.md
+docs/operations/FIX_GALERIA_CACHE.md
+docs/operations/LANDING_PAGE_RECOVERY_*.md
+docs/operations/GA4_MCP_SETUP.md
+docs/operations/PLAYWRIGHT_MCP_SETUP.md
+docs/operations/ISSUE_PORT_*.md
+docs/operations/project-folder-rename-*.md
+docs/operations/MIGRACION_ORACLE_*.md
+
+# Admin sensibles (movidos a repo privado)
 docs/admin/CARCEL_DE_BANEO.md
 docs/admin/USER_PRIVILEGES.md
 docs/admin/manual-administracion.md
 docs/admin/POSTMORTEM_*.md
-
-# Otros archivos potencialmente sensibles
+docs/admin/UBICACIONES-PUBLICAS.md
+docs/admin/NPC_REGISTRY-docs-general.md
+docs/admin/edificio-administradores-*.md
+docs/admin/carretera-principal-*.md
 docs/admin/SISTEMA_ACTUAL_VPS_*.md
 docs/admin/DNS_CONFIG.md
 docs/admin/*-usuarios-*.md
 docs/admin/*-seguridad-*.md
 docs/admin/*-coordenadas-*.md
-docs/operations/MIGRACION_ORACLE_*.md
+
+# Scripts con credenciales VPS (movidos a repo privado)
+scripts/emergency_unblock.sh
+scripts/deploy-landing.sh
+scripts/deploy-nginx-fix.sh
+.env.example

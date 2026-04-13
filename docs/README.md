@@ -197,7 +197,7 @@ ssh -i ~/.ssh/id_ed25519 $VPS_USER@<VPS_IP>
 - **Documentación**: Mantener actualizada después de cambios importantes
 
 ### Estructura del Equipo
-- **Administrador del Servidor**: gabriel (acceso SSH completo)
+- **Administrador del Servidor**: (ver repo privado para detalles de acceso)
 - **Desarrollo**: Equipo colaborativo via GitHub
 - **Moderación**: Sistema automático + supervisión manual
 

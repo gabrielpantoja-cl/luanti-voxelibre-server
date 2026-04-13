@@ -217,19 +217,19 @@ luanti-valdivia:      # Valdivia - puerto 30001
 git push origin main
 
 # 2. Pull en VPS
-ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP> \
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
   "cd $PROJECT_PATH && git pull origin main"
 
 # 3. Subir map.sqlite (70MB, no esta en git)
 scp -i ~/.ssh/id_ed25519 server/worlds/valdivia/map.sqlite \
-  gabriel@<VPS_IP>:$PROJECT_PATH/server/worlds/valdivia/
+  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/valdivia/
 
 # 4. Fix de permisos (container user abc = UID 911)
-ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP> \
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
   "sudo chown -R 911:911 $PROJECT_PATH/server/worlds/"
 
 # 5. Levantar ambos servidores
-ssh -i ~/.ssh/id_ed25519 gabriel@<VPS_IP> \
+ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
   "cd $PROJECT_PATH && docker compose up -d"
 ```
 

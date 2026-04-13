@@ -8,7 +8,7 @@
 set -e
 
 # Configuración
-VPS_USER="gabriel"
+VPS_USER="${VPS_USER:-$(whoami)}"
 VPS_HOST="${VPS_HOST}"
 VPS_PATH="$PROJECT_PATH"
 TMP_DIR="/tmp/vps-sync-$(date +%s)"

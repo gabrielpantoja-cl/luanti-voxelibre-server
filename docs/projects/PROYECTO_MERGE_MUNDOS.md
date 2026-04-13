@@ -46,11 +46,11 @@ Distancia spawn -> Valdivia: ~20 km (inalcanzable caminando, solo por portal)
 
 ```bash
 # 1. Descargar backup del mundo Wetlands de produccion
-scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:$PROJECT_PATH/server/worlds/world/map.sqlite \
+scp -i ~/.ssh/id_rsa <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/world/map.sqlite \
   server/worlds/world/map.sqlite
 
 # 2. Descargar auth.sqlite (jugadores y privilegios)
-scp -i ~/.ssh/id_rsa gabriel@<VPS_IP>:$PROJECT_PATH/server/worlds/world/auth.sqlite \
+scp -i ~/.ssh/id_rsa <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/world/auth.sqlite \
   server/worlds/world/auth.sqlite
 
 # 3. Verificar que Valdivia local ya tiene fixlight + remap aplicados
@@ -157,7 +157,7 @@ cp server/worlds/world/map.sqlite.backup-pre-merge server/worlds/world/map.sqlit
 ```bash
 # 1. Subir mundo mergeado al VPS
 scp -i ~/.ssh/id_rsa server/worlds/world/map.sqlite \
-  gabriel@<VPS_IP>:/tmp/wetlands_merged.sqlite
+  <VPS_USER>@<VPS_IP>:/tmp/wetlands_merged.sqlite
 
 # 2. Detener ambos servidores
 ssh $VPS_USER@<VPS_IP> \

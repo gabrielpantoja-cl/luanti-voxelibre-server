@@ -69,7 +69,7 @@
           "level": 2,
           "title": "🔌 Cómo Conectarse",
           "id": "cmo-conectarse",
-          "content": "1.  **Descarga Luanti:** Si aún no lo tienes, descarga el cliente de Luanti desde su sitio oficial.\n2.  **Añadir Servidor:** Ve a la pestaña \"Jugar Online\", y añade un nuevo servidor con la siguiente dirección:\n    *   **Dirección:** `luanti.gabrielpantoja.cl`\n    *   **Puerto:** `30000`\n3.  **¡A Jugar!** Crea tu personaje, ponle una contraseña y entra a explorar.\n\n---"
+          "content": "1.  **Descarga Luanti:** Si aún no lo tienes, descarga el cliente de Luanti desde su sitio oficial.\n2.  **Añadir Servidor:** Ve a la pestaña \"Jugar Online\", y añade un nuevo servidor con la siguiente dirección:\n    *   **Dirección:** `luanti.<VPS_USER>pantoja.cl`\n    *   **Puerto:** `30000`\n3.  **¡A Jugar!** Crea tu personaje, ponle una contraseña y entra a explorar.\n\n---"
         },
         {
           "level": 2,
@@ -330,7 +330,7 @@
           "level": 3,
           "title": "3.1. Configuración de Secrets",
           "id": "31-configuracin-de-secrets",
-          "content": "Para que el workflow funcione, el repositorio de GitHub necesita los siguientes \"Secrets\" (en `Settings > Secrets and variables > Actions`):\n\n| Secret | Valor de Ejemplo | Descripción |\n|---|---|---|\n| `VPS_HOST` | `<IP_VPS_ANTERIOR>` | La IP de tu VPS. |\n| `VPS_USER` | `gabriel` | El usuario con el que se conectará por SSH. |\n| `VPS_SSH_KEY`| (El contenido de `~/.ssh/id_rsa`) | La clave SSH privada para acceder al VPS sin contraseña. |"
+          "content": "Para que el workflow funcione, el repositorio de GitHub necesita los siguientes \"Secrets\" (en `Settings > Secrets and variables > Actions`):\n\n| Secret | Valor de Ejemplo | Descripción |\n|---|---|---|\n| `VPS_HOST` | `<IP_VPS_ANTERIOR>` | La IP de tu VPS. |\n| `VPS_USER` | `<VPS_USER>` | El usuario con el que se conectará por SSH. |\n| `VPS_SSH_KEY`| (El contenido de `~/.ssh/id_rsa`) | La clave SSH privada para acceder al VPS sin contraseña. |"
         },
         {
           "level": 3,
@@ -342,13 +342,13 @@
           "level": 2,
           "title": "4. Configuración de la Landing Page (Nginx)",
           "id": "4-configuracin-de-la-landing-page-nginx",
-          "content": "La página de bienvenida (`luanti.gabrielpantoja.cl`) no es servida por el contenedor de Luanti, sino por un **proxy inverso Nginx** que se ejecuta en el VPS.\n\n*   **Contenido:** El HTML/CSS/JS de la landing page vive en `server/landing-page/` en este repositorio.\n*   **Servidor Web:** Un contenedor Nginx separado (gestionado idealmente en otro repo de infraestructura para mantener la separación de conceptos) monta esta carpeta.\n*   **Actualización:** Para actualizar la landing page, simplemente haz `push` de los cambios a este repositorio. El `git pull` del workflow de despliegue actualizará los archivos en el VPS, y Nginx los servirá automáticamente.\n\n---"
+          "content": "La página de bienvenida (`luanti.<VPS_USER>pantoja.cl`) no es servida por el contenedor de Luanti, sino por un **proxy inverso Nginx** que se ejecuta en el VPS.\n\n*   **Contenido:** El HTML/CSS/JS de la landing page vive en `server/landing-page/` en este repositorio.\n*   **Servidor Web:** Un contenedor Nginx separado (gestionado idealmente en otro repo de infraestructura para mantener la separación de conceptos) monta esta carpeta.\n*   **Actualización:** Para actualizar la landing page, simplemente haz `push` de los cambios a este repositorio. El `git pull` del workflow de despliegue actualizará los archivos en el VPS, y Nginx los servirá automáticamente.\n\n---"
         },
         {
           "level": 2,
           "title": "5. Setup Inicial de un Servidor desde Cero",
           "id": "5-setup-inicial-de-un-servidor-desde-cero",
-          "content": "Si necesitaras recrear el servidor en un nuevo VPS, los pasos serían:\n\n1.  **Preparar el VPS:** Instalar Docker y Docker Compose.\n2.  **Clonar el Repositorio:** `git clone https://github.com/gabrielpantoja-cl/Wetlands.git`\n3.  **Configurar el Juego Base (VoxeLibre):** Asegurarse de que el juego `mineclone2` esté presente en la carpeta `server/games/`.\n4.  **Configurar `luanti.conf`:** Revisar la configuración del servidor en `server/config/luanti.conf`.\n5.  **Iniciar por Primera Vez:** Ejecutar `docker-compose up -d`.\n\n---"
+          "content": "Si necesitaras recrear el servidor en un nuevo VPS, los pasos serían:\n\n1.  **Preparar el VPS:** Instalar Docker y Docker Compose.\n2.  **Clonar el Repositorio:** `git clone https://github.com/<VPS_USER>pantoja-cl/Wetlands.git`\n3.  **Configurar el Juego Base (VoxeLibre):** Asegurarse de que el juego `mineclone2` esté presente en la carpeta `server/games/`.\n4.  **Configurar `luanti.conf`:** Revisar la configuración del servidor en `server/config/luanti.conf`.\n5.  **Iniciar por Primera Vez:** Ejecutar `docker-compose up -d`.\n\n---"
         },
         {
           "level": 2,
