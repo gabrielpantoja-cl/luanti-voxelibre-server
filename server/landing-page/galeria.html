@@ -167,7 +167,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Wetlands. Servidor educativo y sin ánimo de lucro.</p>
+                <p>&copy; 2025-<span id="footer-year">2026</span> Wetlands. Servidor educativo y sin ánimo de lucro. Activo desde agosto 2025.</p>
                 <p>Luanti es software libre y gratuito. Aprende más en <a href="https://www.luanti.org" target="_blank">luanti.org</a></p>
             </div>
         </div>
@@ -177,5 +177,9 @@
     <script src="assets/js/main.js"></script>
     <script src="assets/js/gallery.js"></script>
     <script src="assets/js/mobile-nav.js"></script>
+    <script>
+        var y = document.getElementById('footer-year');
+        if (y) y.textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>

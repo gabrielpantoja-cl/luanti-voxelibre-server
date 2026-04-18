@@ -2774,3 +2774,82 @@ body {
     max-width: 250px;
   }
 }
+/* =========================================================
+   MINECRAFT-STYLE OVERRIDES
+   Sharper corners + blocky shadows + pixel-flavored titles.
+   Placed at the end so it wins specificity on simple rules.
+   ========================================================= */
+
+/* Feature cards: flat, blocky, subtle depth */
+.feature-card {
+  border-radius: 0;
+  border: 2px solid var(--pixel-black);
+  box-shadow: var(--pixel-shadow-large);
+  background: var(--white);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.feature-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.35);
+  border-color: var(--minecraft-dark-green);
+}
+
+.feature-card h3 {
+  letter-spacing: 0.5px;
+}
+
+/* New-feature highlight (Valdivia card): green tint, no gradient */
+.feature-card.feature-new {
+  background: #f2f8ec;
+  border-color: var(--minecraft-dark-green);
+}
+
+/* Section titles: blocky, crisp, subtle pixel shadow */
+.section-title {
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Buttons: kill rounded corners across CTA variants */
+.download-btn,
+.gallery-view-all-btn,
+.discord-btn,
+.pixel-btn,
+.copy-btn {
+  border-radius: 0 !important;
+}
+
+/* Step numbers: blockier */
+.step-number {
+  border-radius: 0;
+}
+
+/* Server address/code tags: sharp edges */
+.server-code,
+code.address,
+code.world-port {
+  border-radius: 0;
+  border: 2px solid var(--pixel-black);
+}
+
+/* Footer: clean */
+.footer {
+  background: var(--gray-900);
+}
+
+.footer a {
+  text-decoration: none;
+}
+
+/* Remove the rounded NUEVO badge — make it a blocky tag */
+.world-badge {
+  border-radius: 0 !important;
+  border: 2px solid var(--pixel-black);
+  font-family: var(--pixel-font);
+}
+
+/* Reduce visual noise in hero overlay gradients if any linger */
+.hero .game-overlay {
+  backdrop-filter: none;
+}
