@@ -1,71 +1,79 @@
-# Bienvenidos a Wetlands
+# Wetlands
 
-**Un servidor de Luanti (Minetest) donde la compasion, la creatividad y la educacion florecen.**
+**A Luanti (Minetest) server where compassion, creativity, and education thrive.**
 
-> **[Visita nuestra web](https://luanti.gabrielpantoja.cl/) | [Galeria de fotos](https://luanti.gabrielpantoja.cl/galeria.html)**
+> **[Visit our site](https://luanti.gabrielpantoja.cl/) | [Photo gallery](https://luanti.gabrielpantoja.cl/galeria.html)**
 
 ---
 
-**Wetlands** es un mundo de juego diseniado como un espacio seguro y controlado para ninios y familias. La aventura y el aprendizaje van de la mano.
+**Wetlands** is a game world designed as a safe, controlled space for kids and families. Adventure and learning go hand in hand.
 
-## Nuestra Filosofia
+## Philosophy
 
-- **Compasion Animal:** Cuidamos a los animales, no los daniamos.
-- **Educacion Creativa:** Aprende sobre sostenibilidad y alimentacion consciente mientras juegas.
-- **Aventura Controlada:** De dia exploras y construyes libremente. De noche aparecen mobs hostiles (excepto Creepers). Existe una arena PvP dedicada donde puedes combatir con otros jugadores si lo deseas.
+- **Animal compassion:** we care for animals, we don't harm them.
+- **Creative education:** learn about sustainability and conscious eating while you play.
+- **Controlled adventure:** by day you explore and build freely. At night hostile mobs spawn (Creepers excluded). There's a dedicated PvP arena for combat when you want it.
 
-## Como Unirte
+## How to join
 
-1. **Descarga Luanti** para [PC](https://www.luanti.org) o movil ([Android](https://play.google.com/store/apps/details?id=net.minetest.minetest) / [iOS](https://apps.apple.com/app/minetest/id1190647064)).
-2. **Aniade nuestro servidor:**
-   - **Direccion:** `luanti.gabrielpantoja.cl`
-   - **Puerto:** `30000`
-3. **Listo!** Entra a explorar y crear.
+1. **Install Luanti** for [PC](https://www.luanti.org) or mobile ([Android](https://play.google.com/store/apps/details?id=net.minetest.minetest) / [iOS](https://apps.apple.com/app/minetest/id1190647064)).
+2. **Add our server:**
+   - **Address:** `luanti.gabrielpantoja.cl`
+   - **Port:** `30000`
+3. **That's it.** Jump in, explore, and create.
 
-## Que puedes hacer aqui?
+## What you can do here
 
-- **Construye santuarios** para proteger a los animales
-- **Explora un mundo** lleno de biomas fascinantes y secretos
-- **Habla con NPCs educativos** que tienen voz propia y te ensienian sobre naturaleza
-- **Conduce vehiculos** -- vespas, motos, buggies, escarabajos
-- **Juega ajedrez** con otros jugadores
-- **Aprende con bloques educativos** interactivos
-- **Combate en la arena PvP** -- zona dedicada para quienes quieran accion
-- **Colabora** con otros jugadores en grandes proyectos comunitarios
+- **Build animal sanctuaries** to protect wildlife
+- **Explore a rich world** full of biomes and secrets
+- **Talk to educational NPCs** with their own voices, teaching about nature
+- **Drive vehicles** — vespas, motorcycles, buggies, beetles
+- **Play chess** with other players
+- **Learn with interactive educational blocks**
+- **Fight in the PvP arena** — a dedicated area for those who want action
+- **Collaborate** with other players on large community projects
 
-## Caracteristicas del Servidor
+## Server features
 
-| Caracteristica | Detalle |
-|----------------|---------|
-| Modo | Creativo (construye sin limites) |
-| Dano | Desactivado en el mundo general (no puedes morir explorando) |
-| PvP | Solo en arenas dedicadas (arena principal disponible) |
-| Jugadores | Hasta 20 simultaneos |
-| NPCs | Aldeanos interactivos con voces estilo Animal Crossing |
-| Vehiculos | Vespa, moto, buggy, escarabajo |
-| Musica | Soundtrack ambiental original |
-| Mods | 25+ mods personalizados y de terceros |
+| Feature | Detail |
+|---------|--------|
+| Mode | Creative (build without limits) |
+| Damage | Disabled in the open world (you can't die exploring) |
+| PvP | Arenas only (main arena available) |
+| Players | Up to 20 concurrent |
+| NPCs | Interactive villagers with Animal Crossing-style voices |
+| Vehicles | Vespa, motorcycle, buggy, beetle |
+| Music | Original ambient soundtrack |
+| Mods | 25+ custom and third-party mods |
 
-## Bugs Conocidos
+## Secondary world: Valdivia 2.0
 
-- **Flechas hacen danio fuera de la arena:** Actualmente las flechas (arcos) causan danio en cualquier parte del mapa, no solo en la arena PvP. Estamos trabajando en restringir el danio de proyectiles solo a las zonas de combate.
+Port `30001` hosts a real-world recreation of Valdivia, Chile, generated from OpenStreetMap data. Connect to `luanti.gabrielpantoja.cl:30001` to explore.
 
-## Tecnologia
+## Known bugs
 
-- **Motor**: [Luanti](https://www.luanti.org) 5.15+
-- **Base de juego**: VoxeLibre (MineClone2) v0.90.1
-- **Lenguaje de mods**: Lua
-- **Infraestructura**: Docker Compose en VPS
+- **Arrows deal damage outside the arena:** bows currently cause damage anywhere on the map, not only inside the PvP arena. Projectile damage restriction is in progress.
 
-## Codigo Abierto
+## Tech stack
 
-Este proyecto es de codigo abierto. Si eres desarrollador, puedes contribuir:
+- **Engine**: [Luanti](https://www.luanti.org) 5.15+
+- **Base game**: VoxeLibre (MineClone2) v0.90.1
+- **Mod language**: Lua
+- **Infrastructure**: Docker Compose on a VPS
 
-- **Repositorio**: [GitHub](https://github.com/gabrielpantoja-cl/luanti-voxelibre-server)
+## Contributing
+
+This project is open source under the MIT License (see [LICENSE](LICENSE)). Third-party content inside `server/games/` and individual mods keeps its original license.
+
+If you want to contribute:
+
+- **Repository**: [GitHub](https://github.com/gabrielpantoja-cl/luanti-voxelibre-server)
 - **Mods**: `server/mods/` (Lua)
 - **Landing page**: `server/landing-page/` (HTML/CSS/JS)
-- **Documentacion**: `docs/`
+- **Docs**: `docs/`
+
+Open an issue or PR — contributions appropriate for a kid-friendly educational server are welcome.
 
 ---
 
-**Te esperamos en el juego!**
+**See you in-game.**

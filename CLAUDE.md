@@ -4,187 +4,153 @@ Guidance for Claude Code working with this repository.
 
 ## Project Overview
 
-Wetlands is a **Luanti (formerly Minetest) game server** -- a compassionate, educational, creative environment for children 7+. Custom mods promote animal care, compassion, and controlled gameplay (survival/hostile mobs disabled, PvP only in dedicated arenas). Server address: `luanti.gabrielpantoja.cl:30000`.
+Wetlands is a **Luanti (formerly Minetest) game server** — a creative, educational, kid-friendly environment. Custom mods promote animal care and non-violent exploration, while a dedicated PvP arena exists for opt-in combat. Public address: `luanti.gabrielpantoja.cl:30000` (Wetlands) and `:30001` (Valdivia 2.0).
 
 ## Repository Scope
 
-This repo (`luanti-voxelibre-server.git`) owns **all** Luanti code, config, mods, landing page, and deployment. It is independent from the VPS admin repo (`vps-do.git`). **Never** modify Luanti files in `vps-do.git`.
+This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, landing page, and deployment files. A separate repo, `infra/vps-oracle` (renamed from the older `vps-do`), owns host-level VPS configuration (nginx system service, Docker host, SSL). **Never** put Luanti-specific files in `vps-oracle`.
 
 ## Key Technologies
 
-- **Runtime**: Docker Compose with `linuxserver/luanti:latest`
-- **Base Game**: VoxeLibre (MineClone2) v0.90.1
-- **Mods**: Lua scripts in `server/mods/`
-- **Config**: `.conf` files, not JSON/YAML
-- **Deploy**: GitHub Actions CI/CD + manual `git pull` on VPS
-- **VPS**: `ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP>` (Oracle Cloud, ARM aarch64)
-- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 80/443 (landing page via nginx)
-- **Language**: Spanish (es)
+- **Runtime**: Docker Compose v2 (`docker compose`) on the VPS. Docker Compose v1 (`docker-compose`) may still be available locally; they are interchangeable here.
+- **Container image**: `linuxserver/luanti:latest` — inside the container, the server user is `abc` (UID 911). Any file created by the container on a mounted volume ends up owned by UID 911 on the host.
+- **Base game**: VoxeLibre (MineClone2) v0.90.1 at `server/games/mineclone2/`.
+- **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
+- **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
+- **Deployment**: manual `git pull` on the VPS. There are **no GitHub Actions workflows** in this repo.
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 80/443 (landing page via nginx on the VPS).
+- **UI language**: Spanish.
 
 ## File Structure
 
 ```
-docker-compose.yml              # Container orchestration (dual: Wetlands + Valdivia)
-server/config/luanti.conf       # Wetlands server config (creative, no damage, PvP in arenas only)
-server/config/luanti-valdivia.conf  # Valdivia server config (creative, no mobs, singlenode mapgen)
-server/games/mineclone2/        # VoxeLibre game files (shared by both worlds)
-server/mods/                    # Custom + third-party mods
-server/worlds/world/world.mt    # LOCAL REFERENCE COPY (real one lives on VPS)
-server/worlds/valdivia/         # Valdivia world (world.mt + map.sqlite + worldmods/arnis_mapgen/)
-server/skins/                   # Player skins (64x32 PNG)
-server/landing-page/            # Web landing page (HTML/CSS/JS)
-server/backups/                 # Automated backup storage
-scripts/                        # start.sh, backup.sh, deploy-landing.sh, etc.
-scripts/remap-mineclonia-to-voxelibre.py  # Node name remapper for Arnis-generated worlds
-scripts/setup-arnis.sh          # Install Rust + compile Arnis PR #808
-scripts/generate-valdivia.sh    # Generate Valdivia world with bbox presets
-docs/                           # Detailed documentation (see index below)
-.env                            # Local secrets (gitignored) - admin credentials
+docker-compose.yml                   # Dual-service: luanti-server + luanti-valdivia
+                                     # Plus backup-cron and Discord notifier sidecars
+server/config/luanti.conf            # Wetlands authoritative config (see hierarchy below)
+server/config/luanti-valdivia.conf   # Valdivia config (singlenode mapgen, no mobs)
+server/games/mineclone2/             # VoxeLibre game files, shared by both worlds
+server/mods/                         # Custom + third-party mods
+server/worlds/world/                 # LOCAL REFERENCE ONLY (gitignored, real copy is on VPS)
+server/worlds/valdivia/              # Valdivia world (map.sqlite is ~480 MB, not in git)
+server/skins/                        # Player skins (64x32 PNG)
+server/landing-page/                 # HTML/CSS/JS for luanti.gabrielpantoja.cl
+server/backups/                      # Tarball storage written by backup-cron (gitignored)
+scripts/                             # Ops scripts (start, backup, sync, Arnis, etc.)
+docs/                                # Public documentation (index below)
+.env.local                           # Local secrets (gitignored)
 ```
 
 ## Configuration Hierarchy (CRITICAL)
 
-There are TWO config files. Both contain `load_mod_*` entries. Understanding which wins is essential.
+There are two files that both list `load_mod_*` entries. Confusing which wins is the single most common source of "why doesn't my mod load" bugs.
 
-| File | Authority | Contains | Edit where |
-|------|-----------|----------|------------|
-| `server/config/luanti.conf` | **HIGHEST** (wins all conflicts) | Server settings + `load_mod` (master list) | This repo (git tracked) |
-| `server/worlds/world/world.mt` | Lower (overridden by luanti.conf) | World backends + `load_mod` entries | **VPS via SSH** (not in git) |
+| File | Authority | Lives in git? | Edit where |
+|------|-----------|---------------|------------|
+| `server/config/luanti.conf` | **HIGHEST** — a `false` here overrides any `true` elsewhere | Yes | This repo |
+| `server/worlds/world/world.mt` | Only effective for mods not mentioned in `luanti.conf` | No (gitignored) | On the VPS via SSH |
 
-### How `load_mod` works across both files:
-- **Both files** have `load_mod_*` entries. `luanti.conf` is the master authority.
-- If `luanti.conf` says `load_mod_X = false`, the mod is OFF even if `world.mt` says `true`.
+Rules:
+- If `luanti.conf` says `load_mod_X = false`, the mod is OFF. Always.
 - If `luanti.conf` says `load_mod_X = true`, the mod loads.
-- If a mod is ONLY in `world.mt` (not in luanti.conf), `world.mt` controls it.
-- `luanti.conf` also contains `= false` entries to explicitly disable mods (motorboat, biofuel, etc.)
+- If a mod is only named in `world.mt` (absent from `luanti.conf`), then `world.mt` controls it.
+- `luanti.conf` explicitly pins several mods to `= false` (motorboat, biofuel, etc.) to keep them off even if someone adds them to `world.mt`.
 
-### To enable a NEW mod:
-1. Add `load_mod_<name> = true` to `server/config/luanti.conf` (in this repo, push via git)
-2. Add `load_mod_<name> = true` to `world.mt` on VPS via SSH (both host file and container file)
-3. Restart server
+To enable a NEW mod:
+1. Add `load_mod_<name> = true` to `server/config/luanti.conf` and push via git.
+2. Add `load_mod_<name> = true` to `world.mt` on the VPS — **both** the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt` **and** the container file at `/config/.minetest/worlds/world/world.mt`.
+3. Restart the container.
 
-### To disable a mod:
-- Set `load_mod_<name> = false` in `luanti.conf` -- this guarantees it stays off regardless of `world.mt`
+To disable a mod: set `load_mod_<name> = false` in `luanti.conf`. This overrides `world.mt` unconditionally — no SSH needed.
 
-### Reference copy:
-- A local copy of `world.mt` exists at `server/worlds/world/world.mt` for reference only (gitignored)
-- The real `world.mt` lives on the VPS at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt`
-
-Details: `docs/config/01-CONFIGURATION_HIERARCHY.md`
+Reference copy: `server/worlds/world/world.mt` in this repo is a local snapshot for convenience; it is gitignored and is not the file the running server reads. See `docs/config/01-CONFIGURATION_HIERARCHY.md`.
 
 ## Essential Commands
 
 ### Local
+
 ```bash
-./scripts/start.sh                          # Start server locally
-docker-compose logs -f luanti-server        # View logs
-docker-compose restart luanti-server        # Restart
-docker-compose down                         # Stop
+./scripts/start.sh                   # docker compose up -d
+docker compose logs -f luanti-server
+docker compose restart luanti-server
+docker compose down
 ```
 
-### VPS Deployment
+`./scripts/start.sh` currently calls `docker-compose` (v1). If you only have v2 installed, invoke services directly: `docker compose up -d luanti-server`.
+
+### VPS deployment
+
 ```bash
-# Standard deploy flow: local -> GitHub -> VPS
+# Standard flow: local → GitHub → VPS
 git push origin main
-ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull origin main"
-ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker-compose restart luanti-server"
+ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull origin main"
+ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker compose restart luanti-server"
 
-# Verify after restart (use --since to avoid old log noise)
-ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -i 'error\|warning\|my_mod'"
-
-# Enable a mod on VPS (world.mt must be edited in BOTH host and container)
-ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "echo 'load_mod_my_mod = true' >> /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt"
-ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> "docker exec luanti-voxelibre-server sh -c 'echo \"load_mod_my_mod = true\" >> /config/.minetest/worlds/world/world.mt'"
+# Verify post-restart — ALWAYS use --since to avoid log noise
+ssh <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -iE 'error|warning|my_mod'"
 ```
 
-**IMPORTANT:** When checking logs after restart, always use `--since='2m'` or `--since='5m'` to filter only recent entries. The full log contains thousands of historical entries that will pollute search results.
+When containers write to mounted volumes, permissions may break future host-side git operations. Fix with:
 
-### Valdivia World (port 30001)
 ```bash
-# Start both servers
-docker-compose up -d
-
-# View Valdivia logs
-docker-compose logs -f luanti-valdivia
-
-# Restart Valdivia only
-docker-compose restart luanti-valdivia
-
-# Deploy Valdivia map.sqlite to VPS (70MB, not in git)
-scp -i ~/.ssh/id_ed25519 server/worlds/valdivia/map.sqlite \
-  <VPS_USER>@<VPS_IP>:/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/valdivia/
-
-# Fix permissions after uploading (container user abc = UID 911)
-ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
-  "sudo chown -R 911:911 /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/"
-
-# Generate a new Valdivia world locally (requires Arnis compiled)
-./scripts/generate-valdivia.sh full
-
-# Remap Mineclonia node names to VoxeLibre
-python3 scripts/remap-mineclonia-to-voxelibre.py server/worlds/valdivia/map.sqlite
+ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> /home/<VPS_USER>/luanti-voxelibre-server/"
 ```
+
+For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/projects/proyecto-valdivia-luanti.md`.
 
 ## Development Workflow
 
-### Adding New Mods
-1. Create directory in `server/mods/<mod_name>/`
-2. Add `mod.conf` (use `optional_depends`, not `depends` for VoxeLibre mods)
-3. Write `init.lua`
-4. Add `load_mod_<name> = true` to `server/config/luanti.conf`
-5. Test locally with `./scripts/start.sh`
-6. Commit and push to GitHub
-7. `git pull origin main` on VPS
-8. Add `load_mod_<name> = true` to `world.mt` on VPS (both host + container files)
-9. Restart server on VPS
+### Adding a new mod
+1. Create `server/mods/<mod_name>/mod.conf` + `init.lua`. In `mod.conf` use `optional_depends`, not `depends` (see pitfalls below).
+2. Add `load_mod_<mod_name> = true` to `server/config/luanti.conf`.
+3. Test locally with `./scripts/start.sh` and monitor logs.
+4. Commit + push.
+5. On VPS: `git pull`, add the same `load_mod_<mod_name> = true` line to `world.mt` (host + container), and restart.
 
-### Modifying Config
-- Edit `server/config/luanti.conf` in **this repo only**
-- Key settings: `creative_mode`, `enable_damage`, `max_users`
-- Push + pull + restart on VPS
+### Modifying server config
+Edit `server/config/luanti.conf` in this repo. Push, pull on VPS, restart. Do **not** edit the `.conf` directly on the VPS — it will be overwritten on the next pull.
 
-## Key Constraints
+## Current server settings (from `server/config/luanti.conf`)
 
-- **No package.json** -- not a Node.js project
-- **No build system** -- Docker Compose + Lua only
-- **No unit tests** -- testing via manual gameplay
-- **Lua scripting** -- all mod logic in Lua
-- **SQLite auth** -- privileges in `server/worlds/world/auth.sqlite`, not text files
+- `creative_mode = true`
+- `enable_damage = true` — damage is on globally. This is intentional: hostile mobs can hurt players at night, and the PvP arena relies on it. Non-arena PvP is prevented by mod logic (`pvp_arena`), not by this flag.
+- `only_peaceful_mobs = false` — hostile mobs spawn at night. Creepers are blocked separately by the `wetlands_no_creeper` mod. The landing page and README describe the overworld as "daytime safe, nighttime dangerous except Creepers".
+- `static_spawnpoint = 0,15,0`
+- `max_users = 20`
 
-## VoxeLibre Critical Pitfalls
+## New player privileges
 
-### `default_privs` Does NOT Work
-VoxeLibre **ignores** the `default_privs` setting in `minetest.conf`. The `wetlands_newplayer` mod fixes this via `minetest.register_on_newplayer()`. Edit `server/mods/wetlands_newplayer/init.lua` to change privileges. **Always use the mod, never rely on `default_privs`.**
+VoxeLibre **ignores** `default_privs` in `minetest.conf`. Privileges for new players are granted by the `wetlands_newplayer` mod in `server/mods/wetlands_newplayer/init.lua` — the `PRIVS` table there is the source of truth. Edit that table to change the default privilege set; do **not** add `default_privs` anywhere.
 
-### Item Name Mapping (Minetest vanilla vs VoxeLibre)
-Mods must use VoxeLibre names. Common mappings:
+## VoxeLibre critical pitfalls
 
-| Vanilla | VoxeLibre |
-|---------|-----------|
+### Item / namespace renames
+Vanilla Minetest item names don't work in VoxeLibre. Common mappings:
+
+| Vanilla (wrong) | VoxeLibre (correct) |
+|-----------------|---------------------|
 | `default:book` | `mcl_books:book` |
 | `default:stick` | `mcl_core:stick` |
 | `default:apple` | `mcl_core:apple` |
 | `default:stone` | `mcl_core:stone` |
 | `farming:wheat` | `mcl_farming:wheat_item` |
-| `mcl_sounds` | Remove (not available) |
 
-In `mod.conf`: use `optional_depends = mcl_core, mcl_farming` instead of `depends = default, farming`.
+In `mod.conf`, use `optional_depends = mcl_core, mcl_farming`. Never depend on `mcl_sounds` — it doesn't exist in this VoxeLibre version.
 
-### mcl_mobs Deprecation: hp_min/hp_max
-When registering mobs with `mcl_mobs.register_mob()`, put `hp_min` and `hp_max` inside `initial_properties = {}`, NOT at the root level. Root-level placement triggers deprecation warnings.
+### `mcl_mobs` quirks
+- Put `hp_min` / `hp_max` inside `initial_properties = {}`, not at the root of the mob definition — root-level placement triggers deprecation warnings.
+- Use `do_punch` (not `on_punch`) for custom punch handlers — `mcl_mobs` only copies `do_punch` onto the mob.
+- To make an NPC immortal, `return true` from `on_punch` is **not enough**. Use:
+  ```lua
+  on_activate = function(self, staticdata, dtime_s)
+      self.object:set_armor_groups({immortal = 1})
+  end,
+  ```
 
-### Making NPCs Immortal
-`return true` in `on_punch` does NOT work with mcl_mobs. The correct approach:
-```lua
-on_activate = function(self, staticdata, dtime_s)
-    self.object:set_armor_groups({immortal = 1})
-end,
-```
+### Entity migration when renaming / removing a mod
+When a mod that registered entities is renamed or deleted, already-spawned entities still reference the old namespace. The server then logs `LuaEntity name "old_mod:entity" not defined` and the entities sit as broken objects.
 
-### Entity Migration When Renaming/Deleting Mods
-When a mod is renamed (e.g., `custom_villagers` -> `wetlands_npcs`) or deleted, entities already spawned in the world still reference the OLD mod name. The server logs `LuaEntity name "old_mod:entity" not defined` errors.
+Fix: register a thin legacy entity that self-replaces on activation. The `:` prefix lets you register under a different namespace from the current mod:
 
-**Fix:** Register lightweight legacy entities under the old name that auto-replace on activation:
 ```lua
 for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
     minetest.register_entity(":old_mod:" .. vtype, {
@@ -198,100 +164,73 @@ for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
     })
 end
 ```
-The `:` prefix in `:old_mod:entity` allows registering under a different mod namespace.
 
-### Nuclear Config
-The server requires a nuclear config override to disable monsters. Apply with `./scripts/apply-nuclear-config.sh`. Details: `docs/config/02-NUCLEAR_CONFIG.md`.
+### Nuclear config
+An out-of-band override is applied to disable certain game rules not exposed via `luanti.conf`. Apply with `./scripts/apply-nuclear-config.sh`. See `docs/config/02-NUCLEAR_CONFIG.md`.
 
-## Texture & Asset Rules
+## Texture & asset rules
 
-### Golden Rules
-1. **NEVER modify `docker-compose.yml` volume mappings for mods** -- causes texture ID conflicts
-2. **NEVER install mods with heavy texture dependencies** (motorboat, biofuel, mobkit) without local testing first
-3. **ALWAYS backup world data before mod changes**: `cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d)`
-4. **NEVER name mod textures with VoxeLibre base names** (e.g. `mobs_mc_villager_farmer.png`) -- use unique prefixes like `wetlands_npc_*.png`
+1. **Never change `docker-compose.yml` volume mappings for mods.** Luanti assigns texture IDs at mod-load order; changing the mount layout reshuffles them and corrupts textures on existing chunks.
+2. **Never install mods with heavy texture dependencies** (motorboat, biofuel, mobkit) without testing locally first. They routinely conflict with existing mods.
+3. **Back up before mod changes.** Quick option: `cp -r server/worlds server/worlds_BACKUP_$(date +%Y%m%d)`. Automated backups run in the `backup-cron` sidecar every 12h.
+4. **Never name mod textures with VoxeLibre base names** (e.g. `mobs_mc_villager_farmer.png`). Always prefix: `wetlands_npc_*.png`, `wetlands_music_*.png`.
 
-### Villager Textures: UV Map is NOT Player Skin Format
-The `mobs_mc_villager.b3d` model uses the **Minecraft villager UV layout** (64x64), which is completely different from player skin UV (also 64x64 but different regions). The villager has: head with protruding nose, hat overlay, robe body, crossed arms, and legs -- all in unique UV positions.
+### Villager textures use the Minecraft villager UV, not the player skin UV
+The `mobs_mc_villager.b3d` model expects a 64×64 texture laid out in the Minecraft villager UV layout (robe, hat overlay, nose). This is **different** from the 64×64 Minecraft player skin UV and from the 64×32 Luanti player skin UV.
 
-**NEVER draw villager textures from scratch** -- you WILL get the UV wrong. Instead:
-1. Use the base texture from `server/games/mineclone2/textures/mobs_mc_villager.png` as reference
-2. **Recolor it** using the script at `server/mods/wetlands_npcs/tools/generate_textures.py`
-3. Reference copies are at `server/mods/wetlands_npcs/textures/raw_skins/ref_villager_base.png`
+Never draw a villager texture from scratch — you will get the UV wrong. Instead, recolor the base at `server/games/mineclone2/textures/mobs_mc_villager.png` using `server/mods/wetlands_npcs/tools/generate_textures.py`. A reference copy is at `server/mods/wetlands_npcs/textures/raw_skins/ref_villager_base.png`.
 
-### Player Skins vs Villager Textures vs NPC Textures
-| Format | Size | Model | Used by | UV Layout |
+Recovery protocol for corrupted textures lives in the private repo: `infra/privado/luanti/operations/texture-recovery.md`.
+
+### Skin / texture format matrix
+| Format | Size | Model | Used by | UV layout |
 |--------|------|-------|---------|-----------|
-| Player skin | 64x32 | `mcl_armor_character.b3d` | `server/skins/`, NPC Star Wars | Steve/Alex format (head, torso, arms, legs) |
-| Villager texture | 64x64 | `mobs_mc_villager.b3d` | NPC classics (farmer, etc.) | Minecraft villager format (robe, hat overlay, nose) |
-| Minecraft download | 64x64 | N/A (must convert) | Source from MinecraftSkins.com | Player skin format but MUST be cropped to 64x32 |
+| Player skin | 64×32 | `mcl_armor_character.b3d` | `server/skins/`, Star Wars NPCs | Steve/Alex (head, torso, arms, legs) |
+| Villager texture | 64×64 | `mobs_mc_villager.b3d` | Classic NPCs (farmer, etc.) | Minecraft villager (robe, hat overlay, nose) |
+| Minecraft skin (downloaded) | 64×64 | N/A — must convert | Source from MinecraftSkins.com | Player skin format; **must be cropped to 64×32** before use |
 
-**Key rules:**
-- Player skins and villager textures are **NOT interchangeable**
-- Downloaded Minecraft skins (64x64) **MUST be converted to 64x32** before use with the player model (`mcl_armor_character.b3d`). Crop the top half: `img.crop((0, 0, 64, 32))`
-- Villager textures must be **recolored from the base**, never drawn from scratch
-- Online converter: https://godly.github.io/minetest-skin-converter/
+To convert a downloaded Minecraft skin: `img.crop((0, 0, 64, 32))` with PIL, or use https://godly.github.io/minetest-skin-converter/.
 
-Recovery protocol: See private docs repo (`infra/privado/luanti/docs/operations/texture-recovery.md`)
+### NPC dual model system (`wetlands_npcs`)
+| NPC type | Model | Texture | Pose |
+|----------|-------|---------|------|
+| Star Wars (luke, anakin, yoda, mandalorian) | `mcl_armor_character.b3d` (aliased as `wetlands_npc_human.b3d`) | 64×32, 3 layers `{skin, blank, blank}` | Arms at sides |
+| Classic (farmer, librarian, teacher, explorer) | `mobs_mc_villager.b3d` | 64×64, 1 layer | Arms crossed |
 
-### NPC Dual Model System (wetlands_npcs)
-The `wetlands_npcs` mod uses **two different 3D models** depending on NPC type:
+Adding a new Star Wars-style NPC: download 64×64 skin → crop to 64×32 → save as `textures/wetlands_npc_<name>.png` → register via `register_npc()`.
 
-| NPC Type | Model | Texture Format | Texture Layers | Pose |
-|----------|-------|----------------|----------------|------|
-| Star Wars (luke, anakin, yoda, mandalorian) | `wetlands_npc_human.b3d` (= `mcl_armor_character.b3d`) | 64x32 | 3: {skin, blank, blank} | Arms at sides (normal) |
-| Classics (farmer, librarian, teacher, explorer) | `mobs_mc_villager.b3d` | 64x64 | 1: {skin} | Arms crossed (villager) |
+Adding a new classic NPC: recolor `mobs_mc_villager.png` via `tools/generate_textures.py` → save as `textures/wetlands_npc_<name>.png` → register via `register_classic_npc()`.
 
-**Adding new Star Wars-style NPCs:**
-1. Download skin from MinecraftSkins.com (64x64)
-2. Save raw to `textures/raw_skins/raw_name.png`
-3. Convert to 64x32: `img.crop((0, 0, 64, 32))` with PIL
-4. Save as `textures/wetlands_npc_name.png`
-5. Register with `register_npc()` in init.lua (uses player model automatically)
+Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stretched forward (zombie). Always use `mcl_armor_character.b3d`.
 
-**Adding new classic NPCs:**
-1. Recolor `mobs_mc_villager.png` base texture (64x64) using `tools/generate_textures.py`
-2. Save as `textures/wetlands_npc_name.png`
-3. Register with `register_classic_npc()` in init.lua (uses villager model)
-
-**NEVER use `mobs_mc_zombie.b3d`** for humanoid NPCs -- it has zombie pose (arms stretched forward). Always use `mcl_armor_character.b3d` for normal human pose.
-
-## Server Config Summary
-
-- **Mode**: Creative (no damage in overworld, PvP in dedicated arenas, no TNT)
-- **Max Players**: 20
-- **Spawn**: 0,15,0 (static)
-- **World Gen**: v7 with caves, dungeons, biomes
-- **New Player Privileges**: interact, shout, fly, fast, noclip, give, creative, spawn (via `wetlands_newplayer` mod)
-
-## Dual World Architecture
-
-The server runs **two independent worlds** via Docker Compose:
+## Dual world architecture
 
 | World | Container | Port | Config | Purpose |
 |-------|-----------|------|--------|---------|
-| Wetlands | `luanti-server` | 30000/UDP | `luanti.conf` | Main creative/educational world with NPCs, mods, arenas |
-| Valdivia 2.0 | `luanti-valdivia` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap data |
+| Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti.conf` | Main creative world — NPCs, mods, PvP arena |
+| Valdivia 2.0 | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
 
-Both share the same VoxeLibre game files and mods directory. The Valdivia world uses `singlenode` mapgen with a pre-generated `map.sqlite` (70MB, not in git). Details: `docs/projects/proyecto-valdivia-luanti.md`.
+Both containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~480 MB, not in git). See `docs/projects/proyecto-valdivia-luanti.md`.
 
-## Enabled Mods (from world.mt)
+## Enabled mods (authoritative list: `server/config/luanti.conf`)
 
-### Custom Wetlands Mods
+### Custom Wetlands mods
 | Mod | Purpose |
 |-----|---------|
-| `wetlands_npcs` | 8 interactive NPCs (4 Star Wars + 4 classic) with AI, voices, dialogues, dual model system |
-| `wetlands_newplayer` | Auto-grant privileges to new players |
+| `wetlands_npcs` | Interactive NPCs (Star Wars + classic) with AI, voices, dialogs, dual model system |
+| `wetlands_newplayer` | Grants the default privilege set on first join (replaces `default_privs`) |
 | `wetlands_music` | Background music system |
 | `wetlands_christmas` | Seasonal Christmas content |
-| `mcl_back_to_spawn` | `/back_to_spawn` teleportation |
-| `server_rules` | `/reglas` command |
-| `pvp_arena` | PVP arena system |
-| `mcl_custom_world_skins` | Custom player skins |
+| `wetlands_no_creeper` | Disables Creeper spawning (keeps other hostile mobs) |
+| `wetlands_lastpos` | On rejoin, teleports returning players to their last logged-out position |
+| `mcl_back_to_spawn` | `/back_to_spawn` teleport |
+| `server_rules` | `/reglas` command, broadcast announcements |
+| `pvp_arena` | PvP arena system — the only place PvP is allowed |
+| `mcl_custom_world_skins` | Custom player skin selector |
 | `voxelibre_protection` | Area protection |
 | `voxelibre_tv` | In-game TV screens |
 
-### Third-Party Mods
+### Third-party mods
 | Mod | Purpose |
 |-----|---------|
 | `worldedit` + commands + shortcuts | Building tools |
@@ -302,34 +241,42 @@ Both share the same VoxeLibre game files and mods directory. The Valdivia world 
 | `mcl_decor` | Decoration blocks |
 | `broom_racing` | Broom racing minigame |
 | `auto_road_builder` | Road building tool |
-| `halloween_ghost` | Seasonal ghost |
-| `halloween_zombies` | Seasonal zombies |
+| `halloween_ghost`, `halloween_zombies` | Seasonal (activate in October) |
 
-## Documentation Index
+## Documentation index
 
-Detailed docs live in `docs/`. Read these when you need specifics:
+Detailed docs live under `docs/`. Read these when you need specifics.
 
 ### Configuration
-- `docs/config/01-CONFIGURATION_HIERARCHY.md` -- Config file hierarchy (luanti.conf vs world.mt)
-- `docs/config/02-NUCLEAR_CONFIG.md` -- Nuclear config (no monsters)
-- `docs/config/04-VOXELIBRE_SYSTEM.md` -- VoxeLibre installation and system
-- `docs/config/07-CUSTOM_SKINS.md` -- Custom skin system
-- `docs/config/08-CREATIVE_NATIVE_MODE.md` -- Creative mode config
+- `docs/config/01-CONFIGURATION_HIERARCHY.md` — luanti.conf vs world.mt
+- `docs/config/02-NUCLEAR_CONFIG.md` — nuclear config (disables monsters)
+- `docs/config/04-VOXELIBRE_SYSTEM.md` — VoxeLibre installation
+- `docs/config/07-CUSTOM_SKINS.md` — custom skin system
+- `docs/config/08-CREATIVE_NATIVE_MODE.md` — creative mode
 
 ### Admin
-- `docs/admin/QUICK_ADD_SKINS.md` -- Adding player skins
-- `docs/admin/comandos-admin.md` -- Admin commands reference
+- `docs/admin/comandos-admin.md` — admin commands reference
+- `docs/admin/QUICK_ADD_SKINS.md` — adding player skins
+
+### Operations
+- `docs/operations/BACKUP_STATUS.md` — backup system diagnosis and plan
+- `docs/operations/clonar-mundo-produccion-local.md` — pull a prod backup and run it locally
 
 ### Mods
-- `docs/mods/MODDING_GUIDE.md` -- General modding guide
-- `docs/mods/PVP_ARENA_WORLDEDIT_GUIDE.md` -- PVP Arena + WorldEdit
-- `docs/mods/WORLDEDIT_GUIDE.md` -- WorldEdit usage
-- `docs/mods/CHESS_MOD.md` -- Chess mod
+- `docs/mods/MODDING_GUIDE.md` — general modding guide
+- `docs/mods/PVP_ARENA_WORLDEDIT_GUIDE.md` — PvP arena + WorldEdit
+- `docs/mods/WORLDEDIT_GUIDE.md` — WorldEdit usage
+- `docs/mods/CHESS_MOD.md` — chess
+
+### Projects
+- `docs/projects/proyecto-valdivia-luanti.md` — Valdivia 2.0 build / Arnis PR #808 notes
+- `docs/projects/VALDIVIA_COORDENADAS.md` — in-game teleport points (sanitized public list)
 
 ### Web
-- `docs/web/landing-page.md` -- Landing page architecture and deployment
+- `docs/web/landing-page.md` — landing page architecture and deployment
 
-### Private Docs (separate repo: `infra/privado/luanti/`)
-- Operations: deploy, backups, VPS sync, texture recovery
-- Security: policies, procedures, incident response
-- Admin: user privileges, locations, NPC registry
+### Private docs (separate repo: `infra/privado/luanti/`)
+- `operations/` — deploy, backups, VPS sync, texture recovery
+- `security/`, `incidents/` — security policies, past incident reports
+- `architecture/` — user privileges, real-world locations, NPC registry, internal coordinates
+- `credentials/` — VPS access, tokens, passwords
