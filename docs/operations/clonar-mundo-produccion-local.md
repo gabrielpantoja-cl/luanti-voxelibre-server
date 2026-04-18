@@ -4,7 +4,7 @@ Guía para sacar una copia del mundo Wetlands (puerto 30000) desde el VPS y leva
 
 ## Prerrequisitos
 
-- Acceso SSH al VPS (`gabriel@<VPS_IP>`)
+- Acceso SSH al VPS (`<VPS_USER>@<VPS_IP>`)
 - Docker + Docker Compose v2 instalados localmente (`docker compose`, con espacio)
 - Permisos de `sudo` si necesitas arrancar el daemon de Docker o abrir firewall
 - ~2 GB libres en disco (el tar pesa ~1.5 GB, el mundo extraído ~900 MB)
@@ -24,11 +24,11 @@ Los backups automáticos del VPS (`./scripts/backup.sh` vía `backup-cron`) corr
 
 Los backups viven en dos lugares dentro del VPS (mismo volumen Docker):
 
-- Host: `/home/gabriel/luanti-voxelibre-server/server/backups/`
+- Host: `/home/<VPS_USER>/luanti-voxelibre-server/server/backups/`
 - Contenedor: `/backups/` (dentro de `luanti-voxelibre-server`)
 
 ```bash
-ssh gabriel@<VPS_IP> "ls -lht /home/gabriel/luanti-voxelibre-server/server/backups/ | head -10"
+ssh <VPS_USER>@<VPS_IP> "ls -lht /home/<VPS_USER>/luanti-voxelibre-server/server/backups/ | head -10"
 ```
 
 Toma el más reciente (formato `vegan_wetlands_backup_YYYYMMDD-HHMMSS.tar.gz`).
@@ -38,7 +38,7 @@ Toma el más reciente (formato `vegan_wetlands_backup_YYYYMMDD-HHMMSS.tar.gz`).
 ```bash
 cd ~/Developer/personal/luanti-voxelibre-server
 
-scp gabriel@<VPS_IP>:/home/gabriel/luanti-voxelibre-server/server/backups/vegan_wetlands_backup_YYYYMMDD-HHMMSS.tar.gz \
+scp <VPS_USER>@<VPS_IP>:/home/<VPS_USER>/luanti-voxelibre-server/server/backups/vegan_wetlands_backup_YYYYMMDD-HHMMSS.tar.gz \
     server/backups/
 ```
 
@@ -46,7 +46,7 @@ Verifica integridad comparando SHA256 contra el VPS:
 
 ```bash
 sha256sum server/backups/vegan_wetlands_backup_*.tar.gz
-ssh gabriel@<VPS_IP> "sha256sum /home/gabriel/luanti-voxelibre-server/server/backups/vegan_wetlands_backup_*.tar.gz"
+ssh <VPS_USER>@<VPS_IP> "sha256sum /home/<VPS_USER>/luanti-voxelibre-server/server/backups/vegan_wetlands_backup_*.tar.gz"
 ```
 
 Ambos hashes deben coincidir.
