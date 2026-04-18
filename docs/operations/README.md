@@ -5,6 +5,7 @@ Documentación sobre operaciones diarias, mantenimiento y resolución de problem
 ## 📋 Contenido
 
 - **[Backups](backups.md)** - Sistema completo de respaldos y recuperación
+- **[Clonar mundo de producción en local](clonar-mundo-produccion-local.md)** - Descargar un backup del VPS y correrlo localmente para pruebas/LAN
 - **[Deploy](deploy.md)** - Procedimientos de despliegue y CI/CD
 - **[Troubleshooting](troubleshooting.md)** - Solución de problemas comunes
 - **[Texture Recovery](texture-recovery.md)** - Recuperación de corrupción de texturas
