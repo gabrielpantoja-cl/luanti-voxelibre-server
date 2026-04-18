@@ -14,6 +14,7 @@ debug.txt
 
 # Claude Code configuración local (personal, no compartida)
 .claude/settings.local.json
+.claude/*.lock
 CLAUDE.local.md
 
 # Sistema
@@ -47,6 +48,7 @@ secrets/
 # Backups grandes (excluir de Git)
 world-snapshots/*.tar.gz
 server/worlds/world/
+server/worlds_archive/
 
 # Valdivia world data (generado por Arnis, muy grande para git)
 server/worlds/valdivia/map.sqlite
