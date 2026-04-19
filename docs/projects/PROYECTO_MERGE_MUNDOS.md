@@ -199,7 +199,6 @@ Todas las coordenadas de Valdivia suman +20000 en X:
 | Spawn Wetlands | 0, 15, 0 | 0, 15, 0 (sin cambio) |
 | Colegio Planeta Azul | 2389, -55, -2887 | 22389, -55, -2887 |
 | Circunvalacion / San Luis | 5473, -53.5, -3842 | 25473, -53.5, -3842 |
-| <CASA_REDACTED> | 5798, -45, -1222 | 25798, -45, -1222 |
 
 ### Riesgos y mitigacion
 
