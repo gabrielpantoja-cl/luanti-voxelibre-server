@@ -44,21 +44,24 @@ docs/                                # Public documentation (index below)
 
 There are two files that both list `load_mod_*` entries. Confusing which wins is the single most common source of "why doesn't my mod load" bugs.
 
-| File | Authority | Lives in git? | Edit where |
-|------|-----------|---------------|------------|
-| `server/config/luanti.conf` | **HIGHEST** — a `false` here overrides any `true` elsewhere | Yes | This repo |
-| `server/worlds/world/world.mt` | Only effective for mods not mentioned in `luanti.conf` | No (gitignored) | On the VPS via SSH |
+| File | Role | Lives in git? | Edit where |
+|------|------|---------------|------------|
+| `server/worlds/world/world.mt` | **Primary enable gate** — a mod must be `= true` here to load | No (gitignored) | On the VPS via SSH |
+| `server/config/luanti.conf` | **Kill-switch** — `= false` here overrides any `= true` in `world.mt` | Yes | This repo |
 
-Rules:
-- If `luanti.conf` says `load_mod_X = false`, the mod is OFF. Always.
-- If `luanti.conf` says `load_mod_X = true`, the mod loads.
-- If a mod is only named in `world.mt` (absent from `luanti.conf`), then `world.mt` controls it.
-- `luanti.conf` explicitly pins several mods to `= false` (motorboat, biofuel, etc.) to keep them off even if someone adds them to `world.mt`.
+Rules (verified empirically 2026-04-19 when enabling `mypark`):
+- A mod loads **only if `world.mt` has `load_mod_X = true`**. `luanti.conf = true` alone is **not sufficient** — the mod will silently not register.
+- If `luanti.conf` has `load_mod_X = false`, the mod is OFF regardless of `world.mt`. This is the canonical kill-switch and doesn't need SSH.
+- `luanti.conf` explicitly pins several mods to `= false` (motorboat, biofuel, etc.) so they stay off even if someone adds them to `world.mt`.
 
-To enable a NEW mod:
+To enable a NEW mod (both files must be updated):
 1. Add `load_mod_<name> = true` to `server/config/luanti.conf` and push via git.
-2. Add `load_mod_<name> = true` to `world.mt` on the VPS — **both** the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt` **and** the container file at `/config/.minetest/worlds/world/world.mt`.
-3. Restart the container.
+2. Pull on the VPS.
+3. Add `load_mod_<name> = true` to the world's `world.mt` on the VPS. Since `docker-compose.yml` bind-mounts `./server/worlds` into the container, the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt` **is** the container file at `/config/.minetest/worlds/world/world.mt` — one edit is enough:
+   ```bash
+   ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_<name> = true' | sudo tee -a /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt"
+   ```
+4. Restart the container.
 
 To disable a mod: set `load_mod_<name> = false` in `luanti.conf`. This overrides `world.mt` unconditionally — no SSH needed.
 
@@ -89,11 +92,23 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker c
 ssh <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -iE 'error|warning|my_mod'"
 ```
 
-When containers write to mounted volumes, permissions may break future host-side git operations. Fix with:
+When containers write to mounted volumes, permissions may break future host-side git operations. **DO NOT** run `chown -R` over the whole repo — it clobbers `server/worlds/` and `server/config/`, which must stay owned by the container user (set by `PUID` in `docker-compose.yml`, currently `1000` on the Oracle VPS). Scope the chown to only what git needs to write:
 
 ```bash
-ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> /home/<VPS_USER>/luanti-voxelibre-server/"
+ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && \
+  sudo chown -R <VPS_USER>:<VPS_USER> server/mods server/games server/landing-page \
+       server/skins scripts docs *.md *.yml *.conf 2>/dev/null || true"
 ```
+
+**If you already clobbered the wrong dirs** (symptom: `Couldn't save env meta` fatal on container start), restore container ownership:
+
+```bash
+ssh <VPS_USER>@<VPS_IP> "sudo chown -R 1000:1000 \
+  /home/<VPS_USER>/luanti-voxelibre-server/server/worlds \
+  /home/<VPS_USER>/luanti-voxelibre-server/server/config"
+```
+
+If `git pull` still refuses because of a file git wants to overwrite (e.g. an edit someone made on the VPS), inspect with `git diff <file>` and either commit, stash, or `git checkout -- <file>` — don't force.
 
 For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/projects/proyecto-valdivia-luanti.md`.
 
@@ -104,7 +119,7 @@ For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/proj
 2. Add `load_mod_<mod_name> = true` to `server/config/luanti.conf`.
 3. Test locally with `./scripts/start.sh` and monitor logs.
 4. Commit + push.
-5. On VPS: `git pull`, add the same `load_mod_<mod_name> = true` line to `world.mt` (host + container), and restart.
+5. On VPS: `git pull`, then `echo 'load_mod_<mod_name> = true' | sudo tee -a server/worlds/world/world.mt`, then restart. **Skipping the world.mt step is the #1 cause of "mod files exist but items are unknown"** — `luanti.conf = true` alone does not register a new mod.
 
 ### Modifying server config
 Edit `server/config/luanti.conf` in this repo. Push, pull on VPS, restart. Do **not** edit the `.conf` directly on the VPS — it will be overwritten on the next pull.
