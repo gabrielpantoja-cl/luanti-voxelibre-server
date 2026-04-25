@@ -120,6 +120,62 @@ services:
     networks:
       - luanti-network
 
+  # =============================================
+  # INFIERNO - Mundo caos (copia destructible de Wetlands)
+  # =============================================
+  # Snapshot del mundo principal donde se puede destruir, atacar y quemar
+  # libremente. PvP, fuego, TNT y creepers activos. Reset periodico via
+  # scripts/reset-infierno.sh.
+  luanti-infierno:
+    image: linuxserver/luanti:latest
+    container_name: luanti-infierno-server
+    restart: unless-stopped
+    ports:
+      - "30002:30000/udp"
+    volumes:
+      - ./server/config/luanti-infierno.conf:/config/.minetest/minetest.conf
+      - ./server/mods:/config/.minetest/mods
+      - ./server/worlds/infierno:/config/.minetest/worlds/infierno
+      - ./server/games:/config/.minetest/games
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santiago
+      - CLI_ARGS=--worldname infierno
+    healthcheck:
+      test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - luanti-server
+    networks:
+      - luanti-network
+
+  # Discord notifier para Infierno
+  discord-notifier-infierno:
+    image: alpine:latest
+    container_name: luanti-discord-notifier-infierno
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts:/scripts:ro
+    environment:
+      - TZ=America/Santiago
+      - CONTAINER_NAME=luanti-infierno-server
+      - SERVER_LABEL=INFIERNO
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    command: >
+      sh -c "
+        apk add --no-cache curl docker-cli bash &&
+        bash /scripts/discord-notifier.sh
+      "
+    depends_on:
+      - luanti-infierno
+    networks:
+      - luanti-network
+
 networks:
   luanti-network:
     driver: bridge

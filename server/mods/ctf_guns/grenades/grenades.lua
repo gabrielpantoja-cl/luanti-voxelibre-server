@@ -139,17 +139,19 @@ grenades.register_grenade("grenades:smoke", {
 		local player = minetest.get_player_by_name(pname)
 		if not player or not pos then return end
 
-		local pteam = ctf_teams.get(pname)
-
-		if pteam then
-			local fpos = ctf_map.current_map.teams[pteam].flag_pos
-
-			if not fpos then return end
-
-			if vector.distance(pos, fpos) <= 15 then
-				minetest.chat_send_player(pname, "You can't explode smoke grenades so close to your flag!")
-				player:get_inventory():add_item("main", "grenades:smoke")
-				return
+		-- ctf_teams / ctf_map only exist when running inside the full Capture The Flag
+		-- game (rubenwardy/capturetheflag). In Wetlands we use this modpack standalone,
+		-- so guard the flag-distance check to avoid `attempt to index nil` crash.
+		if ctf_teams and ctf_map and ctf_map.current_map then
+			local pteam = ctf_teams.get(pname)
+			if pteam then
+				local fpos = ctf_map.current_map.teams[pteam].flag_pos
+				if not fpos then return end
+				if vector.distance(pos, fpos) <= 15 then
+					minetest.chat_send_player(pname, "You can't explode smoke grenades so close to your flag!")
+					player:get_inventory():add_item("main", "grenades:smoke")
+					return
+				end
 			end
 		end
 
