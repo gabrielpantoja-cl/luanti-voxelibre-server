@@ -104,13 +104,16 @@ local fragdef = {
 
 	    -- Check the closest distance, but if that fails try targeting the farther one
 	    if hit_pos1 or check_hit(pos, target_head and footpos or headpos, v) then
-	       v:punch(player, 1, {
-			  punch_interval = 1,
-			  damage_groups = {
-			     grenade = 1,
-			     fleshy = def.explode_damage - ( (radius/3) * (target_head and headdist or footdist) )
-			  }
-				  }, nil)
+	       local dmg = def.explode_damage - ((radius/3) * (target_head and headdist or footdist))
+	       if v:is_player() then
+		  -- set_hp bypasses {immortal=1} armor group so grenades work in creative PvP
+		  v:set_hp(math.max(0, v:get_hp() - dmg), {type = "punch"})
+	       else
+		  v:punch(player, 1, {
+			     punch_interval = 1,
+			     damage_groups = {grenade = 1, fleshy = dmg}
+			  }, nil)
+	       end
 	    end
 	 end
       end

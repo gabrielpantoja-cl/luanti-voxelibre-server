@@ -14,6 +14,7 @@ minetest.register_craftitem("ctf_ranged:echarge", {
 local function process_ray(ray, user, look_dir, def)
    local hitpoint = ray:hit_object_or_node({
 	 node = function(ndef)
+	    if ndef == nil then return false end
 	    return (ndef.walkable == true and ndef.pointable == true) or ndef.groups.liquid
 	 end,
 	 object = function(obj)
@@ -25,6 +26,7 @@ local function process_ray(ray, user, look_dir, def)
    if hitpoint then
       if hitpoint.type == "node" then
 	 local nodedef = minetest.registered_nodes[minetest.get_node(hitpoint.under).name]
+	 if nodedef == nil then return end
 
 	 if nodedef.groups.snappy or (nodedef.groups.oddly_breakable_by_hand or 0) >= 3 then
 	    if not minetest.is_protected(hitpoint.under, user:get_player_name()) then
@@ -73,10 +75,16 @@ local function process_ray(ray, user, look_dir, def)
 	    end
 	 end
       elseif hitpoint.type == "object" then
-	 hitpoint.ref:punch(user, 1, {
-			       full_punch_interval = 1,
-			       damage_groups = {ranged = 1, [def.type] = 1, fleshy = def.damage}
-				     }, look_dir)
+	 local obj = hitpoint.ref
+	 if obj:is_player() then
+	    -- set_hp bypasses {immortal=1} armor group so weapons work in creative PvP
+	    obj:set_hp(math.max(0, obj:get_hp() - def.damage), {type = "punch"})
+	 else
+	    obj:punch(user, 1, {
+			 full_punch_interval = 1,
+			 damage_groups = {ranged = 1, [def.type] = 1, fleshy = def.damage}
+		      }, look_dir)
+	 end
       end
    end
 end
