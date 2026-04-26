@@ -78,7 +78,8 @@ local function process_ray(ray, user, look_dir, def)
 	 local obj = hitpoint.ref
 	 if obj:is_player() then
 	    -- set_hp bypasses {immortal=1} armor group so weapons work in creative PvP
-	    obj:set_hp(math.max(0, obj:get_hp() - def.damage), {type = "punch"})
+	    -- object=user is required by mcl_damage.from_punch (line 101) to avoid nil crash
+	    obj:set_hp(math.max(0, obj:get_hp() - def.damage), {type = "punch", object = user})
 	 else
 	    obj:punch(user, 1, {
 			 full_punch_interval = 1,

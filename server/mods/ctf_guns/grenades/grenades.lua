@@ -107,7 +107,8 @@ local fragdef = {
 	       local dmg = def.explode_damage - ((radius/3) * (target_head and headdist or footdist))
 	       if v:is_player() then
 		  -- set_hp bypasses {immortal=1} armor group so grenades work in creative PvP
-		  v:set_hp(math.max(0, v:get_hp() - dmg), {type = "punch"})
+		  -- object=player required by mcl_damage.from_punch to avoid nil crash
+		  v:set_hp(math.max(0, v:get_hp() - dmg), {type = "punch", object = player})
 	       else
 		  v:punch(player, 1, {
 			     punch_interval = 1,
