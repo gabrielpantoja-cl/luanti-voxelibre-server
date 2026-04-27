@@ -13,7 +13,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 ## Key Technologies
 
 - **Runtime**: Docker Compose v2 (`docker compose`) on the VPS. Docker Compose v1 (`docker-compose`) may still be available locally; they are interchangeable here.
-- **Container image**: `linuxserver/luanti:latest` — inside the container, the server user is `abc` (UID 911). Any file created by the container on a mounted volume ends up owned by UID 911 on the host.
+- **Container image**: `linuxserver/luanti:latest` — inside the container, the server user is `abc`. The image's default UID is 911, but `docker-compose.yml` overrides it via `PUID=1000 PGID=1000`, so files written by the container land on the host as UID 1000. On the Oracle VPS, UID 1000 is the `opc` account; the human SSH user `gabriel` is UID 1002, so files created by the container are **not readable** by `gabriel` unless permissions allow group/other access — and the container often creates dirs as `0700`, blocking `git pull`.
 - **Base game**: VoxeLibre (MineClone2) v0.90.1 at `server/games/mineclone2/`.
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
@@ -92,12 +92,12 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker c
 ssh <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -iE 'error|warning|my_mod'"
 ```
 
-When containers write to mounted volumes, permissions may break future host-side git operations. **DO NOT** run `chown -R` over the whole repo — it clobbers `server/worlds/` and `server/config/`, which must stay owned by the container user (set by `PUID` in `docker-compose.yml`, currently `1000` on the Oracle VPS). Scope the chown to only what git needs to write:
+When containers write to mounted volumes, permissions may break future host-side git operations. **DO NOT** run `chown -R` over the whole repo — it clobbers `server/worlds/` and `server/config/`, which must stay owned by the container user (set by `PUID` in `docker-compose.yml`, currently `1000` on the Oracle VPS). Scope the chown to **just the specific subdir** git is complaining about:
 
 ```bash
-ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && \
-  sudo chown -R <VPS_USER>:<VPS_USER> server/mods server/games server/landing-page \
-       server/skins scripts docs *.md *.yml *.conf 2>/dev/null || true"
+# Preferred: chown only the offending mod directory
+ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> \
+  /home/<VPS_USER>/luanti-voxelibre-server/server/mods/<mod_name>"
 ```
 
 **If you already clobbered the wrong dirs** (symptom: `Couldn't save env meta` fatal on container start), restore container ownership:
@@ -108,7 +108,12 @@ ssh <VPS_USER>@<VPS_IP> "sudo chown -R 1000:1000 \
   /home/<VPS_USER>/luanti-voxelibre-server/server/config"
 ```
 
-If `git pull` still refuses because of a file git wants to overwrite (e.g. an edit someone made on the VPS), inspect with `git diff <file>` and either commit, stash, or `git checkout -- <file>` — don't force.
+**Failed `git pull` recovery patterns:**
+- *"unable to unlink old <file>: Permission denied"* — file/dir is owned by container UID 1000 (`opc`) and gabriel (UID 1002) can't write. Chown just that subdir as above.
+- *"Your local changes to <file> would be overwritten by merge"* — two flavors:
+  1. **Genuine local edit on VPS**: `sudo git diff <file>` to inspect, then commit, stash, or `git checkout -- <file>` — don't force.
+  2. **Half-applied prior pull**: a previous `git pull` aborted mid-merge after writing `<file>` to disk but before advancing HEAD, so git now sees the new content as a "local modification". Recover with `git restore <file>` and re-pull — the next attempt fast-forwards cleanly.
+- Always inspect first; never `git reset --hard` or `git clean -fd` to "make it go away".
 
 For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/projects/proyecto-valdivia-luanti.md`.
 
