@@ -315,12 +315,55 @@ minetest.register_chatcommand("discord", {
     end
 })
 
--- Anuncio del nuevo mundo Valdivia 2.0
-local timer = 0
-minetest.register_globalstep(function(dtime)
-    timer = timer + dtime
-    if timer >= 60 then
-        timer = 0
-        minetest.chat_send_all("** NUEVO MUNDO ** Valdivia - Ciudad real de Chile recreada a escala! Conectate a luanti.gabrielpantoja.cl:30001 y explorala! **")
-    end
-end)
+-- Anuncios recurrentes por mundo.
+--
+-- Filtro por nombre del mundo (no por puerto): los tres containers usan
+-- port=30000 internamente y Docker mapea a 30001/30002 en el host, así
+-- que minetest.settings:get("port") sería idéntico en los tres.
+-- minetest.get_worldpath() termina en world | valdivia | infierno, que
+-- es lo que docker-compose monta y world_name pinea en cada .conf.
+--
+-- Cada lista rota: cada ANNOUNCEMENT_INTERVAL segundos se emite el
+-- siguiente mensaje. Lista vacía o mundo no listado → no se anuncia nada.
+
+local ANNOUNCEMENT_INTERVAL = 60
+
+local ANNOUNCEMENTS = {
+    -- Wetlands (puerto público 30000): mundo original, conservación + promo
+    world = {
+        "** WETLANDS ** Este es el mundo original del servidor, corriendo desde agosto de 2025. Respétalo y consérvalo. **",
+        "** WETLANDS ** Aquí no se destruye: construye, embellece, protege tu área con /protect_area. **",
+        "** WETLANDS ** Si quieres destruir, para eso están otros mundos. Aquí cuidamos lo construido entre todos. **",
+        "** NUEVO MUNDO ** Valdivia - Ciudad real de Chile recreada a escala! Conectate a luanti.gabrielpantoja.cl:30001 y explorala! **",
+        "** NUEVO MUNDO ** INFIERNO - Mundo caos donde se puede destruir y combatir libremente! luanti.gabrielpantoja.cl:30002 **",
+    },
+    -- Valdivia (puerto público 30001)
+    valdivia = {
+        "** VALDIVIA 2.0 ** Este mundo es una parte de la ciudad real de Valdivia, Chile, recreada a escala 1 nodo = 1 metro. **",
+        "** VALDIVIA 2.0 ** Construido desde datos geoespaciales reales: OpenStreetMap (calles, edificios, ríos) + elevación SRTM. **",
+        "** VALDIVIA 2.0 ** Cubre ~5x5 km de la ciudad: Río Valdivia, Miraflores, Torobayo, Colegio Planeta Azul y zonas industriales. **",
+        "** VALDIVIA 2.0 ** Generado automáticamente con Arnis (PR #808 de Luanti) — el terreno y los edificios no fueron construidos a mano. **",
+    },
+    -- Infierno (puerto público 30002)
+    infierno = {
+        "** INFIERNO ** Este mundo es un caos: destruye lo que quieras, sin reglas de construcción. **",
+        "** INFIERNO ** Aquí no se protege nada: rompe bloques, usa armas, libera el caos. **",
+        "** INFIERNO ** Zona de descarga total: PvP libre, destrucción libre, sin restricciones. **",
+    },
+}
+
+local world_id = (minetest.get_worldpath() or ""):match("([^/]+)/?$") or "world"
+local messages = ANNOUNCEMENTS[world_id] or {}
+
+if #messages > 0 then
+    local timer = 0
+    local idx = 1
+    minetest.register_globalstep(function(dtime)
+        timer = timer + dtime
+        if timer >= ANNOUNCEMENT_INTERVAL then
+            timer = 0
+            minetest.chat_send_all(messages[idx])
+            idx = (idx % #messages) + 1
+        end
+    end)
+end
