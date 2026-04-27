@@ -155,6 +155,9 @@ function ctf_ranged.simple_register_gun(name, def)
 							    loaded_def.inventory_image = def.texture
 							    loaded_def.inventory_overlay = def.texture_overlay
 							    loaded_def.wield_image = def.wield_texture or def.texture
+							    -- mcl_mobs valida distancia jugador↔mob contra weapon.range (default 3),
+							    -- dropeando el punch silenciosamente cuando la bala viaja más lejos.
+							    loaded_def.range = def.range
 							    loaded_def.groups.not_in_creative_inventory = 1
 								loaded_def.bullet_image = def.bullet_image
 								loaded_def.bullethole_image = def.bullethole_image
