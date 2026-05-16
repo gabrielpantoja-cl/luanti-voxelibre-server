@@ -134,18 +134,19 @@ mcl_mobs.register_mob(modname .. ":zombie_supremo", {
     type         = "monster",
     spawn_class  = "hostile",
 
-    -- Propiedades fisicas (DENTRO de initial_properties segun API mcl_mobs)
+    -- Propiedades visuales en raiz (mcl_mobs las lee como self.textures, etc.)
+    collisionbox = {-0.5, -0.01, -0.5, 0.5, 1.9, 0.5},
+    visual = "mesh",
+    mesh  = "mobs_mc_zombie.b3d",
+    visual_size = {x = 2.0, y = 2.0},
+    textures = {{"mobs_mc_zombie.png"}},
+    makes_footstep_sound = true,
+    glow = 0,
+
+    -- Solo hp_min/hp_max van dentro de initial_properties
     initial_properties = {
         hp_min = BOSS_HP,
         hp_max = BOSS_HP,
-        collisionbox = {-0.5, -0.01, -0.5, 0.5, 1.9, 0.5},
-        visual = "mesh",
-        mesh  = "mobs_mc_zombie.b3d",
-        -- visual_size escala el modelo al doble (gigante)
-        visual_size = {x = 2.0, y = 2.0},
-        textures = {{"mobs_mc_zombie.png"}},
-        makes_footstep_sound = true,
-        glow = 0,
     },
 
     -- Estadisticas de combate
