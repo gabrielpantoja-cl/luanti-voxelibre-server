@@ -13,20 +13,22 @@ end
 -- ---------------------------------------------------------------------------
 -- Configuracion del boss
 -- ---------------------------------------------------------------------------
-local BOSS_HP           = 600      -- antes 300 (doble vida)
-local BOSS_DAMAGE       = 15       -- antes 12
-local BOSS_ARMOR        = {undead = 60, fleshy = 60}  -- 40% reduccion de dano
+local BOSS_HP           = 600
+local BOSS_DAMAGE       = 15
 local BOSS_WALK         = 2.5
-local BOSS_RUN          = 4.5      -- ahora corre rapido
+local BOSS_RUN          = 4.5
 local BOSS_SPEED_FURY   = 7.0
-local BOSS_SCALE        = 3.0      -- antes 2.0 (50 % mas grande)
-local SHOCKWAVE_RADIUS  = 8        -- antes 6
+local BOSS_SCALE        = 3.0
+local MAX_DAMAGE_PER_HIT = 50      -- TOPE: ni siquiera /kill creativo lo mata de un hit
+local SHOCKWAVE_RADIUS  = 8
 local SHOCKWAVE_DELAY   = 3.0
-local FURY_HP_TRIGGER   = 400      -- ~67 % de 600
-local RESURRECTION_HP   = 200
-local ROAR_INTERVAL     = 8.0      -- ruge cada 8 s
-local SUMMON_HP         = 300      -- al 50 % invoca zombies normales
-local SUMMON_COOLDOWN   = 15.0     -- cada 15 s puede volver a invocar
+local FURY_HP_TRIGGER   = 400      -- 67 % de 600
+local RESURRECTION_HP   = 300
+local ROAR_INTERVAL     = 8.0
+-- Olas de invocacion GARANTIZADAS por umbral de HP (75%, 50%, 25%)
+local SUMMON_WAVE_1_HP  = BOSS_HP * 0.75   -- 450
+local SUMMON_WAVE_2_HP  = BOSS_HP * 0.50   -- 300
+local SUMMON_WAVE_3_HP  = BOSS_HP * 0.25   -- 150
 
 -- Variantes (sobre el mismo modelo + textura base)
 local VARIANTES = {
@@ -150,19 +152,30 @@ local function execute_roar(self, pos, variant_name)
     end
 end
 
-local function summon_zombies(self, pos)
-    local count = math.random(2, 3)
+local function summon_zombies(self, pos, wave_label)
+    local count = 4   -- 4 esbirros por ola
+    local spawned = 0
     for i = 1, count do
         local angle  = (i / count) * (2 * math.pi)
-        local offset = {x = math.cos(angle) * 3, y = 0, z = math.sin(angle) * 3}
+        local offset = {x = math.cos(angle) * 4, y = 1, z = math.sin(angle) * 4}
         local spawn_pos = vector.add(pos, offset)
         local obj = minetest.add_entity(spawn_pos, "mobs_mc:zombie")
         if obj then
+            spawned = spawned + 1
             spawn_roar_particles(spawn_pos)
+            minetest.log("action", "[" .. modname .. "] Esbirro invocado en " ..
+                minetest.pos_to_string(spawn_pos))
+        else
+            minetest.log("warning", "[" .. modname .. "] FALLO invocar esbirro en " ..
+                minetest.pos_to_string(spawn_pos))
         end
     end
     minetest.chat_send_all(
-        "[Wetlands] ¡El Zombie Supremo ha INVOCADO " .. count .. " esbirros zombi!")
+        "[Wetlands] ¡OLA " .. (wave_label or "?") ..
+        ": El Zombie Supremo INVOCO " .. spawned .. " esbirros zombi!")
+    minetest.sound_play("mobs_mc_zombie_growl", {
+        pos = pos, gain = 2.5, max_hear_distance = 40,
+    })
 end
 
 -- ---------------------------------------------------------------------------
@@ -203,8 +216,10 @@ for _, v in ipairs(VARIANTES) do
 
         xp_min = 50,
         xp_max = 100,
-        armor  = BOSS_ARMOR,
+        -- armor en mob def es solo placeholder; el real lo seteamos en on_activate
+        armor  = {undead = 100, fleshy = 100},
         damage = BOSS_DAMAGE,
+        knock_back = 0,            -- no se deja empujar
 
         walk_velocity = BOSS_WALK,
         run_velocity  = BOSS_RUN,
@@ -258,10 +273,15 @@ for _, v in ipairs(VARIANTES) do
             self._resurrecting      = false
             self._shockwave_timer   = 0.0
             self._roar_timer        = 0.0
-            self._summon_timer      = 0.0
             self._fury_active       = false
+            -- Olas de invocacion (cada una se dispara una sola vez)
+            self._summon_wave_1     = false
+            self._summon_wave_2     = false
+            self._summon_wave_3     = false
 
-            self.object:set_armor_groups({fleshy = 60, undead = 60})
+            -- IMMORTAL: el damage default de Minetest queda en 0
+            -- Nosotros aplicamos el dano manualmente en do_punch con tope
+            self.object:set_armor_groups({immortal = 1})
 
             local pos = self.object:get_pos()
             if pos then
@@ -280,11 +300,36 @@ for _, v in ipairs(VARIANTES) do
         -- do_punch: modo furia + chance de invocar esbirros + counter-push
         -- -----------------------------------------------------------------
         do_punch = function(self, hitter, time_from_last_punch, tool_capabilities, dir)
-            local hp = self.object:get_hp()
+            -- Calculo manual de dano (porque armor_groups es immortal)
+            local raw_damage = 5
+            if tool_capabilities and tool_capabilities.damage_groups then
+                raw_damage = tool_capabilities.damage_groups.fleshy
+                          or tool_capabilities.damage_groups.knockback
+                          or 5
+            end
+
+            -- Aplicar 40 % de reduccion de armadura
+            local damage = raw_damage * 0.6
+            -- TOPE: nunca mas de MAX_DAMAGE_PER_HIT por golpe (anti-instakill)
+            damage = math.min(damage, MAX_DAMAGE_PER_HIT)
+            damage = math.max(damage, 2)
+            damage = math.floor(damage)
+
+            local current_hp = self.object:get_hp()
+            local new_hp = math.max(0, current_hp - damage)
+            self.object:set_hp(new_hp)
+
             local pos = self.object:get_pos()
 
+            -- Feedback al atacante
+            if hitter and hitter:is_player() and new_hp > 0 then
+                minetest.chat_send_player(hitter:get_player_name(),
+                    "[Zombie Supremo] -" .. damage .. " HP  (" ..
+                    new_hp .. "/" .. BOSS_HP .. ")")
+            end
+
             -- Modo furia al 67 %
-            if not self._fury_active and hp <= FURY_HP_TRIGGER and hp > 0 then
+            if not self._fury_active and new_hp <= FURY_HP_TRIGGER and new_hp > 0 then
                 self._fury_active  = true
                 self.walk_velocity = BOSS_SPEED_FURY
                 self.run_velocity  = BOSS_SPEED_FURY
@@ -302,13 +347,8 @@ for _, v in ipairs(VARIANTES) do
                 end
             end
 
-            -- Bajo 50 % HP: chance de invocar esbirros al recibir dano
-            if hp <= SUMMON_HP and self._summon_timer >= SUMMON_COOLDOWN then
-                if pos and math.random(1, 3) == 1 then
-                    summon_zombies(self, pos)
-                    self._summon_timer = 0.0
-                end
-            end
+            -- Decir a mcl_mobs/Minetest que ya manejamos el dano
+            return true
         end,
 
         -- -----------------------------------------------------------------
@@ -317,20 +357,29 @@ for _, v in ipairs(VARIANTES) do
         on_step = function(self, dtime)
             self._shockwave_timer = (self._shockwave_timer or 0.0) + dtime
             self._roar_timer      = (self._roar_timer or 0.0) + dtime
-            self._summon_timer    = (self._summon_timer or 0.0) + dtime
 
             local pos = self.object:get_pos()
             if not pos then return end
             local hp = self.object:get_hp()
 
+            -- OLAS DE INVOCACION GARANTIZADAS (cada una se dispara 1 vez)
+            if not self._summon_wave_1 and hp <= SUMMON_WAVE_1_HP then
+                self._summon_wave_1 = true
+                summon_zombies(self, pos, "1 (75%)")
+            elseif not self._summon_wave_2 and hp <= SUMMON_WAVE_2_HP then
+                self._summon_wave_2 = true
+                summon_zombies(self, pos, "2 (50%)")
+            elseif not self._summon_wave_3 and hp <= SUMMON_WAVE_3_HP then
+                self._summon_wave_3 = true
+                summon_zombies(self, pos, "3 (25%)")
+            end
+
             -- Resurreccion al llegar a 1 HP (una sola vez)
             if hp <= 1 and not self._resurrection_used and not self._resurrecting then
                 self._resurrecting = true
-                self.object:set_armor_groups({immortal = 1})
                 minetest.after(0.05, function()
                     if not self.object or not self.object:get_pos() then return end
                     self.object:set_hp(RESURRECTION_HP)
-                    self.object:set_armor_groups({fleshy = 60, undead = 60})
                     self._resurrection_used = true
                     self._resurrecting      = false
                     self._fury_active       = true
