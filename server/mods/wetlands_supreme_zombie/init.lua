@@ -1,6 +1,10 @@
 -- wetlands_supreme_zombie/init.lua
--- Zombie Supremo: mob jefe gigante para el mundo Infierno (Wetlands 7+)
--- 3 variantes de textura (verde clasico / sangre / sombras)
+-- Zombie Supremo: mob jefe gigante para Wetlands (Infierno)
+-- Implementacion basada en patrones del Ender Dragon de VoxeLibre:
+--   - do_custom (no on_step) para la logica periodica
+--   - do_punch retorna false para evitar creative-instakill de mcl_mobs
+--   - is_boss + can_despawn = false + mcl_bossbars.update_boss
+--   - Manejo manual de self.health como hace el dragon
 -- Comandos: /invocar_zombie_supremo1|2|3 (alias: /invocar_zombie_supremo)
 
 local modname = minetest.get_current_modname()
@@ -10,46 +14,34 @@ if not minetest.get_modpath("mcl_mobs") then
     return
 end
 
--- ---------------------------------------------------------------------------
--- Configuracion del boss
--- ---------------------------------------------------------------------------
-local BOSS_HP           = 600
-local BOSS_DAMAGE       = 15
-local BOSS_WALK         = 2.5
-local BOSS_RUN          = 4.5
-local BOSS_SPEED_FURY   = 7.0
-local BOSS_SCALE        = 3.0
-local MAX_DAMAGE_PER_HIT = 50      -- TOPE: ni siquiera /kill creativo lo mata de un hit
-local SHOCKWAVE_RADIUS  = 8
-local SHOCKWAVE_DELAY   = 3.0
-local FURY_HP_TRIGGER   = 400      -- 67 % de 600
-local RESURRECTION_HP   = 300
-local ROAR_INTERVAL     = 8.0
--- Olas de invocacion GARANTIZADAS por umbral de HP (75%, 50%, 25%)
-local SUMMON_WAVE_1_HP  = BOSS_HP * 0.75   -- 450
-local SUMMON_WAVE_2_HP  = BOSS_HP * 0.50   -- 300
-local SUMMON_WAVE_3_HP  = BOSS_HP * 0.25   -- 150
+local has_bossbars = minetest.get_modpath("mcl_bossbars") ~= nil
 
--- Variantes (sobre el mismo modelo + textura base)
+-- ---------------------------------------------------------------------------
+-- Configuracion
+-- ---------------------------------------------------------------------------
+local BOSS_HP            = 600
+local BOSS_DAMAGE        = 15
+local BOSS_WALK          = 2.5
+local BOSS_RUN           = 4.5
+local BOSS_SPEED_FURY    = 7.0
+local BOSS_SCALE         = 3.0
+local MAX_DAMAGE_PER_HIT = 40       -- tope absoluto por golpe (anti-instakill)
+local SHOCKWAVE_RADIUS   = 8
+local SHOCKWAVE_DELAY    = 3.0
+local FURY_HP_TRIGGER    = 400      -- 67 % de 600
+local RESURRECTION_HP    = 300
+local ROAR_INTERVAL      = 8.0
+local SUMMON_WAVE_1_HP   = BOSS_HP * 0.75   -- 450
+local SUMMON_WAVE_2_HP   = BOSS_HP * 0.50   -- 300
+local SUMMON_WAVE_3_HP   = BOSS_HP * 0.25   -- 150
+
 local VARIANTES = {
-    {
-        id      = "zombie_supremo1",
-        nombre  = "Abominación Necrótica",
-        cmd     = "invocar_zombie_supremo1",
-        skin    = "mobs_mc_zombie.png",                            -- verde clasico
-    },
-    {
-        id      = "zombie_supremo2",
-        nombre  = "Mutante de Sangre",
-        cmd     = "invocar_zombie_supremo2",
-        skin    = "mobs_mc_zombie.png^[colorize:#8b0000:160",       -- rojo sangre
-    },
-    {
-        id      = "zombie_supremo3",
-        nombre  = "Coloso Tenebroso",
-        cmd     = "invocar_zombie_supremo3",
-        skin    = "mobs_mc_zombie.png^[colorize:#1a001a:180",       -- morado sombra
-    },
+    { id = "zombie_supremo1", nombre = "Abominación Necrótica",
+      cmd = "invocar_zombie_supremo1", skin = "mobs_mc_zombie.png",                       color = "green" },
+    { id = "zombie_supremo2", nombre = "Mutante de Sangre",
+      cmd = "invocar_zombie_supremo2", skin = "mobs_mc_zombie.png^[colorize:#8b0000:160", color = "red"   },
+    { id = "zombie_supremo3", nombre = "Coloso Tenebroso",
+      cmd = "invocar_zombie_supremo3", skin = "mobs_mc_zombie.png^[colorize:#1a001a:180", color = "purple"},
 }
 
 -- ---------------------------------------------------------------------------
@@ -122,13 +114,9 @@ local function execute_shockwave(self, pos)
                     push_dir = {x = 1, y = 0, z = 0}
                 end
                 push_dir = vector.normalize(push_dir)
-                obj:add_velocity({
-                    x = push_dir.x * 12,
-                    y = 7,
-                    z = push_dir.z * 12,
-                })
+                obj:add_velocity({x = push_dir.x * 12, y = 7, z = push_dir.z * 12})
                 minetest.chat_send_player(obj:get_player_name(),
-                    "[Zombie Supremo] ¡ONDA DE CHOQUE! Te ha lanzado por los aires.")
+                    "[Zombie Supremo] ¡ONDA DE CHOQUE!")
                 hit_count = hit_count + 1
             end
         end
@@ -137,12 +125,11 @@ local function execute_shockwave(self, pos)
     return hit_count
 end
 
-local function execute_roar(self, pos, variant_name)
+local function execute_roar(pos, variant_name)
     spawn_roar_particles(pos)
     minetest.sound_play("mobs_mc_zombie_growl", {
-        pos = pos, gain = 2.0, max_hear_distance = 32,
+        pos = pos, gain = 2.5, max_hear_distance = 32,
     })
-    -- Aviso visual a jugadores cercanos
     for _, player in ipairs(minetest.get_connected_players()) do
         local ppos = player:get_pos()
         if ppos and vector.distance(pos, ppos) <= 30 then
@@ -152,30 +139,26 @@ local function execute_roar(self, pos, variant_name)
     end
 end
 
-local function summon_zombies(self, pos, wave_label)
-    local count = 4   -- 4 esbirros por ola
+local function summon_zombies(pos, wave_label)
+    local count = 4
     local spawned = 0
     for i = 1, count do
-        local angle  = (i / count) * (2 * math.pi)
-        local offset = {x = math.cos(angle) * 4, y = 1, z = math.sin(angle) * 4}
+        local angle     = (i / count) * (2 * math.pi)
+        local offset    = {x = math.cos(angle) * 4, y = 1, z = math.sin(angle) * 4}
         local spawn_pos = vector.add(pos, offset)
         local obj = minetest.add_entity(spawn_pos, "mobs_mc:zombie")
         if obj then
             spawned = spawned + 1
             spawn_roar_particles(spawn_pos)
-            minetest.log("action", "[" .. modname .. "] Esbirro invocado en " ..
-                minetest.pos_to_string(spawn_pos))
-        else
-            minetest.log("warning", "[" .. modname .. "] FALLO invocar esbirro en " ..
-                minetest.pos_to_string(spawn_pos))
         end
     end
-    minetest.chat_send_all(
-        "[Wetlands] ¡OLA " .. (wave_label or "?") ..
+    minetest.chat_send_all("[Wetlands] ¡OLA " .. wave_label ..
         ": El Zombie Supremo INVOCO " .. spawned .. " esbirros zombi!")
     minetest.sound_play("mobs_mc_zombie_growl", {
         pos = pos, gain = 2.5, max_hear_distance = 40,
     })
+    minetest.log("action", "[" .. modname .. "] Ola " .. wave_label ..
+        ": invocados " .. spawned .. " esbirros en " .. minetest.pos_to_string(pos))
 end
 
 -- ---------------------------------------------------------------------------
@@ -185,41 +168,38 @@ for _, v in ipairs(VARIANTES) do
     local entity_name = modname .. ":" .. v.id
 
     mcl_mobs.register_mob(entity_name, {
-        description = "Zombie Supremo - " .. v.nombre,
-        type        = "monster",
-        spawn_class = "hostile",
+        description  = "Zombie Supremo - " .. v.nombre,
+        type         = "monster",
+        spawn_class  = "hostile",
+        is_boss      = true,                 -- marca de jefe
+        can_despawn  = false,                 -- no se borra al alejarse
+        ignores_nametag = true,               -- no muestra nametag (boss bar lo reemplaza)
 
-        -- Visual en raiz (mcl_mobs lee desde aqui)
         visual       = "mesh",
         mesh         = "mobs_mc_zombie.b3d",
         visual_size  = {x = BOSS_SCALE, y = BOSS_SCALE, z = BOSS_SCALE},
-        -- Textura en formato 2-capas: {armor, skin} (igual que VoxeLibre)
         textures     = {{"mobs_mc_empty.png", v.skin}},
         makes_footstep_sound = true,
         glow         = 3,
 
-        -- Head tracking: la cabeza sigue al jugador cercano
         head_swivel  = "head.control",
         head_eye_height    = 1.55 * BOSS_SCALE,
         head_bone_position = vector.new(0, 6.3, 0),
         curiosity          = 10,
         head_pitch_multiplier = -1,
 
-        -- Colision proporcional al tamano
-        collisionbox = {-0.6, -0.01, -0.6, 0.6, 1.89 * BOSS_SCALE, 0.6},
-
         initial_properties = {
             hp_min = BOSS_HP,
             hp_max = BOSS_HP,
             breath_max = -1,
+            collisionbox = {-0.6, -0.01, -0.6, 0.6, 1.89 * BOSS_SCALE, 0.6},
         },
 
         xp_min = 50,
         xp_max = 100,
-        -- armor en mob def es solo placeholder; el real lo seteamos en on_activate
-        armor  = {undead = 100, fleshy = 100},
+        armor  = {undead = 100, fleshy = 100},   -- placeholder; el real es immortal
         damage = BOSS_DAMAGE,
-        knock_back = 0,            -- no se deja empujar
+        knock_back = 0,
 
         walk_velocity = BOSS_WALK,
         run_velocity  = BOSS_RUN,
@@ -235,13 +215,14 @@ for _, v in ipairs(VARIANTES) do
         attack_players = true,
         attack_npcs    = true,
         reach          = 4,
-        harmed_by_heal = true,
 
-        -- Inmune a la luz solar (es un boss, no se quema)
+        -- Inmune al ambiente (es un boss)
+        fire_resistant      = true,
+        fire_damage         = 0,
+        lava_damage         = 0,
         ignited_by_sunlight = false,
         sunlight_damage     = 0,
 
-        -- Animaciones CORRECTAS del modelo mobs_mc_zombie.b3d
         animation = {
             stand_start = 40, stand_end = 49, stand_speed = 2,
             walk_start  = 0,  walk_end  = 39, speed_normal = 25,
@@ -259,28 +240,27 @@ for _, v in ipairs(VARIANTES) do
         },
 
         drops = {
-            {name = "mcl_core:emerald",     chance = 1,  min = 3, max = 8},
-            {name = "mcl_core:diamond",     chance = 1,  min = 1, max = 3},
-            {name = "mcl_books:book",       chance = 1,  min = 1, max = 1},
+            {name = "mcl_core:emerald",      chance = 1, min = 3, max = 8},
+            {name = "mcl_core:diamond",      chance = 1, min = 1, max = 3},
+            {name = "mcl_books:book",        chance = 1, min = 1, max = 1},
             {name = "mcl_core:emeraldblock", chance = 3, min = 1, max = 1},
         },
 
-        -- -----------------------------------------------------------------
-        -- on_activate: inicializacion
-        -- -----------------------------------------------------------------
+        -- ---------------------------------------------------------------
+        -- on_activate
+        -- ---------------------------------------------------------------
         on_activate = function(self, staticdata, dtime_s)
             self._resurrection_used = false
             self._resurrecting      = false
             self._shockwave_timer   = 0.0
             self._roar_timer        = 0.0
             self._fury_active       = false
-            -- Olas de invocacion (cada una se dispara una sola vez)
             self._summon_wave_1     = false
             self._summon_wave_2     = false
             self._summon_wave_3     = false
 
-            -- IMMORTAL: el damage default de Minetest queda en 0
-            -- Nosotros aplicamos el dano manualmente en do_punch con tope
+            -- IMMORTAL: bloquea el dano default Y el creative-instakill de mcl_mobs.
+            -- Aplicamos dano manual en do_punch via self.health (igual que el dragon).
             self.object:set_armor_groups({immortal = 1})
 
             local pos = self.object:get_pos()
@@ -296,40 +276,48 @@ for _, v in ipairs(VARIANTES) do
             end
         end,
 
-        -- -----------------------------------------------------------------
-        -- do_punch: modo furia + chance de invocar esbirros + counter-push
-        -- -----------------------------------------------------------------
-        do_punch = function(self, hitter, time_from_last_punch, tool_capabilities, dir)
-            -- Calculo manual de dano (porque armor_groups es immortal)
-            local raw_damage = 5
-            if tool_capabilities and tool_capabilities.damage_groups then
-                raw_damage = tool_capabilities.damage_groups.fleshy
-                          or tool_capabilities.damage_groups.knockback
-                          or 5
+        -- ---------------------------------------------------------------
+        -- do_punch: SIEMPRE retorna false para saltarse:
+        --   - el creative-instakill (combat.lua:550)
+        --   - el calculo de dano default de mcl_mobs
+        -- Aplicamos dano manualmente con tope MAX_DAMAGE_PER_HIT.
+        -- ---------------------------------------------------------------
+        do_punch = function(self, hitter, tflp, tool_capabilities, dir)
+            -- Solo jugadores le pueden hacer dano (boss vs. mob fight no aplica)
+            if not hitter or not hitter:is_player() then
+                return false
             end
 
-            -- Aplicar 40 % de reduccion de armadura
+            -- Calculo manual de dano basado en el arma
+            local raw_damage = 4
+            if tool_capabilities and tool_capabilities.damage_groups then
+                raw_damage = tool_capabilities.damage_groups.fleshy or 4
+            end
+
+            -- 40 % de reduccion de armadura + tope absoluto
             local damage = raw_damage * 0.6
-            -- TOPE: nunca mas de MAX_DAMAGE_PER_HIT por golpe (anti-instakill)
             damage = math.min(damage, MAX_DAMAGE_PER_HIT)
             damage = math.max(damage, 2)
             damage = math.floor(damage)
 
-            local current_hp = self.object:get_hp()
-            local new_hp = math.max(0, current_hp - damage)
-            self.object:set_hp(new_hp)
+            -- Aplicar dano a self.health (como hace el dragon)
+            self.health = (self.health or BOSS_HP) - damage
+            if self.health < 0 then self.health = 0 end
+            self.object:set_hp(math.max(1, self.health))   -- nunca 0 aqui (lo manejamos en do_custom)
 
             local pos = self.object:get_pos()
 
             -- Feedback al atacante
-            if hitter and hitter:is_player() and new_hp > 0 then
-                minetest.chat_send_player(hitter:get_player_name(),
-                    "[Zombie Supremo] -" .. damage .. " HP  (" ..
-                    new_hp .. "/" .. BOSS_HP .. ")")
-            end
+            minetest.chat_send_player(hitter:get_player_name(),
+                "[Zombie Supremo] -" .. damage .. " HP  (" ..
+                self.health .. "/" .. BOSS_HP .. ")")
+
+            minetest.sound_play("mobs_mc_zombie_hurt", {
+                pos = pos, gain = 1.5, max_hear_distance = 24,
+            })
 
             -- Modo furia al 67 %
-            if not self._fury_active and new_hp <= FURY_HP_TRIGGER and new_hp > 0 then
+            if not self._fury_active and self.health <= FURY_HP_TRIGGER and self.health > 0 then
                 self._fury_active  = true
                 self.walk_velocity = BOSS_SPEED_FURY
                 self.run_velocity  = BOSS_SPEED_FURY
@@ -338,8 +326,8 @@ for _, v in ipairs(VARIANTES) do
                     "[Wetlands] ¡El Zombie Supremo entra en MODO FURIA! ¡Corre!")
             end
 
-            -- Contra-empuje al atacante (cuando esta en furia)
-            if self._fury_active and hitter and hitter:is_player() and pos then
+            -- Contra-empuje al atacante en furia
+            if self._fury_active and pos then
                 local hpos = hitter:get_pos()
                 if hpos then
                     local push = vector.normalize(vector.subtract(hpos, pos))
@@ -347,38 +335,48 @@ for _, v in ipairs(VARIANTES) do
                 end
             end
 
-            -- Decir a mcl_mobs/Minetest que ya manejamos el dano
-            return true
+            -- Retornar false = saltar el resto del on_punch de mcl_mobs
+            return false
         end,
 
-        -- -----------------------------------------------------------------
-        -- on_step: resurreccion + shockwave + rugido periodico + summon timer
-        -- -----------------------------------------------------------------
-        on_step = function(self, dtime)
+        -- ---------------------------------------------------------------
+        -- do_custom: callback periodico de mcl_mobs (mcl_mobs IGNORA on_step)
+        -- Aqui van: boss bar, resurreccion, olas de invocacion, rugido,
+        -- onda de choque y deteccion de muerte.
+        -- ---------------------------------------------------------------
+        do_custom = function(self, dtime)
             self._shockwave_timer = (self._shockwave_timer or 0.0) + dtime
             self._roar_timer      = (self._roar_timer or 0.0) + dtime
 
             local pos = self.object:get_pos()
             if not pos then return end
-            local hp = self.object:get_hp()
 
-            -- OLAS DE INVOCACION GARANTIZADAS (cada una se dispara 1 vez)
-            if not self._summon_wave_1 and hp <= SUMMON_WAVE_1_HP then
-                self._summon_wave_1 = true
-                summon_zombies(self, pos, "1 (75%)")
-            elseif not self._summon_wave_2 and hp <= SUMMON_WAVE_2_HP then
-                self._summon_wave_2 = true
-                summon_zombies(self, pos, "2 (50%)")
-            elseif not self._summon_wave_3 and hp <= SUMMON_WAVE_3_HP then
-                self._summon_wave_3 = true
-                summon_zombies(self, pos, "3 (25%)")
+            self.health = self.health or BOSS_HP
+
+            -- Boss bar (HUD de jefe arriba en pantalla)
+            if has_bossbars and self.health > 0 then
+                local pct_name = v.nombre .. " (" .. self.health .. "/" .. BOSS_HP .. ")"
+                mcl_bossbars.update_boss(self.object, pct_name, v.color)
             end
 
-            -- Resurreccion al llegar a 1 HP (una sola vez)
-            if hp <= 1 and not self._resurrection_used and not self._resurrecting then
+            -- Olas de invocacion GARANTIZADAS por HP threshold
+            if not self._summon_wave_1 and self.health <= SUMMON_WAVE_1_HP then
+                self._summon_wave_1 = true
+                summon_zombies(pos, "1 (75%)")
+            elseif not self._summon_wave_2 and self.health <= SUMMON_WAVE_2_HP then
+                self._summon_wave_2 = true
+                summon_zombies(pos, "2 (50%)")
+            elseif not self._summon_wave_3 and self.health <= SUMMON_WAVE_3_HP then
+                self._summon_wave_3 = true
+                summon_zombies(pos, "3 (25%)")
+            end
+
+            -- Resurreccion al llegar a 0 HP (una sola vez)
+            if self.health <= 0 and not self._resurrection_used and not self._resurrecting then
                 self._resurrecting = true
                 minetest.after(0.05, function()
                     if not self.object or not self.object:get_pos() then return end
+                    self.health = RESURRECTION_HP
                     self.object:set_hp(RESURRECTION_HP)
                     self._resurrection_used = true
                     self._resurrecting      = false
@@ -394,6 +392,14 @@ for _, v in ipairs(VARIANTES) do
                 end)
             end
 
+            -- Muerte definitiva (segunda muerte): permitir morir
+            if self.health <= 0 and self._resurrection_used and not self._final_death then
+                self._final_death = true
+                self.object:set_armor_groups({fleshy = 100})
+                self.object:set_hp(0)
+                if has_bossbars then mcl_bossbars.update_boss(self.object, nil, nil) end
+            end
+
             -- Onda de choque cuando hay jugadores cerca
             if self._shockwave_timer >= SHOCKWAVE_DELAY then
                 for _, player in ipairs(minetest.get_connected_players()) do
@@ -406,7 +412,7 @@ for _, v in ipairs(VARIANTES) do
                 end
             end
 
-            -- Rugido periodico (intimidacion + feedback visual/audio)
+            -- Rugido periodico
             if self._roar_timer >= ROAR_INTERVAL then
                 self._roar_timer = 0.0
                 local any_close = false
@@ -417,7 +423,7 @@ for _, v in ipairs(VARIANTES) do
                         break
                     end
                 end
-                if any_close then execute_roar(self, pos, v.nombre) end
+                if any_close then execute_roar(pos, v.nombre) end
             end
 
             -- Mantener velocidad de furia
@@ -445,7 +451,7 @@ for _, v in ipairs(VARIANTES) do
         params      = "",
         description = "Invoca al Zombie Supremo (" .. v.nombre .. ") en tu posicion",
         privs       = {server = true},
-        func = function(name, param)
+        func = function(name)
             local player = minetest.get_player_by_name(name)
             if not player then return false, "Jugador no encontrado." end
             local pos = player:get_pos()
@@ -474,14 +480,12 @@ minetest.register_entity(":" .. modname .. ":zombie_supremo", {
     end,
 })
 
--- ---------------------------------------------------------------------------
--- Alias /invocar_zombie_supremo → variante 1
--- ---------------------------------------------------------------------------
+-- Alias legacy
 minetest.register_chatcommand("invocar_zombie_supremo", {
     params      = "",
     description = "Invoca al Zombie Supremo (alias de /invocar_zombie_supremo1)",
     privs       = {server = true},
-    func = function(name, param)
+    func = function(name)
         local player = minetest.get_player_by_name(name)
         if not player then return false, "Jugador no encontrado." end
         local pos = player:get_pos()
@@ -528,8 +532,6 @@ minetest.register_craftitem(modname .. ":spawn_egg", {
             if not minetest.is_creative_enabled(name) then
                 itemstack:take_item()
             end
-        else
-            minetest.chat_send_player(name, "[Zombie Supremo] Error al invocar.")
         end
         return itemstack
     end,
@@ -537,7 +539,6 @@ minetest.register_craftitem(modname .. ":spawn_egg", {
 
 local has_mobitems = minetest.get_modpath("mcl_mobitems")
 local flesh_item   = has_mobitems and "mcl_mobitems:rotten_flesh" or "mcl_core:stone"
-
 minetest.register_craft({
     output = modname .. ":spawn_egg",
     recipe = {
@@ -547,4 +548,4 @@ minetest.register_craft({
     },
 })
 
-minetest.log("action", "[" .. modname .. "] Loaded successfully (giant + interactive)")
+minetest.log("action", "[" .. modname .. "] Loaded (do_custom + return false + boss bar)")
