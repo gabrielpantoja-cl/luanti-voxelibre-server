@@ -1,46 +1,68 @@
 #!/bin/bash
-# ============================================
-# SCRIPT DE BACKUP - VEGAN WETLANDS 🌱
-# ============================================
+# Backup de los 3 mundos Luanti: world (Wetlands), valdivia, infierno.
+# Hace snapshot consistente de SQLite con `sqlite3 .backup`, copia el resto
+# con rsync excluyendo basura, y comprime el staging a tar.gz.
+# Corre dentro del contenedor luanti-voxelibre-backup (Alpine + dcron).
+set -u
 
-# Configuración
 BACKUP_DIR="/backups"
 WORLD_DIR="/worlds"
 DATE=$(date +%Y%m%d-%H%M%S)
-BACKUP_NAME="vegan_wetlands_backup_${DATE}"
+BACKUP_NAME="luanti_worlds_backup_${DATE}"
+WORLDS="world valdivia infierno"
 MAX_BACKUPS=8
 
-echo "🌱 [$(date)] Iniciando backup de Vegan Wetlands..."
-
-# Crear directorio de backup si no existe
 mkdir -p "$BACKUP_DIR"
 
-# Crear backup comprimido del mundo
-echo "📦 Creando backup del mundo..."
-tar -czf "${BACKUP_DIR}/${BACKUP_NAME}.tar.gz" -C "$WORLD_DIR" . 2>/dev/null
+STAGING=$(mktemp -d)
+trap 'rm -rf "$STAGING"' EXIT
 
-if [ $? -eq 0 ]; then
-    echo "✅ Backup creado exitosamente: ${BACKUP_NAME}.tar.gz"
-    
-    # Limpiar backups antiguos (mantener solo los últimos MAX_BACKUPS)
-    echo "🧹 Limpiando backups antiguos..."
-    cd "$BACKUP_DIR"
-    ls -t vegan_wetlands_backup_*.tar.gz | tail -n +$((MAX_BACKUPS + 1)) | xargs -r rm
-    
-    echo "📊 Backups actuales:"
-    ls -lh vegan_wetlands_backup_*.tar.gz 2>/dev/null || echo "No hay backups anteriores"
-    
-    # Opcional: notificar a webhook de n8n o Discord
-    if [ ! -z "$WEBHOOK_URL" ]; then
-        curl -X POST "$WEBHOOK_URL" \
-             -H "Content-Type: application/json" \
-             -d "{\"content\": \"🌱 Backup de Vegan Wetlands completado: ${BACKUP_NAME}.tar.gz\"}" \
-             2>/dev/null || echo "⚠️  No se pudo enviar notificación"
+echo "[$(date)] Snapshot consistente de mundos..."
+for w in $WORLDS; do
+  if [ ! -d "$WORLD_DIR/$w" ]; then
+    echo "  WARN: $w no existe en $WORLD_DIR, se omite"
+    continue
+  fi
+  mkdir -p "$STAGING/$w"
+
+  # Snapshot consistente de cada SQLite del mundo.
+  # Los servers Luanti mantienen lock continuo; usamos .timeout 60s y
+  # caemos a copia directa si el lock no se libera (degrada al mismo
+  # comportamiento del tar legacy: snapshot puede quedar levemente
+  # inconsistente pero SQLite suele recuperarse al reabrir).
+  for db in "$WORLD_DIR/$w"/*.sqlite; do
+    [ -f "$db" ] || continue
+    dest="$STAGING/$w/$(basename "$db")"
+    if sqlite3 -cmd ".timeout 60000" "$db" ".backup '$dest'" 2>/dev/null; then
+      echo "  OK snapshot: $(basename "$db")"
+    else
+      echo "  WARN: $(basename "$db") locked tras 60s, fallback a cp"
+      cp "$db" "$dest"
+      sync
     fi
-    
-else
-    echo "❌ Error al crear backup"
-    exit 1
-fi
+  done
 
-echo "🌱 [$(date)] Backup completado"
+  # Resto de archivos (excluye los SQLite ya snapshoteados y backups viejos)
+  rsync -a \
+    --exclude='*.sqlite' \
+    --exclude='*.sqlite-journal' \
+    --exclude='*.sqlite-wal' \
+    --exclude='*.sqlite-shm' \
+    --exclude='*.sqlite.backup.*' \
+    --exclude='*.bak.*' \
+    "$WORLD_DIR/$w/" "$STAGING/$w/"
+done
+
+echo "[$(date)] Comprimiendo a $BACKUP_NAME.tar.gz..."
+tar -czf "$BACKUP_DIR/${BACKUP_NAME}.tar.gz" -C "$STAGING" .
+
+SIZE=$(du -sh "$BACKUP_DIR/${BACKUP_NAME}.tar.gz" | cut -f1)
+echo "[$(date)] Backup OK: ${BACKUP_NAME}.tar.gz ($SIZE)"
+
+# Rotación inline: matchea ambos prefijos (legacy vegan_wetlands_* y nuevo luanti_worlds_*)
+cd "$BACKUP_DIR"
+ls -t luanti_worlds_backup_*.tar.gz vegan_wetlands_backup_*.tar.gz 2>/dev/null \
+  | tail -n +$((MAX_BACKUPS + 1)) | xargs -r rm -f
+
+echo "[$(date)] Backups actuales en disco:"
+ls -lh luanti_worlds_backup_*.tar.gz vegan_wetlands_backup_*.tar.gz 2>/dev/null || true

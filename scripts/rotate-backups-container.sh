@@ -20,21 +20,21 @@ if [ ! -d "$BACKUP_DIR" ]; then
 fi
 
 # Contar backups antes de limpiar
-TOTAL_BEFORE=$(find "$BACKUP_DIR" -name "vegan_wetlands_backup_*.tar.gz" | wc -l)
+TOTAL_BEFORE=$(find "$BACKUP_DIR" -maxdepth 1 \( -name "luanti_worlds_backup_*.tar.gz" -o -name "vegan_wetlands_backup_*.tar.gz" \) | wc -l)
 SIZE_BEFORE=$(du -sh "$BACKUP_DIR" | cut -f1)
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 📊 Estado actual: $TOTAL_BEFORE backups ($SIZE_BEFORE)"
 
-# Eliminar backups más antiguos que RETENTION_DAYS
+# Eliminar backups más antiguos que RETENTION_DAYS (ambos prefijos legacy + actual)
 DELETED=0
-find "$BACKUP_DIR" -name "vegan_wetlands_backup_*.tar.gz" -type f -mtime +$RETENTION_DAYS | while read -r backup; do
+find "$BACKUP_DIR" -maxdepth 1 \( -name "luanti_worlds_backup_*.tar.gz" -o -name "vegan_wetlands_backup_*.tar.gz" \) -type f -mtime +$RETENTION_DAYS | while read -r backup; do
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] 🗑️  Eliminando: $(basename "$backup")"
     rm -f "$backup"
     DELETED=$((DELETED + 1))
 done
 
 # Contar backups después de limpiar
-TOTAL_AFTER=$(find "$BACKUP_DIR" -name "vegan_wetlands_backup_*.tar.gz" | wc -l)
+TOTAL_AFTER=$(find "$BACKUP_DIR" -maxdepth 1 \( -name "luanti_worlds_backup_*.tar.gz" -o -name "vegan_wetlands_backup_*.tar.gz" \) | wc -l)
 SIZE_AFTER=$(du -sh "$BACKUP_DIR" | cut -f1)
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Rotación completada:"
@@ -45,7 +45,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')]    - Espacio después: $SIZE_AFTER"
 
 # Listar los 5 backups más recientes
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] 📋 Backups más recientes:"
-find "$BACKUP_DIR" -name "vegan_wetlands_backup_*.tar.gz" -type f -exec ls -lh {} \; | \
+find "$BACKUP_DIR" -maxdepth 1 \( -name "luanti_worlds_backup_*.tar.gz" -o -name "vegan_wetlands_backup_*.tar.gz" \) -type f -exec ls -lh {} \; | \
     sort -k6,7 -r | head -5 | awk '{print $NF}' | while read -r filename; do
     echo "[$(date '+%Y-%m-%d %H:%M:%S')]    ✓ $(basename "$filename")"
 done
