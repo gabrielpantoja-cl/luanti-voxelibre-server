@@ -24,7 +24,7 @@ edita la tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua`.
 | **Schneider / Circunvalacion** | `/teleport 5747,-44,-4000` | | Cruce Schneider con Circunvalacion |
 | **Los Fundadores** | `/teleport 4360,-51,-4211` | | |
 | **Plaza Londres (Huachocopihue)** | `/teleport 3761,-43,-3170` | | |
-| **Asociación de Ferroviarios** | `/teleport 5054,-49,-2077` | | Destino del teletransportador `/ir` |
+| **Asociación de Ferroviarios** | `/teleport 5079,-50,-2076` | | Destino del teletransportador `/ir` |
 | **Colegio Windsor** | `/teleport 3727,-44,-2619` | | Francia / Simpson |
 | **Puente Pedro de Valdivia** | `/teleport 3111,-50,-176` | | Cruza el Rio Valdivia |
 
