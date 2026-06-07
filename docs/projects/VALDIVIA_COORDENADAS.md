@@ -8,7 +8,7 @@
 
 El mod `valdivia_teleporter` (solo Valdivia, 30001) ofrece un menú de teletransporte sin necesidad
 de `/teleport`: escribe **`/ir`** o haz click derecho en el pedestal `valdivia_teleporter:pad`.
-Destinos actuales: Planeta Azul (spawn), Los Fundadores, Santa Elena, Huachocopihue. Para añadir más,
+Destinos actuales: Planeta Azul (spawn), Los Fundadores, Santa Elena, Huachocopihue, Asociación de Ferroviarios. Para añadir más,
 edita la tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua`.
 
 ## Coordenadas clave (lugares públicos)
@@ -24,6 +24,7 @@ edita la tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua`.
 | **Schneider / Circunvalacion** | `/teleport 5747,-44,-4000` | | Cruce Schneider con Circunvalacion |
 | **Los Fundadores** | `/teleport 4360,-51,-4211` | | |
 | **Plaza Londres (Huachocopihue)** | `/teleport 3761,-43,-3170` | | |
+| **Asociación de Ferroviarios** | `/teleport 5054,-49,-2077` | | Destino del teletransportador `/ir` |
 | **Colegio Windsor** | `/teleport 3727,-44,-2619` | | Francia / Simpson |
 | **Puente Pedro de Valdivia** | `/teleport 3111,-50,-176` | | Cruza el Rio Valdivia |
 

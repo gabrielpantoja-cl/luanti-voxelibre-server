@@ -15,6 +15,7 @@ local DESTINOS = {
     {id = "fundadores",    nombre = "Los Fundadores",       pos = {x = 4360, y = -51, z = -4211}},
     {id = "santa_elena",   nombre = "Santa Elena",          pos = {x = 5844, y = -51, z = -4532}},
     {id = "huachocopihue", nombre = "Huachocopihue",        pos = {x = 3761, y = -43, z = -3170}},
+    {id = "ferroviarios",  nombre = "Asociación de Ferroviarios", pos = {x = 5054, y = -49, z = -2077}},
 }
 
 local FORMNAME = "valdivia_teleporter:menu"
