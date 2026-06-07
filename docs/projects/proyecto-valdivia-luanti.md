@@ -369,21 +369,34 @@ El mundo en produccion cubre:
 - [x] Verificar acceso publico en `luanti.gabrielpantoja.cl:30001`
 - [x] Ambos servidores corriendo 24/7
 
-### FASE 4 -- Mod de bordes y navegacion (PENDIENTE)
+### FASE 4 -- Mod de bordes y navegacion (PARCIAL)
 
-#### 4.1 Mod `valdivia_borders` -- Barrera de bordes
+#### 4.1 Mod `valdivia_borders` -- Barrera de bordes (PENDIENTE)
 ```lua
 -- Prevenir que jugadores caigan al vacio fuera del area generada
 -- Detectar cuando un jugador se acerca al borde y teletransportarlo de vuelta
 -- Mostrar mensaje: "Has llegado al limite de la ciudad. Zona en expansion..."
 ```
 
-#### 4.2 Mod `valdivia_nav` -- Navegacion por la ciudad
-```lua
--- Senales con nombres de calles reales (extraidos de OSM)
--- Mapa interactivo en formspec con puntos de interes
--- Comando /valdivia_tp <lugar> para teletransportarse a hitos
-```
+#### 4.2 Mod `valdivia_teleporter` -- Navegacion por la ciudad (HECHO -- 7 jun 2026)
+
+Materializado como **`valdivia_teleporter`** (`server/mods/valdivia_teleporter/`):
+- Comando **`/ir`** y nodo pedestal **`valdivia_teleporter:pad`** (`on_rightclick`) abren un
+  menu formspec con las ubicaciones predefinidas.
+- Solo cargado en Valdivia (`load_mod_valdivia_teleporter = true` en `luanti-valdivia.conf` +
+  `world.mt` del VPS). Pedestal `diggable = false` (anti-grief). Texturas propias 16x16
+  regenerables con `tools/generate_textures.py`.
+- Las coordenadas viven en la tabla `DESTINOS` de `init.lua`. Para anadir un destino: agregar una
+  fila ahi (id, nombre, pos) y reiniciar `luanti-valdivia`.
+
+| Destino | POS (x, y, z) |
+|---------|---------------|
+| Planeta Azul (spawn) | `2389, -55, -2887` |
+| Los Fundadores | `4360, -51, -4211` |
+| Santa Elena | `5844, -51, -4532` |
+| Huachocopihue | `3761, -43, -3170` |
+
+Pendiente futuro: senaletica de calles OSM y mapa interactivo con mas puntos de interes.
 
 ### FASE 5 -- Enriquecimiento manual con WorldEdit (FUTURO)
 

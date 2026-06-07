@@ -4,6 +4,13 @@
 **Mundo:** v4 (5.8 x 7.7 km, 112 MB)
 **Bbox real:** -39.862,-73.285,-39.810,-73.195
 
+## Teletransportador en el juego
+
+El mod `valdivia_teleporter` (solo Valdivia, 30001) ofrece un menú de teletransporte sin necesidad
+de `/teleport`: escribe **`/ir`** o haz click derecho en el pedestal `valdivia_teleporter:pad`.
+Destinos actuales: Planeta Azul (spawn), Los Fundadores, Santa Elena, Huachocopihue. Para añadir más,
+edita la tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua`.
+
 ## Coordenadas clave (lugares públicos)
 
 | Lugar | Comando teleport | Coords reales (lat, lng) | Notas |
