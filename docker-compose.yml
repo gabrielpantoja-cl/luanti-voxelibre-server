@@ -106,7 +106,9 @@ services:
     ports:
       - "30001:30000/udp"
     volumes:
-      - ./server/config/luanti-valdivia.conf:/config/.minetest/minetest.conf
+      # IMPORTANTE: el server lee --config main-config/minetest.conf (ver init-luanti-config/run
+      # del image linuxserver). Montar en /config/.minetest/minetest.conf NO se lee. Por eso va aquí.
+      - ./server/config/luanti-valdivia.conf:/config/.minetest/main-config/minetest.conf
       - ./server/mods:/config/.minetest/mods
       - ./server/worlds/valdivia:/config/.minetest/worlds/valdivia
       - ./server/games:/config/.minetest/games
