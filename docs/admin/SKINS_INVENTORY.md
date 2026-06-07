@@ -65,7 +65,7 @@
 ## 📁 Estructura de Archivos
 
 ```
-server/worlds/world/
+server/worlds/original/
 ├── _world_folder_media/
 │   └── textures/
 │       ├── granjero_aldeano.png          # ✅ 64x32

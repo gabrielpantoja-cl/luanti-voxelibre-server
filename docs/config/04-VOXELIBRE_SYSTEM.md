@@ -213,7 +213,7 @@ VoxeLibre utiliza un sistema de mods específico que difiere del Luanti vanilla:
    - Mods del juego base VoxeLibre
    - Solo se cargan si no hay conflictos de nombres
 
-3. **`/config/.minetest/worlds/world/world.mt`** - **CONFIGURACIÓN POR MUNDO** 📋
+3. **`/config/.minetest/worlds/original/world.mt`** - **CONFIGURACIÓN POR MUNDO** 📋
    - Puede habilitar/deshabilitar mods específicos
    - Útil para mods que van en el directorio del juego
 
@@ -324,7 +324,7 @@ docker compose logs --tail=20 luanti-server
 volumes:
   - ./server/mods:/config/.minetest/mods          # ✅ Correcto
   - ./server/games:/config/.minetest/games        # ✅ Para VoxeLibre
-  - ./server/config/luanti.conf:/config/.minetest/minetest.conf  # ✅ Config global
+  - ./server/config/luanti-original.conf:/config/.minetest/minetest.conf  # ✅ Config global
 ```
 
 ### 2.4.2. Estructura de Repositorio
@@ -338,7 +338,7 @@ server/
 │   ├── creative_force/      # Modo creativo forzado
 │   └── pvp_arena/           # Sistema PvP
 ├── config/
-│   └── luanti.conf          # 📋 Configuración global
+│   └── luanti-original.conf          # 📋 Configuración global
 └── games/
     └── mineclone2/          # 🏠 VoxeLibre (descargado)
 ```
@@ -478,13 +478,13 @@ docker compose logs --tail=50 luanti-server | grep -i "lag\|slow\|timeout"
 docker compose exec luanti-server ls -la /config/.minetest/mods/
 
 # Verificar world.mt
-docker compose exec luanti-server cat /config/.minetest/worlds/world/world.mt | grep "load_mod"
+docker compose exec luanti-server cat /config/.minetest/worlds/original/world.mt | grep "load_mod"
 ```
 
 **Solución**:
 ```bash
 # Habilitar mod manualmente en world.mt
-echo "load_mod_nombre_mod = true" >> server/worlds/world/world.mt
+echo "load_mod_nombre_mod = true" >> server/worlds/original/world.mt
 docker compose restart luanti-server
 ```
 
@@ -503,7 +503,7 @@ docker compose logs --tail=100 luanti-server | grep -i "lag\|slow"
 
 **Solución**:
 ```conf
-# En server/config/luanti.conf
+# En server/config/luanti-original.conf
 active_block_range = 1                    # Reducir a 1 en casos extremos
 max_block_send_distance = 6               # Reducir a 6
 dedicated_server_step = 0.05              # Aumentar de 0.09 a 0.05
@@ -533,7 +533,7 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && ./scripts/backup.sh"
 docker compose logs --since 7d luanti-server | grep -i "error\|critical"
 
 # 3. Verificar uso de disco
-docker compose exec luanti-server du -sh /config/.minetest/worlds/world
+docker compose exec luanti-server du -sh /config/.minetest/worlds/original
 
 # 4. Limpiar logs antiguos
 docker compose logs --tail=100 > /dev/null
@@ -546,10 +546,10 @@ docker compose logs --tail=100 > /dev/null
 # Ver: docs/VOXELIBRE_INSTALLATION.md
 
 # 2. Revisar configuración de mods
-cat server/worlds/world/world.mt | grep "load_mod"
+cat server/worlds/original/world.mt | grep "load_mod"
 
 # 3. Optimizar base de datos SQLite
-docker compose exec luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "VACUUM;"
+docker compose exec luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite "VACUUM;"
 
 # 4. Backup completo
 tar -czf backup-mensual-$(date +%Y%m%d).tar.gz server/worlds/

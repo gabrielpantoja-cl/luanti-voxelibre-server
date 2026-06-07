@@ -120,7 +120,7 @@ fi
 # 5. Verificar integridad del mundo actual
 log_info "Verificando mundo actual..."
 CURRENT_WORLD_SIZE_MB=$(ssh "$VPS_HOST" "du -m $PROJECT_PATH/server/worlds 2>/dev/null | cut -f1" || echo "0")
-AUTH_DB_EXISTS=$(ssh "$VPS_HOST" "[ -f $PROJECT_PATH/server/worlds/world/auth.sqlite ] && echo 'YES' || echo 'NO'")
+AUTH_DB_EXISTS=$(ssh "$VPS_HOST" "[ -f $PROJECT_PATH/server/worlds/original/auth.sqlite ] && echo 'YES' || echo 'NO'")
 
 if [ "$CURRENT_WORLD_SIZE_MB" -ge "$EXPECTED_WORLD_MIN_SIZE_MB" ]; then
     log_success "Tamaño del mundo actual: ${CURRENT_WORLD_SIZE_MB}MB (OK)"
@@ -133,7 +133,7 @@ if [ "$AUTH_DB_EXISTS" = "YES" ]; then
     log_success "Base de datos de usuarios: Presente"
 
     # Verificar usuarios en DB
-    USER_COUNT=$(ssh "$VPS_HOST" "sqlite3 $PROJECT_PATH/server/worlds/world/auth.sqlite 'SELECT COUNT(*) FROM auth;' 2>/dev/null" || echo "0")
+    USER_COUNT=$(ssh "$VPS_HOST" "sqlite3 $PROJECT_PATH/server/worlds/original/auth.sqlite 'SELECT COUNT(*) FROM auth;' 2>/dev/null" || echo "0")
     if [ "$USER_COUNT" -gt 0 ]; then
         log_success "Usuarios registrados: $USER_COUNT"
     else

@@ -263,7 +263,7 @@ services:
       - CLI_ARGS=--server --port 30000 --world /config/.minetest/worlds/world
     volumes:
       # Configuración principal
-      - ./server/config/luanti.conf:/config/.minetest/minetest.conf:ro
+      - ./server/config/luanti-original.conf:/config/.minetest/minetest.conf:ro
       - ./server/worlds:/config/.minetest/worlds
 
       # Juegos base

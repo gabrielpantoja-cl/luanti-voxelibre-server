@@ -14,8 +14,8 @@ NC='\033[0m' # No Color
 # Directorios
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-TEXTURES_DIR="$PROJECT_ROOT/server/worlds/world/_world_folder_media/textures"
-SKINS_CONFIG="$PROJECT_ROOT/server/worlds/world/skins.txt"
+TEXTURES_DIR="$PROJECT_ROOT/server/worlds/original/_world_folder_media/textures"
+SKINS_CONFIG="$PROJECT_ROOT/server/worlds/original/skins.txt"
 
 # Funciones de utilidad
 log_info() {

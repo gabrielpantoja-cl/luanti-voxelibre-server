@@ -115,7 +115,7 @@ Donde `self.adminPrivs = {areas=true}`
 
 ### Archivo de Datos
 
-**Ubicación**: `/config/.minetest/worlds/world/areas.dat`
+**Ubicación**: `/config/.minetest/worlds/original/areas.dat`
 
 **Formato**: JSON o Serializado Lua
 
@@ -154,19 +154,19 @@ cd $PROJECT_PATH
 docker compose exec luanti-server /bin/bash
 
 # Remover privilegio 'areas' de pepelomo
-sqlite3 /config/.minetest/worlds/world/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='pepelomo') AND privilege='areas';"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='pepelomo') AND privilege='areas';"
 
 # Remover privilegio 'areas' de gaelsin
-sqlite3 /config/.minetest/worlds/world/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gaelsin') AND privilege='areas';"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gaelsin') AND privilege='areas';"
 
 # Remover 'protection_bypass' de pepelomo
-sqlite3 /config/.minetest/worlds/world/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='pepelomo') AND privilege='protection_bypass';"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='pepelomo') AND privilege='protection_bypass';"
 
 # Remover 'protection_bypass' de gaelsin
-sqlite3 /config/.minetest/worlds/world/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gaelsin') AND privilege='protection_bypass';"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gaelsin') AND privilege='protection_bypass';"
 
 # Remover 'protection_bypass' de loxos
-sqlite3 /config/.minetest/worlds/world/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='loxos') AND privilege='protection_bypass';"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='loxos') AND privilege='protection_bypass';"
 
 # Salir del contenedor
 exit
@@ -198,7 +198,7 @@ Pero **SÍ incluya**:
 ### Comando para verificar privilegios actualizados
 
 ```bash
-ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT a.name, GROUP_CONCAT(up.privilege, \", \") FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name IN (\"gabo\", \"pepelomo\", \"gaelsin\", \"loxos\") GROUP BY a.name;"'
+ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite "SELECT a.name, GROUP_CONCAT(up.privilege, \", \") FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name IN (\"gabo\", \"pepelomo\", \"gaelsin\", \"loxos\") GROUP BY a.name;"'
 ```
 
 **Resultado esperado después de aplicar Opción 1**:
@@ -258,7 +258,7 @@ ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker compose exec -T luanti-serve
 
 ## Configuración del Mod (settingtypes.txt)
 
-El mod `areas` se puede configurar en `luanti.conf`:
+El mod `areas` se puede configurar en `luanti-original.conf`:
 
 ```ini
 # Tamaño máximo de área para usuarios normales
@@ -305,8 +305,8 @@ pepelomo y gaelsin tienen privilegios que les permiten **bypasear todas las prot
 ## Referencias Técnicas
 
 - **Mod source**: `/config/.minetest/mods/areas/`
-- **Database**: `/config/.minetest/worlds/world/auth.sqlite`
-- **Areas data**: `/config/.minetest/worlds/world/areas.dat`
+- **Database**: `/config/.minetest/worlds/original/auth.sqlite`
+- **Areas data**: `/config/.minetest/worlds/original/areas.dat`
 - **Init code**: `init.lua` (define `areas.adminPrivs = {areas=true}`)
 - **Interaction code**: `interact.lua` (verifica `canInteract()`)
 - **API code**: `api.lua` (lógica de verificación de permisos)

@@ -101,8 +101,8 @@ tar -czf backup.tar.gz -C /worlds .
 
 # Despues (seguro):
 # 1. Copiar SQLite de forma segura
-sqlite3 /worlds/world/map.sqlite ".backup /tmp/world_map.sqlite"
-sqlite3 /worlds/world/auth.sqlite ".backup /tmp/world_auth.sqlite"
+sqlite3 /worlds/original/map.sqlite ".backup /tmp/world_map.sqlite"
+sqlite3 /worlds/original/auth.sqlite ".backup /tmp/world_auth.sqlite"
 sqlite3 /worlds/valdivia/map.sqlite ".backup /tmp/valdivia_map.sqlite"
 
 # 2. Comprimir las copias seguras + resto de archivos

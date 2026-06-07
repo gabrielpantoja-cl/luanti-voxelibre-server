@@ -7,7 +7,7 @@ echo "========================================"
 # Variables
 VPS="$VPS_USER@$VPS_HOST"
 PROJECT_DIR="$PROJECT_PATH"
-BACKUP_DIR="$PROJECT_DIR/server/worlds/world_BACKUP_$(date +%Y%m%d_%H%M%S)"
+BACKUP_DIR="$PROJECT_DIR/server/worlds/original_BACKUP_$(date +%Y%m%d_%H%M%S)"
 
 echo ""
 echo "📊 Paso 1: Verificando estado del servidor..."
@@ -15,7 +15,7 @@ ssh $VPS "cd $PROJECT_DIR && docker-compose ps | grep luanti-voxelibre-server"
 
 echo ""
 echo "💾 Paso 2: Creando backup del mundo..."
-ssh $VPS "cd $PROJECT_DIR && cp -r server/worlds/world $BACKUP_DIR && echo '✅ Backup creado en: $BACKUP_DIR'"
+ssh $VPS "cd $PROJECT_DIR && cp -r server/worlds/original $BACKUP_DIR && echo '✅ Backup creado en: $BACKUP_DIR'"
 
 echo ""
 echo "🧹 Paso 3: Deteniendo el servidor..."
@@ -24,7 +24,7 @@ ssh $VPS "cd $PROJECT_DIR && docker-compose stop luanti-server"
 echo ""
 echo "🗑️  Paso 4: Eliminando entidades corruptas del mundo..."
 # Eliminar archivos de entidades activas (Active Block Modifiers)
-ssh $VPS "cd $PROJECT_DIR && find server/worlds/world -name 'entities' -type f -delete && echo '✅ Archivos de entidades eliminados'"
+ssh $VPS "cd $PROJECT_DIR && find server/worlds/original -name 'entities' -type f -delete && echo '✅ Archivos de entidades eliminados'"
 
 echo ""
 echo "🔄 Paso 5: Reiniciando el servidor..."

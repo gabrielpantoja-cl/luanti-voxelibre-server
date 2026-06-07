@@ -95,7 +95,7 @@ Este documento describe el sistema completo de reglas implementado en el servido
 ```
 server/
 ├── config/
-│   └── luanti.conf              # Configuración principal con reglas en MOTD
+│   └── luanti-original.conf              # Configuración principal con reglas en MOTD
 ├── mods/
 │   └── server_rules/            # Mod de reglas
 │       ├── mod.conf             # Metadatos del mod
@@ -106,7 +106,7 @@ server/
 ### **Configuración del Mod:**
 
 ```lua
--- Activación en luanti.conf
+-- Activación en luanti-original.conf
 load_mod_server_rules = true
 
 -- MOTD con reglas básicas
@@ -161,7 +161,7 @@ default_privs = interact,shout,creative,give,fly,fast,noclip,home
 
 1. **Modificar**: `server/mods/server_rules/init.lua`
 2. **Actualizar**: `server/reglas_servidor.txt`
-3. **Configurar**: `server/config/luanti.conf` si es necesario
+3. **Configurar**: `server/config/luanti-original.conf` si es necesario
 4. **Reiniciar**: Servidor para aplicar cambios
 5. **Comunicar**: Cambios a la comunidad
 

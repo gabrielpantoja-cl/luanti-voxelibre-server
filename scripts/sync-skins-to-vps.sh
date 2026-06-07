@@ -13,8 +13,8 @@ NC='\033[0m'
 # Configuración
 VPS_HOST="$VPS_USER@$VPS_HOST"
 VPS_PATH="$PROJECT_PATH"
-LOCAL_TEXTURES="server/worlds/world/_world_folder_media/textures"
-LOCAL_SKINS_CONFIG="server/worlds/world/skins.txt"
+LOCAL_TEXTURES="server/worlds/original/_world_folder_media/textures"
+LOCAL_SKINS_CONFIG="server/worlds/original/skins.txt"
 
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
@@ -71,10 +71,10 @@ echo ""
 # Crear backup en VPS
 log_info "Creando backup de skins actuales en VPS..."
 ssh "$VPS_HOST" "cd $VPS_PATH && \
-    if [ -d server/worlds/world/_world_folder_media/textures ]; then \
+    if [ -d server/worlds/original/_world_folder_media/textures ]; then \
         tar -czf backups/skins_backup_\$(date +%Y%m%d_%H%M%S).tar.gz \
-            server/worlds/world/_world_folder_media/textures/ \
-            server/worlds/world/skins.txt 2>/dev/null || true; \
+            server/worlds/original/_world_folder_media/textures/ \
+            server/worlds/original/skins.txt 2>/dev/null || true; \
         echo 'Backup creado'; \
     fi"
 log_success "Backup creado en VPS"

@@ -559,10 +559,10 @@ ls -la server/mods/mi_mod_educativo/
 # El mod ya está en server/mods/ que se mapea a /config/.minetest/mods/
 
 # Habilitar mod en world.mt
-docker-compose exec -T luanti-server sh -c 'echo "load_mod_mi_mod_educativo = true" >> /config/.minetest/worlds/world/world.mt'
+docker-compose exec -T luanti-server sh -c 'echo "load_mod_mi_mod_educativo = true" >> /config/.minetest/worlds/original/world.mt'
 
 # Verificar configuración
-docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep mi_mod_educativo
+docker-compose exec -T luanti-server cat /config/.minetest/worlds/original/world.mt | grep mi_mod_educativo
 ```
 
 ### 5️⃣ Reinicio y Verificación
@@ -594,7 +594,7 @@ ss -tulpn | grep :30000
 docker-compose exec -T luanti-server cat /config/.minetest/mods/mi_mod/mod.conf
 
 # 2. Verificar habilitación en world.mt
-docker-compose exec -T luanti-server cat /config/.minetest/worlds/world/world.mt | grep mi_mod
+docker-compose exec -T luanti-server cat /config/.minetest/worlds/original/world.mt | grep mi_mod
 
 # 3. Revisar logs de errores
 docker-compose logs luanti-server | grep -i error | tail -10

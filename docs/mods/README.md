@@ -300,7 +300,7 @@ mcl_custom_world_skins (tercero)
     ↓ usa
 _world_folder_media (tercero)
     ↓ carga desde
-server/worlds/world/_world_folder_media/textures/
+server/worlds/original/_world_folder_media/textures/
     ↓ registra en
 mcl_skins (base)
     ↓ genera nodos en

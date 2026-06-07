@@ -865,7 +865,7 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs luanti-server 2
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs luanti-server 2>&1 | grep 'celevator:machine' | tail -5"
 
 # Verificar posición de jugador en base de datos
-ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \"SELECT name, posX, posY, posZ FROM player WHERE name='gabo';\""
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/players.sqlite \"SELECT name, posX, posY, posZ FROM player WHERE name='gabo';\""
 ```
 
 ---

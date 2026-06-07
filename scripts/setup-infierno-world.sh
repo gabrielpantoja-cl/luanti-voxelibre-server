@@ -14,7 +14,7 @@
 set -euo pipefail
 
 REPO_ROOT="/home/gabriel/luanti-voxelibre-server"
-SRC_WORLD="${REPO_ROOT}/server/worlds/world"
+SRC_WORLD="${REPO_ROOT}/server/worlds/original"
 DST_WORLD="${REPO_ROOT}/server/worlds/infierno"
 CONTAINER_UID=1000
 

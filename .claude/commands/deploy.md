@@ -16,7 +16,7 @@ VPS credentials are in `CLAUDE.local.md` (gitignored). Use `<VPS_USER>` and `<VP
 ## Step 1: Pre-flight Checks
 
 1. Run `git status` — abort if there are uncommitted changes.
-2. Read `server/config/luanti.conf` and verify it matches the **documented** state in `CLAUDE.md`:
+2. Read `server/config/luanti-original.conf` and verify it matches the **documented** state in `CLAUDE.md`:
    - `creative_mode = true`
    - `enable_damage = true` (intentional — hostile mobs at night + PvP arena)
    - `enable_pvp = false` (non-arena PvP blocked by `pvp_arena` mod)
@@ -67,7 +67,7 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && \
 
 ## Step 4 (only for new-mod deploys): world.mt entry
 
-**CRITICAL**: a new mod must be listed as `= true` in `world.mt` to register. Adding it to `luanti.conf` alone is insufficient (verified 2026-04-19 with `mypark`).
+**CRITICAL**: a new mod must be listed as `= true` in `world.mt` to register. Adding it to `luanti-original.conf` alone is insufficient (verified 2026-04-19 with `mypark`).
 
 ```bash
 ssh <VPS_USER>@<VPS_IP> "grep <mod> /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt || \

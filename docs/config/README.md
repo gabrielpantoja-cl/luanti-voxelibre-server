@@ -14,7 +14,7 @@ Todos los documentos están ordenados por **orden de importancia** con prefijos 
 
 | # | Archivo | Descripción | Prioridad |
 |---|---------|-------------|-----------|
-| **01** | [CONFIGURATION_HIERARCHY.md](01-CONFIGURATION_HIERARCHY.md) | **Jerarquía de configuración en cascada** - Entender cómo se sobrescriben configs (luanti.conf > world.mt > mods) | 🔴 CRÍTICO |
+| **01** | [CONFIGURATION_HIERARCHY.md](01-CONFIGURATION_HIERARCHY.md) | **Jerarquía de configuración en cascada** - Entender cómo se sobrescriben configs (luanti-original.conf > world.mt > mods) | 🔴 CRÍTICO |
 | **02** | [NUCLEAR_CONFIG.md](02-NUCLEAR_CONFIG.md) | **Configuración nuclear anti-mobs** - Modificaciones fuera del repositorio para eliminar monstruos hostiles | 🔴 CRÍTICO |
 
 ### ⭐ Configuración Importante (03-04)
@@ -96,7 +96,7 @@ Todos los documentos están ordenados por **orden de importancia** con prefijos 
 **¿Qué es?**: Explicación de cómo las diferentes configuraciones se sobrescriben entre sí.
 
 **Orden de autoridad**:
-1. `luanti.conf` (🎯 MÁXIMA - Sobrescribe todo)
+1. `luanti-original.conf` (🎯 MÁXIMA - Sobrescribe todo)
 2. `world.mt` (🏠 Media - Config por mundo)
 3. Mods (🔧 Baja - Solo si no hay override)
 
@@ -175,7 +175,7 @@ docs/config/
 ### Configuraciones Peligrosas
 
 ⚠️ **NUNCA** modificar directamente en producción sin probar localmente:
-- Cambios en `luanti.conf` que afecten physics o mapgen
+- Cambios en `luanti-original.conf` que afecten physics o mapgen
 - Modificaciones masivas a privilegios en base de datos
 - Deshabilitación de mods críticos como `creative_force` o `pvp_arena`
 

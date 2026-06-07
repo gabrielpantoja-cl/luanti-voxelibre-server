@@ -49,7 +49,7 @@ Esto ocurre específicamente en la función `make_invisible()` línea 1717 de `f
 
 ```bash
 # En el VPS
-echo 'load_mod_mcl_potions = false' >> $PROJECT_PATH/server/worlds/world/world.mt
+echo 'load_mod_mcl_potions = false' >> $PROJECT_PATH/server/worlds/original/world.mt
 
 # Reiniciar servidor
 cd $PROJECT_PATH
@@ -141,14 +141,14 @@ fi
 
 ### Archivos Afectados
 
-- `server/worlds/world/world.mt` - Configuración de mods del mundo
+- `server/worlds/original/world.mt` - Configuración de mods del mundo
 - `server/games/mineclone2/mods/ITEMS/mcl_potions/` - Mod problemático (VoxeLibre)
 
 ### Comandos Útiles
 
 ```bash
 # Ver mods cargados en el mundo
-cat server/worlds/world/world.mt | grep load_mod
+cat server/worlds/original/world.mt | grep load_mod
 
 # Verificar salud del servidor
 docker compose ps

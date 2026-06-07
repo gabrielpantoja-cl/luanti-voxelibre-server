@@ -78,7 +78,7 @@ Este mod no agrega comandos de chat. Toda la interacción es mediante bloques de
 
 ### Habilitar/Deshabilitar el Mod
 
-**En `luanti.conf`**:
+**En `luanti-original.conf`**:
 ```ini
 load_mod_chess = true
 ```

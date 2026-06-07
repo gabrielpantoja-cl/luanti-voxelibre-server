@@ -20,7 +20,7 @@ echo ""
 run_server_cmd() {
     local cmd="$1"
     echo -e "${YELLOW}Ejecutando: ${cmd}${NC}"
-    docker-compose exec -T luanti-server /bin/bash -c "echo \"$cmd\" >> /config/.minetest/worlds/world/chatcommands.txt" 2>/dev/null || true
+    docker-compose exec -T luanti-server /bin/bash -c "echo \"$cmd\" >> /config/.minetest/worlds/original/chatcommands.txt" 2>/dev/null || true
 }
 
 # Verificar que el servidor esté corriendo
@@ -42,7 +42,7 @@ if [[ "$respuesta" == "s" || "$respuesta" == "S" ]]; then
     echo -e "${GREEN}Dando items a gabo...${NC}"
 
     # Ejecutar comandos directamente en el contenedor
-    docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/chatcommands.txt <<EOF || true
+    docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/chatcommands.txt <<EOF || true
 INSERT INTO chatcommands (player, command) VALUES
 ('Server', '/give gabo celevator:shaft 99'),
 ('Server', '/give gabo celevator:guide_rail 99'),
@@ -98,7 +98,7 @@ echo -e "${YELLOW}Ver logs de gabo:${NC}"
 echo "  docker-compose logs --tail=50 luanti-server | grep gabo"
 echo ""
 echo -e "${YELLOW}Verificar privilegios de gabo:${NC}"
-echo "  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT privilege FROM user_privileges WHERE id=1;'"
+echo "  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite 'SELECT privilege FROM user_privileges WHERE id=1;'"
 echo ""
 
 # Comandos útiles para gabo

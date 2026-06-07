@@ -238,7 +238,7 @@ Comentar o eliminar la entrada del jugador en:
 
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
 ```
 
@@ -290,7 +290,7 @@ cat "$PROJECT_PATH/server/mods/pvp_arena/init.lua" | \
 
 # 3. Limpiar privilegios del jugador
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
 
 # 4. Reiniciar servidor
@@ -323,7 +323,7 @@ interact, shout, home, spawn, creative, give, fly, fast, noclip, teleport, setti
 
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"nombre_jugador\");'"
 ```
 
@@ -388,7 +388,7 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker compose restart luanti-serve
 
 **Solución**: Habilitar manualmente
 ```bash
-ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_creative_force = true' >> $PROJECT_PATH/server/worlds/world/world.mt"
+ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_creative_force = true' >> $PROJECT_PATH/server/worlds/original/world.mt"
 docker compose restart luanti-server
 ```
 
@@ -477,7 +477,7 @@ local survival_players = {
 
 ### 8.1.3. Base de Datos SQLite
 
-- **Ubicación**: `server/worlds/world/auth.sqlite`
+- **Ubicación**: `server/worlds/original/auth.sqlite`
 - **Tabla**: `user_privileges`
 - **Función**: Almacena privilegios persistentes de cada jugador
 - **Cuándo limpiar**: Al cambiar un jugador de modo
@@ -582,7 +582,7 @@ local survival_players = {
 **Comando ejecutado**:
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"pepelomo\");'"
 ```
 
@@ -615,7 +615,7 @@ Container luanti-voxelibre-server  Started
 
 **Solución Aplicada**:
 ```bash
-ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_creative_force = true' >> $PROJECT_PATH/server/worlds/world/world.mt"
+ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_creative_force = true' >> $PROJECT_PATH/server/worlds/original/world.mt"
 docker compose restart luanti-server
 ```
 
@@ -630,7 +630,7 @@ docker compose restart luanti-server
 **Consulta de verificación**:
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'SELECT a.name, GROUP_CONCAT(up.privilege, \", \") as privileges FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name=\"pepelomo\" GROUP BY a.name;'"
 ```
 
@@ -717,7 +717,7 @@ Si se necesita replicar este proceso con otro jugador:
 
 # 2. Limpiar privilegios
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
 
 # 3. Copiar archivos al VPS
@@ -728,7 +728,7 @@ cat "server/mods/pvp_arena/init.lua" | ssh <VPS_USER>@<VPS_IP> "cat > $PROJECT_P
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker compose restart luanti-server"
 
 # 5. Verificar creative_force está habilitado
-ssh <VPS_USER>@<VPS_IP> "grep -q 'load_mod_creative_force' $PROJECT_PATH/server/worlds/world/world.mt || echo 'load_mod_creative_force = true' >> $PROJECT_PATH/server/worlds/world/world.mt"
+ssh <VPS_USER>@<VPS_IP> "grep -q 'load_mod_creative_force' $PROJECT_PATH/server/worlds/original/world.mt || echo 'load_mod_creative_force = true' >> $PROJECT_PATH/server/worlds/original/world.mt"
 
 # 6. Pedir al jugador que se desconecte y vuelva a conectar
 ```

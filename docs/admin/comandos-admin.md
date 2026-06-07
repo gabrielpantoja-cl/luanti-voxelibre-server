@@ -398,7 +398,7 @@ Dentro de Luanti, presionar **F12** para capturar pantalla.
 Para consultar usuarios registrados:
 ```bash
 # Desde VPS
-docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite 'SELECT name FROM auth;'
+docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite 'SELECT name FROM auth;'
 ```
 
 Para otorgar privilegios admin desde base de datos (emergencia):

@@ -46,12 +46,12 @@ cd <PROJECT_DIR>
 
 ```bash
 # Copiar el nuevo skin al servidor
-scp server/worlds/world/_world_folder_media/textures/granjero_vegano.png \
-    <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/world/_world_folder_media/textures/
+scp server/worlds/original/_world_folder_media/textures/granjero_vegano.png \
+    <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/original/_world_folder_media/textures/
 
 # Copiar el skins.txt actualizado
-scp server/worlds/world/skins.txt \
-    <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/world/
+scp server/worlds/original/skins.txt \
+    <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/original/
 
 # Reiniciar el servidor
 ssh <VPS_USER>@<VPS_IP> 'cd <PROJECT_PATH> && docker-compose restart luanti-server'
@@ -172,7 +172,7 @@ Antes de sincronizar con el VPS:
 
 - [ ] ✅ Skin descargado de minecraftskins.com
 - [ ] ✅ Script ejecutado sin errores
-- [ ] ✅ Archivo PNG generado en `server/worlds/world/_world_folder_media/textures/`
+- [ ] ✅ Archivo PNG generado en `server/worlds/original/_world_folder_media/textures/`
 - [ ] ✅ Dimensiones verificadas: 64x32
 - [ ] ✅ `skins.txt` actualizado con nueva entrada
 - [ ] ✅ Nombre del skin no contiene guiones ni espacios
@@ -212,7 +212,7 @@ sudo apt install imagemagick
 **Solución**: El script automáticamente limpia los nombres, pero si persiste:
 ```bash
 # Renombrar manualmente
-cd server/worlds/world/_world_folder_media/textures/
+cd server/worlds/original/_world_folder_media/textures/
 mv "nombre-con-guiones.png" "nombre_limpio.png"
 # Actualizar skins.txt con el nuevo nombre
 ```
@@ -243,13 +243,13 @@ luanti-voxelibre-server/
 
 ### Configuración Activa
 
-**Archivo**: `server/config/luanti.conf`
+**Archivo**: `server/config/luanti-original.conf`
 ```ini
 load_mod__world_folder_media = true
 load_mod_mcl_custom_world_skins = true
 ```
 
-**Archivo**: `server/worlds/world/world.mt` (no versionado en Git)
+**Archivo**: `server/worlds/original/world.mt` (no versionado en Git)
 ```ini
 load_mod__world_folder_media = true
 load_mod_mcl_custom_world_skins = true

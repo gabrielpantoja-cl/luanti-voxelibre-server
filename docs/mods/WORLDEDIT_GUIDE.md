@@ -176,7 +176,7 @@ Este tutorial te guiará para construir un árbol de Navidad de aproximadamente 
 
 ## 🔧 Configuración del Servidor
 
-La configuración de WorldEdit se gestiona en `server/config/luanti.conf`.
+La configuración de WorldEdit se gestiona en `server/config/luanti-original.conf`.
 
 ```ini
 # Asegúrate de que los mods de WorldEdit estén habilitados

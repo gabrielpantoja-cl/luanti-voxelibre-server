@@ -26,11 +26,11 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 ```
 docker-compose.yml                   # Dual-service: luanti-server + luanti-valdivia
                                      # Plus backup-cron and Discord notifier sidecars
-server/config/luanti.conf            # Wetlands authoritative config (see hierarchy below)
+server/config/luanti-original.conf            # Wetlands authoritative config (see hierarchy below)
 server/config/luanti-valdivia.conf   # Valdivia config (singlenode mapgen, no mobs)
 server/games/mineclone2/             # VoxeLibre game files, shared by both worlds
 server/mods/                         # Custom + third-party mods
-server/worlds/world/                 # LOCAL REFERENCE ONLY (gitignored, real copy is on VPS)
+server/worlds/original/                 # LOCAL REFERENCE ONLY (gitignored, real copy is on VPS)
 server/worlds/valdivia/              # Valdivia world (map.sqlite is ~480 MB, not in git)
 server/skins/                        # Player skins (64x32 PNG)
 server/landing-page/                 # HTML/CSS/JS for luanti.gabrielpantoja.cl
@@ -46,26 +46,26 @@ There are two files that both list `load_mod_*` entries. Confusing which wins is
 
 | File | Role | Lives in git? | Edit where |
 |------|------|---------------|------------|
-| `server/worlds/world/world.mt` | **Primary enable gate** — a mod must be `= true` here to load | No (gitignored) | On the VPS via SSH |
-| `server/config/luanti.conf` | **Kill-switch** — `= false` here overrides any `= true` in `world.mt` | Yes | This repo |
+| `server/worlds/original/world.mt` | **Primary enable gate** — a mod must be `= true` here to load | No (gitignored) | On the VPS via SSH |
+| `server/config/luanti-original.conf` | **Kill-switch** — `= false` here overrides any `= true` in `world.mt` | Yes | This repo |
 
 Rules (verified empirically 2026-04-19 when enabling `mypark`):
-- A mod loads **only if `world.mt` has `load_mod_X = true`**. `luanti.conf = true` alone is **not sufficient** — the mod will silently not register.
-- If `luanti.conf` has `load_mod_X = false`, the mod is OFF regardless of `world.mt`. This is the canonical kill-switch and doesn't need SSH.
-- `luanti.conf` explicitly pins several mods to `= false` (motorboat, biofuel, etc.) so they stay off even if someone adds them to `world.mt`.
+- A mod loads **only if `world.mt` has `load_mod_X = true`**. `luanti-original.conf = true` alone is **not sufficient** — the mod will silently not register.
+- If `luanti-original.conf` has `load_mod_X = false`, the mod is OFF regardless of `world.mt`. This is the canonical kill-switch and doesn't need SSH.
+- `luanti-original.conf` explicitly pins several mods to `= false` (motorboat, biofuel, etc.) so they stay off even if someone adds them to `world.mt`.
 
 To enable a NEW mod (both files must be updated):
-1. Add `load_mod_<name> = true` to `server/config/luanti.conf` and push via git.
+1. Add `load_mod_<name> = true` to `server/config/luanti-original.conf` and push via git.
 2. Pull on the VPS.
-3. Add `load_mod_<name> = true` to the world's `world.mt` on the VPS. Since `docker-compose.yml` bind-mounts `./server/worlds` into the container, the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt` **is** the container file at `/config/.minetest/worlds/world/world.mt` — one edit is enough:
+3. Add `load_mod_<name> = true` to the world's `world.mt` on the VPS. Since `docker-compose.yml` bind-mounts `./server/worlds` into the container, the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/original/world.mt` **is** the container file at `/config/.minetest/worlds/original/world.mt` — one edit is enough:
    ```bash
-   ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_<name> = true' | sudo tee -a /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt"
+   ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_<name> = true' | sudo tee -a /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/original/world.mt"
    ```
 4. Restart the container.
 
-To disable a mod: set `load_mod_<name> = false` in `luanti.conf`. This overrides `world.mt` unconditionally — no SSH needed.
+To disable a mod: set `load_mod_<name> = false` in `luanti-original.conf`. This overrides `world.mt` unconditionally — no SSH needed.
 
-Reference copy: `server/worlds/world/world.mt` in this repo is a local snapshot for convenience; it is gitignored and is not the file the running server reads. See `docs/config/01-CONFIGURATION_HIERARCHY.md`.
+Reference copy: `server/worlds/original/world.mt` in this repo is a local snapshot for convenience; it is gitignored and is not the file the running server reads. See `docs/config/01-CONFIGURATION_HIERARCHY.md`.
 
 ## Essential Commands
 
@@ -121,15 +121,15 @@ For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/proj
 
 ### Adding a new mod
 1. Create `server/mods/<mod_name>/mod.conf` + `init.lua`. In `mod.conf` use `optional_depends`, not `depends` (see pitfalls below).
-2. Add `load_mod_<mod_name> = true` to `server/config/luanti.conf`.
+2. Add `load_mod_<mod_name> = true` to `server/config/luanti-original.conf`.
 3. Test locally with `./scripts/start.sh` and monitor logs.
 4. Commit + push.
-5. On VPS: `git pull`, then `echo 'load_mod_<mod_name> = true' | sudo tee -a server/worlds/world/world.mt`, then restart. **Skipping the world.mt step is the #1 cause of "mod files exist but items are unknown"** — `luanti.conf = true` alone does not register a new mod.
+5. On VPS: `git pull`, then `echo 'load_mod_<mod_name> = true' | sudo tee -a server/worlds/original/world.mt`, then restart. **Skipping the world.mt step is the #1 cause of "mod files exist but items are unknown"** — `luanti-original.conf = true` alone does not register a new mod.
 
 ### Modifying server config
-Edit `server/config/luanti.conf` in this repo. Push, pull on VPS, restart. Do **not** edit the `.conf` directly on the VPS — it will be overwritten on the next pull.
+Edit `server/config/luanti-original.conf` in this repo. Push, pull on VPS, restart. Do **not** edit the `.conf` directly on the VPS — it will be overwritten on the next pull.
 
-## Current server settings (from `server/config/luanti.conf`)
+## Current server settings (from `server/config/luanti-original.conf`)
 
 - `creative_mode = true`
 - `enable_damage = true` — damage is on globally. This is intentional: hostile mobs can hurt players at night, and the PvP arena relies on it. Non-arena PvP is prevented by mod logic (`pvp_arena`), not by this flag.
@@ -186,7 +186,7 @@ end
 ```
 
 ### Nuclear config
-An out-of-band override is applied to disable certain game rules not exposed via `luanti.conf`. Apply with `./scripts/apply-nuclear-config.sh`. See `docs/config/02-NUCLEAR_CONFIG.md`.
+An out-of-band override is applied to disable certain game rules not exposed via `luanti-original.conf`. Apply with `./scripts/apply-nuclear-config.sh`. See `docs/config/02-NUCLEAR_CONFIG.md`.
 
 ## Texture & asset rules
 
@@ -227,14 +227,14 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 
 | World | Container | Port | Config | Purpose |
 |-------|-----------|------|--------|---------|
-| Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti.conf` | Main creative world — NPCs, mods, PvP arena |
+| Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main creative world — NPCs, mods, PvP arena |
 | Valdivia 2.0 | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
 
 Both containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~480 MB, not in git). See `docs/projects/proyecto-valdivia-luanti.md`.
 
 **Valdivia-only mod — `valdivia_teleporter`** (`load_mod_valdivia_teleporter = true` in `luanti-valdivia.conf` only): a teleporter for the Valdivia world (30001). The `/ir` command and a physical pedestal node (`valdivia_teleporter:pad`, `on_rightclick`) open a formspec menu to jump to predefined city locations (Planeta Azul/spawn, Los Fundadores, Santa Elena, Huachocopihue). Coordinates live in the `DESTINOS` table in `server/mods/valdivia_teleporter/init.lua`; textures are regenerated with `tools/generate_textures.py`. The pad is `diggable = false` (anti-grief). Not loaded in Wetlands/Infierno.
 
-## Enabled mods (authoritative list: `server/config/luanti.conf`)
+## Enabled mods (authoritative list: `server/config/luanti-original.conf`)
 
 ### Custom Wetlands mods
 | Mod | Purpose |
@@ -270,7 +270,7 @@ Both containers share the same `server/games/` and `server/mods/` directories. V
 Detailed docs live under `docs/`. Read these when you need specifics.
 
 ### Configuration
-- `docs/config/01-CONFIGURATION_HIERARCHY.md` — luanti.conf vs world.mt
+- `docs/config/01-CONFIGURATION_HIERARCHY.md` — luanti-original.conf vs world.mt
 - `docs/config/02-NUCLEAR_CONFIG.md` — nuclear config (disables monsters)
 - `docs/config/04-VOXELIBRE_SYSTEM.md` — VoxeLibre installation
 - `docs/config/07-CUSTOM_SKINS.md` — custom skin system

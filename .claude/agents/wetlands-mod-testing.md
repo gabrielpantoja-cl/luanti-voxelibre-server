@@ -33,7 +33,7 @@ luanti-voxelibre-server/
 │   │           ├── test_integration.lua
 │   │           └── test_performance.lua
 │   ├── config/
-│   │   └── luanti.conf          # Config local de testing
+│   │   └── luanti-original.conf          # Config local de testing
 │   └── worlds/
 │       └── test_world/          # Mundo de testing limpio
 ├── scripts/

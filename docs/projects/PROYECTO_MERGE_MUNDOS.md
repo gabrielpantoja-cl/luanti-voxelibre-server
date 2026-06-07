@@ -46,18 +46,18 @@ Distancia spawn -> Valdivia: ~20 km (inalcanzable caminando, solo por portal)
 
 ```bash
 # 1. Descargar backup del mundo Wetlands de produccion
-scp -i ~/.ssh/id_rsa <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/world/map.sqlite \
-  server/worlds/world/map.sqlite
+scp -i ~/.ssh/id_rsa <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/original/map.sqlite \
+  server/worlds/original/map.sqlite
 
 # 2. Descargar auth.sqlite (jugadores y privilegios)
-scp -i ~/.ssh/id_rsa <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/world/auth.sqlite \
-  server/worlds/world/auth.sqlite
+scp -i ~/.ssh/id_rsa <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/original/auth.sqlite \
+  server/worlds/original/auth.sqlite
 
 # 3. Verificar que Valdivia local ya tiene fixlight + remap aplicados
 # (el map.sqlite local en server/worlds/valdivia/map.sqlite)
 
 # 4. Hacer backup de seguridad de ambos
-cp server/worlds/world/map.sqlite server/worlds/world/map.sqlite.backup-pre-merge
+cp server/worlds/original/map.sqlite server/worlds/original/map.sqlite.backup-pre-merge
 cp server/worlds/valdivia/map.sqlite server/worlds/valdivia/map.sqlite.backup-pre-merge
 ```
 
@@ -135,7 +135,7 @@ minetest.register_node("wetlands_portal:spawn", {
 # 1. Ejecutar merge
 python3 scripts/merge-worlds.py \
   --source server/worlds/valdivia/map.sqlite \
-  --dest server/worlds/world/map.sqlite \
+  --dest server/worlds/original/map.sqlite \
   --offset-x 20000
 
 # 2. Iniciar servidor local con el mundo mergeado
@@ -149,14 +149,14 @@ python3 scripts/merge-worlds.py \
 #    - Portales funcionan en ambas direcciones
 
 # 4. Si algo sale mal, restaurar backup:
-cp server/worlds/world/map.sqlite.backup-pre-merge server/worlds/world/map.sqlite
+cp server/worlds/original/map.sqlite.backup-pre-merge server/worlds/original/map.sqlite
 ```
 
 ### Fase 5: Deploy a produccion
 
 ```bash
 # 1. Subir mundo mergeado al VPS
-scp -i ~/.ssh/id_rsa server/worlds/world/map.sqlite \
+scp -i ~/.ssh/id_rsa server/worlds/original/map.sqlite \
   <VPS_USER>@<VPS_IP>:/tmp/wetlands_merged.sqlite
 
 # 2. Detener ambos servidores
@@ -165,14 +165,14 @@ ssh $VPS_USER@<VPS_IP> \
 
 # 3. Backup del mundo actual en VPS
 ssh $VPS_USER@<VPS_IP> \
-  "cp $PROJECT_PATH/server/worlds/world/map.sqlite \
-      $PROJECT_PATH/server/worlds/world/map.sqlite.backup-pre-merge-$(date +%Y%m%d)"
+  "cp $PROJECT_PATH/server/worlds/original/map.sqlite \
+      $PROJECT_PATH/server/worlds/original/map.sqlite.backup-pre-merge-$(date +%Y%m%d)"
 
 # 4. Reemplazar mundo
 ssh $VPS_USER@<VPS_IP> \
   "sudo cp /tmp/wetlands_merged.sqlite \
-      $PROJECT_PATH/server/worlds/world/map.sqlite && \
-   sudo chown 911:911 $PROJECT_PATH/server/worlds/world/map.sqlite"
+      $PROJECT_PATH/server/worlds/original/map.sqlite && \
+   sudo chown 911:911 $PROJECT_PATH/server/worlds/original/map.sqlite"
 
 # 5. Colocar portales en el juego (coordenadas exactas TBD)
 # 6. Iniciar solo Wetlands (Valdivia ya no necesita su propio contenedor)

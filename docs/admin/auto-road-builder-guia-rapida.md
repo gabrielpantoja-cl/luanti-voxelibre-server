@@ -275,7 +275,7 @@ Deberías ver:
 
 ### Paso 2: Verificar Configuración
 ```bash
-grep "auto_road_builder" server/config/luanti.conf
+grep "auto_road_builder" server/config/luanti-original.conf
 ```
 
 Debe mostrar:

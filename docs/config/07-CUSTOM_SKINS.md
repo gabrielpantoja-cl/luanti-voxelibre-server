@@ -22,7 +22,7 @@
 
 ## ⚙️ Configuración Aplicada
 
-### Archivo: `server/config/luanti.conf`
+### Archivo: `server/config/luanti-original.conf`
 ```ini
 # === SISTEMA DE SKINS PERSONALIZADOS - Dec 7, 2025 ===
 # Permite agregar skins customizados desde la carpeta del mundo
@@ -30,7 +30,7 @@ load_mod__world_folder_media = true
 load_mod_mcl_custom_world_skins = true
 ```
 
-### Archivo: `server/worlds/world/world.mt` ⚠️
+### Archivo: `server/worlds/original/world.mt` ⚠️
 **NOTA**: Este archivo NO está en Git (`.gitignore`). Debe actualizarse manualmente en VPS y local.
 
 ```ini
@@ -42,7 +42,7 @@ load_mod_mcl_custom_world_skins = true
 ### Estructura de Directorios Creada
 
 ```
-server/worlds/world/
+server/worlds/original/
 ├── _world_folder_media/           # Directorio de medios del mundo
 │   └── textures/                  # Texturas de skins (PNG 64x32)
 │       └── README.md              # Guía de uso
@@ -51,7 +51,7 @@ server/worlds/world/
 
 ## 📝 Configuración de Skins (skins.txt)
 
-**Ubicación**: `server/worlds/world/skins.txt`
+**Ubicación**: `server/worlds/original/skins.txt`
 
 ```lua
 -- Ejemplo de configuración
@@ -82,11 +82,11 @@ return {
 
 ```bash
 # Copiar textura al servidor
-scp mi_skin.png <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/world/_world_folder_media/textures/
+scp mi_skin.png <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/original/_world_folder_media/textures/
 
 # O via SSH
 ssh <VPS_USER>@<VPS_IP>
-cd $PROJECT_PATH/server/worlds/world/_world_folder_media/textures/
+cd $PROJECT_PATH/server/worlds/original/_world_folder_media/textures/
 # Subir archivo aquí
 ```
 
@@ -94,7 +94,7 @@ cd $PROJECT_PATH/server/worlds/world/_world_folder_media/textures/
 
 ```bash
 ssh <VPS_USER>@<VPS_IP>
-cd $PROJECT_PATH/server/worlds/world
+cd $PROJECT_PATH/server/worlds/original
 nano skins.txt
 # Agregar entrada de skin según formato
 ```
@@ -150,7 +150,7 @@ Esto abrirá el menú de personalización donde pueden:
 **Solución**:
 1. **Verificar tamaño de la textura**:
    ```bash
-   identify server/worlds/world/_world_folder_media/textures/panda.png
+   identify server/worlds/original/_world_folder_media/textures/panda.png
    # Debe mostrar: PNG 64x32
    ```
 
@@ -171,7 +171,7 @@ Esto abrirá el menú de personalización donde pueden:
 
 3. **Subir al servidor y reiniciar**:
    ```bash
-   scp panda.png <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/world/_world_folder_media/textures/
+   scp panda.png <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/original/_world_folder_media/textures/
    ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose restart luanti-server"
    ```
 
@@ -182,7 +182,7 @@ Esto abrirá el menú de personalización donde pueden:
 
 ### Error al cargar mod
 1. Verificar que ambos mods estén en `server/mods/`
-2. Verificar configuración en `luanti.conf` y `world.mt`
+2. Verificar configuración en `luanti-original.conf` y `world.mt`
 3. Revisar logs: `docker-compose logs luanti-server | grep -i skin`
 
 ### ⚠️ Error: "Name does not follow naming conventions" (mcl_maps)
@@ -200,7 +200,7 @@ Esto abrirá el menú de personalización donde pueden:
    # En el servidor VPS
    ssh <VPS_USER>@<VPS_IP>
    cd $PROJECT_PATH
-   docker-compose exec -T luanti-server sh -c 'cd /config/.minetest/worlds/world/_world_folder_media/textures/ && mv minecraftskins_panda-panda-23030559.png panda.png'
+   docker-compose exec -T luanti-server sh -c 'cd /config/.minetest/worlds/original/_world_folder_media/textures/ && mv minecraftskins_panda-panda-23030559.png panda.png'
    ```
 
 2. **Actualizar `skins.txt`** para usar el nuevo nombre:

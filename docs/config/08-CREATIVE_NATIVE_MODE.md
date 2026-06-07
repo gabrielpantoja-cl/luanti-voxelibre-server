@@ -82,9 +82,9 @@ load_mod_creative_force = true    # ❌ Mod bugueado
 
 # 3. Implementación
 
-## 3.1. Cambios en luanti.conf
+## 3.1. Cambios en luanti-original.conf
 
-**Archivo**: `server/config/luanti.conf`
+**Archivo**: `server/config/luanti-original.conf`
 
 ### 3.1.1. Sección: Configuración del Juego
 
@@ -209,15 +209,15 @@ default_privs = interact,shout,give,fly,fast,noclip,home,areas,areas_high_limit,
 ### Paso 1: Modificar Configuración Local
 
 ```bash
-# Editar server/config/luanti.conf
+# Editar server/config/luanti-original.conf
 # Cambiar creative_mode, mcl_enable_creative_mode, give_initial_stuff, load_mod_creative_force
 ```
 
 ### Paso 2: Copiar a Producción
 
 ```bash
-scp $PROJECT_PATH/server/config/luanti.conf \
-  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/config/luanti.conf
+scp $PROJECT_PATH/server/config/luanti-original.conf \
+  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/config/luanti-original.conf
 ```
 
 ### Paso 3: Deshabilitar Mod en VPS
@@ -248,9 +248,9 @@ git clone https://github.com/gabrielpantoja-cl/luanti-voxelibre-server.git
 cd luanti-voxelibre-server
 
 # 2. Verificar configuración
-grep "creative_mode" server/config/luanti.conf
-grep "mcl_enable_creative_mode" server/config/luanti.conf
-grep "load_mod_creative_force" server/config/luanti.conf
+grep "creative_mode" server/config/luanti-original.conf
+grep "mcl_enable_creative_mode" server/config/luanti-original.conf
+grep "load_mod_creative_force" server/config/luanti-original.conf
 
 # 3. Asegurar que creative_force está deshabilitado
 test ! -d server/mods/creative_force || mv server/mods/creative_force server/mods_backup/
@@ -348,7 +348,7 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
 ```bash
 # Verificar que esté en true
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  sed -i 's/mcl_enable_creative_mode = false/mcl_enable_creative_mode = true/' server/config/luanti.conf && \
+  sed -i 's/mcl_enable_creative_mode = false/mcl_enable_creative_mode = true/' server/config/luanti-original.conf && \
   docker-compose restart luanti-server"
 ```
 
@@ -365,8 +365,8 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
 **Solución**:
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  sed -i 's/give_initial_stuff = true/give_initial_stuff = false/' server/config/luanti.conf && \
-  sed -i 's/initial_stuff = .*/initial_stuff =/' server/config/luanti.conf && \
+  sed -i 's/give_initial_stuff = true/give_initial_stuff = false/' server/config/luanti-original.conf && \
+  sed -i 's/initial_stuff = .*/initial_stuff =/' server/config/luanti-original.conf && \
   docker-compose restart luanti-server"
 ```
 
@@ -402,8 +402,8 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
 **Solución**:
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  sed -i 's/enable_damage = true/enable_damage = false/' server/config/luanti.conf && \
-  sed -i 's/damage_enabled = true/damage_enabled = false/' server/config/luanti.conf && \
+  sed -i 's/enable_damage = true/enable_damage = false/' server/config/luanti-original.conf && \
+  sed -i 's/damage_enabled = true/damage_enabled = false/' server/config/luanti-original.conf && \
   docker-compose restart luanti-server"
 ```
 
@@ -541,7 +541,7 @@ Para modo creativo completo en VoxeLibre se necesita:
 
 | Componente | Configuración Requerida |
 |------------|------------------------|
-| `luanti.conf` | `creative_mode = true`, `mcl_enable_creative_mode = true` |
+| `luanti-original.conf` | `creative_mode = true`, `mcl_enable_creative_mode = true` |
 | `world.mt` | `creative_mode = true` |
 | `default_privs` | Incluir `creative` |
 | **Todos los mods** | NO establecer `gamemode = "survival"` al conectar |
@@ -555,12 +555,12 @@ Si el modo creativo no funciona, verificar:
 ```bash
 # 1. Verificar privilegios del jugador
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \
+  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
   'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"JUGADOR\");'" | grep creative
 
 # 2. Verificar gamemode en metadata
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/players.sqlite \
+  docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/players.sqlite \
   'SELECT value FROM player_metadata WHERE player=\"JUGADOR\" AND metadata=\"gamemode\";'"
 
 # 3. Buscar mods que establezcan survival

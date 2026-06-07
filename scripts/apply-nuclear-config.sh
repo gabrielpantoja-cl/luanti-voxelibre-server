@@ -45,7 +45,7 @@ EOF"
 
 # Otorgar privilegios creativos a todos los usuarios
 echo "🎮 Otorgando privilegios creativos a todos los usuarios..."
-ssh $VPS_HOST "cd $VPS_PATH && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite \"INSERT OR IGNORE INTO user_privileges SELECT id, 'creative' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'fly' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'fast' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'give' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'noclip' FROM auth;\""
+ssh $VPS_HOST "cd $VPS_PATH && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \"INSERT OR IGNORE INTO user_privileges SELECT id, 'creative' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'fly' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'fast' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'give' FROM auth; INSERT OR IGNORE INTO user_privileges SELECT id, 'noclip' FROM auth;\""
 
 # Reiniciar servidor
 echo "🔄 Reiniciando servidor..."

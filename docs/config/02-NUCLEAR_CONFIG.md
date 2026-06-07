@@ -6,7 +6,7 @@ Este documento detalla las **modificaciones críticas realizadas directamente en
 
 ## 🎯 Problema Resuelto
 
-**ANTES:** Monstruos (zombies, esqueletos, arañas, creepers) aparecían de noche matando jugadores, a pesar de todas las configuraciones anti-mobs en `luanti.conf`.
+**ANTES:** Monstruos (zombies, esqueletos, arañas, creepers) aparecían de noche matando jugadores, a pesar de todas las configuraciones anti-mobs en `luanti-original.conf`.
 
 **DESPUÉS:** Servidor 100% creativo sin monstruos, sin daño, seguro para niños 24/7.
 
@@ -110,7 +110,7 @@ ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker-compose restart luanti-serve
 
 ### 4. Otorgar TODOS los Privilegios Creativos a Usuarios Existentes:
 ```bash
-ssh <VPS_USER>@<VPS_IP> 'sleep 5 && cd $PROJECT_PATH && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/world/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
+ssh <VPS_USER>@<VPS_IP> 'sleep 5 && cd $PROJECT_PATH && docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite "INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"creative\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fly\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"fast\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"give\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"noclip\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"home\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"spawn\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"teleport\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"settime\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"debug\" FROM auth; INSERT OR IGNORE INTO user_privileges SELECT auth.id, \"basic_privs\" FROM auth;"'
 ```
 
 ## 🔍 Verificación
@@ -133,7 +133,7 @@ ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker-compose logs --tail=50 luant
 
 1. **Nuestro Repositorio (`luanti-voxelibre-server.git`):**
    - Contiene mods personalizados
-   - Configuración del servidor (`luanti.conf`)
+   - Configuración del servidor (`luanti-original.conf`)
    - Docker Compose
    - **NO contiene el juego base VoxeLibre**
 
@@ -142,7 +142,7 @@ ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker-compose logs --tail=50 luant
    - Tiene su propio `minetest.conf` con configuraciones predeterminadas
    - **Sobrescribe nuestras configuraciones anti-mobs**
 
-### 🚫 **Configuraciones en `luanti.conf` que NO Funcionaron:**
+### 🚫 **Configuraciones en `luanti-original.conf` que NO Funcionaron:**
 ```conf
 # Estas configuraciones en nuestro repo NO fueron suficientes:
 mobs_spawn = false
@@ -174,7 +174,7 @@ Modificar **directamente** el archivo `minetest.conf` de VoxeLibre dentro del co
 
 | Archivo | Prioridad | Efectividad Anti-Mobs | Control |
 |---------|-----------|---------------------|---------|
-| `server/config/luanti.conf` | 🟨 Media | ❌ No efectivo | ✅ En repo |
+| `server/config/luanti-original.conf` | 🟨 Media | ❌ No efectivo | ✅ En repo |
 | `games/mineclone2/minetest.conf` | 🔴 **ALTA** | ✅ **Efectivo** | ⚠️ **Fuera del repo** |
 | Mods personalizados | 🟩 Baja | ❌ No cargaron | ✅ En repo |
 | Base de datos SQLite | 🟩 Baja | N/A (privilegios) | ⚠️ Runtime |

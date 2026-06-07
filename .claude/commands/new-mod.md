@@ -1,6 +1,6 @@
 ---
 name: new-mod
-description: Scaffold a new Luanti/VoxeLibre mod for the Wetlands server, or adopt a third-party one. Handles mod.conf, init.lua, luanti.conf entry, and documents the required world.mt step on the VPS.
+description: Scaffold a new Luanti/VoxeLibre mod for the Wetlands server, or adopt a third-party one. Handles mod.conf, init.lua, luanti-original.conf entry, and documents the required world.mt step on the VPS.
 argument-hint: <mod-name>
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash
 ---
@@ -81,9 +81,9 @@ rm -rf $ARGUMENTS/.git
 - List `textures/` — confirm prefixes don't collide with VoxeLibre (no `mobs_mc_*`, etc.).
 - If groups like `choppy`/`oddly_breakable_by_hand` are used (Minetest Game), note that survival-mode tools may not match VoxeLibre's (`handy`/`pickaxey`). Creative mode is unaffected.
 
-## Step 3 (common): Enable in luanti.conf
+## Step 3 (common): Enable in luanti-original.conf
 
-Add to `server/config/luanti.conf`, in the appropriate themed section (decoration, transport, etc.), with a short comment explaining what the mod does and its license:
+Add to `server/config/luanti-original.conf`, in the appropriate themed section (decoration, transport, etc.), with a short comment explaining what the mod does and its license:
 
 ```
 load_mod_$ARGUMENTS = true  # [what it adds] ([upstream], [license])
@@ -106,7 +106,7 @@ After committing and pushing:
 ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull origin main"
 
 # REQUIRED: a mod must be listed in world.mt to register.
-# luanti.conf = true alone is NOT sufficient — verified 2026-04-19 with mypark.
+# luanti-original.conf = true alone is NOT sufficient — verified 2026-04-19 with mypark.
 ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_$ARGUMENTS = true' | sudo tee -a /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/world/world.mt"
 
 ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker compose restart luanti-server"

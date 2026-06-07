@@ -53,7 +53,7 @@ Ambos hashes deben coincidir.
 
 ## Paso 3 — Respaldar el mundo local actual
 
-El repo ya tiene un `server/worlds/world/` (copia de referencia, gitignored). No lo borres — renómbralo fuera de `worlds/` por si quieres volver.
+El repo ya tiene un `server/worlds/original/` (copia de referencia, gitignored). No lo borres — renómbralo fuera de `worlds/` por si quieres volver.
 
 ```bash
 cd server/worlds
@@ -76,7 +76,7 @@ Deberías ver `world/` (el de producción) y posiblemente otros `world_BACKUP_*/
 
 ## Paso 5 — CRÍTICO: Sacar cualquier directorio `world_*` del camino
 
-**Luanti hace matching fuzzy** con `--worldname`: si hay varios directorios que empiezan con `world` dentro de `worlds/`, puede cargar el equivocado. Síntoma: la bandera dice `--worldname world` pero los logs muestran `World at [...worlds/world_BACKUP_XXX]`.
+**Luanti hace matching fuzzy** con `--worldname`: si hay varios directorios que empiezan con `world` dentro de `worlds/`, puede cargar el equivocado. Síntoma: la bandera dice `--worldname original` pero los logs muestran `World at [...worlds/world_BACKUP_XXX]`.
 
 Mueve todos los `world_BACKUP_*` y `world_BEFORE_PROD_COPY_*` fuera:
 
@@ -114,7 +114,7 @@ docker logs luanti-voxelibre-server 2>&1 | grep -E "World at|listening on"
 Debe mostrar:
 
 ```
-World at [/config/.minetest/worlds/world]
+World at [/config/.minetest/worlds/original]
 Server for gameid="mineclone2" listening on [::]:30000.
 ```
 
@@ -164,10 +164,10 @@ cd ~/Developer/personal/luanti-voxelibre-server
 docker compose stop luanti-server
 
 # Elimina la copia de producción
-rm -rf server/worlds/world
+rm -rf server/worlds/original
 
 # Restaura el mundo local anterior
-mv server/worlds_archive/world_BEFORE_PROD_COPY_* server/worlds/world
+mv server/worlds_archive/world_BEFORE_PROD_COPY_* server/worlds/original
 ```
 
 ## Limpiar
@@ -187,14 +187,14 @@ rm -rf server/worlds_archive/
 | Síntoma | Causa | Solución |
 |---------|-------|----------|
 | `tar: file changed as we read it` | Hiciste tar del mundo en vivo | Usa un backup de `/backups`, no copies en caliente |
-| Carga `world_BACKUP_XXX` en vez de `world` | Luanti fuzzy-matcheó `--worldname world` | Mueve todos los `world_*` fuera de `worlds/` (Paso 5) |
+| Carga `world_BACKUP_XXX` en vez de `world` | Luanti fuzzy-matcheó `--worldname original` | Mueve todos los `world_*` fuera de `worlds/` (Paso 5) |
 | `docker-compose: command not found` | Tienes Docker v2 (comando es `docker compose` con espacio) | Usa `docker compose` en vez de `docker-compose` |
 | Se conecta Valdivia/Discord solo | `./scripts/start.sh` levanta todo | Usa `docker compose up -d luanti-server` |
 | Amigo no puede entrar por IP pública | CGNAT del ISP | Tailscale / ZeroTier / Playit.gg |
 
 ## Referencia cruzada
 
-- `docs/config/01-CONFIGURATION_HIERARCHY.md` — cómo interactúan `luanti.conf` y `world.mt`
+- `docs/config/01-CONFIGURATION_HIERARCHY.md` — cómo interactúan `luanti-original.conf` y `world.mt`
 - `docs/operations/BACKUP_STATUS.md` — estado del sistema automático de backups
 - `scripts/backup.sh` — script que genera los tarballs en el VPS
 - `scripts/sync-from-vps.sh` — sync selectivo VPS→local para archivos git-trackeados (otro caso de uso)

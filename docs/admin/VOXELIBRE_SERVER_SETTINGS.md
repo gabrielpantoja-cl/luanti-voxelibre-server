@@ -153,7 +153,7 @@ gamerule:naturalRegeneration = true   # Regeneración natural de salud
 3. Algunos cambios requieren reinicio del servidor
 
 ### Desde Archivos de Configuración
-- Las configuraciones también pueden establecerse en `server/config/luanti.conf`
+- Las configuraciones también pueden establecerse en `server/config/luanti-original.conf`
 - Format: `default_game_settings = {"gamerule:setting":"value"}`
 
 ## Privilegios Requeridos
@@ -165,7 +165,7 @@ Para acceder a Server Settings, el usuario necesita:
 ### Verificar Privilegios
 ```bash
 # En el contenedor
-sqlite3 /config/.minetest/worlds/world/auth.sqlite "SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gabo');"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gabo');"
 ```
 
 ## Notas Importantes

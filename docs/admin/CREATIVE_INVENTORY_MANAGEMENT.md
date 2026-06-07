@@ -534,7 +534,7 @@ docker compose restart luanti-server
 
 - `/server/mods/wetlands_inventory_control/` - Mod de control de inventario
 - `/server/mods/vegan_replacements/` - Reemplazos veganos de items
-- `/server/config/luanti.conf` - Configuración general del servidor
+- `/server/config/luanti-original.conf` - Configuración general del servidor
 - `/docs/VEGAN_PHILOSOPHY.md` - Filosofía vegana del servidor
 
 ### Contacto y Soporte

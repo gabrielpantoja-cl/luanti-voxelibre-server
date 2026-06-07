@@ -1,5 +1,5 @@
 #!/bin/bash
-# Backup de los 3 mundos Luanti: world (Wetlands), valdivia, infierno.
+# Backup de los 3 mundos Luanti: original (Wetlands, ex "world"), valdivia, infierno.
 # Hace snapshot consistente de SQLite con `sqlite3 .backup`, copia el resto
 # con rsync excluyendo basura, y comprime el staging a tar.gz.
 # Corre dentro del contenedor luanti-voxelibre-backup (Alpine + dcron).
@@ -9,7 +9,7 @@ BACKUP_DIR="/backups"
 WORLD_DIR="/worlds"
 DATE=$(date +%Y%m%d-%H%M%S)
 BACKUP_NAME="luanti_worlds_backup_${DATE}"
-WORLDS="world valdivia infierno"
+WORLDS="original valdivia infierno"
 MAX_BACKUPS=8
 
 mkdir -p "$BACKUP_DIR"

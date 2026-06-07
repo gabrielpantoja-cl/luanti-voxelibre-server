@@ -6,8 +6,8 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 
 ## 🏗️ Jerarquía de Autoridad (Mayor a Menor)
 
-### 1. **`luanti.conf`** - **AUTORIDAD MÁXIMA** 🎯
-**Ubicación**: `$PROJECT_PATH/server/config/luanti.conf`
+### 1. **`luanti-original.conf`** - **AUTORIDAD MÁXIMA** 🎯
+**Ubicación**: `$PROJECT_PATH/server/config/luanti-original.conf`
 **Docker**: `/config/.minetest/minetest.conf`
 
 **Características**:
@@ -17,12 +17,12 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 - ✅ **Configuración de red, privilegios por defecto, modo de juego**
 
 ### 2. **`world.mt`** - **Configuración de Mundo** 🌍
-**Ubicación**: `$PROJECT_PATH/server/worlds/world/world.mt`
-**Docker**: `/config/.minetest/worlds/world/world.mt`
+**Ubicación**: `$PROJECT_PATH/server/worlds/original/world.mt`
+**Docker**: `/config/.minetest/worlds/original/world.mt`
 
 **Características**:
 - ⚠️ **Configuración específica del mundo**
-- ⚠️ **Sobrescrita por luanti.conf en configuraciones conflictivas**
+- ⚠️ **Sobrescrita por luanti-original.conf en configuraciones conflictivas**
 - ✅ **Controla qué mods cargar**
 - ✅ **Configuración de backend de datos**
 
@@ -36,7 +36,7 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 
 ## 📊 Matriz de Configuraciones Críticas
 
-| Configuración | luanti.conf | world.mt | Docker | **Resultado Final** |
+| Configuración | luanti-original.conf | world.mt | Docker | **Resultado Final** |
 |---------------|-------------|----------|--------|-------------------|
 | `creative_mode` | `true` ✅ | `false` | - | **CREATIVE** ✅ |
 | `enable_damage` | `false` ✅ | `true` | - | **NO DAMAGE** ✅ |
@@ -52,16 +52,16 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 **❌ INCORRECTO**:
 ```bash
 # Editar solo world.mt
-echo "creative_mode = false" >> server/worlds/world/world.mt
+echo "creative_mode = false" >> server/worlds/original/world.mt
 ```
 
 **✅ CORRECTO**:
 ```bash
-# Editar luanti.conf (autoridad final)
-sed -i 's/creative_mode = true/creative_mode = false/' server/config/luanti.conf
-sed -i 's/enable_damage = false/enable_damage = true/' server/config/luanti.conf
+# Editar luanti-original.conf (autoridad final)
+sed -i 's/creative_mode = true/creative_mode = false/' server/config/luanti-original.conf
+sed -i 's/enable_damage = false/enable_damage = true/' server/config/luanti-original.conf
 # Actualizar privilegios por defecto
-sed -i 's/default_privs = interact,shout,creative,give,fly,fast,noclip,home/default_privs = interact,shout,home/' server/config/luanti.conf
+sed -i 's/default_privs = interact,shout,creative,give,fly,fast,noclip,home/default_privs = interact,shout,home/' server/config/luanti-original.conf
 ```
 
 ### Caso 2: Habilitar Nuevo Mod
@@ -70,13 +70,13 @@ sed -i 's/default_privs = interact,shout,creative,give,fly,fast,noclip,home/defa
 **✅ PASO 1** - Configurar carga del mod:
 ```bash
 # En world.mt (configuración de mundo)
-echo "load_mod_new_animals = true" >> server/worlds/world/world.mt
+echo "load_mod_new_animals = true" >> server/worlds/original/world.mt
 ```
 
-**✅ PASO 2** - Verificar dependencias en luanti.conf:
+**✅ PASO 2** - Verificar dependencias en luanti-original.conf:
 ```bash
 # Si el mod requiere privilegios especiales
-echo "# Privilegios para new_animals mod" >> server/config/luanti.conf
+echo "# Privilegios para new_animals mod" >> server/config/luanti-original.conf
 ```
 
 ### Caso 3: Debugging de Configuración Conflictiva
@@ -85,11 +85,11 @@ echo "# Privilegios para new_animals mod" >> server/config/luanti.conf
 **🔍 DIAGNÓSTICO**:
 ```bash
 # Paso 1: Ver configuración del mundo
-cat server/worlds/world/world.mt | grep creative
+cat server/worlds/original/world.mt | grep creative
 # Output: creative_mode = true
 
 # Paso 2: Ver configuración del servidor (AUTORIDAD FINAL)
-cat server/config/luanti.conf | grep creative
+cat server/config/luanti-original.conf | grep creative
 # Output: creative_mode = false  <-- ¡AQUÍ ESTÁ EL CONFLICTO!
 
 # Paso 3: Ver resultado en el servidor
@@ -98,8 +98,8 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs luanti-server |
 
 **✅ SOLUCIÓN**:
 ```bash
-# Cambiar la autoridad final (luanti.conf)
-sed -i 's/creative_mode = false/creative_mode = true/' server/config/luanti.conf
+# Cambiar la autoridad final (luanti-original.conf)
+sed -i 's/creative_mode = false/creative_mode = true/' server/config/luanti-original.conf
 docker-compose restart luanti-server
 ```
 
@@ -108,29 +108,29 @@ docker-compose restart luanti-server
 
 **✅ CONFIGURACIÓN CORRECTA**:
 ```bash
-# En luanti.conf (autoridad final)
-echo "enable_tnt = false" >> server/config/luanti.conf
-echo "enable_fire = false" >> server/config/luanti.conf
+# En luanti-original.conf (autoridad final)
+echo "enable_tnt = false" >> server/config/luanti-original.conf
+echo "enable_fire = false" >> server/config/luanti-original.conf
 
 # Para VoxeLibre específicamente
-echo "mcl_enable_creative_mode = true" >> server/config/luanti.conf
-echo "mcl_creative_is_survival_like = false" >> server/config/luanti.conf
+echo "mcl_enable_creative_mode = true" >> server/config/luanti-original.conf
+echo "mcl_creative_is_survival_like = false" >> server/config/luanti-original.conf
 ```
 
 ## 🚨 Problemas Comunes y Soluciones
 
 ### Problema 1: "Configuré algo pero no funciona"
 **Causa**: Editaste un archivo de menor autoridad
-**Solución**: Siempre edita `luanti.conf` primero
+**Solución**: Siempre edita `luanti-original.conf` primero
 
 ### Problema 2: "Los jugadores no tienen privilegios creativos"
-**Causa**: `default_privs` en `luanti.conf` no incluye `creative`
+**Causa**: `default_privs` en `luanti-original.conf` no incluye `creative`
 **Solución**:
 ```bash
 # Verificar privilegios actuales
-grep default_privs server/config/luanti.conf
+grep default_privs server/config/luanti-original.conf
 # Agregar creative si falta
-sed -i 's/default_privs = interact,shout/default_privs = interact,shout,creative,give/' server/config/luanti.conf
+sed -i 's/default_privs = interact,shout/default_privs = interact,shout,creative,give/' server/config/luanti-original.conf
 ```
 
 ### Problema 3: "Los mods no cargan"
@@ -138,7 +138,7 @@ sed -i 's/default_privs = interact,shout/default_privs = interact,shout,creative
 **Solución**:
 ```bash
 # Agregar mod a world.mt
-echo "load_mod_nombre_del_mod = true" >> server/worlds/world/world.mt
+echo "load_mod_nombre_del_mod = true" >> server/worlds/original/world.mt
 ```
 
 ## 📝 Comandos de Verificación
@@ -146,10 +146,10 @@ echo "load_mod_nombre_del_mod = true" >> server/worlds/world/world.mt
 ### Verificar Estado Actual del Servidor
 ```bash
 # Conectar al VPS y ver configuración activa
-ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && cat server/config/luanti.conf | grep -E '(creative|damage|default_privs)'"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && cat server/config/luanti-original.conf | grep -E '(creative|damage|default_privs)'"
 
 # Ver qué mods están cargados
-ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && cat server/worlds/world/world.mt | grep load_mod"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && cat server/worlds/original/world.mt | grep load_mod"
 
 # Ver logs del servidor para errores de configuración
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs --tail=50 luanti-server | grep -i error"
@@ -157,7 +157,7 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs --tail=50 luant
 
 ### Aplicar Cambios de Configuración
 ```bash
-# Después de editar luanti.conf
+# Después de editar luanti-original.conf
 docker-compose restart luanti-server
 
 # Después de editar world.mt (requiere reinicio completo)
@@ -168,7 +168,7 @@ docker-compose up -d
 ## 🎯 Mejores Prácticas
 
 ### ✅ DO (Hacer)
-1. **Siempre edita `luanti.conf` para configuraciones de servidor**
+1. **Siempre edita `luanti-original.conf` para configuraciones de servidor**
 2. **Usa `world.mt` solo para configuración de mods**
 3. **Haz backup antes de cambios de configuración**
 4. **Testa cambios localmente antes de aplicar en producción**
