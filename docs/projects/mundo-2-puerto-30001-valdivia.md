@@ -2,8 +2,24 @@
 
 **Estado:** En produccion (servidor publico activo en puerto 30001)
 **Fecha:** Marzo 2026
-**Ultima actualizacion:** 22 marzo 2026
+**Ultima actualizacion:** 22 marzo 2026 (estado en produccion verificado por SSH el 21 jun 2026 — ver recuadro abajo)
 **Objetivo:** Recrear la ciudad de Valdivia, Chile (2026) en el servidor Wetlands de Luanti, incluyendo rios, humedales, edificaciones y geografia real.
+
+> ### Estado actual en produccion (verificado por SSH en el VPS, 21 jun 2026)
+>
+> | Metrica | Valor real (live) |
+> |---------|-------------------|
+> | `map.sqlite` | **~505 MB** (529.432.576 bytes, mod. 2026-06-07) |
+> | Mapblocks | **3.329.208** |
+> | Mapgen | `singlenode` · `water_level = 1` · `mapgen_limit = 31007` · `chunksize = 5` |
+> | Spawn | `2389, -55, -2887` |
+> | Container | `luanti-valdivia-server` (activo, `Up 2 weeks`) |
+>
+> El mundo crecio **~19x** respecto de la generacion v3 documentada mas abajo (172.796 mapblocks /
+> 70 MB): desde marzo de 2026 se expandio, remapeo y enriquecio. **Las tablas v1-v4 de mas abajo son
+> hitos historicos de generacion, NO el estado actual.** Backups presentes en el VPS que confirman la
+> cronologia: `map.sqlite.backup-v3` (170 MB, 21-mar), `map.sqlite.v4` (112 MB, 22-mar),
+> `map.sqlite.backup-before-remap` (440 MB, 22-mar) -> `map.sqlite` live (505 MB, 7-jun).
 
 ---
 

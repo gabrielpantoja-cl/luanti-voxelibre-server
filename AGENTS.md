@@ -236,7 +236,7 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 | Infierno | `luanti-infierno-server` | 30002/UDP | `luanti-infierno.conf` | Destructible chaos copy of Wetlands — PvP/fire/TNT/creepers + CTF guns; periodic reset |
 | Llanura CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | 100% flat dirt world (superflat) for capture-the-flag — creative |
 
-All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~480 MB, not in git). See `docs/projects/mundo-2-puerto-30001-valdivia.md`.
+All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~505 MB / 3.33M mapblocks as of 2026-06-07, not in git). See `docs/projects/mundo-2-puerto-30001-valdivia.md`.
 
 **CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (shared with Infierno). Not loaded in Wetlands/Valdivia. See `docs/projects/mundo-4-puerto-30003-ctf-llanura.md`.
 
