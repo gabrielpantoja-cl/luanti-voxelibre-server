@@ -37,7 +37,7 @@ Pre-requisitos:
 ```bash
 git add docker-compose.yml server/config/luanti-infierno.conf \
         scripts/setup-infierno-world.sh scripts/reset-infierno.sh \
-        .gitignore docs/projects/proyecto-infierno.md
+        .gitignore docs/projects/mundo-3-puerto-30002-infierno.md
 git commit -m "feat(infierno): add chaos world on port 30002 — copy of Wetlands for destruction"
 git push origin main
 ```

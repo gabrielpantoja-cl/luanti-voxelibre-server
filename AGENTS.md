@@ -1,6 +1,10 @@
 # AGENTS.md
 
-Guidance for Codex working with this repository.
+**Canonical agent instructions for this repository — the single source of truth.**
+Read directly by opencode, Codex, and other AGENTS.md-aware tools, and pulled into
+Claude Code via the `@AGENTS.md` import in [`CLAUDE.md`](./CLAUDE.md). **Make all shared
+edits here, not in `CLAUDE.md`.** Personal, machine-local overrides (not shared) live in
+`CLAUDE.local.md`.
 
 ## Project Overview
 
@@ -13,12 +17,12 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 ## Key Technologies
 
 - **Runtime**: Docker Compose v2 (`docker compose`) on the VPS. Docker Compose v1 (`docker-compose`) may still be available locally; they are interchangeable here.
-- **Container image**: `linuxserver/luanti:latest` — inside the container, the server user is `abc` (UID 911). Any file created by the container on a mounted volume ends up owned by UID 911 on the host.
+- **Container image**: `linuxserver/luanti:latest` — inside the container, the server user is `abc`. The image's default UID is 911, but `docker-compose.yml` overrides it via `PUID=1000 PGID=1000`, so files written by the container land on the host as UID 1000. On the Oracle VPS, UID 1000 is the `opc` account; the human SSH user `gabriel` is UID 1002, so files created by the container are **not readable** by `gabriel` unless permissions allow group/other access — and the container often creates dirs as `0700`, blocking `git pull`.
 - **Base game**: VoxeLibre (MineClone2) v0.90.1 at `server/games/mineclone2/`.
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
 - **Deployment**: manual `git pull` on the VPS. There are **no GitHub Actions workflows** in this repo.
-- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 80/443 (landing page via nginx on the VPS).
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 30002/UDP (Infierno), 30003/UDP (Llanura CTF), 80/443 (landing page via nginx on the VPS).
 - **UI language**: Spanish.
 
 ## File Structure
@@ -92,12 +96,12 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && docker c
 ssh <VPS_USER>@<VPS_IP> "docker logs --since='2m' luanti-voxelibre-server 2>&1 | grep -iE 'error|warning|my_mod'"
 ```
 
-When containers write to mounted volumes, permissions may break future host-side git operations. **DO NOT** run `chown -R` over the whole repo — it clobbers `server/worlds/` and `server/config/`, which must stay owned by the container user (set by `PUID` in `docker-compose.yml`, currently `1000` on the Oracle VPS). Scope the chown to only what git needs to write:
+When containers write to mounted volumes, permissions may break future host-side git operations. **DO NOT** run `chown -R` over the whole repo — it clobbers `server/worlds/` and `server/config/`, which must stay owned by the container user (set by `PUID` in `docker-compose.yml`, currently `1000` on the Oracle VPS). Scope the chown to **just the specific subdir** git is complaining about:
 
 ```bash
-ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && \
-  sudo chown -R <VPS_USER>:<VPS_USER> server/mods server/games server/landing-page \
-       server/skins scripts docs *.md *.yml *.conf 2>/dev/null || true"
+# Preferred: chown only the offending mod directory
+ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> \
+  /home/<VPS_USER>/luanti-voxelibre-server/server/mods/<mod_name>"
 ```
 
 **If you already clobbered the wrong dirs** (symptom: `Couldn't save env meta` fatal on container start), restore container ownership:
@@ -108,9 +112,14 @@ ssh <VPS_USER>@<VPS_IP> "sudo chown -R 1000:1000 \
   /home/<VPS_USER>/luanti-voxelibre-server/server/config"
 ```
 
-If `git pull` still refuses because of a file git wants to overwrite (e.g. an edit someone made on the VPS), inspect with `git diff <file>` and either commit, stash, or `git checkout -- <file>` — don't force.
+**Failed `git pull` recovery patterns:**
+- *"unable to unlink old <file>: Permission denied"* — file/dir is owned by container UID 1000 (`opc`) and gabriel (UID 1002) can't write. Chown just that subdir as above.
+- *"Your local changes to <file> would be overwritten by merge"* — two flavors:
+  1. **Genuine local edit on VPS**: `sudo git diff <file>` to inspect, then commit, stash, or `git checkout -- <file>` — don't force.
+  2. **Half-applied prior pull**: a previous `git pull` aborted mid-merge after writing `<file>` to disk but before advancing HEAD, so git now sees the new content as a "local modification". Recover with `git restore <file>` and re-pull — the next attempt fast-forwards cleanly.
+- Always inspect first; never `git reset --hard` or `git clean -fd` to "make it go away".
 
-For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/projects/proyecto-valdivia-luanti.md`.
+For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/projects/mundo-2-puerto-30001-valdivia.md`.
 
 ## Development Workflow
 
@@ -218,14 +227,20 @@ Adding a new classic NPC: recolor `mobs_mc_villager.png` via `tools/generate_tex
 
 Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stretched forward (zombie). Always use `mcl_armor_character.b3d`.
 
-## Dual world architecture
+## Multi-world architecture
 
 | World | Container | Port | Config | Purpose |
 |-------|-----------|------|--------|---------|
 | Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main creative world — NPCs, mods, PvP arena |
 | Valdivia 2.0 | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
+| Infierno | `luanti-infierno-server` | 30002/UDP | `luanti-infierno.conf` | Destructible chaos copy of Wetlands — PvP/fire/TNT/creepers + CTF guns; periodic reset |
+| Llanura CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | 100% flat dirt world (superflat) for capture-the-flag — creative |
 
-Both containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~480 MB, not in git). See `docs/projects/proyecto-valdivia-luanti.md`.
+All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~480 MB, not in git). See `docs/projects/mundo-2-puerto-30001-valdivia.md`.
+
+**CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (shared with Infierno). Not loaded in Wetlands/Valdivia. See `docs/projects/mundo-4-puerto-30003-ctf-llanura.md`.
+
+**Valdivia-only mod — `valdivia_teleporter`** (`load_mod_valdivia_teleporter = true` in `luanti-valdivia.conf` only): a teleporter for the Valdivia world (30001). The `/ir` command and a physical pedestal node (`valdivia_teleporter:pad`, `on_rightclick`) open a formspec menu to jump to predefined city locations (Planeta Azul/spawn, Los Fundadores, Santa Elena, Huachocopihue). Coordinates live in the `DESTINOS` table in `server/mods/valdivia_teleporter/init.lua`; textures are regenerated with `tools/generate_textures.py`. The pad is `diggable = false` (anti-grief). Not loaded in Wetlands/Infierno.
 
 ## Enabled mods (authoritative list: `server/config/luanti-original.conf`)
 
@@ -284,8 +299,10 @@ Detailed docs live under `docs/`. Read these when you need specifics.
 - `docs/mods/CHESS_MOD.md` — chess
 
 ### Projects
-- `docs/projects/proyecto-valdivia-luanti.md` — Valdivia 2.0 build / Arnis PR #808 notes
-- `docs/projects/VALDIVIA_COORDENADAS.md` — in-game teleport points (sanitized public list)
+- `docs/projects/mundo-1-puerto-30000-original.md` — Wetlands main creative world (port 30000)
+- `docs/projects/mundo-2-puerto-30001-valdivia.md` — Valdivia 2.0 build / Arnis PR #808 notes + in-game coordinates & teleporter
+- `docs/projects/mundo-3-puerto-30002-infierno.md` — Infierno chaos world (port 30002)
+- `docs/projects/mundo-4-puerto-30003-ctf-llanura.md` — Llanura CTF flat world + capture-the-flag (port 30003)
 
 ### Web
 - `docs/web/landing-page.md` — landing page architecture and deployment

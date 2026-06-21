@@ -9,7 +9,8 @@ local modname = minetest.get_current_modname()
 -- ============================================================================
 -- 1. UBICACIONES PREDEFINIDAS
 -- ============================================================================
--- Coordenadas verificadas en docs/projects/VALDIVIA_COORDENADAS.md y por el admin.
+-- Coordenadas verificadas en docs/projects/mundo-2-puerto-30001-valdivia.md
+-- (seccion "Coordenadas y teletransporte") y por el admin.
 local DESTINOS = {
     {id = "planeta_azul",  nombre = "Planeta Azul (spawn)", pos = {x = 2389, y = -55, z = -2887}},
     {id = "fundadores",    nombre = "Los Fundadores",       pos = {x = 4360, y = -51, z = -4211}},

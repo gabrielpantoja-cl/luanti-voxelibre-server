@@ -389,12 +389,8 @@ Materializado como **`valdivia_teleporter`** (`server/mods/valdivia_teleporter/`
 - Las coordenadas viven en la tabla `DESTINOS` de `init.lua`. Para anadir un destino: agregar una
   fila ahi (id, nombre, pos) y reiniciar `luanti-valdivia`.
 
-| Destino | POS (x, y, z) |
-|---------|---------------|
-| Planeta Azul (spawn) | `2389, -55, -2887` |
-| Los Fundadores | `4360, -51, -4211` |
-| Santa Elena | `5844, -51, -4532` |
-| Huachocopihue | `3761, -43, -3170` |
+Destinos actuales del menu `/ir` y la lista completa de coordenadas publicas: ver la seccion
+[«Coordenadas y teletransporte»](#coordenadas-y-teletransporte-referencia-in-game) mas abajo.
 
 Pendiente futuro: senaletica de calles OSM y mapa interactivo con mas puntos de interes.
 
@@ -558,6 +554,64 @@ min_lng: -73.280   max_lng: -73.180
 - **SRTM elevacion Chile:** https://srtm.csi.cgiar.org/
 - **VoxeLibre nodos:** https://github.com/VoxeLibre/VoxeLibre/tree/master/mods/CORE/mcl_core
 - **WorldEdit Luanti:** https://content.luanti.org/packages/sfan5/worldedit/
+
+---
+
+## Coordenadas y teletransporte (referencia in-game)
+
+> Lista publica saneada (las coordenadas internas/privadas viven en el repo privado).
+> Documento vivo: actualizar con cada nueva ubicacion verificada en el juego.
+> Bbox de referencia para la conversion de abajo: `-39.862,-73.285,-39.810,-73.195`
+> (cobertura expandida; el build documentado arriba como v3 usa `-39.860,-73.285,-39.812,-73.225`).
+
+### Teletransportador `/ir` (menu del mod `valdivia_teleporter`)
+
+Destinos actuales (tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua`):
+
+| Destino | POS (x, y, z) |
+|---------|---------------|
+| Planeta Azul (spawn) | `2389, -55, -2887` |
+| Los Fundadores | `4360, -51, -4211` |
+| Santa Elena | `5844, -51, -4532` |
+| Huachocopihue | `3761, -43, -3170` |
+| Asociacion de Ferroviarios | `5079, -49, -2076` |
+
+### Coordenadas publicas (`/teleport x,y,z`)
+
+| Lugar | Comando teleport | Coords reales (lat, lng) | Notas |
+|-------|-----------------|--------------------------|-------|
+| **Colegio Planeta Azul** (spawn) | `/teleport 2389,-55,-2887` | -39.835957, -73.257018 | Spawn del servidor |
+| **Plaza estacionamiento Colegio** | `/teleport 2343,-56,-3148` | ~-39.838, -73.257 | Acceso al colegio |
+| **Av Pedro Montt / Circunvalacion** | `/teleport 4517,-48,-3885` | ~-39.845, -73.233 | Cruce de avenidas |
+| **Supermercado Trebol** | `/teleport 3358,-42,-3537` | ~-39.842, -73.246 | Av Simpson / Circunvalacion |
+| **Plaza Civica Guacamayo** | `/teleport 2715,-47,-4381` | ~-39.849, -73.253 | |
+| **Circunvalacion / San Luis** | `/teleport 5473,-53.5,-3842` | | Cruce Circunvalacion con San Luis |
+| **Schneider / Circunvalacion** | `/teleport 5747,-44,-4000` | | Cruce Schneider con Circunvalacion |
+| **Los Fundadores** | `/teleport 4360,-51,-4211` | | |
+| **Plaza Londres (Huachocopihue)** | `/teleport 3761,-43,-3170` | | |
+| **Asociacion de Ferroviarios** | `/teleport 5079,-49,-2076` | | Destino del teletransportador `/ir` |
+| **Colegio Windsor** | `/teleport 3727,-44,-2619` | | Francia / Simpson |
+| **Puente Pedro de Valdivia** | `/teleport 3111,-50,-176` | | Cruza el Rio Valdivia |
+
+### Lugares por descubrir (estimados, pendientes de verificar)
+
+| Lugar | Comando teleport estimado | Coords reales |
+|-------|--------------------------|---------------|
+| Rio Valdivia (centro) | `/teleport 2000,-50,-2000` | ~-39.840, -73.262 |
+| Miraflores | `/teleport 4000,-45,-2500` | ~-39.830, -73.240 |
+| Torobayo | `/teleport 1000,-45,-1500` | ~-39.825, -73.270 |
+| Consorcio Maderero | `/teleport 1500,-45,-3500` | ~-39.848, -73.268 |
+
+### Convertir coordenadas reales (lat, lng) -> coordenadas del juego
+
+```
+Bbox: min_lat=-39.862, min_lng=-73.285, max_lat=-39.810, max_lng=-73.195
+Tamano: 5772m (N-S) x 7651m (E-O)
+
+X = ((-73.285) - lng) / ((-73.285) - (-73.195)) * 7651
+Z = -((-39.862) - lat) / ((-39.862) - (-39.810)) * 5772
+Y = probar entre -30 y -55 (depende de la elevacion del terreno)
+```
 
 ---
 

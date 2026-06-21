@@ -151,7 +151,7 @@ Se modifico `server/mods/server_rules/init.lua` para mostrar un anuncio rotativo
 
 ### Baja prioridad
 
-- [ ] **Agregar coordenadas de Valdivia** - Seguir explorando y documentando en `docs/projects/VALDIVIA_COORDENADAS.md`
+- [ ] **Agregar coordenadas de Valdivia** - Seguir explorando y documentando en `docs/projects/mundo-2-puerto-30001-valdivia.md` (seccion "Coordenadas y teletransporte")
 - [ ] **Screenshot de Valdivia para galeria** - Tomar capturas del mundo para agregar a la landing page y gallery data
 
 ---
