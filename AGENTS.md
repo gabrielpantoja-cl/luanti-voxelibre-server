@@ -22,7 +22,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
 - **Deployment**: manual `git pull` on the VPS. There are **no GitHub Actions workflows** in this repo.
-- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 30002/UDP (Infierno), 30003/UDP (Llanura CTF), 80/443 (landing page via nginx on the VPS).
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 30002/UDP (GAELSIN), 30003/UDP (Llanura CTF), 80/443 (landing page via nginx on the VPS).
 - **UI language**: Spanish.
 
 ## File Structure
@@ -233,14 +233,14 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 |-------|-----------|------|--------|---------|
 | Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main creative world — NPCs, mods, PvP arena |
 | Valdivia 2.0 | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
-| Infierno | `luanti-infierno-server` | 30002/UDP | `luanti-infierno.conf` | Destructible chaos copy of Wetlands — PvP/fire/TNT/creepers + CTF guns; periodic reset |
+| GAELSIN | `luanti-gaelsin-server` | 30002/UDP | `luanti-gaelsin.conf` | Pure VoxeLibre survival world generated from seed `GAELSIN` (mapgen v7) — PvP on, hostile mobs at night, creepers blocked, no area protection; minimal mod set |
 | Llanura CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | 100% flat dirt world (superflat) for capture-the-flag — creative |
 
 All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~505 MB / 3.33M mapblocks as of 2026-06-07, not in git). See `docs/projects/mundo-2-puerto-30001-valdivia.md`.
 
-**CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (shared with Infierno). Not loaded in Wetlands/Valdivia. See `docs/projects/mundo-4-puerto-30003-ctf-llanura.md`.
+**CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (only here now — the former Infierno world that shared it was replaced by GAELSIN survival). Not loaded in Wetlands/Valdivia/GAELSIN. See `docs/projects/mundo-4-puerto-30003-ctf-llanura.md`.
 
-**Valdivia-only mod — `valdivia_teleporter`** (`load_mod_valdivia_teleporter = true` in `luanti-valdivia.conf` only): a teleporter for the Valdivia world (30001). The `/ir` command and a physical pedestal node (`valdivia_teleporter:pad`, `on_rightclick`) open a formspec menu to jump to predefined city locations (Planeta Azul/spawn, Los Fundadores, Santa Elena, Huachocopihue). Coordinates live in the `DESTINOS` table in `server/mods/valdivia_teleporter/init.lua`; textures are regenerated with `tools/generate_textures.py`. The pad is `diggable = false` (anti-grief). Not loaded in Wetlands/Infierno.
+**Valdivia-only mod — `valdivia_teleporter`** (`load_mod_valdivia_teleporter = true` in `luanti-valdivia.conf` only): a teleporter for the Valdivia world (30001). The `/ir` command and a physical pedestal node (`valdivia_teleporter:pad`, `on_rightclick`) open a formspec menu to jump to predefined city locations (Planeta Azul/spawn, Los Fundadores, Santa Elena, Huachocopihue). Coordinates live in the `DESTINOS` table in `server/mods/valdivia_teleporter/init.lua`; textures are regenerated with `tools/generate_textures.py`. The pad is `diggable = false` (anti-grief). Not loaded in Wetlands/GAELSIN.
 
 ## Enabled mods (authoritative list: `server/config/luanti-original.conf`)
 
@@ -301,7 +301,7 @@ Detailed docs live under `docs/`. Read these when you need specifics.
 ### Projects
 - `docs/projects/mundo-1-puerto-30000-original.md` — Wetlands main creative world (port 30000)
 - `docs/projects/mundo-2-puerto-30001-valdivia.md` — Valdivia 2.0 build / Arnis PR #808 notes + in-game coordinates & teleporter
-- `docs/projects/mundo-3-puerto-30002-infierno.md` — Infierno chaos world (port 30002)
+- `docs/projects/mundo-3-puerto-30002-gaelsin.md` — GAELSIN survival world (port 30002)
 - `docs/projects/mundo-4-puerto-30003-ctf-llanura.md` — Llanura CTF flat world + capture-the-flag (port 30003)
 
 ### Web

@@ -1,5 +1,5 @@
 -- wetlands_supreme_zombie/init.lua
--- Zombie Supremo: mob jefe gigante para Wetlands (Infierno)
+-- Zombie Supremo: mob jefe gigante para Wetlands
 -- Implementacion basada en patrones del Ender Dragon de VoxeLibre:
 --   - do_custom (no on_step) para la logica periodica
 --   - do_punch retorna false para evitar creative-instakill de mcl_mobs

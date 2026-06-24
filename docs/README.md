@@ -64,7 +64,7 @@ Operaciones diarias y mantenimiento del servidor
 Proyectos especiales y expansiones del servidor
 - **[Mundo 1 — Wetlands](projects/mundo-1-puerto-30000-original.md)** - Mundo principal creativo y educativo (EN PRODUCCION, puerto 30000)
 - **[Mundo 2 — Valdivia](projects/mundo-2-puerto-30001-valdivia.md)** - Recreacion de Valdivia desde OpenStreetMap con Arnis + coordenadas in-game (EN PRODUCCION, puerto 30001)
-- **[Mundo 3 — Infierno](projects/mundo-3-puerto-30002-infierno.md)** - Mundo caos destructible, copia de Wetlands (puerto 30002)
+- **[Mundo 3 — GAELSIN](projects/mundo-3-puerto-30002-gaelsin.md)** - Mundo de supervivencia VoxeLibre generado desde seed GAELSIN (puerto 30002)
 - **[Mundo 4 — Llanura CTF](projects/mundo-4-puerto-30003-ctf-llanura.md)** - Mundo plano de tierra para captura la bandera (puerto 30003)
 
 ### 🌐 [web/](web/)

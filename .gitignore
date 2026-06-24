@@ -60,9 +60,9 @@ server/worlds/valdivia/force_loaded.txt
 server/worlds/valdivia/ipban.txt
 server/worlds/valdivia/map_meta.txt
 
-# Infierno world data (clon de Wetlands, regenerable via reset-infierno.sh)
-server/worlds/infierno/
-server/worlds/infierno_DESTROYED_*/
+# GAELSIN world data (generado desde seed, regenerable via reset-gaelsin.sh)
+server/worlds/gaelsin/
+server/worlds/gaelsin_DESTROYED_*/
 
 # ==========================================
 # Documentación Privada

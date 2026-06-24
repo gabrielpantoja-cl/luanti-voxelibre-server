@@ -1,8 +1,8 @@
 # Proyecto WETLANDS — Mundo principal creativo y educativo
 
 Primer y principal mundo del servidor: un entorno **creativo, educativo y kid-friendly** (apto para
-niños 7+). Es el mundo "canónico" del que derivan los demás (Infierno es una copia destructible de
-este). Mods propios promueven el cuidado de animales y la exploración no violenta; el PvP solo existe
+niños 7+). Es el mundo "canónico" del servidor. Mods propios promueven el cuidado de animales y la
+exploración no violenta; el PvP solo existe
 en una arena opt-in. Dirección pública: `luanti.gabrielpantoja.cl:30000`.
 
 ## Resumen
@@ -69,7 +69,7 @@ carpeta de mundo y su servicio en `docker-compose.yml`:
 |-------|--------|-----|
 | **Wetlands (este)** | 30000 | este documento |
 | Valdivia 2.0 | 30001 | `mundo-2-puerto-30001-valdivia.md` |
-| Infierno | 30002 | `mundo-3-puerto-30002-infierno.md` |
+| GAELSIN | 30002 | `mundo-3-puerto-30002-gaelsin.md` |
 | Llanura CTF | 30003 | `mundo-4-puerto-30003-ctf-llanura.md` |
 
 > Para todos los detalles de arquitectura, pitfalls de VoxeLibre, texturas y comandos, la fuente

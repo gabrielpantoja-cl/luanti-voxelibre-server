@@ -124,27 +124,28 @@ services:
       - luanti-network
 
   # =============================================
-  # INFIERNO - Mundo caos (copia destructible de Wetlands)
+  # GAELSIN - Mundo de supervivencia VoxeLibre
   # =============================================
-  # Snapshot del mundo principal donde se puede destruir, atacar y quemar
-  # libremente. PvP, fuego, TNT y creepers activos. Reset periodico via
-  # scripts/reset-infierno.sh.
-  luanti-infierno:
+  # Mundo nuevo generado desde cero con seed=GAELSIN (mapgen v7). Supervivencia
+  # pura: PvP activo, mobs hostiles de noche, creepers bloqueados, sin proteccion
+  # de areas. NO clona ningun mundo. Setup/reset via scripts/setup-gaelsin-world.sh
+  # y scripts/reset-gaelsin.sh.
+  luanti-gaelsin:
     image: linuxserver/luanti:latest
-    container_name: luanti-infierno-server
+    container_name: luanti-gaelsin-server
     restart: unless-stopped
     ports:
       - "30002:30000/udp"
     volumes:
-      - ./server/config/luanti-infierno.conf:/config/.minetest/main-config/minetest.conf
+      - ./server/config/luanti-gaelsin.conf:/config/.minetest/main-config/minetest.conf
       - ./server/mods:/config/.minetest/mods
-      - ./server/worlds/infierno:/config/.minetest/worlds/infierno
+      - ./server/worlds/gaelsin:/config/.minetest/worlds/gaelsin
       - ./server/games:/config/.minetest/games
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Santiago
-      - CLI_ARGS=--worldname infierno
+      - CLI_ARGS=--worldname gaelsin
     healthcheck:
       test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
       interval: 30s
@@ -156,18 +157,18 @@ services:
     networks:
       - luanti-network
 
-  # Discord notifier para Infierno
-  discord-notifier-infierno:
+  # Discord notifier para GAELSIN
+  discord-notifier-gaelsin:
     image: alpine:latest
-    container_name: luanti-discord-notifier-infierno
+    container_name: luanti-discord-notifier-gaelsin
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./scripts:/scripts:ro
     environment:
       - TZ=America/Santiago
-      - CONTAINER_NAME=luanti-infierno-server
-      - SERVER_LABEL=INFIERNO
+      - CONTAINER_NAME=luanti-gaelsin-server
+      - SERVER_LABEL=GAELSIN ⚔️
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
@@ -175,7 +176,7 @@ services:
         bash /scripts/discord-notifier.sh
       "
     depends_on:
-      - luanti-infierno
+      - luanti-gaelsin
     networks:
       - luanti-network
 

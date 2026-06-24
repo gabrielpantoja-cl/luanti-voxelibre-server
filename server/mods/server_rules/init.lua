@@ -320,7 +320,7 @@ minetest.register_chatcommand("discord", {
 -- Filtro por nombre del mundo (no por puerto): los tres containers usan
 -- port=30000 internamente y Docker mapea a 30001/30002 en el host, así
 -- que minetest.settings:get("port") sería idéntico en los tres.
--- minetest.get_worldpath() termina en world | valdivia | infierno, que
+-- minetest.get_worldpath() termina en world | valdivia | gaelsin | ctf, que
 -- es lo que docker-compose monta y world_name pinea en cada .conf.
 --
 -- Cada lista rota: cada ANNOUNCEMENT_INTERVAL segundos se emite el
@@ -335,7 +335,7 @@ local ANNOUNCEMENTS = {
         "** WETLANDS ** Aquí no se destruye: construye, embellece, protege tu área con /protect_area. **",
         "** WETLANDS ** Si quieres destruir, para eso están otros mundos. Aquí cuidamos lo construido entre todos. **",
         "** NUEVO MUNDO ** Valdivia - Ciudad real de Chile recreada a escala! Conectate a luanti.gabrielpantoja.cl:30001 y explorala! **",
-        "** NUEVO MUNDO ** INFIERNO - Mundo caos donde se puede destruir y combatir libremente! luanti.gabrielpantoja.cl:30002 **",
+        "** NUEVO MUNDO ** GAELSIN - Mundo de supervivencia: sobrevive, explora y construye desde cero! luanti.gabrielpantoja.cl:30002 **",
     },
     -- Valdivia (puerto público 30001)
     valdivia = {
@@ -344,11 +344,11 @@ local ANNOUNCEMENTS = {
         "** VALDIVIA 2.0 ** Cubre ~5x5 km de la ciudad: Río Valdivia, Miraflores, Torobayo, Colegio Planeta Azul y zonas industriales. **",
         "** VALDIVIA 2.0 ** Generado automáticamente con Arnis (PR #808 de Luanti) — el terreno y los edificios no fueron construidos a mano. **",
     },
-    -- Infierno (puerto público 30002)
-    infierno = {
-        "** INFIERNO ** Este mundo es un caos: destruye lo que quieras, sin reglas de construcción. **",
-        "** INFIERNO ** Aquí no se protege nada: rompe bloques, usa armas, libera el caos. **",
-        "** INFIERNO ** Zona de descarga total: PvP libre, destrucción libre, sin restricciones. **",
+    -- GAELSIN (puerto público 30002): supervivencia VoxeLibre pura
+    gaelsin = {
+        "** GAELSIN ** Mundo de supervivencia: empiezas con las manos vacías, junta recursos y construye. **",
+        "** GAELSIN ** Cuidado con la noche: aparecen mobs hostiles. ¡Constrúyete un refugio! **",
+        "** GAELSIN ** PvP activo en todo el mundo. No hay protección de áreas: pacta con tus amigos. **",
     },
 }
 

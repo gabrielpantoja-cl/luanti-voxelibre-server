@@ -15,7 +15,7 @@ mod casero (`wetlands_flatworld`).
 | Config | `server/config/luanti-ctf.conf` |
 | Mundo | `server/worlds/ctf/` (gitignored, se crea en el VPS — no se clona de nada) |
 | Mapgen | `singlenode` + mod `wetlands_flatworld` (genera tierra bajo demanda) |
-| Combate | Modpack `ctf_guns` (mismo set de armas que Infierno) |
+| Combate | Modpack `ctf_guns` (único mundo con armas de fuego) |
 | Notifier Discord | `discord-notifier-ctf` (label `Llanura CTF ⚔️`) |
 
 ## Cómo funciona el terreno (`wetlands_flatworld`)
@@ -159,16 +159,16 @@ Conectarse en el cliente Luanti a `luanti.gabrielpantoja.cl:30003`. Probar:
 
 ## Notas
 
-- **Sin `map.sqlite` que clonar**: a diferencia de Valdivia/Infierno, este mundo nace vacío y el
+- **Sin `map.sqlite` que clonar**: a diferencia de Valdivia, este mundo nace vacío y el
   terreno se genera solo con `wetlands_flatworld`. La primera conexión genera la zona de spawn.
 - **`world.mt` es obligatorio**: omitir el paso 2 es la causa #1 de "los mods existen pero los ítems
   salen como desconocidos / el comando `/ctf` no existe".
 - **Profundidad**: la tierra maciza hacia abajo crece en disco solo con exploración; en un mundo de
   construcción/combate la mayoría queda cerca de la superficie, así que es manejable.
-- **Recursos esperados**: similar a Valdivia/Infierno idle (~300 MB RAM); con el modpack de armas
+- **Recursos esperados**: similar a Valdivia idle (~300 MB RAM); con el modpack de armas
   y jugadores activos, estimado hasta ~600 MB. Headroom amplio en el VPS Oracle ARM (24 GB).
-- **Edad recomendada**: hay PvP y armas (`ctf_guns`); marcarlo en el landing como "10+" igual que
-  Infierno, distinto del mundo familiar 7+ del puerto 30000.
+- **Edad recomendada**: hay PvP y armas (`ctf_guns`); marcarlo en el landing como "10+",
+  distinto del mundo familiar 7+ del puerto 30000.
 
 ## Archivos del proyecto
 
