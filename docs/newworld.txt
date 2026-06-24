@@ -1,0 +1,68 @@
+te acuerdas del mundo infierno en puerto 30002 ? ese mundo es una copia del mundo original del puerto 30000. por lo tanto no es tan valioso. dicho eso lo que quiero hacer es remplazar es mundo infierno por un nuevo mundo llamado "GAELSIN" con voxelibre y generado con la semilla o seed = "GAELSIN" y version del generador v7. con la configuracion convencional de voxelibre, es de decir supervivencia. cualquier duda estoy aqui para responderte
+
+Acá va el plan de reemplazo de Infierno por GAELSIN:
+Archivos a modificar/crear
+Archivo	Acción
+docker-compose.yml	Renombrar luanti-infierno → luanti-gaelsin (servicio, container, notifier, volúmenes, comentarios)
+server/config/luanti-infierno.conf	Reemplazar por luanti-gaelsin.conf (nueva config supervivencia)
+scripts/setup-infierno-world.sh	Reemplazar por setup-gaelsin-world.sh (crea mundo fresco, no clona)
+scripts/reset-infierno.sh	Reemplazar por reset-gaelsin.sh (borra mundo y regenera desde seed)
+docs/projects/mundo-3-puerto-30002-infierno.md	Reemplazar por mundo-3-puerto-30002-gaelsin.md
+docs/README.md	Actualizar enlace Infierno → GAELSIN
+docs/projects/mundo-1-puerto-30000-original.md	Actualizar tabla de mundos
+AGENTS.md	Actualizar tabla multi-world + docs index
+.gitignore	Cambiar server/worlds/infierno/ → server/worlds/gaelsin/
+Config propuesta para luanti-gaelsin.conf
+- Modo: supervivencia VoxeLibre pura (creative_mode = false, keepInventory = false, mcl_enable_creative_mode = false)
+- Seed: GAELSIN, mapgen v7
+- Daño: habilitado, mobs hostiles de noche
+- PvP: false (a menos que quieras que sea PvP)
+- Fuego/TNT: true (estándar supervivencia)
+- Mods: núcleo (wetlands_newplayer*, server_rules, mcl_back_to_spawn, wetlands_lastpos, worldedit, celevator, chess, voxelibre_tv, autos, _world_folder_media, mcl_custom_world_skins, 3dforniture, mcl_decor, mypark, broom_racing)
+- Sin CTF guns, sin protector, sin wetlands_npcs/music (a menos que quieras algunos)
+Privilegios de nuevos jugadores
+wetlands_newplayer otorga fly,fast,noclip,give,creative — inapropiado para supervivencia. Propongo crear wetlands_gaelsin_newplayer que solo dé interact, shout, spawn.
+
+# Questions
+¿Quieres que GAELSIN tenga PvP habilitado (true) o deshabilitado (false)?
+true (con PvP)
+¿Creepers habilitados o bloqueados en GAELSIN?
+Bloqueados
+¿Protección de áreas (voxelibre_protection) en GAELSIN?
+Sin protección
+¿Qué mods decorativos/funcionales incluir además del núcleo?
+Mínimos (solo juego base)
+Para los privilegios de nuevos jugadores en GAELSIN (supervivencia), ¿cuál prefieres?
+Solo interact, shout
+¿Quieres que el notificador de Discord para GAELSIN tenga un emoji/label específico?
+GAELSIN ⚔️
+
+Perfecto. Con tus respuestas, este es el plan completo:
+Plan: Infierno → GAELSIN ⚔️
+Archivos a crear
+Archivo	Contenido
+server/config/luanti-gaelsin.conf	Config supervivencia: seed=GAELSIN, v7, PvP=on, creepers=off, sin protección, sin mods extra
+server/mods/wetlands_gaelsin_newplayer/init.lua	Otorga solo interact, shout a nuevos jugadores
+server/mods/wetlands_gaelsin_newplayer/mod.conf	Metadatos del mod
+scripts/setup-gaelsin-world.sh	Crea server/worlds/gaelsin/ + world.mt fresco (no clona nada)
+scripts/reset-gaelsin.sh	Detiene container, mueve mundo a backup, recrea fresco, reinicia
+docs/projects/mundo-3-puerto-30002-gaelsin.md	Documentación del nuevo mundo
+Archivos a modificar
+Archivo	Cambio
+docker-compose.yml	luanti-infierno → luanti-gaelsin (servicio, container, volúmenes, notifier con label GAELSIN ⚔️, comentarios)
+docs/README.md	Enlace Infierno → GAELSIN
+docs/projects/mundo-1-puerto-30000-original.md	Tabla mundo 3: Infierno → GAELSIN
+AGENTS.md	Tabla multi-world + docs index
+.gitignore	infierno/ → gaelsin/
+Archivos a eliminar
+- server/config/luanti-infierno.conf
+- scripts/setup-infierno-world.sh
+- scripts/reset-infierno.sh
+- docs/projects/mundo-3-puerto-30002-infierno.md
+Mods habilitados en GAELSIN (mínimos)
+wetlands_gaelsin_newplayer, wetlands_no_creeper, server_rules, mcl_back_to_spawn, wetlands_lastpos, _world_folder_media, mcl_custom_world_skins, worldedit (+commands/+shortcuts), mcl_potions_hotfix
+Notas
+- No hay snapshot que clonar: GAELSIN genera su mundo desde seed "GAELSIN" al arrancar, como cualquier mundo nuevo de VoxeLibre.
+- El VPS necesita que abras 30002/UDP en el firewall de Oracle (ya debería estar abierto del Infierno).
+- En el VPS, después del git pull, ejecutar sudo ./scripts/setup-gaelsin-world.sh para crear el directorio del mundo y su world.mt, luego docker compose up -d luanti-gaelsin discord-notifier-gaelsin.
+¿Te parece bien el plan? ¿Algo que ajustar antes de implementar?
