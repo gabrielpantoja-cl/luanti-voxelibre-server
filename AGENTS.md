@@ -112,11 +112,37 @@ ssh <VPS_USER>@<VPS_IP> "sudo chown -R 1000:1000 \
   /home/<VPS_USER>/luanti-voxelibre-server/server/config"
 ```
 
+**Before pulling on the VPS (prevention — this is what avoids the half-applied-pull mess):**
+
+A `git pull` that has to update any file under `server/mods/` will **abort mid-checkout** if those dirs are container-owned (`opc`), because git can't unlink/overwrite them. An aborted checkout leaves a **half-applied pull**: the new file contents are already written to disk but HEAD never advanced, so git now reports them as "local modifications" + "untracked files would be overwritten" and **every subsequent pull is blocked** until you recover by hand. The container routinely (re)creates mod dirs as `opc:opc` — sometimes `0700` — so after the server has been running a while this is the *default* failure mode, not an edge case. Pre-empt it:
+
+```bash
+# 1. See how far behind the VPS is and whether the working tree is dirty.
+ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && \
+  git fetch origin main && git status --short && \
+  echo '--- incoming files under server/mods ---' && \
+  git diff --name-only HEAD..origin/main | grep '^server/mods/'"
+
+# 2. If the incoming range touches server/mods, pre-chown the WHOLE mods tree to gabriel
+#    BEFORE pulling (not after the pull fails):
+ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> \
+  /home/<VPS_USER>/luanti-voxelibre-server/server/mods"
+
+# 3. Now pull.
+ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull origin main"
+```
+
+`chown -R server/mods` to gabriel is **safe**: the container reads mods as "other" (`r-x`) and never writes inside a mod dir at runtime (per-mod state lives in the world's `mod_storage`, not the mod dir). Still **never** chown `server/worlds`. Also note the VPS is often **many commits behind**, not one — a single pull may replay several feature commits at once (e.g. a whole new world), so the touched-file set is much larger than your latest commit; don't size the chown to just your diff.
+
 **Failed `git pull` recovery patterns:**
-- *"unable to unlink old <file>: Permission denied"* — file/dir is owned by container UID 1000 (`opc`) and gabriel (UID 1002) can't write. Chown just that subdir as above.
-- *"Your local changes to <file> would be overwritten by merge"* — two flavors:
+- *"unable to unlink old <file>: Permission denied"* — file/dir is owned by container UID 1000 (`opc`) and gabriel (UID 1002) can't write. Chown just that subdir as above (or pre-chown `server/mods` per the prevention block).
+- *"Your local changes to <file> would be overwritten by merge"* / *"untracked working tree files would be overwritten"* — two flavors:
   1. **Genuine local edit on VPS**: `sudo git diff <file>` to inspect, then commit, stash, or `git checkout -- <file>` — don't force.
-  2. **Half-applied prior pull**: a previous `git pull` aborted mid-merge after writing `<file>` to disk but before advancing HEAD, so git now sees the new content as a "local modification". Recover with `git restore <file>` and re-pull — the next attempt fast-forwards cleanly.
+  2. **Half-applied prior pull**: a previous `git pull` aborted mid-merge after writing files to disk but before advancing HEAD, so git now sees the new content as "local modifications" and the new files as untracked conflicts. **Verify before discarding**: for every flagged file, confirm the on-disk content already equals the pull target —
+     ```bash
+     diff -q <(git show origin/main:"$f") "$f"   # silent exit 0 = identical = safe pull artifact
+     ```
+     If it matches origin/main, it's a pure artifact: `git restore <tracked files>` and `rm <untracked files>`, then re-pull (fast-forwards cleanly and rewrites them all). If a file does **not** match, it's genuine VPS-local work — stop and inspect, never delete it.
 - Always inspect first; never `git reset --hard` or `git clean -fd` to "make it go away".
 
 For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/projects/mundo-2-puerto-30001-valdivia.md`.
