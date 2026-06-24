@@ -1821,7 +1821,30 @@ body {
     min-width: auto;
     text-align: center;
   }
-  
+
+  /* Fix vista móvil: el contenido del hero (título + lista de mundos) es más
+     alto que la captura de fondo. Con el overlay en position:absolute + el hero
+     en overflow:hidden y centrado, el tope (título y el mundo Wetlands 30000)
+     quedaba recortado e inalcanzable. En móvil sacamos el overlay del flujo
+     absoluto para que la caja de info fluya DEBAJO de la imagen y se vea entera. */
+  .hero {
+    min-height: auto;
+    align-items: stretch;
+    overflow: visible;
+  }
+
+  .hero-game-screenshot {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-overlay {
+    position: static;
+    background: none;          /* .pixel-border ya trae fondo negro sólido */
+    display: block;
+    padding: var(--space-md) 0 0;
+  }
+
   /* Gallery responsive */
   .gallery-grid {
     grid-template-columns: 1fr;
