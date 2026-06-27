@@ -344,12 +344,10 @@ local ANNOUNCEMENTS = {
         "** VALDIVIA 2.0 ** Cubre ~5x5 km de la ciudad: Río Valdivia, Miraflores, Torobayo, Colegio Planeta Azul y zonas industriales. **",
         "** VALDIVIA 2.0 ** Generado automáticamente con Arnis (PR #808 de Luanti) — el terreno y los edificios no fueron construidos a mano. **",
     },
-    -- GAELSIN (puerto público 30002): supervivencia VoxeLibre pura
-    gaelsin = {
-        "** GAELSIN ** Mundo de supervivencia: empiezas con las manos vacías, junta recursos y construye. **",
-        "** GAELSIN ** Cuidado con la noche: aparecen mobs hostiles. ¡Constrúyete un refugio! **",
-        "** GAELSIN ** PvP activo en todo el mundo. No hay protección de áreas: pacta con tus amigos. **",
-    },
+    -- GAELSIN (puerto público 30002): supervivencia VoxeLibre pura.
+    -- Anuncios recurrentes desactivados a pedido del usuario (2026-06-27):
+    -- saturaban el chat. Los comandos (/reglas, /ayuda) siguen disponibles.
+    gaelsin = {},
 }
 
 local world_id = (minetest.get_worldpath() or ""):match("([^/]+)/?$") or "world"
