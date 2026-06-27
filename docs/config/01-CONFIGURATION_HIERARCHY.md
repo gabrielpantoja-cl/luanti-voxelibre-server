@@ -34,6 +34,31 @@ El servidor Wetlands utiliza una **jerarquía de configuración en cascada** don
 - ⚠️ **Puede ser sobrescrita por archivos de configuración**
 - ✅ **Configuración de puertos y volúmenes**
 
+## ⚠️ Excepción CRÍTICA: carga de mods (`load_mod_*`)
+
+La jerarquía de arriba (`.conf` manda) aplica a **settings del servidor**
+(creative_mode, enable_damage, default_privs, etc.). **NO aplica a la carga de
+mods.** Para `load_mod_<nombre>`, **`world.mt` tiene la autoridad final cuando
+tiene una entrada explícita** para ese mod:
+
+- Si `world.mt` trae `load_mod_X = true`, el mod **carga**, aunque
+  `luanti-<mundo>.conf` diga `load_mod_X = false`. El `.conf` NO es un
+  kill-switch confiable.
+- El `.conf` solo gobierna la carga de un mod cuando `world.mt` **no** tiene
+  ninguna línea `load_mod_X` para él (actúa como default/fallback).
+
+**Verificado 2026-06-27** desactivando `mcl_potions_hotfix`: Wetlands
+(`original/world.mt` sin la línea) se apagó con solo el `.conf = false`; GAELSIN
+(`gaelsin/world.mt` con `= true`) siguió cargando el mod hasta editar también su
+`world.mt`. Los mundos nuevos (GAELSIN, CTF...) se crearon volcando todos los
+`load_mod_*` del `.conf` al `world.mt`, así que casi todos los mods tienen
+entrada explícita ahí.
+
+➡️ **Para desactivar un mod con certeza**: poné `= false` en AMBOS — el `.conf`
+(git) y el `world.mt` del mundo en el VPS (`sudo sed -i`, luego
+`sudo chown 1000:1000` para restaurar ownership del container; **nunca** chownear
+`server/worlds` al usuario SSH). Reiniciá el container.
+
 ## 📊 Matriz de Configuraciones Críticas
 
 | Configuración | luanti-original.conf | world.mt | Docker | **Resultado Final** |
@@ -176,7 +201,7 @@ docker-compose up -d
 
 ### ❌ DON'T (No Hacer)
 1. **No edites configuraciones directamente en el VPS**
-2. **No asumas que `world.mt` tiene autoridad final**
+2. **No asumas que `world.mt` tiene autoridad final** para settings del servidor — pero SÍ la tiene para `load_mod_*` (ver "Excepción CRÍTICA" arriba)
 3. **No olvides reiniciar el servidor después de cambios**
 4. **No mezcles configuraciones de desarrollo y producción**
 

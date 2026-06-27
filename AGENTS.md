@@ -50,13 +50,16 @@ There are two files that both list `load_mod_*` entries. Confusing which wins is
 
 | File | Role | Lives in git? | Edit where |
 |------|------|---------------|------------|
-| `server/worlds/original/world.mt` | **Primary enable gate** — a mod must be `= true` here to load | No (gitignored) | On the VPS via SSH |
-| `server/config/luanti-original.conf` | **Kill-switch** — `= false` here overrides any `= true` in `world.mt` | Yes | This repo |
+| `server/worlds/<world>/world.mt` | **Authoritative gate** — `world.mt` **wins** whenever it has an explicit `load_mod_X` entry | No (gitignored) | On the VPS via SSH |
+| `server/config/luanti-<world>.conf` | **Default only** — governs a mod **only if `world.mt` has no entry for it** | Yes | This repo |
 
-Rules (verified empirically 2026-04-19 when enabling `mypark`):
-- A mod loads **only if `world.mt` has `load_mod_X = true`**. `luanti-original.conf = true` alone is **not sufficient** — the mod will silently not register.
-- If `luanti-original.conf` has `load_mod_X = false`, the mod is OFF regardless of `world.mt`. This is the canonical kill-switch and doesn't need SSH.
-- `luanti-original.conf` explicitly pins several mods to `= false` (motorboat, biofuel, etc.) so they stay off even if someone adds them to `world.mt`.
+Rules (corrected empirically 2026-06-27 when disabling `mcl_potions_hotfix`; supersedes the older 2026-04-19 `mypark` note):
+- A mod loads **only if it ends up `= true`**. If `world.mt` has an explicit `load_mod_X` line, **that value wins** and the `.conf` is ignored for that mod.
+- The `.conf` only acts as the default/fallback when `world.mt` has **no** `load_mod_X` entry at all. ⚠️ This means **`.conf = false` is NOT a reliable kill-switch**: if `world.mt` says `= true`, the mod loads anyway.
+  - Verified: Wetlands' `original/world.mt` has no `mcl_potions_hotfix` line → `.conf = false` disabled it. GAELSIN's `gaelsin/world.mt` had `load_mod_mcl_potions_hotfix = true` → the mod loaded despite `.conf = false`; we had to flip the line in `world.mt` too.
+  - **Why GAELSIN differs:** newer worlds were created by dumping every `load_mod_*` from their `.conf` into `world.mt`, so almost every mod has an explicit entry there and the `.conf` stops being a kill-switch. Wetlands is older and its `world.mt` is sparse.
+- **To disable a mod with certainty, set `= false` in BOTH** the `.conf` (git) and the world's `world.mt` on the VPS (sudo; keep owner `1000:1000`, never chown `server/worlds` to the SSH user). Then restart the container.
+- `luanti-<world>.conf` still pins several mods to `= false` (motorboat, biofuel, etc.) as a default, but treat that as a default, not a guarantee — confirm `world.mt` doesn't re-enable them.
 
 To enable a NEW mod (both files must be updated):
 1. Add `load_mod_<name> = true` to `server/config/luanti-original.conf` and push via git.
@@ -67,7 +70,7 @@ To enable a NEW mod (both files must be updated):
    ```
 4. Restart the container.
 
-To disable a mod: set `load_mod_<name> = false` in `luanti-original.conf`. This overrides `world.mt` unconditionally — no SSH needed.
+To disable a mod **reliably**: set `load_mod_<name> = false` in `luanti-original.conf` (git) **and** in the world's `world.mt` on the VPS (sudo). The `.conf` alone is **not** enough if `world.mt` has an explicit `load_mod_<name> = true` — `world.mt` wins (see the corrected hierarchy note above). Only when `world.mt` has no entry for the mod does the `.conf = false` suffice on its own.
 
 Reference copy: `server/worlds/original/world.mt` in this repo is a local snapshot for convenience; it is gitignored and is not the file the running server reads. See `docs/config/01-CONFIGURATION_HIERARCHY.md`.
 
