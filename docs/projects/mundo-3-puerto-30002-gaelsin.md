@@ -104,5 +104,11 @@ En el juego (`luanti.gabrielpantoja.cl:30002`):
 - PvP activo; creepers ausentes; mobs hostiles de noche.
 - Notificación Discord con label `GAELSIN ⚔️`.
 
+## Coordenadas importantes
+
+| Lugar | Coordenadas |
+|-------|-------------|
+| Casa del admin (spawn) | `313, 23, 86` |
+
 > Para arquitectura, pitfalls de VoxeLibre, texturas y comandos, la fuente única de
 > verdad es **[`AGENTS.md`](../../AGENTS.md)** en la raíz del repo.
