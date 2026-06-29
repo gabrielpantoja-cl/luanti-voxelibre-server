@@ -1,25 +1,152 @@
-# Proyecto Valdivia -- Recreacion en Luanti/Minetest
+# Proyecto Valdivia [Chile] — Recreación completa en Luanti (puerto 30001)
 
-**Estado:** En produccion (servidor publico activo en puerto 30001)
-**Fecha:** Marzo 2026
-**Ultima actualizacion:** 22 marzo 2026 (estado en produccion verificado por SSH el 21 jun 2026 — ver recuadro abajo)
-**Objetivo:** Recrear la ciudad de Valdivia, Chile (2026) en el servidor Wetlands de Luanti, incluyendo rios, humedales, edificaciones y geografia real.
+**Estado:** Regeneración planificada con Arnis v2.9.0 (28 junio 2026)
+**Objetivo:** Recrear la ciudad completa de Valdivia, Chile desde OpenStreetMap en Luanti,
+incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Miraflores, Torobayo.
+**Spawn:** Plaza de la República.
+**Servidor:** Público en la lista de Luanti con el nombre `Valdivia [Chile]`.
 
-> ### Estado actual en produccion (verificado por SSH en el VPS, 21 jun 2026)
+> ### Anterior (histórico — producido desde marzo hasta junio 2026)
 >
-> | Metrica | Valor real (live) |
-> |---------|-------------------|
-> | `map.sqlite` | **~505 MB** (529.432.576 bytes, mod. 2026-06-07) |
-> | Mapblocks | **3.329.208** |
-> | Mapgen | `singlenode` · `water_level = 1` · `mapgen_limit = 31007` · `chunksize = 5` |
-> | Spawn | `2389, -55, -2887` |
-> | Container | `luanti-valdivia-server` (activo, `Up 2 weeks`) |
->
-> El mundo crecio **~19x** respecto de la generacion v3 documentada mas abajo (172.796 mapblocks /
-> 70 MB): desde marzo de 2026 se expandio, remapeo y enriquecio. **Las tablas v1-v4 de mas abajo son
-> hitos historicos de generacion, NO el estado actual.** Backups presentes en el VPS que confirman la
-> cronologia: `map.sqlite.backup-v3` (170 MB, 21-mar), `map.sqlite.v4` (112 MB, 22-mar),
-> `map.sqlite.backup-before-remap` (440 MB, 22-mar) -> `map.sqlite` live (505 MB, 7-jun).
+> | Métrica | Valor |
+> |---------|-------|
+> | `map.sqlite` | ~505 MB |
+> | Mapblocks | 3.329.208 |
+> | Spawn | `2389, -55, -2887` (Colegio Planeta Azul) |
+> | Cobertura | Solo centro y sectores aledaños |
+> | Arnis | PR #808 compilado manualmente |
+> | Estado | Será reemplazado por la nueva generación |
+
+## Nueva generación — Arnis v2.9.0 (Mosaic Update, 16 junio 2026)
+
+Arnis v2.9.0 trae cambios clave que hacen viable un mundo mucho más grande:
+
+| Mejora | Impacto |
+|--------|---------|
+| **Streaming a disco** | Ya no almacena todo en RAM — escribe directo a disco |
+| **Multi-core** | Distribuye la generación entre todos los núcleos de CPU |
+| **Export Luanti nativo** | El PR #808 está fusionado en `main`. Seleccionas "Luanti (Mineclonia)" en la GUI |
+| **GUI con mapa interactivo** | Dibujas el rectángulo visualmente en el mapa |
+| **Edificios 3D reales** | Landmarks, estadios, puentes como estructuras reales |
+| **Terreno multi-fuente** | Elevaciones más precisas con datos regionales |
+
+Descarga: https://github.com/louis-e/arnis/releases/tag/v2.9.0
+
+## Bbox (área a generar)
+
+Para cubrir toda la ciudad incluyendo Isla Teja, Las Ánimas, Santa Elena y Torobayo:
+
+| Parámetro | Valor |
+|-----------|-------|
+| **Bbox** | `-39.870, -73.290, -39.785, -73.215` |
+| **Dimensiones** | ~9.5 km N-S × ~6.5 km E-O |
+| **Spawn** | Plaza de la República (`--spawn-lat=-39.81422`, `--spawn-lng=-73.24589`) |
+| **Área total** | ~62 km² (~5× más que el mundo actual) |
+| **Tamaño estimado** | ~2-3 GB |
+| **Tiempo estimado** | ~15-30 minutos (en PC local con buen hardware) |
+
+## Proceso de generación
+
+### Paso 1: Descargar / compilar Arnis en PC local
+
+```bash
+# Opción A: Descargar binario precompilado
+# Ve a https://github.com/louis-e/arnis/releases/tag/v2.9.0
+# Descarga arnis-linux (Linux) o arnis-windows.exe (Windows)
+
+# Opción B: Compilar desde fuente
+git clone https://github.com/louis-e/arnis.git
+cd arnis
+cargo build --release
+```
+
+### Paso 2: Generar con GUI (recomendado)
+
+```bash
+./arnis
+# o: ./target/release/arnis
+```
+
+1. Se abre una ventana con un mapa interactivo
+2. Navega a Valdivia, Chile
+3. Dibuja el rectángulo desde aprox Isla Teja hasta Las Ánimas
+4. En Settings → Output Format → selecciona **"Luanti (Mineclonia)"**
+5. Marca **"Terrain"**
+6. Opcional: ajusta spawn point a `-39.81422, -73.24589`
+7. Haz clic en **"Start Generation"**
+
+### Paso 2b: CLI (alternativa sin GUI)
+
+```bash
+./arnis \
+  --luanti \
+  --luanti-game mineclonia \
+  --terrain \
+  --output-dir=/tmp/valdivia \
+  --bbox="-39.870,-73.290,-39.785,-73.215" \
+  --spawn-lat=-39.81422 \
+  --spawn-lng=-73.24589
+```
+
+El mundo se genera en `/tmp/valdivia/Arnis Luanti World 1/`.
+
+### Paso 3: Subir al VPS
+
+```bash
+rsync -avz --progress \
+  "/tmp/valdivia/Arnis Luanti World 1/" \
+  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+```
+
+### Paso 4: Reemplazar el mundo actual (en VPS)
+
+Detener container, reemplazar, chown, reiniciar:
+
+```bash
+# Backup del mundo actual
+ssh gabriel@159.112.138.229 \
+  "cd /home/gabriel/luanti-voxelibre-server && \
+   docker compose stop luanti-valdivia && \
+   mv server/worlds/valdivia server/worlds/valdivia_OLD_$(date +%Y%m%d)"
+
+# Copiar el nuevo mundo (desde PC local)
+rsync -avz --progress \
+  "/tmp/valdivia/Arnis Luanti World 1/" \
+  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+
+# Chown al usuario del container
+ssh gabriel@159.112.138.229 \
+  "sudo chown -R 1000:1000 /home/gabriel/luanti-voxelibre-server/server/worlds/valdivia"
+
+# Reiniciar
+ssh gabriel@159.112.138.229 \
+  "cd /home/gabriel/luanti-voxelibre-server && docker compose start luanti-valdivia"
+```
+
+## Config para hacerlo público
+
+En `server/config/luanti-valdivia.conf`, agregar o modificar:
+
+```conf
+server_announce = true
+server_name = Valdivia [Chile]
+server_description = Recreación de Valdivia, Chile desde OpenStreetMap en Luanti. Explora la ciudad real, sus calles, ríos y edificios. Modo creativo.
+server_url = https://gabrielpantoja.cl
+server_keywords = valdivia,chile,ciudad,creativo,español
+```
+
+Esto hará que el mundo aparezca en la lista pública del cliente Luanti (pestaña "Unirse al juego" → Servidores). Cualquier persona buscando un servidor chileno o latinoamericano lo encontrará.
+
+## Coordenadas de remapeo (Mineclonia → VoxeLibre)
+
+Arnis genera nodos con nombres de **Mineclonia**. Nuestro servidor usa **VoxeLibre**.
+Es necesario remapear los nombres de nodos con un script ABM en `world.mt` o vía
+el mod `arnis_mapgen` que Arnis incluye.
+
+**Nota:** Con `--luanti-game mineclonia` en Arnis v2.9.0, el export ya debería
+generar nodos compatibles con Mineclonia/VoxeLibre (son forks del mismo código).
+Verificar tras la generación y aplicar remapeo si es necesario (ver tabla completa
+en sección "Incompatibilidad de Nodos" más abajo).
 
 ---
 
