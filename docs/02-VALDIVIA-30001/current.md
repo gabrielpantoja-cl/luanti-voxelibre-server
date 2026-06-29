@@ -21,7 +21,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | Edificios Overture Maps | **34.653** |
 | Modelos 3D | 1 estadio (123.398 bloques), 1 avión |
 | Rango de elevación | **316.3 m** (vs 83 m del mundo anterior) |
-| Spawn generado | `3766, -5, -3249` (Plaza de la República — verificar) |
+| Spawn generado | `3766, -4, -3249` (Plaza de la República — verificar) |
 | Seed | `18241358796836382025` |
 | Remapeo v1 aplicado | 222.521 mapblocks (árboles, madera, bambú, steps) |
 | Baked lighting | Sí (`--bake-lighting` en Arnis) |
@@ -73,7 +73,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 > | Cobertura N-S | ~6.0 km | **~9.5 km** (+58%) |
 > | Modelos 3D | No | Sí (estadio, avión) |
 > | Terreno | Plano | Realista con elevaciones |
-> | Spawn anterior | Colegio Planeta Azul (2389, -55, -2887) | Plaza de la República (3766, -5, -3249) |
+> | Spawn anterior | Colegio Planeta Azul (2389, -55, -2887) | Plaza de la República (3766, -4, -3249) |
 > | Arnis | PR #808 (compilación manual) | **v2.9.0** (release oficial) |
 > | Lighting | Fixlight manual (~12h) | **Baked lighting** (instantáneo) |
 
@@ -121,7 +121,7 @@ Mundo generado exitosamente en la Legion 5 con Arnis v2.9.0 CLI.
 | Y span | 24 bloques = **384 m** de altura |
 | Z span | 592 bloques = **~9.5 km** |
 | Área estimada | **~61 km²** |
-| Spawn generado | `3766, -5, -3249` |
+| Spawn generado | `3766, -4, -3249` |
 | Worldmod | `arnis_mapgen` incluido (lazy fix-lighting) |
 
 ### Archivos generados
@@ -152,7 +152,7 @@ Mundo generado exitosamente en la Legion 5 con Arnis v2.9.0 CLI.
 | Área total | ~47 km² | **~61 km²** (+30%) |
 | Modelos 3D | No | Estadio + avión |
 | Terreno | Plano | Realista con cerros |
-| Spawn | Colegio Planeta Azul | Plaza de la República (3766, -5, -3249) |
+| Spawn | Colegio Planeta Azul | Plaza de la República (3766, -4, -3249) |
 
 **Nota:** El mundo nuevo tiene menos mapblocks pero más calidad: edificios 3D reales,
 elevación realista (316 m vs 83 m), y mayor cobertura N-S (9.5 km vs 6.0 km).
@@ -162,7 +162,7 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 ### Pasos realizados para el despliegue
 
 - [x] **Corregir gameid:** `mineclonia` → `mineclone2` en `world.mt`
-- [x] **Spawn:** Configurado como `3766, -5, -3249` (Plaza de la República — verificar precisión)
+- [x] **Spawn:** Configurado como `3766, -4, -3249` (Plaza de la República — verificar precisión)
 - [x] **Remapeo v1:** Ejecutado `scripts/remap-mineclonia-to-voxelibre.py` (222.521 mapblocks)
 - [x] **Baked lighting:** Generado con `--bake-lighting` — no necesita fixlight manual
 - [x] **Upload a VPS:** `rsync` a `gabriel@159.112.138.229` (~5 segundos)
@@ -172,7 +172,7 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 ### Pendiente
 
 - [ ] **Remapeo v2:** Ejecutar `scripts/remap-incremental-valdivia.py` en VPS para stairs/slabs/planchas
-- [ ] **Verificar spawn:** Confirmar que `3766, -5, -3249` corresponde a Plaza de la República
+- [ ] **Verificar spawn:** Confirmar que `3766, -4, -3249` corresponde a Plaza de la República
 - [ ] **Actualizar destinos** del teletransportador `/ir` con nuevas coordenadas del mundo v2
 
 ## Bbox (área a generar)
@@ -886,7 +886,7 @@ Destinos actuales (tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua
 
 | Destino | POS (x, y, z) |
 |---------|---------------|
-| Plaza de la República (spawn) | `3766, -5, -3249` (por verificar) |
+| Plaza de la República (spawn) | `3766, -4, -3249` (por verificar) |
 | Los Fundadores | `4360, -51, -4211` (por verificar en mundo nuevo) |
 | Santa Elena | `5844, -51, -4532` (por verificar en mundo nuevo) |
 | Huachocopihue | `3761, -43, -3170` (por verificar en mundo nuevo) |
@@ -901,7 +901,7 @@ en `server/mods/valdivia_teleporter/init.lua`.
 
 | Lugar | Comando teleport | Coords reales (lat, lng) | Notas |
 |-------|-----------------|--------------------------|-------|
-| **Plaza de la República** (spawn) | `/teleport 3766,-5,-3249` | -39.81422, -73.24589 | Nuevo spawn (verificar) |
+| **Plaza de la República** (spawn) | `/teleport 3766,-4,-3249` | -39.81422, -73.24589 | Nuevo spawn (verificar) |
 | **Plaza estacionamiento Colegio** | `/teleport 2343,-56,-3148` | ~-39.838, -73.257 | Acceso al colegio |
 | **Av Pedro Montt / Circunvalacion** | `/teleport 4517,-48,-3885` | ~-39.845, -73.233 | Cruce de avenidas |
 | **Supermercado Trebol** | `/teleport 3358,-42,-3537` | ~-39.842, -73.246 | Av Simpson / Circunvalacion |
