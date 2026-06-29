@@ -327,6 +327,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 ### Operations
 - `docs/00-SHARED/operations/BACKUP_STATUS.md` — backup system diagnosis and plan
 - `docs/00-SHARED/operations/clonar-mundo-produccion-local.md` — pull a prod backup and run it locally
+- `docs/02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md` — bug del image `linuxserver/luanti` que hardcodea `--port 30000` y duplica servidores en `servers.luanti.org` cuando se usa otro puerto; fix via bind mount del script override en `server/container-overrides/svc-luanti/run`. El bug afecta directamente al mundo Valdivia (puerto 30001) por eso vive en su carpeta de operaciones. Cualquier servidor futuro con puerto ≠ 30000 también se verá afectado.
 
 ### Mods
 - `docs/00-SHARED/mods/MODDING_GUIDE.md` — general modding guide

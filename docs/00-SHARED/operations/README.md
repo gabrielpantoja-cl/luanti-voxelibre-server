@@ -9,6 +9,7 @@ Documentación sobre operaciones diarias, mantenimiento y resolución de problem
 - **[Deploy](deploy.md)** - Procedimientos de despliegue y CI/CD
 - **[Troubleshooting](troubleshooting.md)** - Solución de problemas comunes
 - **[Texture Recovery](texture-recovery.md)** - Recuperación de corrupción de texturas
+- **[Bug: servidor duplicado en lista Luanti](../../02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md)** — Diagnóstico y fix (documento canónico vive en `docs/02-VALDIVIA-30001/operaciones/` porque el bug se manifiesta directamente en el mundo Valdivia, puerto 30001)
 
 ## 🚨 Procedimientos de Emergencia
 

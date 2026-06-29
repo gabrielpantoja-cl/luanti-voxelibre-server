@@ -59,6 +59,7 @@ Operaciones diarias y mantenimiento del servidor
 - **[VPS Sync Workflow](operations/VPS_SYNC_WORKFLOW.md)** - Sincronización de cambios VPS ↔ Repositorio
 - **[Migracion Oracle Cloud](operations/MIGRACION_ORACLE_2026-03-17.md)** - Migracion de VPS a Oracle Cloud ARM
 - **[Playwright MCP Setup](operations/PLAYWRIGHT_MCP_SETUP.md)** - Configuración de herramientas de testing
+- **[Bug: servidor duplicado en lista Luanti](../02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md)** - Diagnóstico y fix (documento canónico vive en `docs/02-VALDIVIA-30001/operaciones/` porque el bug afecta específicamente al mundo Valdivia en puerto 30001)
 
 ### 🗺️ [projects/](projects/)
 Proyectos especiales y expansiones del servidor
