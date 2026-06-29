@@ -117,7 +117,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Santiago
-      - CLI_ARGS=--worldname valdivia
+      - CLI_ARGS=--worldname valdivia --port 30001
     depends_on:
       - luanti-server
     networks:
