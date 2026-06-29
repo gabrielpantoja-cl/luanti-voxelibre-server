@@ -1,21 +1,72 @@
 # Proyecto Valdivia [Chile] — Recreación completa en Luanti (puerto 30001)
 
-**Estado:** Regeneración planificada con Arnis v2.9.0 (28 junio 2026)
+**Estado:** Mundo generado exitosamente con Arnis v2.9.0 (29 junio 2026) — pendiente upload a VPS
 **Objetivo:** Recrear la ciudad completa de Valdivia, Chile desde OpenStreetMap en Luanti,
 incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Miraflores, Torobayo.
 **Spawn:** Plaza de la República.
 **Servidor:** Público en la lista de Luanti con el nombre `Valdivia [Chile]`.
 
-> ### Anterior (histórico — producido desde marzo hasta junio 2026)
+## Diagnóstico del mundo actual (VPS, 29 junio 2026)
+
+### Métricas reales del mundo en producción
+
+| Métrica | Valor |
+|---------|-------|
+| `map.sqlite` | **524 MB** (548 MB en disco con overhead) |
+| `map.sqlite.backup-before-remap` | 441 MB |
+| `map.sqlite.backup-v3` | 164 MB |
+| `map.sqlite.v4` | 117 MB |
+| Total mundo (directorio completo) | **1.3 GB** |
+| Mapblocks totales | **3.497.213** |
+| Bloques únicos en X | 487 (rango: -3 a 483 bloques = **~7.8 km**) |
+| Bloques únicos en Y | 67 (rango: -38 a 28 bloques = **~1.072 m** de altura) |
+| Bloques únicos en Z | 378 (rango: -364 a 13 bloques = **~6.0 km**) |
+| Cobertura horizontal estimada | **~7.8 km × ~6.0 km ≈ 47 km²** |
+| Spawn actual | `2389, -55, -2887` (Colegio Planeta Azul) |
+| Arnis | PR #808 compilado manualmente (v1.0) |
+| Codificación de bloques | `pos = z * 0x1000000 + y * 0x1000 + x` (Arnis legacy) |
+
+### Archivos auxiliares en el VPS
+
+| Archivo | Tamaño | Propósito |
+|---------|--------|-----------|
+| `mcl_maps/` | directorio vacío | Mapa de texto (sin uso) |
+| `arnis_mapgen/init.lua` | 2 KB | Worldmod: singlenode, spawn, emerge parcial |
+| `auth.sqlite` | 32 KB | Autenticación de jugadores |
+| `players.sqlite` | 192 KB | Datos de jugadores |
+| `mod_storage.sqlite` | 12 KB | Almacenamiento de mods |
+
+### Errores recientes (logs 24h)
+
+- `Item "mcl_noteblock:noteblock" not defined` — nodo Mineclonia no remapeado (crash al visitar ciertas zonas)
+- `[mcl_music] No tracks found for this scenario!` — warning menor, sin impacto
+
+### Cobertura del mundo actual
+
+| Zona | Incluida |
+|------|----------|
+| Colegio Planeta Azul (spawn) | Sí |
+| Río Valdivia | Sí |
+| Miraflores | Sí |
+| Torobayo | Sí |
+| Zona industrial | Sí |
+| Centro histórico | Parcial |
+| Isla Teja | No |
+| Las Ánimas | No |
+| Santa Elena | No |
+| Humedal Río Cruces | No |
+| Puente Pedro de Valdivia | No |
+
+> ### Comparación: mundo actual vs nuevo mundo
 >
-> | Métrica | Valor |
-> |---------|-------|
-> | `map.sqlite` | ~505 MB |
-> | Mapblocks | 3.329.208 |
-> | Spawn | `2389, -55, -2887` (Colegio Planeta Azul) |
-> | Cobertura | Solo centro y sectores aledaños |
-> | Arnis | PR #808 compilado manualmente |
-> | Estado | Será reemplazado por la nueva generación |
+> | Aspecto | Actual (Arnis v1.0) | Nuevo (Arnis v2.9.0) |
+> |---------|---------------------|----------------------|
+> | Área | ~47 km² | ~60 km² (~1.3×) |
+> | Cobertura | Centro + sectores adyacentes | Toda el área urbana |
+> | Altura | ~1.072 m (67 bloques) | ~1.072 m (67 bloques) |
+> | Formato | Arnis legacy (PR #808) | Arnis v2.9.0 nativo |
+> | Generación | Manual, 3 iteraciones | CLI con streaming |
+> | Arnis | v1.0 (PR #808 branch) | v2.9.0 (main, release) |
 
 ## Nueva generación — Arnis v2.9.0 (Mosaic Update, 16 junio 2026)
 
@@ -31,6 +82,81 @@ Arnis v2.9.0 trae cambios clave que hacen viable un mundo mucho más grande:
 | **Terreno multi-fuente** | Elevaciones más precisas con datos regionales |
 
 Descarga: https://github.com/louis-e/arnis/releases/tag/v2.9.0
+
+## Resultado de la generación (29 junio 2026, 00:06)
+
+Mundo generado exitosamente en la Legion 5 con Arnis v2.9.0 CLI.
+
+### Comando ejecutado
+
+```bash
+/home/gabriel/arnis/arnis-linux --luanti --terrain \
+  --output-dir=/tmp/valdivia \
+  --bbox="-39.870,-73.290,-39.785,-73.215" \
+  --spawn-lat=-39.81422 --spawn-lng=-73.24589
+```
+
+### Métricas del mundo generado
+
+| Métrica | Valor |
+|---------|-------|
+| `map.sqlite` | **420 MB** |
+| Mapblocks totales | **1.153.548** (679.566 contenido + 473.982 aire) |
+| Bloques con contenido | 672.975 |
+| Bloques de aire | 480.573 |
+| Edificios Overture Maps | **34.653** |
+| Modelos 3D | 1 estadio (123.398 bloques), 1 avión (4.780 bloques) |
+| Tiles de elevación AWS | 88 (resolución ~30m) |
+| Rango de elevación | **316.3 m** (vs 83 m del mundo actual) |
+| X span | 401 bloques = **~6.4 km** |
+| Y span | 24 bloques = **384 m** de altura |
+| Z span | 592 bloques = **~9.5 km** |
+| Área estimada | **~61 km²** |
+| Spawn generado | `3766, -5, -3249` |
+| Worldmod | `arnis_mapgen` incluido (lazy fix-lighting) |
+
+### Archivos generados
+
+```
+/tmp/valdivia/Arnis Luanti World 1/
+├── map.sqlite          (420 MB)
+├── world.mt            (gameid = mineclonia — cambiar a mineclone2)
+├── map_meta.txt        (singlenode mapgen)
+├── env_meta.txt
+└── worldmods/
+    └── arnis_mapgen/
+        ├── init.lua    (spawn, emerge parcial, fix-lighting)
+        ├── mod.conf
+        └── mcl_levelgen.conf
+```
+
+### Diferencias clave con el mundo actual
+
+| Aspecto | Actual (v1.0) | Nuevo (v2.9.0) |
+|---------|---------------|----------------|
+| `map.sqlite` | 524 MB | 420 MB (-20%) |
+| Mapblocks | 3.497.213 | 1.153.548 (-67%) |
+| Edificios 3D | No (OSM simple) | Sí (Overture Maps, 34K edificios) |
+| Elevación | 83 m | 316 m (realista) |
+| Cobertura N-S | ~6.0 km | **~9.5 km** (+58%) |
+| Cobertura E-O | ~7.8 km | ~6.4 km (-18%) |
+| Área total | ~47 km² | **~61 km²** (+30%) |
+| Modelos 3D | No | Estadio + avión |
+| Terreno | Plano | Realista con cerros |
+| Spawn | Colegio Planeta Azul | Plaza de la República (3766, -5, -3249) |
+
+**Nota:** El mundo nuevo tiene menos mapblocks pero más calidad: edificios 3D reales,
+elevación realista (316 m vs 83 m), y mayor cobertura N-S (9.5 km vs 6.0 km).
+La reducción en mapblocks se debe a que Arnis v2.9.0 solo genera bloques con contenido
+real (no bloques vacíos), resultando en un archivo más eficiente.
+
+### Pendiente antes de subir al VPS
+
+1. **Corregir gameid:** Cambiar `mineclonia` a `mineclone2` en `world.mt`
+2. **Corregir spawn:** El spawn generado (3766, -5, -3249) no coincide con Plaza de la República.
+   Necesitamos verificar si es correcto o ajustar el `static_spawnpoint` en `luanti-valdivia.conf`.
+3. **Verificar remapeo:** Ejecutar `scripts/remap-mineclonia-to-voxelibre.py` para nodos incompatibles.
+4. **Verificar worldmod:** El `arnis_mapgen` incluido tiene lazy fix-lighting (mejorado vs el actual).
 
 ## Bbox (área a generar)
 
