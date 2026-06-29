@@ -100,20 +100,20 @@ services:
   # =============================================
   # VALDIVIA 2.0 - Ciudad real desde OpenStreetMap
   # =============================================
-  # IMPORTANTE sobre el puerto:
   # El script /etc/s6-overlay/s6-rc.d/svc-luanti/run del image linuxserver/luanti
-  # SIEMPRE inyecta `--port 30000` antes de CLI_ARGS para el healthcheck (nc -zu localhost 30000).
-  # Si pasamos `--port 30001` en CLI_ARGS, Luanti abre AMBOS puertos (30000 y 30001) y se anuncia
-  # en ambos en servers.luanti.org — por eso veíamos dos entradas "Valdivia [Chile]".
-  # Solución: NO pasar --port en CLI_ARGS. El server escucha solo en 30000 dentro del contenedor.
-  # El port mapping "30001:30000/udp" expone el puerto 30001 al host apuntando al 30000 interno.
+  # hardcodea `--port 30000` antes de CLI_ARGS para el healthcheck (nc -zu localhost 30000).
+  # Esto causa que con CLI_ARGS=--worldname valdivia --port 30001, Luanti abra AMBOS puertos
+  # y se anuncie duplicado en servers.luanti.org. Ver server/container-overrides/svc-luanti/run
+  # para el override que elimina ese --port hardcodeado.
   luanti-valdivia:
     image: linuxserver/luanti:latest
     container_name: luanti-valdivia-server
     restart: unless-stopped
     ports:
-      - "30001:30000/udp"
+      - "30001:30001/udp"
     volumes:
+      # Override del script run del image (elimina --port 30000 hardcodeado)
+      - ./server/container-overrides/svc-luanti/run:/etc/s6-overlay/s6-rc.d/svc-luanti/run:ro
       # IMPORTANTE: el server lee --config main-config/minetest.conf (ver init-luanti-config/run
       # del image linuxserver). Montar en /config/.minetest/minetest.conf NO se lee. Por eso va aquí.
       - ./server/config/luanti-valdivia.conf:/config/.minetest/main-config/minetest.conf
@@ -124,7 +124,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=America/Santiago
-      - CLI_ARGS=--worldname valdivia
+      - CLI_ARGS=--worldname valdivia --port 30001
     depends_on:
       - luanti-server
     networks:

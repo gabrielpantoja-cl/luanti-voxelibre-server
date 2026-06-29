@@ -1,0 +1,43 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+#
+# Override del script /etc/s6-overlay/s6-rc.d/svc-luanti/run del image linuxserver/luanti.
+#
+# El script original hardcodea `--port 30000` antes de CLI_ARGS:
+#   exec s6-notifyoncheck -d -n 300 -w 1000 -c "nc -zu localhost 30000" \
+#       s6-setuidgid abc luantiserver --port 30000 \
+#       --config /config/.minetest/main-config/minetest.conf ${CLI_ARGS}
+#
+# Esto causa que con CLI_ARGS=--worldname valdivia --port 30001, Luanti abra AMBOS puertos
+# (30000 y 30001) y se anuncie duplicado en servers.luanti.org. La entrada "Valdivia [Chile]"
+# aparece dos veces: una en :30000 y otra en :30001.
+#
+# Este override elimina el --port 30000 hardcodeado y deja el puerto controlado SOLO por
+# CLI_ARGS (vía --port). El healthcheck usa el puerto que diga CLI_ARGS (parseado abajo).
+# Si CLI_ARGS no tiene --port, el server escucha en su puerto default (30000) y el
+# healthcheck usa 30000 tambien.
+
+PORT=""
+for arg in ${CLI_ARGS}; do
+    case "$arg" in
+        --port=*) PORT="${arg#--port=}" ;;
+        --port)
+            # next token
+            ;;
+    esac
+done
+# Get the next token after --port if exists
+PREV=""
+for arg in ${CLI_ARGS}; do
+    if [ "$PREV" = "--port" ]; then
+        PORT="$arg"
+        break
+    fi
+    PREV="$arg"
+done
+[ -z "$PORT" ] && PORT=30000
+
+exec \
+    s6-notifyoncheck -d -n 300 -w 1000 -c "nc -zu localhost ${PORT}" \
+        s6-setuidgid abc luantiserver \
+        --config /config/.minetest/main-config/minetest.conf ${CLI_ARGS}
