@@ -1,72 +1,81 @@
 # Proyecto Valdivia [Chile] — Recreación completa en Luanti (puerto 30001)
 
-**Estado:** Mundo generado exitosamente con Arnis v2.9.0 (29 junio 2026) — pendiente upload a VPS
+**Estado:** Mundo generado con Arnis v2.9.0 y **desplegado en VPS** (29 junio 2026)
 **Objetivo:** Recrear la ciudad completa de Valdivia, Chile desde OpenStreetMap en Luanti,
 incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Miraflores, Torobayo.
 **Spawn:** Plaza de la República.
 **Servidor:** Público en la lista de Luanti con el nombre `Valdivia [Chile]`.
 
-## Diagnóstico del mundo actual (VPS, 29 junio 2026)
+## Diagnóstico del nuevo mundo (VPS, 29 junio 2026)
 
-### Métricas reales del mundo en producción
+### Métricas del mundo desplegado
 
 | Métrica | Valor |
 |---------|-------|
-| `map.sqlite` | **524 MB** (548 MB en disco con overhead) |
-| `map.sqlite.backup-before-remap` | 441 MB |
-| `map.sqlite.backup-v3` | 164 MB |
-| `map.sqlite.v4` | 117 MB |
-| Total mundo (directorio completo) | **1.3 GB** |
-| Mapblocks totales | **3.497.213** |
-| Bloques únicos en X | 487 (rango: -3 a 483 bloques = **~7.8 km**) |
-| Bloques únicos en Y | 67 (rango: -38 a 28 bloques = **~1.072 m** de altura) |
-| Bloques únicos en Z | 378 (rango: -364 a 13 bloques = **~6.0 km**) |
-| Cobertura horizontal estimada | **~7.8 km × ~6.0 km ≈ 47 km²** |
-| Spawn actual | `2389, -55, -2887` (Colegio Planeta Azul) |
-| Arnis | PR #808 compilado manualmente (v1.0) |
-| Codificación de bloques | `pos = z * 0x1000000 + y * 0x1000 + x` (Arnis legacy) |
+| `map.sqlite` | **460 MB** (481 MB en disco) |
+| Mapblocks totales | **1.466.103** |
+| X span | 401 bloques = **~6.4 km** |
+| Y span | 24 bloques = **384 m** de altura |
+| Z span | 592 bloques = **~9.5 km** |
+| Área estimada | **~61 km²** |
+| Edificios Overture Maps | **34.653** |
+| Modelos 3D | 1 estadio (123.398 bloques), 1 avión |
+| Rango de elevación | **316.3 m** (vs 83 m del mundo anterior) |
+| Spawn generado | `3766, -5, -3249` (Plaza de la República — verificar) |
+| Seed | `18241358796836382025` |
+| Remapeo v1 aplicado | 222.521 mapblocks (árboles, madera, bambú, steps) |
+| Baked lighting | Sí (`--bake-lighting` en Arnis) |
+| Arnis | v2.9.0 (release, CLI) |
+| Gameid | `mineclone2` (corregido post-generación) |
+| Servidor | Anunciado a `servers.luanti.org` |
 
-### Archivos auxiliares en el VPS
+### Archivos en el VPS
 
-| Archivo | Tamaño | Propósito |
-|---------|--------|-----------|
-| `mcl_maps/` | directorio vacío | Mapa de texto (sin uso) |
-| `arnis_mapgen/init.lua` | 2 KB | Worldmod: singlenode, spawn, emerge parcial |
-| `auth.sqlite` | 32 KB | Autenticación de jugadores |
-| `players.sqlite` | 192 KB | Datos de jugadores |
-| `mod_storage.sqlite` | 12 KB | Almacenamiento de mods |
+| Archivo | Propósito |
+|---------|-----------|
+| `map.sqlite` | Datos del mundo (460 MB) |
+| `world.mt` | `gameid = mineclone2` |
+| `worldmods/arnis_mapgen/` | Worldmod: spawn, emerge parcial |
+| `auth.sqlite` | Autenticación de jugadores |
+| `players.sqlite` | Datos de jugadores |
+| `mod_storage.sqlite` | Almacenamiento de mods |
 
-### Errores recientes (logs 24h)
-
-- `Item "mcl_noteblock:noteblock" not defined` — nodo Mineclonia no remapeado (crash al visitar ciertas zonas)
-- `[mcl_music] No tracks found for this scenario!` — warning menor, sin impacto
-
-### Cobertura del mundo actual
+### Cobertura del nuevo mundo
 
 | Zona | Incluida |
 |------|----------|
-| Colegio Planeta Azul (spawn) | Sí |
-| Río Valdivia | Sí |
+| Plaza de la República (spawn) | Sí |
+| Centro histórico | Sí |
+| Isla Teja | Sí |
+| Las Ánimas | Sí |
+| Santa Elena | Sí |
+| Huachocopihue | Sí |
 | Miraflores | Sí |
 | Torobayo | Sí |
-| Zona industrial | Sí |
-| Centro histórico | Parcial |
-| Isla Teja | No |
-| Las Ánimas | No |
-| Santa Elena | No |
-| Humedal Río Cruces | No |
-| Puente Pedro de Valdivia | No |
+| Río Valdivia | Sí |
+| Puente Pedro de Valdivia | Sí |
+| Estadio | Sí (modelo 3D) |
+| Humedal Río Cruces | Parcial |
 
-> ### Comparación: mundo actual vs nuevo mundo
+### Errores conocidos
+
+- `mcl_stairs:stair_oak` y otros stairs/slabs de madera aparecen como "no texture" — **pendiente remapeo v2** (script `remap-incremental-valdivia.py` listo)
+- `mcl_noteblock:noteblock` no definido (nodo Mineclonia, mismo error que el mundo anterior) — bajo impacto
+- Advertencias de biomas (`get_biome_list: failed to get biome`) — normales en VoxeLibre con singlenode
+
+> ### Comparación: mundo anterior (v1.0) vs nuevo mundo (v2.9.0)
 >
-> | Aspecto | Actual (Arnis v1.0) | Nuevo (Arnis v2.9.0) |
-> |---------|---------------------|----------------------|
-> | Área | ~47 km² | ~60 km² (~1.3×) |
-> | Cobertura | Centro + sectores adyacentes | Toda el área urbana |
-> | Altura | ~1.072 m (67 bloques) | ~1.072 m (67 bloques) |
-> | Formato | Arnis legacy (PR #808) | Arnis v2.9.0 nativo |
-> | Generación | Manual, 3 iteraciones | CLI con streaming |
-> | Arnis | v1.0 (PR #808 branch) | v2.9.0 (main, release) |
+> | Aspecto | Anterior (PR #808) | Nuevo (v2.9.0) |
+> |---------|-------------------|----------------|
+> | Área | ~47 km² | **~61 km²** (+30%) |
+> | Edificios | OSM simple | **Overture Maps** (34K edificios 3D) |
+> | Elevación | 83 m | **316 m** (realista, con cerros) |
+> | Cobertura N-S | ~6.0 km | **~9.5 km** (+58%) |
+> | Modelos 3D | No | Sí (estadio, avión) |
+> | Terreno | Plano | Realista con elevaciones |
+> | Spawn anterior | Colegio Planeta Azul (2389, -55, -2887) | Plaza de la República (3766, -5, -3249) |
+> | Arnis | PR #808 (compilación manual) | **v2.9.0** (release oficial) |
+> | Lighting | Fixlight manual (~12h) | **Baked lighting** (instantáneo) |
 
 ## Nueva generación — Arnis v2.9.0 (Mosaic Update, 16 junio 2026)
 
@@ -150,13 +159,21 @@ elevación realista (316 m vs 83 m), y mayor cobertura N-S (9.5 km vs 6.0 km).
 La reducción en mapblocks se debe a que Arnis v2.9.0 solo genera bloques con contenido
 real (no bloques vacíos), resultando en un archivo más eficiente.
 
-### Pendiente antes de subir al VPS
+### Pasos realizados para el despliegue
 
-1. **Corregir gameid:** Cambiar `mineclonia` a `mineclone2` en `world.mt`
-2. **Corregir spawn:** El spawn generado (3766, -5, -3249) no coincide con Plaza de la República.
-   Necesitamos verificar si es correcto o ajustar el `static_spawnpoint` en `luanti-valdivia.conf`.
-3. **Verificar remapeo:** Ejecutar `scripts/remap-mineclonia-to-voxelibre.py` para nodos incompatibles.
-4. **Verificar worldmod:** El `arnis_mapgen` incluido tiene lazy fix-lighting (mejorado vs el actual).
+- [x] **Corregir gameid:** `mineclonia` → `mineclone2` en `world.mt`
+- [x] **Spawn:** Configurado como `3766, -5, -3249` (Plaza de la República — verificar precisión)
+- [x] **Remapeo v1:** Ejecutado `scripts/remap-mineclonia-to-voxelibre.py` (222.521 mapblocks)
+- [x] **Baked lighting:** Generado con `--bake-lighting` — no necesita fixlight manual
+- [x] **Upload a VPS:** `rsync` a `gabriel@159.112.138.229` (~5 segundos)
+- [x] **Permisos:** `sudo chown 1000:1000` (usuario container = opc)
+- [x] **Servidor iniciado:** Docker container `luanti-valdivia-server` anunciado a servidores públicos
+
+### Pendiente
+
+- [ ] **Remapeo v2:** Ejecutar `scripts/remap-incremental-valdivia.py` en VPS para stairs/slabs/planchas
+- [ ] **Verificar spawn:** Confirmar que `3766, -5, -3249` corresponde a Plaza de la República
+- [ ] **Actualizar destinos** del teletransportador `/ir` con nuevas coordenadas del mundo v2
 
 ## Bbox (área a generar)
 
@@ -397,17 +414,33 @@ Arnis PR #808 genera nodos con nombres de **Mineclonia**, NO de VoxeLibre. Son f
 | `mcl_trees:wood_dark_oak` | `mcl_core:darkwood` |
 | `mcl_bamboo:scaffolding` | `mcl_core:wood` |
 
-**Otros nodos** (`mcl_colorblocks`, `mcl_stairs`, `mcl_flowers`, `mcl_doors`, etc.) ya son compatibles con VoxeLibre.
+**Nota:** Originalmente se pensó que los demás nodos (`mcl_stairs`, `mcl_flowers`, etc.) eran compatibles,
+pero en la práctica Arnis v2.9.0 genera stairs con nomenclatura Mineclonia (`mcl_stairs:stair_oak`)
+que no existe en VoxeLibre (`mcl_stairs:stair_wood`). El **remapeo v2** (script `remap-incremental-valdivia.py`)
+agrega estas conversiones (stairs, slabs, planks) para todos los tipos de madera, más cobblestone y stone_brick.
 
-### Solucion implementada: Script de remapeo
+### Solucion implementada: Script de remapeo (v1 + v2)
 
-Script Python `scripts/remap-mineclonia-to-voxelibre.py` que:
-1. Lee mapblocks de map.sqlite
-2. Salta el byte de version (0x1d = 29) antes de descomprimir zstd
-3. Encuentra strings de nombres de nodos con prefijo de longitud en la tabla name-id mapping
-4. Reemplaza nombres Mineclonia por equivalentes VoxeLibre (7 nodos mcl_trees + 1 nodo mcl_bamboo)
-5. Recomprime con zstd
-6. **Resultado v3:** 45,128 de 172,796 mapblocks remapeados exitosamente
+Dos scripts Python:
+
+**v1 — `scripts/remap-mineclonia-to-voxelibre.py`** (ejecutado en el nuevo mundo):
+- Remapea árboles, hojas, maderas, bambú, areniscas, cristal gris, cadenas, bloques de redstone
+- Stairs legacy (`mcl_stairs:stair_wood_oak` → `mcl_stairs:stair_wood`)
+- **Resultado:** 222.521 de 1.153.548 mapblocks remapeados
+
+**v2 — `scripts/remap-incremental-valdivia.py`** (pendiente de ejecutar en VPS):
+- Remapea planks (`mcl_core:planks_oak` → `mcl_core:wood`)
+- Remapea stairs Mineclonia (`mcl_stairs:stair_oak` → `mcl_stairs:stair_wood`)
+- Cubre los 6 tipos de madera (oak, birch, spruce, jungle, acacia, dark_oak)
+- Incluye slabs e inner/outer para todos
+- Incluye cobblestone (`stair_cobblestone` → `stair_cobble`)
+- Incluye stone_brick (`stair_stone_brick` → `stair_stonebrick`)
+
+Ambos scripts usan el mismo mecanismo:
+1. Leer mapblocks de map.sqlite
+2. Saltar byte de versión (0x1d = 29), descomprimir zstd
+3. Buscar strings de nombres de nodos con prefijo de longitud
+4. Reemplazar y recomprimir
 
 ### Correccion de gameid en world.mt
 
@@ -629,7 +662,9 @@ El mundo en produccion cubre:
 - [x] Crear scripts de automatizacion (`setup-arnis.sh`, `generate-valdivia.sh`)
 - [x] Corregir worldmod arnis_mapgen (emerge parcial en vez de total)
 
-### FASE 3 -- Despliegue en produccion -- COMPLETADA
+### FASE 3 -- Despliegue en produccion -- COMPLETADA (2 iteraciones)
+
+#### v1 (marzo 2026) — mundo Arnis PR #808
 
 - [x] Subir map.sqlite (70MB) al VPS via scp
 - [x] Configurar regla de ingreso UDP 30001 en Oracle Cloud Security List
@@ -637,6 +672,18 @@ El mundo en produccion cubre:
 - [x] Levantar ambos servicios con docker compose
 - [x] Verificar acceso publico en `luanti.gabrielpantoja.cl:30001`
 - [x] Ambos servidores corriendo 24/7
+
+#### v2 (29 junio 2026) — mundo Arnis v2.9.0
+
+- [x] Generar nuevo mundo con `--bake-lighting` (420 MB, 1.15M mapblocks)
+- [x] Remapeo v1: 222.521 mapblocks (árboles, madera, bambú)
+- [x] Subir map.sqlite (460 MB) al VPS via rsync
+- [x] Reemplazar mundo anterior (backup creado)
+- [x] `sudo chown 1000:1000` (PUID del container)
+- [x] Reiniciar container `luanti-valdivia-server`
+- [x] Verificar logs: 0 errores de unknown node
+- [x] Servidor anunciado a `servers.luanti.org`
+- [ ] **Remapeo v2** pendiente: stairs/slabs/planchas con `remap-incremental-valdivia.py`
 
 ### FASE 4 -- Mod de bordes y navegacion (PARCIAL)
 
@@ -839,17 +886,22 @@ Destinos actuales (tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua
 
 | Destino | POS (x, y, z) |
 |---------|---------------|
-| Planeta Azul (spawn) | `2389, -55, -2887` |
-| Los Fundadores | `4360, -51, -4211` |
-| Santa Elena | `5844, -51, -4532` |
-| Huachocopihue | `3761, -43, -3170` |
-| Asociacion de Ferroviarios | `5079, -49, -2076` |
+| Plaza de la República (spawn) | `3766, -5, -3249` (por verificar) |
+| Los Fundadores | `4360, -51, -4211` (por verificar en mundo nuevo) |
+| Santa Elena | `5844, -51, -4532` (por verificar en mundo nuevo) |
+| Huachocopihue | `3761, -43, -3170` (por verificar en mundo nuevo) |
+| Asociacion de Ferroviarios | `5079, -49, -2076` (por verificar en mundo nuevo) |
+
+**Nota:** Las coordenadas del teletransportador son del mundo anterior (Arnis PR #808).
+El nuevo mundo (Arnis v2.9.0) tiene un área y elevación diferentes — los destinos del `/ir`
+probablemente ya no corresponden. Hay que verificarlos y actualizar la tabla `DESTINOS`
+en `server/mods/valdivia_teleporter/init.lua`.
 
 ### Coordenadas publicas (`/teleport x,y,z`)
 
 | Lugar | Comando teleport | Coords reales (lat, lng) | Notas |
 |-------|-----------------|--------------------------|-------|
-| **Colegio Planeta Azul** (spawn) | `/teleport 2389,-55,-2887` | -39.835957, -73.257018 | Spawn del servidor |
+| **Plaza de la República** (spawn) | `/teleport 3766,-5,-3249` | -39.81422, -73.24589 | Nuevo spawn (verificar) |
 | **Plaza estacionamiento Colegio** | `/teleport 2343,-56,-3148` | ~-39.838, -73.257 | Acceso al colegio |
 | **Av Pedro Montt / Circunvalacion** | `/teleport 4517,-48,-3885` | ~-39.845, -73.233 | Cruce de avenidas |
 | **Supermercado Trebol** | `/teleport 3358,-42,-3537` | ~-39.842, -73.246 | Av Simpson / Circunvalacion |
@@ -885,9 +937,10 @@ Y = probar entre -30 y -55 (depende de la elevacion del terreno)
 ---
 
 *Documento creado por Gabriel Pantoja + Claude -- Marzo 2026*
-*Ultima actualizacion: 22 marzo 2026 -- Remap texturas, 10 vehiculos, Discord notifier, landing page dual*
+*Ultima actualizacion: 29 junio 2026 -- Nuevo mundo Arnis v2.9.0 desplegado en VPS*
 
 ### Historial de sesiones
 
-- **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/operations/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
+- **29 junio 2026:** Nuevo mundo Valdivia generado con Arnis v2.9.0 (baked lighting, 34K edificios 3D, 61 km²) y desplegado en VPS. Remapeo v1 aplicado (222K bloques). Script incremental v2 creado para stairs/planchas.
+- **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/02-VALDIVIA-30001/operaciones/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
 - **21 marzo 2026:** Servidor Valdivia v3 en produccion (puerto 30001), generacion con Arnis PR #808
