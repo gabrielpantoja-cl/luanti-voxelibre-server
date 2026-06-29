@@ -24,7 +24,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | Spawn generado | `3766, -4, -3249` (Plaza de la República — verificar) |
 | Seed | `18241358796836382025` |
 | Remapeo v1 aplicado | 222.521 mapblocks (árboles, madera, bambú, steps) |
-| Remapeo v2 aplicado | En progreso (~6K pendientes de 55 patrones stairs/slabs/planchas) |
+| Remapeo v2 aplicado | 18.005 mapblocks (55 patrones stairs/slabs/planchas para 6 maderas + piedra) |
 | Baked lighting | Sí (`--bake-lighting` en Arnis) |
 | Arnis | v2.9.0 (release, CLI) |
 | Gameid | `mineclone2` (corregido post-generación) |
@@ -166,7 +166,7 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 - [x] **Corregir gameid:** `mineclonia` → `mineclone2` en `world.mt`
 - [x] **Spawn:** Configurado como `3766, -4, -3249` (Plaza de la República — verificado y corregido)
 - [x] **Remapeo v1:** Ejecutado `scripts/remap-mineclonia-to-voxelibre.py` (222.521 mapblocks)
-- [x] **Remapeo v2:** Ejecutándose en VPS (`scripts/remap-incremental-valdivia.py`) — stairs/slabs/planchas
+- [x] **Remapeo v2:** Ejecutado en VPS — 18.005 mapblocks de stairs/slabs/planchas
 - [x] **Baked lighting:** Generado con `--bake-lighting` — no necesita fixlight manual
 - [x] **Upload a VPS:** `rsync` a `gabriel@159.112.138.229` (~5 segundos)
 - [x] **Permisos:** `sudo chown 1000:1000` (usuario container = opc)
@@ -176,7 +176,7 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 
 ### Pendiente
 
-- [ ] **Remapeo v2:** En progreso en VPS (verificar finalización en `/tmp/remap-v2.log`)
+- [x] **Remapeo v2 completado:** 18.005 mapblocks remapeados ✅
 - [ ] **Verificar texturas de stairs/slabs:** Tras remapeo v2, confirmar que `mcl_stairs:stair_oak` etc. se ven correctamente
 - [ ] **Actualizar destinos** del teletransportador `/ir` con nuevas coordenadas del mundo v2
 
