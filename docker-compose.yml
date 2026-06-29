@@ -105,7 +105,7 @@ services:
     container_name: luanti-valdivia-server
     restart: unless-stopped
     ports:
-      - "30001:30000/udp"
+      - "30001:30001/udp"
     volumes:
       # IMPORTANTE: el server lee --config main-config/minetest.conf (ver init-luanti-config/run
       # del image linuxserver). Montar en /config/.minetest/minetest.conf NO se lee. Por eso va aquí.
