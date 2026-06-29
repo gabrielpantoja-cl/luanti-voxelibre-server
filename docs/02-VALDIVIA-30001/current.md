@@ -24,10 +24,12 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | Spawn generado | `3766, -4, -3249` (Plaza de la República — verificar) |
 | Seed | `18241358796836382025` |
 | Remapeo v1 aplicado | 222.521 mapblocks (árboles, madera, bambú, steps) |
+| Remapeo v2 aplicado | En progreso (~6K pendientes de 55 patrones stairs/slabs/planchas) |
 | Baked lighting | Sí (`--bake-lighting` en Arnis) |
 | Arnis | v2.9.0 (release, CLI) |
 | Gameid | `mineclone2` (corregido post-generación) |
 | Servidor | Anunciado a `servers.luanti.org` |
+| Website URL | `https://luanti.gabrielpantoja.cl` (botón "Abrir sitio web" del cliente Luanti) |
 
 ### Archivos en el VPS
 
@@ -162,17 +164,20 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 ### Pasos realizados para el despliegue
 
 - [x] **Corregir gameid:** `mineclonia` → `mineclone2` en `world.mt`
-- [x] **Spawn:** Configurado como `3766, -4, -3249` (Plaza de la República — verificar precisión)
+- [x] **Spawn:** Configurado como `3766, -4, -3249` (Plaza de la República — verificado y corregido)
 - [x] **Remapeo v1:** Ejecutado `scripts/remap-mineclonia-to-voxelibre.py` (222.521 mapblocks)
+- [x] **Remapeo v2:** Ejecutándose en VPS (`scripts/remap-incremental-valdivia.py`) — stairs/slabs/planchas
 - [x] **Baked lighting:** Generado con `--bake-lighting` — no necesita fixlight manual
 - [x] **Upload a VPS:** `rsync` a `gabriel@159.112.138.229` (~5 segundos)
 - [x] **Permisos:** `sudo chown 1000:1000` (usuario container = opc)
 - [x] **Servidor iniciado:** Docker container `luanti-valdivia-server` anunciado a servidores públicos
+- [x] **Website URL:** `server_url = https://luanti.gabrielpantoja.cl` para botón "Abrir sitio web" en cliente Luanti
+- [x] **Wetlands deslistado:** `server_announce = false` en `luanti-original.conf` (ya no aparece en lista pública)
 
 ### Pendiente
 
-- [ ] **Remapeo v2:** Ejecutar `scripts/remap-incremental-valdivia.py` en VPS para stairs/slabs/planchas
-- [ ] **Verificar spawn:** Confirmar que `3766, -4, -3249` corresponde a Plaza de la República
+- [ ] **Remapeo v2:** En progreso en VPS (verificar finalización en `/tmp/remap-v2.log`)
+- [ ] **Verificar texturas de stairs/slabs:** Tras remapeo v2, confirmar que `mcl_stairs:stair_oak` etc. se ven correctamente
 - [ ] **Actualizar destinos** del teletransportador `/ir` con nuevas coordenadas del mundo v2
 
 ## Bbox (área a generar)
@@ -274,7 +279,7 @@ En `server/config/luanti-valdivia.conf`, agregar o modificar:
 server_announce = true
 server_name = Valdivia [Chile]
 server_description = Recreación de Valdivia, Chile desde OpenStreetMap en Luanti. Explora la ciudad real, sus calles, ríos y edificios. Modo creativo.
-server_url = https://gabrielpantoja.cl
+server_url = https://luanti.gabrielpantoja.cl
 server_keywords = valdivia,chile,ciudad,creativo,español
 ```
 
@@ -941,6 +946,6 @@ Y = probar entre -30 y -55 (depende de la elevacion del terreno)
 
 ### Historial de sesiones
 
-- **29 junio 2026:** Nuevo mundo Valdivia generado con Arnis v2.9.0 (baked lighting, 34K edificios 3D, 61 km²) y desplegado en VPS. Remapeo v1 aplicado (222K bloques). Script incremental v2 creado para stairs/planchas.
+- **29 junio 2026 (sesión 2):** Fix spawn Y=-4 (emerge_area + world.mt). Fix Wetlands server_announce=false (deslistado). Fix Valdivia server_url=https://luanti.gabrielpantoja.cl. Remapeo v2 corriendo en VPS. Docs actualizados.
 - **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/02-VALDIVIA-30001/operaciones/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
 - **21 marzo 2026:** Servidor Valdivia v3 en produccion (puerto 30001), generacion con Arnis PR #808
