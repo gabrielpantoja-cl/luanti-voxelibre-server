@@ -69,8 +69,9 @@ server/worlds/gaelsin_DESTROYED_*/
 # Movida a: infra/privado/luanti/
 # ==========================================
 
-# Directorio PRIVATE local
+# Directorio PRIVATE (restructurado docs/)
 docs/admin/PRIVATE/
+docs/00-SHARED/admin/PRIVATE/
 
 # Seguridad (todo movido a repo privado)
 docs/security/
