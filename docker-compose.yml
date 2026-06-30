@@ -85,7 +85,7 @@ services:
     environment:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-valdivia-server
-      - SERVER_LABEL=Valdivia 2.0 🏙️
+      - SERVER_LABEL=Valdivia 🏙️
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
