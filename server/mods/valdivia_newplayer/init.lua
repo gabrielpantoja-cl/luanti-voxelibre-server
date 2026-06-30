@@ -11,8 +11,11 @@ local PRIVS = {
 
 minetest.register_on_newplayer(function(player)
 	local name = player:get_player_name()
-	minetest.set_player_privs(name, PRIVS)
-	minetest.log("action", "[" .. modname .. "] Privilegios otorgados a " .. name)
+	-- minetest.after(0) para correr DESPUES de que el engine aplique default_privs
+	minetest.after(0, function()
+		minetest.set_player_privs(name, PRIVS)
+		minetest.log("action", "[" .. modname .. "] Privilegios otorgados a " .. name)
+	end)
 end)
 
 minetest.log("action", "[" .. modname .. "] Loaded successfully")
