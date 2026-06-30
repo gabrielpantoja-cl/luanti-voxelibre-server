@@ -1,8 +1,8 @@
 # Bug: Servidor Duplicado en la Lista Pública de Luanti
 
-**Última actualización**: 2026-06-29
+**Última actualización**: 2026-06-30
 **Severidad**: Media (cosmético, no afecta conectividad)
-**Estado**: ⚠️ Parcialmente resuelto — override soluciona el bug de duplicación activa, pero persiste entrada fantasma del VPS anterior (DigitalOcean)
+**Estado**: ✅ Resuelto — override elimina la duplicación activa; entrada fantasma del VPS anterior expiró sola a los 5 minutos de que ese servidor dejó de anunciar
 
 ---
 
@@ -373,7 +373,13 @@ Aunque el ping solo mide latencia, el servidor list **actualiza `updateTime`**
 de la entrada, y el uptime reportado es el que el servidor (Wetlands) devuelve
 al responder — de ahí que avance sincronizado.
 
-### Solución posible: esperar expiración automática
+### Solución: esperar expiración automática (5 minutos)
+
+Confirmado por `sfan5` (mantenedor de `servers.luanti.org`) vía
+[issue #75](https://github.com/luanti-org/serverlist/issues/75):
+
+> *"Server entries that aren't updated every 5 minutes automatically disappear,
+> so all you need to do is stop the old Luanti server."*
 
 El servidor list purga entradas viejas según la configuración `PURGE_TIME`:
 
@@ -383,84 +389,21 @@ def purgeOld(self):
     self.list = [server for server in self.list if cutoff <= server.updateTime]
 ```
 
-En producción `PURGE_TIME` es desconocido pero probablemente 24h o más. La
-entrada fantasma tiene ~13h de `uptime` (al momento del último diagnóstico).
-Cuando `updateTime + PURGE_TIME < ahora`, la entrada se purgará sola.
+En producción `PURGE_TIME = 5 minutos`. Una vez que el VPS anterior
+(DigitalOcean) dejó de correr y de enviar anuncios, la entrada fantasma
+expiró automáticamente en ~5 minutos. No fue necesaria intervención manual.
 
-**Estado actual**: a la espera de que expire. Si persiste más de 48h, contactar
-a los mantenedores (ver sección siguiente).
+**Estado**: resuelto en 2026-06-29 al dejar de correr el VPS anterior.
 
 ---
 
 ## Contactar a mantenedores de `servers.luanti.org`
 
-Si la entrada fantasma no expira en 48h, se puede solicitar la eliminación
-manual abriendo un issue en https://github.com/luanti-org/serverlist/issues.
+~~Si la entrada fantasma no expira en 48h, abrir un issue.~~ **Ya no necesario.**
 
-### Mensaje para GitHub Issues (inglés)
-
-```markdown
-**Subject:** Stale server entry from old VPS — cannot delete via API
-
-Hi Luanti server list maintainers,
-
-We have a stale entry in the public server list at servers.luanti.org
-that we cannot remove ourselves.
-
-**The situation:**
-- Current server: "Valdivia [Chile]" at luanti.gabrielpantoja.cl:30001 (v5.16.1)
-- Stale entry: "Valdivia [Chile]" at luanti.gabrielpantoja.cl:30000 (v5.13.0)
-- The old entry was created by our previous VPS (DigitalOcean) with a
-  different public IP. We have since migrated to Oracle Cloud.
-- The current server no longer announces on port 30000, yet the stale
-  entry persists.
-
-**Why we cannot delete it:**
-- The announce API (`POST /announce`) uses `action=delete` with
-  `request.remote_addr` as the primary key. Since our current Oracle IP
-  differs from the old DigitalOcean IP, the API returns "Server to
-  remove not found."
-- We can create and delete entries from our current IP, but those are
-  separate entries — the old one anchored to the old IP remains.
-
-**Request:** Could you manually remove the stale entry at
-`<old_DO_IP>:30000` with name "Valdivia [Chile]" and version 5.13.0?
-
-Or, if there is an alternative endpoint or authentication method to
-force-remove by address+port (rather than by requester IP), please let
-us know.
-
-Thanks,
-Gabriel
-```
-
-### Versión en español
-
-```markdown
-**Asunto:** Entrada obsoleta de servidor en servers.luanti.org
-
-Hola mantenedores de Luanti,
-
-Tenemos una entrada fantasma en la lista pública que no podemos
-eliminar desde nuestra IP actual.
-
-**Detalle:**
-- Servidor actual: "Valdivia [Chile]" en :30001, v5.16.1
-  (IP actual Oracle: 159.112.138.229)
-- Entrada fantasma: "Valdivia [Chile]" en :30000, v5.13.0
-  (creada desde nuestro VPS antiguo en DigitalOcean, IP distinta)
-- El bug del doble puerto ya está corregido, pero la entrada vieja
-  persiste porque la API usa `request.remote_addr` como llave primaria
-  y nuestra IP cambió al migrar de proveedor.
-
-**Solicitud:** ¿Pueden eliminar manualmente la entrada fantasma
-en la IP del VPS anterior, puerto 30000? O bien, ¿existe algún
-endpoint alternativo que permita borrar por address+port sin
-depender de la IP del request?
-
-Saludos,
-Gabriel
-```
+Contactamos a los mantenedores en
+[luanti-org/serverlist#75](https://github.com/luanti-org/serverlist/issues/75)
+y confirmaron que `PURGE_TIME = 5 minutos`. La entrada expiró automáticamente.
 
 ---
 
@@ -482,3 +425,4 @@ Gabriel
 | 2026-06-29 | `--force-recreate` del contenedor Valdivia + verificación post-fix |
 | 2026-06-29 | Documentación de este bug (este archivo) |
 | 2026-06-29 | Diagnóstico SSH avanzado: se descubre que la entrada fantasma `:30000` v=5.13.0 fue creada desde la IP del VPS anterior (DigitalOcean). No se puede borrar desde Oracle porque la API usa `request.remote_addr` como llave primaria. Se agrega sección de contacto a mantenedores. |
+| 2026-06-29 | Confirmado por `sfan5` (mantenedor) en [issue #75](https://github.com/luanti-org/serverlist/issues/75): `PURGE_TIME = 5 minutos`. La entrada fantasma expiró sola al dejar de anunciar el VPS anterior. Bug completamente resuelto. |
