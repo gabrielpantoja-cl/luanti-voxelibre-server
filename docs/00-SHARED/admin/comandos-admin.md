@@ -349,6 +349,16 @@ Spawnea la entidad en tu posicion actual.
 
 ## Comandos de Depuracion (Admin)
 
+### Identificar nodo desconocido (`<unknown node>`)
+
+Apunta al nodo con el crosshair y ejecuta esto en el chat (una sola línea):
+
+```
+/lua local p=minetest.get_player_by_name("gabo");local pos=p:get_pos();local dir=p:get_look_dir();for i=1,15 do local n=minetest.get_node(vector.round(vector.add(pos,vector.multiply(dir,i))));if n.name~="air" then minetest.chat_send_player("gabo","NODO: "..n.name);break end end
+```
+
+Imprime el nombre exacto del nodo en el chat (`mod:nombre`). Requiere privilegio `server`.
+
 ### Encontrar y Teletransportarse a Bioma
 ```
 /findbiome <nombre_bioma>
