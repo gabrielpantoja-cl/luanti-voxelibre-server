@@ -19,7 +19,7 @@
 1. **Install Luanti** for [PC](https://www.luanti.org) or mobile ([Android](https://play.google.com/store/apps/details?id=net.minetest.minetest) / [iOS](https://apps.apple.com/app/minetest/id1190647064)).
 2. **Add our server:**
    - **Address:** `luanti.gabrielpantoja.cl`
-   - **Port:** `30000`
+   - **Port:** `30000` (Wetlands), `30001` (Valdivia), `30002` (GAELSIN), `30003` (CTF)
 3. **That's it.** Jump in, explore, and create.
 
 ## What you can do here
@@ -29,26 +29,37 @@
 - **Talk to educational NPCs** with their own voices, teaching about nature
 - **Drive vehicles** — vespas, motorcycles, buggies, beetles
 - **Play chess** with other players
-- **Learn with interactive educational blocks**
 - **Fight in the PvP arena** — a dedicated area for those who want action
 - **Collaborate** with other players on large community projects
 
-## Server features
+## Worlds
+
+### Wetlands — port `30000`
+
+Main creative world. The safe, family-friendly hub.
 
 | Feature | Detail |
 |---------|--------|
 | Mode | Creative (build without limits) |
-| Damage | Disabled in the open world (you can't die exploring) |
-| PvP | Arenas only (main arena available) |
+| Damage | On — hostile mobs spawn at night (Creepers excluded) |
+| PvP | Arena only |
 | Players | Up to 20 concurrent |
 | NPCs | Interactive villagers with Animal Crossing-style voices |
 | Vehicles | Vespa, motorcycle, buggy, beetle |
 | Music | Original ambient soundtrack |
 | Mods | 25+ custom and third-party mods |
 
-## Secondary world: Valdivia 2.0
+### Valdivia 2.0 — port `30001`
 
-Port `30001` hosts a real-world recreation of Valdivia, Chile, generated from OpenStreetMap data. Connect to `luanti.gabrielpantoja.cl:30001` to explore.
+A real-world recreation of Valdivia, Chile, generated from OpenStreetMap data via the [Arnis](https://github.com/luanti-org/arnis) tool. Explore the city's streets, plazas, and rivers as voxels.
+
+### GAELSIN — port `30002`
+
+Pure VoxeLibre survival world. No creative mode, no area protection, PvP on. Hostile mobs spawn at night (Creepers excluded). Generated from seed `GAELSIN` with mapgen v7.
+
+### Llanura CTF — port `30003`
+
+Capture-the-flag on a 100% flat dirt world. Two teams (`rojo` / `azul`), guns enabled, `/ctf entrar|salir|base|marcador|reset`.
 
 ## Known bugs
 
@@ -56,10 +67,10 @@ Port `30001` hosts a real-world recreation of Valdivia, Chile, generated from Op
 
 ## Tech stack
 
-- **Engine**: [Luanti](https://www.luanti.org) 5.15+
+- **Engine**: [Luanti](https://www.luanti.org) 5.16+
 - **Base game**: VoxeLibre (MineClone2) v0.90.1
 - **Mod language**: Lua
-- **Infrastructure**: Docker Compose on a VPS
+- **Infrastructure**: Docker Compose on a VPS (Oracle Cloud, ARM aarch64)
 
 ## Contributing
 
