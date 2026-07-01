@@ -13,4 +13,10 @@ minetest.register_alias("mcl_banners:hanging_banner_white",         "mcl_banners
 minetest.register_alias("mcl_banners:hanging_banner_red",           "mcl_banners:hanging_banner")
 minetest.register_alias("mcl_banners:hanging_banner_silver",        "mcl_banners:hanging_banner")
 
+-- Vegetacion acuatica: nombres simples del Arnis → variantes actuales con sufijo de superficie
+minetest.register_alias("mcl_ocean:seagrass",                       "mcl_ocean:seagrass_dirt")
+minetest.register_alias("mcl_ocean:tall_seagrass",                  "mcl_ocean:seagrass_dirt")
+minetest.register_alias("mcl_ocean:kelp",                           "mcl_ocean:kelp_dirt")
+minetest.register_alias("mcl_ocean:sea_pickle",                     "mcl_ocean:seagrass_dirt")
+
 minetest.log("action", "[" .. modname .. "] Loaded successfully")
