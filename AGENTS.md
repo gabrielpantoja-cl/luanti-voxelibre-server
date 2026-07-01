@@ -148,7 +148,7 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull
      If it matches origin/main, it's a pure artifact: `git restore <tracked files>` and `rm <untracked files>`, then re-pull (fast-forwards cleanly and rewrites them all). If a file does **not** match, it's genuine VPS-local work — stop and inspect, never delete it.
 - Always inspect first; never `git reset --hard` or `git clean -fd` to "make it go away".
 
-For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/02-VALDIVIA/`.
+For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/02-VALDIVIA-30001/`.
 
 ## Development Workflow
 
@@ -265,9 +265,9 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 | GAELSIN | `luanti-gaelsin-server` | 30002/UDP | `luanti-gaelsin.conf` | Pure VoxeLibre survival world generated from seed `GAELSIN` (mapgen v7) — PvP on, hostile mobs at night, creepers blocked, no area protection; minimal mod set |
 | Llanura CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | 100% flat dirt world (superflat) for capture-the-flag — creative |
 
-All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~420 MB / 1.15M mapblocks as of 2026-06-29, not in git). See `docs/02-VALDIVIA/current.md`.
+All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~420 MB / 1.15M mapblocks as of 2026-06-29, not in git). See `docs/02-VALDIVIA-30001/current.md`.
 
-**CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (only here now — the former Infierno world that shared it was replaced by GAELSIN survival). Not loaded in Wetlands/Valdivia/GAELSIN. See `docs/04-CTF-LLANURA/`.
+**CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (only here now — the former Infierno world that shared it was replaced by GAELSIN survival). Not loaded in Wetlands/Valdivia/GAELSIN. See `docs/04-CTF-30003/`.
 
 **Valdivia-only mod — `valdivia_teleporter`** (`load_mod_valdivia_teleporter = true` in `luanti-valdivia.conf` only): a teleporter for the Valdivia world (30001). The `/ir` command and a physical pedestal node (`valdivia_teleporter:pad`, `on_rightclick`) open a formspec menu to jump to predefined city locations (Planeta Azul/spawn, Los Fundadores, Santa Elena, Huachocopihue). Coordinates live in the `DESTINOS` table in `server/mods/valdivia_teleporter/init.lua`; textures are regenerated with `tools/generate_textures.py`. The pad is `diggable = false` (anti-grief). Not loaded in Wetlands/GAELSIN.
 
@@ -307,10 +307,10 @@ All containers share the same `server/games/` and `server/mods/` directories. Va
 Detailed docs live under `docs/`, organized by world/port. Read these when you need specifics.
 
 ### Worlds (by port)
-- `docs/01-WETLANDS/` — Wetlands main creative world (port 30000)
-- `docs/02-VALDIVIA/current.md` — Valdivia 2.0 OSM recreation (port 30001)
-- `docs/03-GAELSIN/` — GAELSIN survival world (port 30002)
-- `docs/04-CTF-LLANURA/` — Llanura CTF (port 30003)
+- `docs/01-ORIGINAL-30000/` — Wetlands main creative world (port 30000)
+- `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001)
+- `docs/03-GAELSIN-30002/` — GAELSIN survival world (port 30002)
+- `docs/04-CTF-30003/` — Llanura CTF (port 30003)
 - `docs/05-FUTBOL/` — Fútbol soccer (port 30004, planned)
 
 ### Shared Configuration
@@ -333,7 +333,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 - `docs/00-SHARED/mods/MODDING_GUIDE.md` — general modding guide
 - `docs/00-SHARED/mods/WORLDEDIT_GUIDE.md` — WorldEdit usage
 - `docs/00-SHARED/mods/CHESS_MOD.md` — chess
-- `docs/01-WETLANDS/pvp/PVP_ARENA_WORLDEDIT_GUIDE.md` — PvP arena + WorldEdit
+- `docs/01-ORIGINAL-30000/pvp/PVP_ARENA_WORLDEDIT_GUIDE.md` — PvP arena + WorldEdit
 
 ### Web
 - `docs/00-SHARED/web/landing-page.md` — landing page architecture and deployment

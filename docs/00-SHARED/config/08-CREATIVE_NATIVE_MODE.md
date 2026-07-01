@@ -1,5 +1,10 @@
 # 08 - MODO CREATIVO NATIVO: Inventario Infinito VoxeLibre
 
+> **Aplica a:** mundos creativos — Wetlands (30000) y Valdivia (30001).
+> **NO aplica a:** GAELSIN (30002, survival) ni Llanura CTF (30003), que corren sin modo creativo.
+> Para el caso específico de Valdivia (inventario creativo con `creative_mode=false` y sin vuelo
+> global) ver [`../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md).
+
 **Autor**: Gabriel Pantoja
 **Fecha de Implementación**: 2026-01-16
 **Versión**: 1.0.0

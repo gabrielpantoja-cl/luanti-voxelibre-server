@@ -1,23 +1,21 @@
-# 🚀 Guías de Inicio Rápido
+# 🚀 quickstart/ — Conexión inicial
 
-Documentación para nuevos jugadores y primeras conexiones al servidor Wetlands Valdivia.
+Cómo descargar Luanti y conectarse a los servidores. Índice completo en [`../README.md`](../README.md).
 
-## 📋 Contenido
+| Archivo | Descripción |
+|---------|-------------|
+| [conexion-basica.md](conexion-basica.md) | Descargar Luanti y conectarse a cualquiera de los servidores |
+| [Semillas Voxelibre_ Mejores Generaciones de Mapas.md](Semillas%20Voxelibre_%20Mejores%20Generaciones%20de%20Mapas.md) | Semillas recomendadas de VoxeLibre |
 
-- **[Conexión Básica](conexion-basica.md)** - Cómo descargar Luanti y conectarse al servidor
-- **[Primeros Pasos](primeros-pasos.md)** - Tutorial inicial para nuevos jugadores
+## Servidores públicos
 
-## 🎯 Información del Servidor
+| Puerto | Mundo | Tipo |
+|--------|-------|------|
+| `luanti.gabrielpantoja.cl:30000` | Wetlands | Creativo / pacífico |
+| `luanti.gabrielpantoja.cl:30001` | Valdivia [Chile] | Ciudad OSM / pacífico |
+| `luanti.gabrielpantoja.cl:30002` | GAELSIN | Survival / **PvP** |
+| `luanti.gabrielpantoja.cl:30003` | Llanura CTF | Captura la bandera / **armas** |
 
-- **Dirección**: `luanti.gabrielpantoja.cl:30000`
-- **Landing Page**: https://luanti.gabrielpantoja.cl
-- **Modo**: Creativo, sin violencia
-- **Público**: Niños de 7+ años
-- **Idioma**: Español
-
-## 🌱 Filosofía del Servidor
-
-- **Compasión**: Sin violencia hacia animales ni jugadores
-- **Educación**: Aprendizaje de valores éticos y sostenibilidad
-- **Cooperación**: Mecánicas de ayuda mutua y colaboración
-- **Seguridad**: Ambiente protegido para menores
+> El tutorial de primeros pasos con la filosofía educativa de Wetlands se movió a
+> [`../../01-ORIGINAL-30000/quickstart/primeros-pasos.md`](../../01-ORIGINAL-30000/quickstart/primeros-pasos.md)
+> (aplica solo a Wetlands, no a los mundos PvP).

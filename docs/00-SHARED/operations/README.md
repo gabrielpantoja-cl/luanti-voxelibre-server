@@ -1,41 +1,28 @@
-# 🔧 Operaciones y Mantenimiento
+# 🔧 operations/ — Operaciones y mantenimiento
 
-Documentación sobre operaciones diarias, mantenimiento y resolución de problemas del servidor.
+Índice completo en [`../README.md`](../README.md). Documentos de esta carpeta:
 
-## 📋 Contenido
+| Archivo | Descripción |
+|---------|-------------|
+| [BACKUP_STATUS.md](BACKUP_STATUS.md) | Estado y plan del sistema de backups (sidecar `backup-cron`) |
+| [clonar-mundo-produccion-local.md](clonar-mundo-produccion-local.md) | Descargar un backup del VPS y correrlo localmente para pruebas/LAN |
+| [MCP_SERVERS.md](MCP_SERVERS.md) | Servidores MCP disponibles |
 
-- **[Backups](backups.md)** - Sistema completo de respaldos y recuperación
-- **[Clonar mundo de producción en local](clonar-mundo-produccion-local.md)** - Descargar un backup del VPS y correrlo localmente para pruebas/LAN
-- **[Deploy](deploy.md)** - Procedimientos de despliegue y CI/CD
-- **[Troubleshooting](troubleshooting.md)** - Solución de problemas comunes
-- **[Texture Recovery](texture-recovery.md)** - Recuperación de corrupción de texturas
-- **[Bug: servidor duplicado en lista Luanti](../../02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md)** — Diagnóstico y fix (documento canónico vive en `docs/02-VALDIVIA-30001/operaciones/` porque el bug se manifiesta directamente en el mundo Valdivia, puerto 30001)
+## 🔒 Operaciones sensibles (repo privado)
 
-## 🚨 Procedimientos de Emergencia
+Deploy detallado, recuperación de texturas, sync con VPS, credenciales y troubleshooting profundo
+viven en el **repo privado** `infra/privado/luanti/operations/`. Los comandos de deploy y las
+convenciones de `git pull` en el VPS también están en el [`AGENTS.md`](../../../AGENTS.md) raíz.
 
-### Orden de Prioridad
-1. **Texture Recovery** - Para corrupción visual del juego
-2. **Backups** - Para pérdida de datos del mundo
-3. **Troubleshooting** - Para problemas generales de conectividad
+## Comandos rápidos
 
-### Comandos de Emergencia Rápida
 ```bash
-# Verificar estado del servidor
-docker-compose ps
-
-# Logs del servidor
-docker-compose logs -f luanti-server
-
-# Backup de emergencia
-./scripts/backup.sh
-
-# Reinicio completo
-docker-compose restart luanti-server
+docker compose ps                          # estado de contenedores
+docker compose logs -f luanti-server       # logs (usar --since en el VPS para evitar ruido)
+docker compose restart luanti-<mundo>      # reinicio de un mundo
 ```
 
-## 📊 Métricas de Operación
+## Bugs de operación por mundo
 
-- **Backup Automático**: Cada 6 horas
-- **Retención**: 10 backups más recientes
-- **Tiempo de Recuperación**: ~3 minutos (texturas), ~15 minutos (mundo completo)
-- **Uptime Objetivo**: 99.5%
+- [Servidor duplicado en la lista pública de Luanti](../../02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md)
+  — la imagen `linuxserver/luanti` hardcodea `--port 30000`; afecta a cualquier mundo con puerto ≠ 30000.

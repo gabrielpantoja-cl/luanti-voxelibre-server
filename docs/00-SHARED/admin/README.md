@@ -1,42 +1,28 @@
-# 👨‍💼 Documentación de Administración
+# 👨‍💼 admin/ — Administración
 
-Guías para administradores del servidor Wetlands Valdivia sobre gestión de usuarios, seguridad y operaciones.
+Índice completo en [`../README.md`](../README.md). Documentos de esta carpeta (aplican a **todos los
+mundos** salvo que se indique):
 
-## 📋 Contenido
+| Archivo | Descripción |
+|---------|-------------|
+| [comandos-admin.md](comandos-admin.md) | Comandos administrativos de Luanti/VoxeLibre |
+| [VOXELIBRE_SERVER_SETTINGS.md](VOXELIBRE_SERVER_SETTINGS.md) | Configuración del servidor desde la interfaz del cliente |
+| [QUICK_ADD_SKINS.md](QUICK_ADD_SKINS.md) | Workflow rápido para agregar skins |
+| [SKINS_INVENTORY.md](SKINS_INVENTORY.md) | Catálogo de skins disponibles |
+| [TROUBLESHOOTING_MCL_POTIONS_BUG.md](TROUBLESHOOTING_MCL_POTIONS_BUG.md) | Bug de `mcl_potions` de VoxeLibre y su fix |
+| [agentes-claude.md](agentes-claude.md) | Agentes especializados de Claude para este repositorio |
 
-- **[Usuarios y Privilegios](usuarios-y-privilegios.md)** - Gestión de cuentas de usuario y permisos
-- **[Comandos de Admin](comandos-admin.md)** - Comandos administrativos disponibles
-- **[Seguridad y Bloqueos](seguridad-y-bloqueos.md)** - Protección contra usuarios problemáticos
-- **[Ubicaciones y Coordenadas](ubicaciones-coordenadas.md)** - Puntos importantes del servidor
+## ⚠️ Acceso requerido
 
-## ⚠️ Acceso Requerido
+Para comandos administrativos necesitas acceso SSH al VPS, privilegios de admin en el servidor
+Luanti (el admin es `gabo`) y, para editar privilegios, saber consultar la `auth.sqlite` del mundo.
 
-Para ejecutar comandos administrativos necesitas:
-- Acceso SSH al VPS: `ssh <VPS_USER>@<VPS_IP>`
-- Privilegios de administrador en el servidor Luanti
-- Conocimiento de la base de datos SQLite del servidor
+## 🔒 Documentación sensible (repo privado)
 
-## 🚨 Procedimientos de Emergencia
+Análisis de usuarios, IPs bloqueadas, coordenadas privadas, credenciales del VPS y config DNS viven
+en el **repo privado** `infra/privado/luanti/` — nunca en este repo público.
 
-En caso de problemas graves del servidor:
-1. Consultar [Operations/Troubleshooting](../operations/troubleshooting.md)
-2. Revisar [Backup System](../operations/backups.md) para recuperación
-3. Aplicar medidas de seguridad si es necesario
+## Ver también
 
-## 🔒 Archivos Privados (No Versionados)
-
-Los siguientes archivos contienen información sensible y están excluidos del repositorio Git mediante `.gitignore`:
-
-### Información de Usuarios
-- `analisis-usuarios-30-dias.md` - Análisis de actividad con nombres de usuario y posibles IPs
-- `estado-usuarios-actual.md` - Estado actual de cuentas con datos personales
-
-### Información de Seguridad
-- `seguridad-y-bloqueos.md` - IPs bloqueadas y medidas de seguridad
-- `ubicaciones-coordenadas.md` - Coordenadas exactas (grief prevention)
-
-### Configuración de Infraestructura
-- `SISTEMA_ACTUAL_VPS_2025-10-11.md` - Configuración del VPS con credenciales
-- `DNS_CONFIG.md` - Configuración DNS completa del dominio gabrielpantoja.cl
-
-**⚠️ Importante**: Estos archivos existen localmente pero **NO deben ser commiteados** a GitHub. Si necesitas compartir información, crea versiones sanitizadas sin datos sensibles.
+- Privilegios por mundo: cada carpeta de mundo (ej. [`../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md)).
+- Gestión del inventario creativo de Wetlands: [`../../01-ORIGINAL-30000/admin/CREATIVE_INVENTORY_MANAGEMENT.md`](../../01-ORIGINAL-30000/admin/CREATIVE_INVENTORY_MANAGEMENT.md).
