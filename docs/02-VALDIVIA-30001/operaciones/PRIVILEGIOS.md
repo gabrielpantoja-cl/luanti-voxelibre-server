@@ -19,7 +19,9 @@
 | `give` | ❌ | ✅ |
 | `server`, `privs`, `ban`, … | ❌ | ✅ |
 
-**Filosofía**: Valdivia es un mundo de exploración urbana. Sin `fly` y sin `noclip` los jugadores recorren las calles a nivel de suelo, lo que es más inmersivo para una recreación de ciudad real. `fast` compensa el tamaño del mapa (9.5 km de largo).
+**Filosofía**: Valdivia es un mundo de exploración urbana. Sin `fly` y sin `noclip` los jugadores recorren las calles a nivel de suelo, lo que es más inmersivo para una recreación de ciudad real. `fast` compensa el tamaño del mapa (9.5 km de largo). El daño está habilitado (`enable_damage = true`).
+
+> ⚠️ **Pitfall crítico**: aunque el privilegio `fly` controla quién puede volar, si `creative_mode = true` está activo en el servidor, **todos los jugadores pueden volar sin importar sus privilegios**. Para que `fly` funcione como control, `creative_mode` debe estar en `false`.
 
 ---
 
