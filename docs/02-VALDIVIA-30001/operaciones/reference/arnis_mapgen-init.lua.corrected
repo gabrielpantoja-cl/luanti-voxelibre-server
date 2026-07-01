@@ -1,0 +1,75 @@
+-- Arnis world configuration
+minetest.set_mapgen_setting("mg_name", "singlenode", true)
+
+local SPAWN = {x=3766, y=-4, z=-3249}
+
+-- Emerge el area alrededor de una posicion y coloca al jugador ahi tras un
+-- pequeno delay, para que el mapa exista antes de mover al jugador.
+local function emerge_and_place(player, pos)
+    local p1 = {x=pos.x-16, y=pos.y-16, z=pos.z-16}
+    local p2 = {x=pos.x+16, y=pos.y+16, z=pos.z+16}
+    minetest.emerge_area(p1, p2, function()
+        minetest.after(0.5, function()
+            if player:is_player() then
+                player:set_pos(pos)
+            end
+        end)
+    end)
+end
+
+minetest.register_on_joinplayer(function(player)
+    -- NOTA: los privilegios los gestiona el mod valdivia_newplayer (solo gabo vuela).
+    -- Este worldmod ya NO otorga fly/fast — hacerlo aqui daba vuelo a todos.
+    --
+    -- Solo forzamos el spawn a jugadores NUEVOS (sin ultima posicion guardada).
+    -- A los que regresan los coloca wetlands_lastpos en su ultima posicion;
+    -- forzar spawn aqui pisaba ese teletransporte (bug historico: "siempre
+    -- aparecen en spawn"). La coordinacion es via la metadata "wetlands_lastpos:pos"
+    -- que wetlands_lastpos escribe al desconectarse.
+    local has_lastpos = player:get_meta():get_string("wetlands_lastpos:pos") ~= ""
+    if has_lastpos then return end
+    emerge_and_place(player, SPAWN)
+end)
+
+minetest.register_on_respawnplayer(function(player)
+    emerge_and_place(player, SPAWN)
+    return true
+end)
+
+-- Lazy fix-lighting
+local fixed_blocks = {}
+local RADIUS = 3
+local CHECK_INTERVAL = 0.3
+local MAX_FIXES = 8
+local timer = 0
+
+minetest.register_globalstep(function(dtime)
+    timer = timer + dtime
+    if timer < CHECK_INTERVAL then return end
+    timer = 0
+    local fixes = 0
+    for _, player in ipairs(minetest.get_connected_players()) do
+        local pos = player:get_pos()
+        local bx = math.floor(pos.x / 16)
+        local by = math.floor(pos.y / 16)
+        local bz = math.floor(pos.z / 16)
+        for dx = -RADIUS, RADIUS do
+            for dy = -RADIUS, RADIUS do
+                for dz = -RADIUS, RADIUS do
+                    local key = (bx+dx) .. "," .. (by+dy) .. "," .. (bz+dz)
+                    if not fixed_blocks[key] then
+                        fixed_blocks[key] = true
+                        local x1 = (bx+dx) * 16
+                        local y1 = (by+dy) * 16
+                        local z1 = (bz+dz) * 16
+                        minetest.fix_light(
+                            {x=x1, y=y1, z=z1},
+                            {x=x1+15, y=y1+15, z=z1+15})
+                        fixes = fixes + 1
+                        if fixes >= MAX_FIXES then return end
+                    end
+                end
+            end
+        end
+    end
+end)

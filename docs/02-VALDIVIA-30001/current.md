@@ -54,6 +54,14 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 >
 > **Resumen**: `creative_mode = false` → sin vuelo global. Metadata `gamemode = "creative"` por jugador → inventario creativo por jugador. Los dos se combinan para dar el comportamiento deseado. Ver detalles en `operaciones/PRIVILEGIOS.md`.
 
+### Reconexión a la última posición
+
+Los jugadores que regresan aparecen en la posición donde dejaron su personaje (no en el spawn). Esto lo maneja `wetlands_lastpos`: guarda la posición en la metadata `wetlands_lastpos:pos` al desconectarse y teletransporta ahí al reconectarse. Los jugadores **nuevos** (sin posición guardada) aparecen en el spawn estático.
+
+> ⚠️ **Coordinación con el worldmod `arnis_mapgen`** (VPS-only, gitignored en `server/worlds/valdivia/worldmods/`): el worldmod que Arnis genera **forzaba el spawn en cada join** y **otorgaba fly a todos**, pisando a `wetlands_lastpos` (bug "siempre aparecen en spawn") y dando vuelo universal. Se corrigió su `register_on_joinplayer` para que **solo fuerce spawn a jugadores nuevos** (los que tienen `wetlands_lastpos:pos` los deja a `wetlands_lastpos`) y **ya no otorgue privilegios** (eso es tarea de `valdivia_newplayer`).
+>
+> 🔁 **Si se regenera Valdivia con Arnis**: el worldmod `arnis_mapgen` nuevo volverá a traer el forzado de spawn + otorgamiento de fly. **Hay que reaplicar esta corrección** al `init.lua` del worldmod. Backup de la versión corregida en el VPS: `worldmods/arnis_mapgen/init.lua.bak-*`.
+
 ### Pendiente
 
 - [ ] Verificar y actualizar coordenadas del teletransportador `/ir` para el mundo Arnis v2.9.0 y re-habilitar `valdivia_teleporter`
@@ -1003,6 +1011,7 @@ Y = probar entre -30 y -55 (depende de la elevacion del terreno)
 
 - **30 junio 2026:** Corrección de nodos desconocidos (daylight_detector, noteblock, redstone_torch, banners, vegetación acuática del río). Nuevo mod `valdivia_newplayer` — privilegios sin fly. Desactivado `creative_mode` global para bloquear vuelo universal. Habilitado `wetlands_lastpos` (última posición al reconectarse). Nombre del servidor corregido: "Valdivia 2.0" → "Valdivia". Fix inventario creativo admin: VoxeLibre ignora privilegio `creative` con `creative_mode=false` — se resolvió seteando metadata `gamemode=creative` por jugador en `register_on_joinplayer`. Documentación completa en `operaciones/PRIVILEGIOS.md`.
 - **30 junio 2026 (fix definitivo fly):** `mcl_privs` de VoxeLibre auto-otorgaba `fly` a todos los jugadores creativos (carrera de callbacks de join). `valdivia_newplayer` reescrito para imponer privilegios en **cada join** con `minetest.after(0)` (corre después de mcl_privs → gana siempre) + metadata `mcl_privs:fly_changed=1`. Auto-reparable. Ahora **solo `gabo` puede volar**; todos tienen `fast` e inventario creativo completo. Reconexión a última posición sigue activa vía `wetlands_lastpos`.
+- **30 junio 2026 (fix reconexión a última posición):** el worldmod `arnis_mapgen` (VPS-only) forzaba el spawn en cada join y otorgaba fly a todos, pisando a `wetlands_lastpos` (bug "siempre aparecen en spawn"). Corregido su `register_on_joinplayer`: solo fuerza spawn a jugadores nuevos (sin `wetlands_lastpos:pos`) y ya no toca privilegios. Backup en VPS: `worldmods/arnis_mapgen/init.lua.bak-*`. **Reaplicar si se regenera Valdivia con Arnis.**
 - **29 junio 2026 (sesión 2):** Fix spawn Y=-4 (emerge_area + world.mt). Fix Wetlands server_announce=false (deslistado). Fix Valdivia server_url=https://luanti.gabrielpantoja.cl. Remapeo v2 corriendo en VPS. Docs actualizados.
 - **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/02-VALDIVIA-30001/operaciones/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
 - **21 marzo 2026:** Servidor Valdivia v3 en produccion (puerto 30001), generacion con Arnis PR #808
