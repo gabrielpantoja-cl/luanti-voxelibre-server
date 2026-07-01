@@ -92,6 +92,8 @@ sudo sqlite3 server/worlds/valdivia/auth.sqlite \
    AND id != (SELECT id FROM auth WHERE name='gabo');"
 ```
 
+> ⚠️ **Si hay jugadores conectados al hacer el DELETE**: Luanti mantiene los privilegios en memoria y los escribe de vuelta a la DB cuando el jugador se desconecta, pisando el cambio SQL. Para evitarlo, detener el server antes (`docker compose stop luanti-valdivia`), hacer el DELETE, y reiniciar.
+
 ### Dar un privilegio a un jugador específico
 
 ```bash
