@@ -25,6 +25,17 @@
 
 ---
 
+## Inventario creativo — cómo funciona en VoxeLibre
+
+> ⚠️ **Pitfall VoxeLibre**: con `creative_mode = false`, el privilegio `creative` de Luanti NO da acceso al inventario creativo. VoxeLibre sobreescribe `minetest.is_creative_enabled()` para usar su propio sistema de gamemode por jugador (metadata `gamemode = "creative"` en el jugador). El `mod valdivia_newplayer` setea esta metadata en `register_on_joinplayer` para todos los jugadores al conectarse.
+
+**Resumen de la lógica**:
+- VoxeLibre con `creative_mode = true` → todos tienen inventario creativo (y vuelo global)
+- VoxeLibre con `creative_mode = false` + metadata `gamemode = "creative"` por jugador → inventario creativo sin vuelo global
+- Privilegio `creative` de Luanti solo es relevante para drops de bloques, no para el inventario
+
+---
+
 ## Cómo se otorgan los privilegios
 
 VoxeLibre **ignora** el setting `default_privs` de `minetest.conf` — no hay que tocarlo para cambiar los privs de nuevos jugadores. El mecanismo real tiene dos capas:
@@ -117,3 +128,4 @@ sudo sqlite3 server/worlds/valdivia/auth.sqlite \
 | 2026-06-30 | Privs iniciales (mismo set que Wetlands): fly, fast, noclip, give, creative, interact, shout, spawn, teleport |
 | 2026-06-30 | Creado `valdivia_newplayer`; quitados fly, noclip, give. Deshabilitado `wetlands_newplayer` en Valdivia |
 | 2026-06-30 | Fix: `default_privs` también actualizado para que coincida; `minetest.after(0)` para correr post-engine |
+| 2026-06-30 | Fix inventario creativo: VoxeLibre ignora privilegio `creative` con `creative_mode=false`; usar metadata `gamemode=creative` en `register_on_joinplayer` |
