@@ -6,6 +6,58 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 **Spawn:** Plaza de la República.
 **Servidor:** Público en la lista de Luanti con el nombre `Valdivia [Chile]`.
 
+## Estado actual — 30 junio 2026
+
+### Configuración del servidor
+
+| Parámetro | Valor |
+|-----------|-------|
+| Nombre público | `Valdivia [Chile]` |
+| Puerto | 30001/UDP |
+| Container | `luanti-valdivia-server` |
+| `creative_mode` | `false` (sin vuelo global) |
+| `mcl_enable_creative_mode` | `true` (inventario infinito para quien tiene privilegio `creative`) |
+| `enable_damage` | `true` (los jugadores reciben daño) |
+| `enable_pvp` | `true` |
+| Spawn | `2389, -55, -2887` (Colegio Planeta Azul — spawn estático en `world.mt`) |
+| Anunciado en servidores.luanti.org | Sí |
+
+### Mods activos en Valdivia (además de VoxeLibre base)
+
+| Mod | Propósito |
+|-----|-----------|
+| `valdivia_newplayer` | Privilegios de nuevos jugadores: interact, shout, creative, fast, spawn, teleport (sin fly) |
+| `valdivia_aliases` | Aliases de nodos viejos generados por Arnis → nombres actuales VoxeLibre |
+| `wetlands_lastpos` | Jugadores vuelven a su última posición al reconectarse |
+| `server_rules` | Comando `/reglas` |
+| `valdivia_teleporter` | Teletransportador `/ir` — **deshabilitado** (coordenadas desactualizadas post-Arnis v2.9.0) |
+
+### Aliases activos (`valdivia_aliases`)
+
+| Nombre en el mapa (Arnis) | Nombre actual VoxeLibre |
+|---|---|
+| `mcl_daylight_detector:daylight_detector` | `mesecons_solarpanel:solar_panel_off` |
+| `mcl_noteblock:noteblock` | `mesecons_noteblock:noteblock` |
+| `mcl_redstone_torch:redstoneblock` | `mesecons_torch:redstoneblock` |
+| `mcl_banners:hanging_banner_white/red/silver` | `mcl_banners:hanging_banner` |
+| `mcl_ocean:seagrass` | `mcl_ocean:seagrass_dirt` |
+| `mcl_ocean:tall_seagrass` | `mcl_ocean:seagrass_dirt` |
+| `mcl_ocean:kelp` | `mcl_ocean:kelp_dirt` |
+| `mcl_ocean:sea_pickle` | `mcl_ocean:seagrass_dirt` |
+
+### Privilegios
+
+- **Jugadores nuevos**: `interact, shout, creative, fast, spawn, teleport` — sin `fly` ni `noclip`
+- **gabo** (admin): todos los privilegios incluido `fly`
+- **Por qué no hay fly global**: `creative_mode = false` es obligatorio. Con `creative_mode = true`, Luanti habilita el vuelo para todos independientemente del privilegio `fly`. Ver `docs/02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`.
+
+### Pendiente
+
+- [ ] Verificar y actualizar coordenadas del teletransportador `/ir` para el mundo Arnis v2.9.0 y re-habilitar `valdivia_teleporter`
+- [ ] Investigar más nodos desconocidos que aún puedan existir (el scanner cubre mods faltantes; renombres dentro de mods existentes son más difíciles de detectar)
+
+---
+
 ## Diagnóstico del nuevo mundo (VPS, 29 junio 2026)
 
 ### Métricas del mundo desplegado
@@ -942,10 +994,11 @@ Y = probar entre -30 y -55 (depende de la elevacion del terreno)
 ---
 
 *Documento creado por Gabriel Pantoja + Claude -- Marzo 2026*
-*Ultima actualizacion: 29 junio 2026 -- Nuevo mundo Arnis v2.9.0 desplegado en VPS*
+*Ultima actualizacion: 30 junio 2026*
 
 ### Historial de sesiones
 
+- **30 junio 2026:** Corrección de nodos desconocidos (daylight_detector, noteblock, redstone_torch, banners, vegetación acuática del río). Nuevo mod `valdivia_newplayer` — privilegios sin fly. Desactivado `creative_mode` global para bloquear vuelo universal. Habilitado `wetlands_lastpos` (última posición al reconectarse). Nombre del servidor corregido: "Valdivia 2.0" → "Valdivia". Documentación de privilegios y aliases en `operaciones/`.
 - **29 junio 2026 (sesión 2):** Fix spawn Y=-4 (emerge_area + world.mt). Fix Wetlands server_announce=false (deslistado). Fix Valdivia server_url=https://luanti.gabrielpantoja.cl. Remapeo v2 corriendo en VPS. Docs actualizados.
 - **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/02-VALDIVIA-30001/operaciones/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
 - **21 marzo 2026:** Servidor Valdivia v3 en produccion (puerto 30001), generacion con Arnis PR #808
