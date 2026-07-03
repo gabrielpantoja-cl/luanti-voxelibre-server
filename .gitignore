@@ -12,10 +12,11 @@ debug.txt
 .env
 .env.local
 
-# Claude Code configuración local (personal, no compartida)
+# AI agent local overrides (personal, not shared — secrets live here)
 .claude/settings.local.json
 .claude/*.lock
 CLAUDE.local.md
+AGENTS.local.md
 
 # Sistema
 .DS_Store
