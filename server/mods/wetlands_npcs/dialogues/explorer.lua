@@ -1,25 +1,25 @@
--- Dialogos del Explorador
+-- Dialogos del Explorador (tematica: guia de la ciudad de Valdivia)
 return {
     greetings = {
-        "Hola aventurero! He viajado por todos los biomas del mundo.",
-        "Saludos! Te gustaria escuchar historias de mis viajes?",
-        "Hola! Acabo de volver de explorar unas cuevas increibles.",
-        "He explorado tantos biomas como planetas ha visitado el Mandalorian!",
+        "Hola aventurero! Conozco cada rincon de Valdivia.",
+        "Saludos! Te gustaria escuchar historias de la ciudad fluvial?",
+        "Hola! Acabo de volver de recorrer el Mercado Fluvial.",
+        "He caminado por la Isla Teja y el Barrio Collico muchas veces!",
     },
     about_work = {
-        "Exploro el mundo y estudio diferentes ecosistemas.",
-        "Cada bioma tiene plantas y animales unicos que merecen proteccion.",
+        "Exploro la ciudad y estudio sus rios y humedales.",
+        "En el Mercado Fluvial los lobos marinos esperan por pescado.",
         "Mi brujula y mi mapa son mis mejores amigos en las expediciones.",
-        "Me recuerdan a los exploradores de Kamino... pero con menos lluvia.",
+        "La Universidad Austral esta en la Isla Teja, rodeada de bosque y rio.",
     },
     education = {
-        "Sabias que los bosques producen gran parte del oxigeno que respiramos?",
-        "La biodiversidad es fundamental para el equilibrio del planeta.",
-        "Cada gota de agua que bebes ha existido desde que se formo la Tierra!",
+        "Sabias que Valdivia se recorre mejor en bote, entre sus rios?",
+        "La biodiversidad de los humedales es fundamental para el equilibrio del planeta.",
+        "El rio Calle-Calle abraza la ciudad y la conecta con el mar.",
     },
     seek_player = {
-        "Hey @1! Acabo de descubrir algo increible!",
-        "Aventurero @1, vamos a explorar!",
-        "@1! Tienes que ver lo que encontre!",
+        "Hey @1! Acabo de descubrir un mirador increible!",
+        "Aventurero @1, vamos a recorrer la costanera!",
+        "@1! Tienes que ver los lobos marinos del mercado!",
     },
 }

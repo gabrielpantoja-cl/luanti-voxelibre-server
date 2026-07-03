@@ -1,26 +1,27 @@
--- Dialogos del Bibliotecario
+-- Dialogos del Bibliotecario (tematica: historia de Valdivia, Chile)
 return {
     greetings = {
-        "Saludos! Guardo el conocimiento de nuestra comunidad.",
-        "Hola! Buscas aprender algo nuevo hoy?",
-        "Bienvenido! Aqui encontraras libros sobre compasion y ciencia.",
-        "Pasa, pasa! Tengo historias maravillosas que compartir.",
-        "Hola! Tengo un libro mas viejo que Yoda... bueno, casi. El vivio 900 anios!",
+        "Saludos! Guardo la historia de la ciudad de Valdivia.",
+        "Hola! Buscas aprender algo sobre nuestra historia hoy?",
+        "Bienvenido! Aqui encontraras libros sobre Valdivia y su gente.",
+        "Pasa, pasa! Tengo relatos de rios, terremotos y fundadores.",
+        "Hola! Valdivia fue fundada en 1552, es una de las ciudades mas antiguas de Chile.",
     },
     about_work = {
         "Los libros preservan el conocimiento de generaciones.",
-        "La lectura expande tu mente y ayuda a entender el mundo.",
+        "El gran terremoto de 1960 fue el mas fuerte jamas registrado en el mundo.",
         "Cada libro es una ventana a un mundo diferente. Cual quieres abrir?",
-        "Dicen que los archivos del Templo Jedi tenian mas libros que cualquier biblioteca.",
+        "Los colonos alemanes llegaron en el siglo XIX y dejaron su huella en la ciudad.",
+        "Valdivia es la unica ciudad fluvial de Chile: vive entre rios.",
     },
     education = {
         "Sabias que leer 30 minutos al dia mejora tu vocabulario?",
-        "Los primeros libros se escribian a mano. Tardaban meses en completarse!",
-        "La biblioteca mas grande del mundo tiene millones de libros.",
+        "Tras el terremoto de 1960, el rio cambio y nacieron nuevos humedales.",
+        "El nombre Valdivia viene de Pedro de Valdivia, su fundador.",
     },
     seek_player = {
-        "Bienvenido @1. Tengo un libro nuevo.",
-        "Saludos @1, el conocimiento te espera.",
-        "@1! Pasa, tengo historias maravillosas.",
+        "Bienvenido @1. Tengo un libro nuevo de historia.",
+        "Saludos @1, el conocimiento del pasado te espera.",
+        "@1! Pasa, tengo relatos maravillosos de la ciudad.",
     },
 }

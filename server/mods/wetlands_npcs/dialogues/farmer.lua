@@ -1,27 +1,27 @@
--- Dialogos del Agricultor
+-- Dialogos del Agricultor (tematica: humedales y campo del sur de Chile / Valdivia)
 return {
     greetings = {
-        "Hola! Cultivo vegetales frescos y saludables para la comunidad.",
-        "Buenos dias! Te gustaria aprender sobre agricultura sostenible?",
-        "Bienvenido! Cultivamos solo alimentos de origen vegetal.",
-        "Que gusto verte! Hoy las zanahorias estan creciendo muy bien.",
-        "Hola! Las plantas necesitan luz... como los Jedi necesitan la Fuerza.",
+        "Hola! Cultivo la tierra fertil de los humedales del sur.",
+        "Buenos dias! Te gustaria aprender sobre los humedales de Valdivia?",
+        "Bienvenido! Aqui cultivamos solo alimentos de origen vegetal.",
+        "Que gusto verte! Con tanta lluvia, todo crece verde y sano.",
+        "Hola! La totora de los humedales sirve para tejer y construir.",
     },
     about_work = {
-        "Trabajo la tierra cada dia. Las plantas necesitan agua, luz y cuidado.",
-        "La agricultura sostenible alimenta al mundo sin daniar el planeta.",
+        "Trabajo la tierra cada dia. Con la lluvia del sur, el agua nunca falta.",
+        "Los humedales limpian el agua y dan hogar a muchas aves.",
         "Las abejas polinizan mis cultivos. Sin ellas no habria cosecha!",
         "Compostar los restos de comida crea el mejor fertilizante natural.",
-        "Incluso en Tatooine con dos soles se puede cultivar... bueno, casi.",
+        "El coipo vive en los humedales; es un roedor nadador, muy tierno.",
     },
     education = {
-        "Las plantas liberan oxigeno durante el dia. Los arboles son los pulmones del planeta.",
+        "Los humedales de Valdivia son santuarios de aves protegidas.",
         "Una semilla de trigo puede producir cientos de granos. La naturaleza es generosa!",
-        "El agua subterranea alimenta las raices. Por eso cuidar los rios es tan importante.",
+        "El rio Cruces alimenta enormes humedales llenos de vida. Cuidar el agua es cuidar todo.",
     },
     seek_player = {
         "Hola @1! La cosecha de hoy esta increible!",
-        "Bienvenido @1, quieres ver mi huerto?",
-        "Hey @1! Ven a ver mis cultivos!",
+        "Bienvenido @1, quieres ver mi huerto junto al humedal?",
+        "Hey @1! Ven a ver los cisnes de cuello negro!",
     },
 }

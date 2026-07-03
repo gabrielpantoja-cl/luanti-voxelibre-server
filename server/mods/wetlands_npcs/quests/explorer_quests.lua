@@ -35,14 +35,14 @@ return {
             rewards = {
                 items = { { name = "mcl_core:diamond", count = 2 } },
             },
-            dialogue_on_accept = "Quiero catalogar los biomas de Wetlands. Necesito muestras de diferentes plantas!",
+            dialogue_on_accept = "Quiero catalogar los biomas de la region. Necesito muestras de diferentes plantas!",
             dialogue_on_complete = "Increible coleccion! Cada planta cuenta la historia de su bioma.",
             next_quest = "explorer_main_3",
         },
         {
             id = "explorer_main_3",
             title = "El Mapa Definitivo",
-            description = "El Explorador quiere crear el mapa mas completo de Wetlands",
+            description = "El Explorador quiere crear el mapa mas completo de la region",
             requires = "explorer_main_2",
             min_friendship = 3,
             objectives = {
@@ -56,7 +56,7 @@ return {
             rewards = {
                 unique_item = true,
             },
-            dialogue_on_accept = "Mi obra maestra: el mapa definitivo de Wetlands. Necesito papel, hierro para la brujula y oro para los detalles.",
+            dialogue_on_accept = "Mi obra maestra: el mapa definitivo de la region. Necesito papel, hierro para la brujula y oro para los detalles.",
             dialogue_on_complete = "El mapa esta completo! Toma una copia. Solo los verdaderos exploradores tienen uno de estos.",
         },
     },

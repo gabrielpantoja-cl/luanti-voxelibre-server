@@ -36,7 +36,7 @@ return {
         {
             id = "librarian_main_3",
             title = "La Gran Enciclopedia",
-            description = "El Bibliotecario quiere crear la enciclopedia definitiva de Wetlands",
+            description = "El Bibliotecario quiere crear la enciclopedia definitiva de la region",
             requires = "librarian_main_2",
             min_friendship = 3,
             objectives = {
@@ -48,7 +48,7 @@ return {
             rewards = {
                 unique_item = true,
             },
-            dialogue_on_accept = "Mi obra maestra: la Enciclopedia de Wetlands. Necesito muchos libros y papel. Es un proyecto ambicioso!",
+            dialogue_on_accept = "Mi obra maestra: la Enciclopedia de la Region. Necesito muchos libros y papel. Es un proyecto ambicioso!",
             dialogue_on_complete = "La Enciclopedia esta lista! Toma una copia. El conocimiento es el mayor tesoro.",
         },
     },
