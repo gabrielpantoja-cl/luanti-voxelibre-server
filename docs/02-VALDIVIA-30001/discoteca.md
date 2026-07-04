@@ -16,31 +16,15 @@ Cuando un jugador entra a la zona configurada:
 |-------|-------------|---------------|
 | `zona_min` (esquina inferior) | `(3731, -7, -2965)` | `/discoteca zona_min` |
 | `zona_max` (esquina superior) | `(3751, -3, -2948)` | `/discoteca zona_max` |
-| `dj_pos` (emisor de audio) | pendiente | `/discoteca dj_pos` |
+| `dj_pos` (emisor de audio + DJ) | `(3748, -7, -2954)` | `/discoteca dj_pos` |
 
----
+## Setup in-game — completado ✓
 
-## Setup in-game (completar como admin)
-
-Pasos pendientes para terminar la configuración:
-
-1. Ir a la esquina superior opuesta del interior del edificio y ejecutar:
-   ```
-   /discoteca zona_max
-   ```
-2. Pararse en la posición de la cabina del DJ y ejecutar:
-   ```
-   /discoteca dj_pos
-   ```
-3. Mirando hacia la pista, invocar al DJ:
-   ```
-   /discoteca dj
-   ```
-4. Repetir 4-6 veces en distintos puntos de la pista:
-   ```
-   /discoteca bailarin
-   ```
-5. Salir y volver a entrar — verificar que suena música + luces + animaciones.
+- [x] `zona_min` fijada en `(3731, -7, -2965)`
+- [x] `zona_max` fijada en `(3751, -3, -2948)`
+- [x] `dj_pos` fijada en `(3748, -7, -2954)` — esquina cabina DJ, Hotel Dreams
+- [x] DJ colocado con `/discoteca dj`
+- [ ] Bailarines — en progreso (`/discoteca bailarin` ×4-6)
 
 ---
 
@@ -78,3 +62,7 @@ Para reemplazarlo por música rave 8-bit real:
 |-------|--------|
 | 2026-07-03 | Mod `valdivia_discoteca` desplegado en producción |
 | 2026-07-03 | `zona_min` fijada en `(3731, -7, -2965)` — Hotel Dreams |
+| 2026-07-03 | `zona_max` fijada en `(3751, -3, -2948)` |
+| 2026-07-03 | `dj_pos` fijada en `(3748, -7, -2954)`, DJ colocado |
+| 2026-07-03 | `valdivia_music` deshabilitado — silencio en la calle, música solo en la disco |
+| 2026-07-03 | Skins de bailarines ampliados a 12 (rave, festivos, hipster, clásicos) |

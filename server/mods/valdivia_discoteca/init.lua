@@ -26,13 +26,25 @@ local LIGHT_INTERVAL = 2.0        -- cada cuanto cambian de color las luces
 local COLLISIONBOX = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3}  -- del registry humano
 
 -- Skins validos para el modelo humano (UV 64x32 de player skin).
+-- Servidos por mcl_custom_world_skins/_world_folder_media desde server/skins/.
 local DJ_SKIN = "wetlands_npc_mandalorian.png"  -- casco = look de DJ
 local DANCER_SKINS = {
-    "wetlands_npc_anakin.png",
-    "wetlands_npc_luke.png",
+    -- Rave/fiesta
+    "2025_06_30_rave-2-0-23369634.png",
+    "2026_07_02_rave-24164935.png",
+    "2026_06_02_h0g-b00n-rave-bunny-24094815.png",
+    -- Coloridos/festivos
+    "2026_06_30_summer-gala-24161243.png",
+    "2026_07_01_flourish---sf8-24162261.png",
+    "2026_06_09_pinkie-pie----24110364.png",
+    "2026_06_23_hacker-nontesie-24144720.png",
+    "2026_07_02_--firecracker----barebones---24166823.png",
+    -- Urbano/hipster
+    "2023_01_31_hipster-lance-21291891.png",
+    "2026_06_26_hipster-24151100.png",
+    "2024_06_19_indie-boy-22622590.png",
+    -- Clasicos (NPCs de Wetlands que se mezclan bien)
     "wetlands_npc_leia.png",
-    "wetlands_npc_mandalorian.png",
-    "wetlands_npc_splinter.png",
 }
 
 -- Estilos de baile: rangos de frames del modelo humano (wetlands_npc_human.b3d).
