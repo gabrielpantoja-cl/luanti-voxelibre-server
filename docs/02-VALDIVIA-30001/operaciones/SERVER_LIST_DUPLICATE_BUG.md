@@ -373,14 +373,14 @@ Aunque el ping solo mide latencia, el servidor list **actualiza `updateTime`**
 de la entrada, y el uptime reportado es el que el servidor (Wetlands) devuelve
 al responder — de ahí que avance sincronizado.
 
-### Por qué el fantasma NO expira solo (mecanismo real — corregido 2026-07-03)
+### Por qué el fantasma NO expira solo (mecanismo real — confirmado 2026-07-03)
 
 La respuesta de `sfan5` es correcta en teoría, pero incompleta para nuestro caso:
 
 > *"Server entries that aren't updated every 5 minutes automatically disappear,
 > so all you need to do is stop the old Luanti server."*
 
-El problema: `servers.luanti.org` tiene un **background pinger** que verifica
+El problema: `servers.luanti.org` tiene un **background pinger UDP** que verifica
 liveness de cada entrada usando el campo `address` del anuncio — es decir, el
 **dominio** `luanti.gabrielpantoja.cl`, no la IP del VPS original que hizo el
 anuncio. Cuando el dominio apunta al nuevo VPS Oracle, el pinger llega a
@@ -388,27 +388,29 @@ anuncio. Cuando el dominio apunta al nuevo VPS Oracle, el pinger llega a
 refresca. El fantasma nunca expira mientras exista un servidor respondiendo en
 `luanti.gabrielpantoja.cl:30000`.
 
-La solución es hacer que ese dominio+puerto no responda por ≥5 minutos.
+El pinger proviene de la IP **93.190.143.88** (servers.luanti.org) usando UDP.
 
-### Solución: detener temporalmente el servidor en :30000
+### Solución definitiva: regla iptables permanente en DOCKER-USER
 
-La forma más simple y segura: parar el contenedor que responde en :30000 (Wetlands)
-durante 5-7 minutos. El pinger falla, el fantasma expira, se reinicia Wetlands.
+La solución robusta es bloquear al pinger directamente con iptables. **IMPORTANTE:**
+el tráfico hacia contenedores Docker NO pasa por la cadena `INPUT` sino por `FORWARD`
+(específicamente la sub-cadena `DOCKER-USER`). Una regla en `INPUT` no bloquea
+nada y da una falsa sensación de seguridad.
 
 ```bash
-# En el VPS
-docker stop luanti-voxelibre-server
+# Bloquear el pinger de servers.luanti.org al puerto 30000 (Wetlands)
+sudo iptables -I DOCKER-USER -p udp -s 93.190.143.88 --dport 30000 -j DROP
 
-# Esperar hasta que el fantasma desaparezca del server list (poll cada 30s)
+# Guardar para que sobreviva reinicios del VPS
+sudo sh -c 'iptables-save > /etc/iptables/rules.v4'
+
+# Esperar hasta que el fantasma expire del server list
 until ! curl -s 'https://servers.luanti.org/list' | python3 -c '
 import sys, json
 entries = [s for s in json.load(sys.stdin).get("list", [])
            if "gabrielpantoja" in s.get("address","") and s.get("port") == 30000]
 sys.exit(0 if entries else 1)
-'; do echo "fantasma presente, esperando..."; sleep 30; done; echo "FANTASMA ELIMINADO"
-
-# Reiniciar Wetlands
-docker start luanti-voxelibre-server
+'; do echo "fantasma presente, esperando..."; sleep 60; done; echo "GHOST ELIMINADO"
 
 # Verificar: debe haber exactamente 1 entrada (Valdivia en :30001)
 curl -s 'https://servers.luanti.org/list' | python3 -c '
@@ -419,11 +421,12 @@ for s in json.load(sys.stdin).get("list", []):
 '
 ```
 
-⚠️ NO uses iptables para esto. El pinger de servers.luanti.org usa conexiones
-TCP/HTTP, no UDP, para verificar liveness — bloquear el UDP en el firewall no
-impide el refresco. Detener el contenedor es la única forma confiable.
+Esta regla es **permanente** — bloquea al pinger de forma indefinida, lo que
+significa que **el fantasma no puede re-crearse** aunque el override de Valdivia
+fallara en el futuro.
 
-**Estado**: resuelto definitivamente el 2026-07-03 con el procedimiento anterior.
+**Estado**: resuelto definitivamente el 2026-07-03. Regla activa en
+`/etc/iptables/rules.v4` del VPS Oracle.
 
 ---
 
@@ -479,5 +482,6 @@ El fantasma se crea cuando el contenedor Valdivia anuncia en :30000 además de :
 | 2026-06-29 | Documentación de este bug (este archivo) |
 | 2026-06-29 | Diagnóstico SSH avanzado: se descubre que la entrada fantasma `:30000` v=5.13.0 fue creada desde la IP del VPS anterior (DigitalOcean). No se puede borrar desde Oracle porque la API usa `request.remote_addr` como llave primaria. Se agrega sección de contacto a mantenedores. |
 | 2026-06-29 | Confirmado por `sfan5` (mantenedor) en [issue #75](https://github.com/luanti-org/serverlist/issues/75): `PURGE_TIME = 5 minutos`. La entrada fantasma expiró sola al dejar de anunciar el VPS anterior. Bug completamente resuelto. |
-| 2026-07-03 | El fantasma reaparece (v5.13.0 en :30000). Diagnóstico: `servers.luanti.org` tiene un background pinger que usa el dominio del `address` field, no la IP original. El dominio apunta al nuevo VPS Oracle donde Wetlands responde → `updateTime` se refresca indefinidamente. La entrada de 2026-06-29 estaba incompleta. |
-| 2026-07-03 | Fix: se detiene Wetlands temporalmente, el pinger falla, el fantasma expira. Se reinicia Wetlands. Resultado: 1 sola entrada en el server list (Valdivia :30001 v5.16.1). Se corrige la documentación con la causa real y el procedimiento correcto. |
+| 2026-07-03 | El fantasma reaparece (v5.13.0 en :30000). Diagnóstico: `servers.luanti.org` tiene un background pinger UDP desde 93.190.143.88 que usa el dominio `address` field. Wetlands responde → ghost se refresca indefinidamente. |
+| 2026-07-03 | Error: regla iptables puesta en cadena `INPUT` (inefectiva — tráfico Docker va por `FORWARD`/`DOCKER-USER`). |
+| 2026-07-03 | Fix definitivo: regla `DROP` en `DOCKER-USER` para UDP de 93.190.143.88 a :30000. Guardada en `/etc/iptables/rules.v4`. Ghost expiró inmediatamente. Resultado final: 1 sola entrada (Valdivia :30001 v5.16.1). |
