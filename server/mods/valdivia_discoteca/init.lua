@@ -28,22 +28,24 @@ local COLLISIONBOX = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3}  -- del registry humano
 -- Skins validos para el modelo humano (UV 64x32 de player skin).
 -- Servidos por mcl_custom_world_skins/_world_folder_media desde server/skins/.
 local DJ_SKIN = "wetlands_npc_mandalorian.png"  -- casco = look de DJ
+-- Skins convertidos a 64x32 (crop del top-half de los originales 64x64 de Minecraft).
+-- Guardados en textures/ de este mod para evitar rutas con caracteres especiales.
 local DANCER_SKINS = {
     -- Rave/fiesta
-    "2025_06_30_rave-2-0-23369634.png",
-    "2026_07_02_rave-24164935.png",
-    "2026_06_02_h0g-b00n-rave-bunny-24094815.png",
+    "valdivia_discoteca_dancer_rave1.png",
+    "valdivia_discoteca_dancer_rave2.png",
+    "valdivia_discoteca_dancer_bunny.png",
     -- Coloridos/festivos
-    "2026_06_30_summer-gala-24161243.png",
-    "2026_07_01_flourish---sf8-24162261.png",
-    "2026_06_09_pinkie-pie----24110364.png",
-    "2026_06_23_hacker-nontesie-24144720.png",
-    "2026_07_02_--firecracker----barebones---24166823.png",
+    "valdivia_discoteca_dancer_summer.png",
+    "valdivia_discoteca_dancer_flourish.png",
+    "valdivia_discoteca_dancer_pinkie.png",
+    "valdivia_discoteca_dancer_yellow.png",
+    "valdivia_discoteca_dancer_firecracker.png",
     -- Urbano/hipster
-    "2023_01_31_hipster-lance-21291891.png",
-    "2026_06_26_hipster-24151100.png",
-    "2024_06_19_indie-boy-22622590.png",
-    -- Clasicos (NPCs de Wetlands que se mezclan bien)
+    "valdivia_discoteca_dancer_hipster1.png",
+    "valdivia_discoteca_dancer_hipster2.png",
+    "valdivia_discoteca_dancer_indie.png",
+    -- Clasico
     "wetlands_npc_leia.png",
 }
 
