@@ -29,6 +29,7 @@ local JOIN_DELAY = 5      -- espera a que cargue el mundo antes del primer track
 -- de la sesion anterior se descartan (evita doble reproduccion).
 local handles = {}  -- name -> sound handle actual
 local gen = {}      -- name -> numero de generacion vigente
+local paused = {}   -- name -> true si otro mod (ej. valdivia_discoteca) pausó el ambiental
 
 local function stop_player(name)
     if handles[name] then
@@ -38,8 +39,8 @@ local function stop_player(name)
 end
 
 local function play_ambient(name, my_gen)
-    -- Cancela si la generacion cambio (el jugador salio/reentro) o ya no esta.
-    if gen[name] ~= my_gen or not minetest.get_player_by_name(name) then
+    -- Cancela si la generacion cambio (el jugador salio/reentro), no está, o está pausado.
+    if gen[name] ~= my_gen or not minetest.get_player_by_name(name) or paused[name] then
         return
     end
 
@@ -55,6 +56,24 @@ local function play_ambient(name, my_gen)
         play_ambient(name, my_gen)
     end)
 end
+
+-- API publica para que otros mods (valdivia_discoteca) puedan pausar/reanudar
+-- la musica ambiental por jugador sin romper el estado interno.
+valdivia_music = {
+    pause = function(name)
+        paused[name] = true
+        stop_player(name)
+    end,
+    resume = function(name)
+        if not paused[name] then return end
+        paused[name] = nil
+        -- Reanuda inmediatamente con la generacion vigente del jugador.
+        local my_gen = gen[name]
+        if my_gen and minetest.get_player_by_name(name) then
+            play_ambient(name, my_gen)
+        end
+    end,
+}
 
 minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()

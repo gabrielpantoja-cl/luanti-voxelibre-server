@@ -15,7 +15,7 @@ Cuando un jugador entra a la zona configurada:
 | Campo | Coordenadas | Comando usado |
 |-------|-------------|---------------|
 | `zona_min` (esquina inferior) | `(3731, -7, -2965)` | `/discoteca zona_min` |
-| `zona_max` (esquina superior) | pendiente | `/discoteca zona_max` |
+| `zona_max` (esquina superior) | `(3751, -3, -2948)` | `/discoteca zona_max` |
 | `dj_pos` (emisor de audio) | pendiente | `/discoteca dj_pos` |
 
 ---

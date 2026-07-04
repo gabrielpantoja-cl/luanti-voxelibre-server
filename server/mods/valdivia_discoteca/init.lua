@@ -199,41 +199,49 @@ end
 
 local cycle_lights  -- forward-declare para la recursion via minetest.after
 cycle_lights = function()
-    -- limpia haces del ciclo anterior
-    for _, id in ipairs(light_spawners) do
-        minetest.delete_particlespawner(id)
-    end
-    light_spawners = {}
-
     if not has_players() or not zone_ready() then
+        -- Apagar: limpiar spawners y salir
+        for _, id in ipairs(light_spawners) do
+            minetest.delete_particlespawner(id)
+        end
+        light_spawners = {}
         light_active = false
         return
     end
 
     local c = zone_center()
     local ceiling_y = ZONE.max.y - 1
-    -- 3 haces cayendo desde el techo, cada uno de un color aleatorio
-    for _ = 1, 3 do
+
+    -- CREAR nuevos spawners ANTES de borrar los viejos: sin gap visual.
+    -- 5 haces (era 3) para mayor densidad de luces.
+    local new_spawners = {}
+    for _ = 1, 5 do
         local col = DISCO_COLORS[math.random(#DISCO_COLORS)]
-        local ox = math.random(-4, 4)
-        local oz = math.random(-4, 4)
+        local ox = math.random(-5, 5)
+        local oz = math.random(-5, 5)
         local id = minetest.add_particlespawner({
-            amount = 30,
-            time = LIGHT_INTERVAL + 0.3,
-            minpos = {x = c.x + ox - 0.2, y = ceiling_y, z = c.z + oz - 0.2},
-            maxpos = {x = c.x + ox + 0.2, y = ceiling_y, z = c.z + oz + 0.2},
-            minvel = {x = -0.3, y = -4, z = -0.3},
-            maxvel = {x = 0.3,  y = -1, z = 0.3},
-            minexptime = 0.8,
-            maxexptime = 1.5,
-            minsize = 2,
-            maxsize = 5,
+            amount = 40,
+            time = LIGHT_INTERVAL + 0.5,  -- viven mas que el intervalo → overlap garantizado
+            minpos = {x = c.x + ox - 0.3, y = ceiling_y, z = c.z + oz - 0.3},
+            maxpos = {x = c.x + ox + 0.3, y = ceiling_y, z = c.z + oz + 0.3},
+            minvel = {x = -0.4, y = -5, z = -0.4},
+            maxvel = {x = 0.4,  y = -1, z = 0.4},
+            minexptime = 0.6,
+            maxexptime = 1.8,
+            minsize = 1.5,
+            maxsize = 4,
             texture = "valdivia_discoteca_light.png^[colorize:" .. col .. ":200",
             glow = 14,
             collisiondetection = false,
         })
-        table.insert(light_spawners, id)
+        table.insert(new_spawners, id)
     end
+
+    -- Borrar spawners del ciclo anterior DESPUES de crear los nuevos
+    for _, id in ipairs(light_spawners) do
+        minetest.delete_particlespawner(id)
+    end
+    light_spawners = new_spawners
 
     minetest.after(LIGHT_INTERVAL, cycle_lights)
 end
@@ -249,13 +257,17 @@ end
 -- ===========================================================================
 
 local function on_enter(name)
+    -- Silenciar musica ambiental para este jugador mientras esta en la disco.
+    if valdivia_music then valdivia_music.pause(name) end
     start_music()
     start_lights()
     minetest.chat_send_player(name, minetest.colorize("#FF66CC",
         "\u{266A} Bienvenido a la Discoteca de Valdivia \u{266A}"))
 end
 
-local function on_exit()
+local function on_exit(name)
+    -- Reanudar musica ambiental para este jugador.
+    if valdivia_music then valdivia_music.resume(name) end
     if not has_players() then
         stop_music()
         -- las luces se auto-detienen en el proximo cycle_lights (has_players()==false)
@@ -286,7 +298,7 @@ minetest.register_globalstep(function(dtime)
             on_enter(name)
         elseif not inside and was then
             players_in_disco[name] = nil
-            on_exit()
+            on_exit(name)
         end
     end
 end)
@@ -296,7 +308,7 @@ minetest.register_on_leaveplayer(function(player)
     local name = player:get_player_name()
     if players_in_disco[name] then
         players_in_disco[name] = nil
-        on_exit()
+        on_exit(name)
     end
 end)
 
