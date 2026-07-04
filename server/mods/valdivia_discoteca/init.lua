@@ -1,8 +1,9 @@
 -- valdivia_discoteca: discoteca interactiva en la ciudad de Valdivia (30001)
 --
--- Al entrar a la zona configurada, arranca musica posicional en bucle, se
+-- Al entrar a la zona configurada, arranca musica per-player en bucle, se
 -- encienden luces de colores sobre la pista y (si el admin los coloco) un DJ
--- y varios bailarines animan el lugar. Todo se apaga cuando el ultimo jugador
+-- y varios bailarines con coreografias (pasos laterales, saltos, agachadas,
+-- brazos arriba) animan el lugar. Todo se apaga cuando el ultimo jugador
 -- sale de la zona.
 --
 -- El modelo humano y los skins provienen de wetlands_npcs; los tracks de
@@ -20,9 +21,17 @@ local storage = minetest.get_mod_storage()
 -- valdivia_discoteca/sounds/ y cambiar esta constante.
 local MUSIC_TRACK = "wetlands_music_groovy_goblins"
 local MUSIC_GAIN = 0.9
-local POLL_INTERVAL = 1.0         -- cada cuanto se revisa la posicion del jugador
+local POLL_INTERVAL = 0.5         -- cada cuanto se revisa la posicion del jugador
 local LIGHT_INTERVAL = 2.0        -- cada cuanto cambian de color las luces
 local COLLISIONBOX = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3}  -- del registry humano
+
+-- Colchon vertical del AABB de la zona. get_pos() devuelve los PIES del
+-- jugador, que al caminar por el piso quedan ~0.5 nodos por debajo del y
+-- redondeado que guardo /discoteca zona_min (por eso antes habia que saltar o
+-- subirse a la mesa del DJ para activar la musica). El colchon de arriba
+-- ademas evita que un salto corte el stream.
+local ZONE_Y_PAD_BELOW = 2
+local ZONE_Y_PAD_ABOVE = 3
 
 -- Skins validos para el modelo humano (UV 64x32 de player skin).
 -- Servidos por mcl_custom_world_skins/_world_folder_media desde server/skins/.
@@ -48,14 +57,80 @@ local DANCER_SKINS = {
     "wetlands_npc_leia.png",
 }
 
--- Estilos de baile: rangos de frames del modelo humano (wetlands_npc_human.b3d).
---   sit 81-160 -> rebote; walk 168-187 -> pasos en el sitio; mine 189-198 -> brazos.
-local DANCE_STYLES = {
-    { name = "rebote", frames = {81, 160},  speed = 30 },
-    { name = "pasos",  frames = {168, 187}, speed = 45 },
-    { name = "brazos", frames = {189, 198}, speed = 30 },
+-- Rangos de frames del modelo humano (wetlands_npc_human.b3d = mcl_armor_character.b3d).
+local ANIMS = {
+    stand     = { frames = {0, 79},    speed = 30 },
+    sit       = { frames = {81, 160},  speed = 30 },
+    walk      = { frames = {168, 187}, speed = 45 },
+    mine      = { frames = {189, 198}, speed = 35 },
+    walk_mine = { frames = {200, 219}, speed = 45 },
 }
 local DJ_ANIM = { frames = {189, 198}, speed = 25 }  -- brazo oscilando en la consola
+
+-- Poses via bone override (radianes). El modelo no tiene frames de sneak:
+-- VoxeLibre agacha al jugador rotando Body_Control, aca hacemos lo mismo.
+local BODY_CROUCH = {x = 0.5, y = 0, z = 0}          -- torso inclinado ~29 grados
+local ARM_UP_R    = {x = math.pi * 0.95, y = 0, z = 0.2}   -- brazo derecho arriba
+local ARM_UP_L    = {x = math.pi * 0.95, y = 0, z = -0.2}  -- brazo izquierdo arriba
+
+local JUMP_GRAVITY = 14  -- saltos cortos y rapidos (arco = g*dur^2/8)
+
+-- Coreografias: cada rutina es una lista de pasos que se repite en bucle.
+-- Campos por paso:
+--   anim   = clave en ANIMS
+--   dur    = duracion en segundos
+--   at     = {x,z} donde TERMINA el paso, relativo al punto donde se coloco el
+--            bailarin y a su orientacion inicial (x = derecha+, z = adelante+).
+--            El bailarin se desliza hacia ahi durante el paso (autocorrige deriva).
+--   crouch = true -> agachado (torso inclinado) durante el paso
+--   arm    = "right" | "left" | "both" -> brazo(s) levantado(s)
+--   jump   = true -> un salto que dura todo el paso
+--   turn   = radianes que gira al iniciar el paso (giro seco, estilo baile)
+-- Las rutinas con 'at' necesitan ~1 nodo libre alrededor del bailarin.
+local DANCE_ROUTINES = {
+    -- paso agachado a la izquierda, se para con brazos arriba, agachado a la derecha
+    { name = "agachadito", steps = {
+        { anim = "walk",  dur = 0.9, at = {x = -0.8, z = 0}, crouch = true },
+        { anim = "stand", dur = 0.5, at = {x = -0.8, z = 0}, arm = "both" },
+        { anim = "walk",  dur = 0.9, at = {x = 0.8, z = 0}, crouch = true },
+        { anim = "stand", dur = 0.5, at = {x = 0.8, z = 0}, arm = "both" },
+    }},
+    -- salta levantando una mano, alternando derecha e izquierda
+    { name = "saltarin", steps = {
+        { anim = "stand", dur = 0.6, jump = true, arm = "right" },
+        { anim = "mine",  dur = 0.4 },
+        { anim = "stand", dur = 0.6, jump = true, arm = "left" },
+        { anim = "mine",  dur = 0.4 },
+    }},
+    -- gira en cuartos de vuelta dando pasitos y cierra el giro con un salto
+    { name = "girador", steps = {
+        { anim = "walk", dur = 0.5, turn = math.pi / 2 },
+        { anim = "walk", dur = 0.5, turn = math.pi / 2 },
+        { anim = "walk", dur = 0.5, turn = math.pi / 2 },
+        { anim = "walk_mine", dur = 0.7, turn = math.pi / 2, jump = true, arm = "both" },
+    }},
+    -- adelante y atras, pasando agachado por el centro
+    { name = "vaiven", steps = {
+        { anim = "walk", dur = 0.8, at = {x = 0, z = 0.8} },
+        { anim = "walk", dur = 0.8, at = {x = 0, z = 0}, crouch = true },
+        { anim = "walk_mine", dur = 0.8, at = {x = 0, z = -0.8}, arm = "right" },
+        { anim = "walk", dur = 0.8, at = {x = 0, z = 0}, crouch = true },
+    }},
+    -- dos saltos con las dos manos arriba y una bajadita agachado
+    { name = "manos_arriba", steps = {
+        { anim = "stand", dur = 0.5, jump = true, arm = "both" },
+        { anim = "stand", dur = 0.5, jump = true, arm = "both" },
+        { anim = "mine",  dur = 0.8, crouch = true },
+        { anim = "stand", dur = 0.4 },
+    }},
+}
+
+local ROUTINE_BY_NAME = {}
+local ROUTINE_NAMES = {}
+for i, r in ipairs(DANCE_ROUTINES) do
+    ROUTINE_BY_NAME[r.name] = i
+    ROUTINE_NAMES[#ROUTINE_NAMES + 1] = r.name
+end
 
 -- Colores de las luces de discoteca.
 local DISCO_COLORS = {"#FF0044", "#00AAFF", "#00FF88", "#FF8800", "#AA00FF", "#FFEE00"}
@@ -139,6 +214,75 @@ minetest.register_entity(modname .. ":dj", {
     on_punch = function() return true end,  -- indestructible (anti-grief)
 })
 
+-- Aplica las poses de hueso de un paso (agachado / brazos arriba).
+-- absolute=true hace que el override le gane a la animacion de frames en ese
+-- hueso; pasar {} lo limpia y la animacion recupera el control.
+local function apply_pose(obj, step)
+    if not obj.set_bone_override then return end  -- engine < 5.9: baila sin poses
+    local function rot(bone, vec)
+        if vec then
+            obj:set_bone_override(bone, {
+                rotation = {vec = vec, absolute = true, interpolation = 0.2},
+            })
+        else
+            obj:set_bone_override(bone, {})
+        end
+    end
+    rot("Body_Control", step.crouch and BODY_CROUCH or nil)
+    rot("Arm_Right_Pitch_Control", (step.arm == "right" or step.arm == "both") and ARM_UP_R or nil)
+    rot("Arm_Left_Pitch_Control", (step.arm == "left" or step.arm == "both") and ARM_UP_L or nil)
+end
+
+-- Punto 'at' de un paso (coords locales al yaw inicial) -> coords de mundo.
+local function step_target(self, at)
+    local cy, sy = math.cos(self._yaw), math.sin(self._yaw)
+    return {
+        x = self._anchor.x + at.x * cy - at.z * sy,
+        z = self._anchor.z + at.x * sy + at.z * cy,
+    }
+end
+
+local function begin_step(self, idx)
+    local step = self._routine.steps[idx]
+    self._step_i = idx
+    self._t = 0
+    local obj = self.object
+
+    if step.turn then
+        self._yaw_off = (self._yaw_off + step.turn) % (2 * math.pi)
+        obj:set_yaw(self._yaw + self._yaw_off)
+    end
+
+    -- Re-fijar la animacion en cada paso la sincroniza con el "beat" de la rutina
+    local a = ANIMS[step.anim]
+    obj:set_animation({x = a.frames[1], y = a.frames[2]}, a.speed, 0, true)
+    apply_pose(obj, step)
+
+    local pos = obj:get_pos()
+    if not pos then return end
+
+    -- Cada paso arranca con los pies en el y del anclaje (los saltos despegan
+    -- del suelo y el desfase de un tick al aterrizar no se acumula)
+    if pos.y ~= self._anchor.y then
+        obj:set_pos({x = pos.x, y = self._anchor.y, z = pos.z})
+        pos.y = self._anchor.y
+    end
+
+    local vx, vz = 0, 0
+    if step.at then
+        local target = step_target(self, step.at)
+        vx = (target.x - pos.x) / step.dur
+        vz = (target.z - pos.z) / step.dur
+    end
+    local vy, ay = 0, 0
+    if step.jump then
+        ay = -JUMP_GRAVITY
+        vy = JUMP_GRAVITY * step.dur / 2  -- arco simetrico: despega y aterriza en el paso
+    end
+    obj:set_velocity({x = vx, y = vy, z = vz})
+    obj:set_acceleration({x = 0, y = ay, z = 0})
+end
+
 minetest.register_entity(modname .. ":dancer", {
     initial_properties = {
         visual = "mesh",
@@ -157,15 +301,31 @@ minetest.register_entity(modname .. ":dancer", {
     on_activate = function(self, staticdata)
         local data = (staticdata ~= "") and minetest.deserialize(staticdata) or {}
         self._skin = data.skin or DANCER_SKINS[math.random(#DANCER_SKINS)]
-        self._style = data.style or math.random(#DANCE_STYLES)
+        self._style = data.style or math.random(#DANCE_ROUTINES)
+        if self._style > #DANCE_ROUTINES then  -- staticdata de una version anterior
+            self._style = math.random(#DANCE_ROUTINES)
+        end
         self._yaw = data.yaw or 0
+        self._anchor = data.anchor or vector.new(self.object:get_pos())
+        self._routine = DANCE_ROUTINES[self._style]
+        self._yaw_off = 0
         self.object:set_properties({textures = {self._skin, "blank.png", "blank.png"}})
         self.object:set_yaw(self._yaw)
-        local s = DANCE_STYLES[self._style]
-        self.object:set_animation({x = s.frames[1], y = s.frames[2]}, s.speed, 0, true)
+        begin_step(self, 1)
+    end,
+    on_step = function(self, dtime)
+        if not self._routine then return end
+        self._t = self._t + dtime
+        local step = self._routine.steps[self._step_i]
+        if self._t >= step.dur then
+            begin_step(self, self._step_i % #self._routine.steps + 1)
+        end
     end,
     get_staticdata = function(self)
-        return minetest.serialize({skin = self._skin, style = self._style, yaw = self._yaw})
+        return minetest.serialize({
+            skin = self._skin, style = self._style,
+            yaw = self._yaw, anchor = self._anchor,
+        })
     end,
     on_punch = function() return true end,  -- indestructible (anti-grief)
 })
@@ -297,7 +457,8 @@ minetest.register_globalstep(function(dtime)
         local pos = p:get_pos()
         local inside =
             pos.x >= ZONE.min.x and pos.x <= ZONE.max.x and
-            pos.y >= ZONE.min.y and pos.y <= ZONE.max.y and
+            pos.y >= ZONE.min.y - ZONE_Y_PAD_BELOW and
+            pos.y <= ZONE.max.y + ZONE_Y_PAD_ABOVE and
             pos.z >= ZONE.min.z and pos.z <= ZONE.max.z
         local was = players_in_disco[name]
         if inside and not was then
@@ -336,7 +497,7 @@ local function count_disco_entities_near(pos, radius)
 end
 
 minetest.register_chatcommand("discoteca", {
-    params = "zona_min | zona_max | dj_pos | info | dj | bailarin | borrar | limpiar",
+    params = "zona_min | zona_max | dj_pos | info | dj | bailarin [estilo] | borrar | limpiar",
     description = "Configura la discoteca de Valdivia",
     privs = {server = true},
     func = function(name, param)
@@ -380,14 +541,28 @@ minetest.register_chatcommand("discoteca", {
             return true, "DJ colocado. Mira hacia donde quieres que apunte antes de invocarlo."
 
         elseif sub == "bailarin" then
+            local estilo = param:match("^%S+%s+(%S+)")
+            local style_i = nil
+            if estilo then
+                style_i = ROUTINE_BY_NAME[estilo]
+                if not style_i then
+                    return false, "Estilo desconocido. Estilos: " .. table.concat(ROUTINE_NAMES, ", ")
+                end
+            end
             local pos = player:get_pos()
             local obj = minetest.add_entity(pos, modname .. ":dancer")
             if obj then
                 local le = obj:get_luaentity()
                 le._yaw = player:get_look_horizontal()
+                if style_i then
+                    le._style = style_i
+                    le._routine = DANCE_ROUTINES[style_i]
+                end
                 obj:set_yaw(le._yaw)
+                begin_step(le, 1)  -- reinicia la rutina con el yaw/estilo definitivos
             end
-            return true, "Bailarin colocado (skin y estilo aleatorios)."
+            return true, "Bailarin colocado (estilo " .. (estilo or "aleatorio") ..
+                "). Estilos: " .. table.concat(ROUTINE_NAMES, ", ")
 
         elseif sub == "borrar" then
             -- Elimina la entidad de discoteca mas cercana al jugador.
@@ -422,7 +597,7 @@ minetest.register_chatcommand("discoteca", {
             return true, "Eliminadas " .. removed .. " entidades de discoteca en 30m."
 
         else
-            return false, "Uso: /discoteca <zona_min|zona_max|dj_pos|info|dj|bailarin|borrar|limpiar>"
+            return false, "Uso: /discoteca <zona_min|zona_max|dj_pos|info|dj|bailarin [estilo]|borrar|limpiar>"
         end
     end,
 })
