@@ -355,9 +355,7 @@ minetest.register_chatcommand("discoteca", {
 
         elseif sub == "dj_pos" then
             DJ_POS = ppos; save_config()
-            -- si la musica esta sonando, reinicia el emisor en la nueva posicion
-            if music_handle then stop_music(); minetest.after(1.6, start_music) end
-            return true, "Emisor de audio (DJ) fijado en " .. minetest.pos_to_string(ppos)
+            return true, "Posicion del DJ fijada en " .. minetest.pos_to_string(ppos)
 
         elseif sub == "info" then
             local lines = {"=== Discoteca de Valdivia ==="}
