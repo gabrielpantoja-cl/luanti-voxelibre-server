@@ -373,37 +373,90 @@ Aunque el ping solo mide latencia, el servidor list **actualiza `updateTime`**
 de la entrada, y el uptime reportado es el que el servidor (Wetlands) devuelve
 al responder — de ahí que avance sincronizado.
 
-### Solución: esperar expiración automática (5 minutos)
+### Por qué el fantasma NO expira solo (mecanismo real — corregido 2026-07-03)
 
-Confirmado por `sfan5` (mantenedor de `servers.luanti.org`) vía
-[issue #75](https://github.com/luanti-org/serverlist/issues/75):
+La respuesta de `sfan5` es correcta en teoría, pero incompleta para nuestro caso:
 
 > *"Server entries that aren't updated every 5 minutes automatically disappear,
 > so all you need to do is stop the old Luanti server."*
 
-El servidor list purga entradas viejas según la configuración `PURGE_TIME`:
+El problema: `servers.luanti.org` tiene un **background pinger** que verifica
+liveness de cada entrada usando el campo `address` del anuncio — es decir, el
+**dominio** `luanti.gabrielpantoja.cl`, no la IP del VPS original que hizo el
+anuncio. Cuando el dominio apunta al nuevo VPS Oracle, el pinger llega a
+**Wetlands (puerto 30000)**, que responde, y `updateTime` del fantasma se
+refresca. El fantasma nunca expira mientras exista un servidor respondiendo en
+`luanti.gabrielpantoja.cl:30000`.
 
-```python
-def purgeOld(self):
-    cutoff = int(time.time()) - app.config["PURGE_TIME"]
-    self.list = [server for server in self.list if cutoff <= server.updateTime]
+La solución es hacer que ese dominio+puerto no responda por ≥5 minutos.
+
+### Solución: detener temporalmente el servidor en :30000
+
+La forma más simple y segura: parar el contenedor que responde en :30000 (Wetlands)
+durante 5-7 minutos. El pinger falla, el fantasma expira, se reinicia Wetlands.
+
+```bash
+# En el VPS
+docker stop luanti-voxelibre-server
+
+# Esperar hasta que el fantasma desaparezca del server list (poll cada 30s)
+until ! curl -s 'https://servers.luanti.org/list' | python3 -c '
+import sys, json
+entries = [s for s in json.load(sys.stdin).get("list", [])
+           if "gabrielpantoja" in s.get("address","") and s.get("port") == 30000]
+sys.exit(0 if entries else 1)
+'; do echo "fantasma presente, esperando..."; sleep 30; done; echo "FANTASMA ELIMINADO"
+
+# Reiniciar Wetlands
+docker start luanti-voxelibre-server
+
+# Verificar: debe haber exactamente 1 entrada (Valdivia en :30001)
+curl -s 'https://servers.luanti.org/list' | python3 -c '
+import sys, json
+for s in json.load(sys.stdin).get("list", []):
+    if "gabrielpantoja" in s.get("address",""):
+        print(s.get("name"), "->", s.get("address"), ":", s.get("port"), "v=", s.get("version"))
+'
 ```
 
-En producción `PURGE_TIME = 5 minutos`. Una vez que el VPS anterior
-(DigitalOcean) dejó de correr y de enviar anuncios, la entrada fantasma
-expiró automáticamente en ~5 minutos. No fue necesaria intervención manual.
+⚠️ NO uses iptables para esto. El pinger de servers.luanti.org usa conexiones
+TCP/HTTP, no UDP, para verificar liveness — bloquear el UDP en el firewall no
+impide el refresco. Detener el contenedor es la única forma confiable.
 
-**Estado**: resuelto en 2026-06-29 al dejar de correr el VPS anterior.
+**Estado**: resuelto definitivamente el 2026-07-03 con el procedimiento anterior.
 
 ---
 
-## Contactar a mantenedores de `servers.luanti.org`
+## Cómo evitar que vuelva a ocurrir
 
-~~Si la entrada fantasma no expira en 48h, abrir un issue.~~ **Ya no necesario.**
+El fantasma se crea cuando el contenedor Valdivia anuncia en :30000 además de :30001
+(el bug del `--port 30000` hardcodeado). El override evita esto. Para que el fantasma
+**nunca se re-cree**:
 
-Contactamos a los mantenedores en
-[luanti-org/serverlist#75](https://github.com/luanti-org/serverlist/issues/75)
-y confirmaron que `PURGE_TIME = 5 minutos`. La entrada expiró automáticamente.
+1. **El bind mount del override DEBE estar siempre en `docker-compose.yml`** para
+   `luanti-valdivia` (y cualquier contenedor con puerto ≠ 30000 que tenga
+   `server_announce = true`). El override ya está en git — no lo elimines.
+
+2. **Cuando hagas cambios en `docker-compose.yml` y necesites recrear el contenedor**,
+   verifica que el bind mount del override está presente antes de `--force-recreate`:
+   ```bash
+   grep -A5 "container-overrides" docker-compose.yml
+   ```
+
+3. **Verificación post-deploy obligatoria** (agrega a tu checklist de deployment):
+   ```bash
+   # Confirmar que el proceso solo tiene UN --port (el correcto)
+   docker exec luanti-valdivia-server ps aux | grep luantiserver | grep -v grep
+   # Esperado: luantiserver --config ... --worldname valdivia --port 30001  (SIN --port 30000 antes)
+
+   # Confirmar que solo hay 1 socket UDP
+   docker exec luanti-valdivia-server cat /proc/net/udp6 | grep -E '7531'
+   # Esperado: una sola línea :::7531
+   ```
+
+4. **Si ves duplicado en el server list**, ejecuta el procedimiento de esta doc
+   (sección anterior: "Solución: detener temporalmente..."). El fantasma expira en
+   ≤5 minutos de inactividad en el dominio+puerto.
 
 ---
 
@@ -426,3 +479,5 @@ y confirmaron que `PURGE_TIME = 5 minutos`. La entrada expiró automáticamente.
 | 2026-06-29 | Documentación de este bug (este archivo) |
 | 2026-06-29 | Diagnóstico SSH avanzado: se descubre que la entrada fantasma `:30000` v=5.13.0 fue creada desde la IP del VPS anterior (DigitalOcean). No se puede borrar desde Oracle porque la API usa `request.remote_addr` como llave primaria. Se agrega sección de contacto a mantenedores. |
 | 2026-06-29 | Confirmado por `sfan5` (mantenedor) en [issue #75](https://github.com/luanti-org/serverlist/issues/75): `PURGE_TIME = 5 minutos`. La entrada fantasma expiró sola al dejar de anunciar el VPS anterior. Bug completamente resuelto. |
+| 2026-07-03 | El fantasma reaparece (v5.13.0 en :30000). Diagnóstico: `servers.luanti.org` tiene un background pinger que usa el dominio del `address` field, no la IP original. El dominio apunta al nuevo VPS Oracle donde Wetlands responde → `updateTime` se refresca indefinidamente. La entrada de 2026-06-29 estaba incompleta. |
+| 2026-07-03 | Fix: se detiene Wetlands temporalmente, el pinger falla, el fantasma expira. Se reinicia Wetlands. Resultado: 1 sola entrada en el server list (Valdivia :30001 v5.16.1). Se corrige la documentación con la causa real y el procedimiento correcto. |
