@@ -20,7 +20,6 @@ local storage = minetest.get_mod_storage()
 -- valdivia_discoteca/sounds/ y cambiar esta constante.
 local MUSIC_TRACK = "wetlands_music_groovy_goblins"
 local MUSIC_GAIN = 0.9
-local MAX_HEAR_DISTANCE = 30      -- radio audible del emisor (metros)
 local POLL_INTERVAL = 1.0         -- cada cuanto se revisa la posicion del jugador
 local LIGHT_INTERVAL = 2.0        -- cada cuanto cambian de color las luces
 local COLLISIONBOX = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3}  -- del registry humano
@@ -172,31 +171,29 @@ minetest.register_entity(modname .. ":dancer", {
 })
 
 -- ===========================================================================
--- MUSICA POSICIONAL EN BUCLE
+-- MUSICA POR JUGADOR (to_player = volumen constante en toda la zona)
 -- ===========================================================================
+-- Cada jugador que entra recibe su propio stream en bucle a volumen fijo,
+-- independientemente de donde este dentro del salon. No hay atenuacion por
+-- distancia. Al salir, el stream hace fade-out y se detiene.
 
-local music_handle = nil
+local player_handles = {}  -- name -> sound handle activo
 
-local function start_music()
-    if music_handle then return end
-    local pos = emitter_pos()
-    if not pos then return end
-    music_handle = minetest.sound_play(MUSIC_TRACK, {
-        pos = pos,
+local function start_music_for(name)
+    if player_handles[name] then return end
+    player_handles[name] = minetest.sound_play(MUSIC_TRACK, {
+        to_player = name,
         loop = true,
         gain = MUSIC_GAIN,
-        max_hear_distance = MAX_HEAR_DISTANCE,
     })
 end
 
-local function stop_music()
-    if not music_handle then return end
-    local h = music_handle
-    music_handle = nil
-    minetest.sound_fade(h, -0.8, 0.0)         -- fade suave
-    minetest.after(1.5, function()
-        minetest.sound_stop(h)                 -- corte definitivo tras el fade
-    end)
+local function stop_music_for(name)
+    if not player_handles[name] then return end
+    local h = player_handles[name]
+    player_handles[name] = nil
+    minetest.sound_fade(h, -0.8, 0.0)
+    minetest.after(1.5, function() minetest.sound_stop(h) end)
 end
 
 -- ===========================================================================
@@ -271,21 +268,17 @@ end
 -- ===========================================================================
 
 local function on_enter(name)
-    -- Silenciar musica ambiental para este jugador mientras esta en la disco.
     if valdivia_music then valdivia_music.pause(name) end
-    start_music()
+    start_music_for(name)
     start_lights()
     minetest.chat_send_player(name, minetest.colorize("#FF66CC",
         "\u{266A} Bienvenido a la Discoteca de Valdivia \u{266A}"))
 end
 
 local function on_exit(name)
-    -- Reanudar musica ambiental para este jugador.
+    stop_music_for(name)
     if valdivia_music then valdivia_music.resume(name) end
-    if not has_players() then
-        stop_music()
-        -- las luces se auto-detienen en el proximo cycle_lights (has_players()==false)
-    end
+    -- Las luces se auto-detienen en el proximo cycle_lights cuando has_players()==false
 end
 
 -- ===========================================================================
@@ -320,9 +313,10 @@ end)
 -- limpia el estado si un jugador se desconecta dentro de la disco
 minetest.register_on_leaveplayer(function(player)
     local name = player:get_player_name()
+    stop_music_for(name)  -- siempre detiene, sea o no que estaba en la disco
     if players_in_disco[name] then
         players_in_disco[name] = nil
-        on_exit(name)
+        if valdivia_music then valdivia_music.resume(name) end
     end
 end)
 
@@ -370,8 +364,11 @@ minetest.register_chatcommand("discoteca", {
             lines[#lines+1] = "Zona min: " .. (ZONE.min and minetest.pos_to_string(ZONE.min) or "(sin fijar)")
             lines[#lines+1] = "Zona max: " .. (ZONE.max and minetest.pos_to_string(ZONE.max) or "(sin fijar)")
             lines[#lines+1] = "Emisor DJ: " .. (DJ_POS and minetest.pos_to_string(DJ_POS) or "(usa centro de zona)")
-            lines[#lines+1] = "Jugadores dentro: " .. tostring((function() local c=0 for _ in pairs(players_in_disco) do c=c+1 end return c end)())
-            lines[#lines+1] = "Musica activa: " .. tostring(music_handle ~= nil)
+            local count = 0
+            local names = {}
+            for n in pairs(players_in_disco) do count = count + 1; names[#names+1] = n end
+            lines[#lines+1] = "Jugadores dentro: " .. count .. (count > 0 and (" (" .. table.concat(names, ", ") .. ")") or "")
+            lines[#lines+1] = "Streams de musica activos: " .. (function() local c=0 for _ in pairs(player_handles) do c=c+1 end return c end)()
             return true, table.concat(lines, "\n")
 
         elseif sub == "dj" then
