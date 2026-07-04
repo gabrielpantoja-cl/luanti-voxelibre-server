@@ -340,7 +340,7 @@ local function count_disco_entities_near(pos, radius)
 end
 
 minetest.register_chatcommand("discoteca", {
-    params = "zona_min | zona_max | dj_pos | info | dj | bailarin | limpiar",
+    params = "zona_min | zona_max | dj_pos | info | dj | bailarin | borrar | limpiar",
     description = "Configura la discoteca de Valdivia",
     privs = {server = true},
     func = function(name, param)
@@ -392,6 +392,28 @@ minetest.register_chatcommand("discoteca", {
             end
             return true, "Bailarin colocado (skin y estilo aleatorios)."
 
+        elseif sub == "borrar" then
+            -- Elimina la entidad de discoteca mas cercana al jugador.
+            local pos = player:get_pos()
+            local nearest, nearest_dist = nil, math.huge
+            for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 20)) do
+                local le = obj:get_luaentity()
+                if le and (le.name == modname .. ":dj" or le.name == modname .. ":dancer") then
+                    local d = vector.distance(pos, obj:get_pos())
+                    if d < nearest_dist then
+                        nearest, nearest_dist = obj, d
+                    end
+                end
+            end
+            if nearest then
+                local le = nearest:get_luaentity()
+                local tipo = le.name == modname .. ":dj" and "DJ" or "Bailarin"
+                nearest:remove()
+                return true, tipo .. " eliminado (a " .. math.floor(nearest_dist) .. "m)."
+            else
+                return false, "No hay entidades de discoteca en 20m."
+            end
+
         elseif sub == "limpiar" then
             local removed = 0
             for _, obj in ipairs(minetest.get_objects_inside_radius(player:get_pos(), 30)) do
@@ -403,7 +425,7 @@ minetest.register_chatcommand("discoteca", {
             return true, "Eliminadas " .. removed .. " entidades de discoteca en 30m."
 
         else
-            return false, "Uso: /discoteca <zona_min|zona_max|dj_pos|info|dj|bailarin|limpiar>"
+            return false, "Uso: /discoteca <zona_min|zona_max|dj_pos|info|dj|bailarin|borrar|limpiar>"
         end
     end,
 })
