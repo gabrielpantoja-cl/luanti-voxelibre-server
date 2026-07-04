@@ -1,5 +1,8 @@
 # Zombie Piglin deshabilitado — Valdivia
 
+**Estado: ✅ confirmado funcionando en producción (2026-07-04)** — el huevo de
+Zombie Piglin ya no aparece en el inventario creativo de los jugadores.
+
 Valdivia es la única ciudad de este proyecto publicada en la lista de servidores
 de Luanti (`servers.luanti.org`), y su objetivo es verse como una ciudad, no
 como el Nether. `mobs_spawn = false` ya impedía el spawn natural de hostiles,
@@ -52,6 +55,19 @@ guarda como texto plano accesible por substring, y que parchear el blob a
 mano arriesga corromper el mapblock. La vía correcta es siempre a través del
 engine (`/clearmobs`, o el mod de arriba), nunca edición binaria directa.
 
+## Pendiente: limpieza de los piglin zombie ya existentes
+
+La prevención (huevo deshabilitado) está resuelta — los jugadores **ya no
+pueden crear más**. Los zombified piglin colocados *antes* del fix siguen en
+el mapa hasta que:
+- la limpieza automática los agarre cuando algún jugador pase cerca (cada 5
+  min, silenciosa — solo loguea si `removed > 0`), o
+- un admin limpie a mano parándose cerca y corriendo `/clearmobs zombified`
+  (ver comandos abajo).
+
+No hay urgencia: no se pueden generar más, así que el problema solo se reduce
+con el tiempo, nunca vuelve a crecer.
+
 ## Comandos relacionados
 
 ```
@@ -65,3 +81,4 @@ engine (`/clearmobs`, o el mod de arriba), nunca edición binaria directa.
 |-------|--------|
 | 2026-07-04 | Diagnóstico: `map.sqlite` no permite edición directa de mobs (formato binario, no hay tabla de objetos) |
 | 2026-07-04 | Mod `valdivia_no_zombie_piglin` desplegado: huevo deshabilitado + limpieza automática cada 5 min |
+| 2026-07-04 | Confirmado en producción por Gabriel: el huevo ya no aparece en el inventario creativo. Limpieza de los ejemplares existentes queda pendiente (manual con `/clearmobs zombified`, o pasiva vía el ciclo automático) |
