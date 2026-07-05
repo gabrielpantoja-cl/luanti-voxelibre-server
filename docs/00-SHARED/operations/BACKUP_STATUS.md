@@ -1,168 +1,126 @@
-# Estado del Sistema de Backups - Wetlands Server
+# Estado del Sistema de Backups — Wetlands Server
 
-## Diagnostico (22 marzo 2026)
+**Estado: OPERATIVO** — backups locales cada 12h + offsite diario a Cloudflare R2.
+Verificado el 2026-07-05.
 
-### Arquitectura actual
+Este documento describe el sistema **real en producción**. El plan de mejora
+original (marzo 2026, que proponía Google Drive) ya se ejecutó; se implementó
+sobre **Cloudflare R2** en vez de Drive. La sección histórica está al final.
+
+## Arquitectura actual
 
 ```
-docker-compose.yml
-  backup-cron (alpine + dcron)
-    ├── Monta: ./server/worlds -> /worlds (read-only)
-    ├── Monta: ./server/backups -> /backups
-    ├── Monta: ./scripts -> /scripts (read-only)
-    ├── Cron 1: cada 12h -> backup.sh (tar.gz de /worlds)
-    └── Cron 2: 03:00 diario -> rotate-backups-container.sh
+[VPS Oracle Cloud]
+│
+├─ Contenedor  luanti-voxelibre-backup   (definido en docker-compose.yml de este repo)
+│    Alpine + dcron + sqlite + rsync
+│    ├─ Monta ./server/worlds  -> /worlds  (ro)
+│    ├─ Monta ./server/backups -> /backups
+│    ├─ Cron cada 12h (00:00 y 12:00) -> scripts/backup.sh
+│    │     · sqlite3 .backup (snapshot consistente) de map/auth de los 3 mundos
+│    │     · rsync del resto excluyendo copias .sqlite.* y artefactos -wal/-shm
+│    │     · tar.gz -> server/backups/luanti_worlds_backup_<fecha>.tar.gz  (~1.7 GB)
+│    │     · rotación local inline: conserva los últimos 8 (≈4 días)
+│    └─ Cron 03:00 -> rotate-backups-container.sh
+│
+└─ Cron del host (usuario gabriel, 08:00 UTC diario)
+     ~/vps-do/scripts/backup-luanti-offsite.sh   (vive en el repo infra/vps-oracle)
+       · toma el tar.gz más reciente de server/backups/
+       · rclone copy -> r2-backup:vps-backups-oracle/luanti/
+       · retención R2: borra objetos > 6 días
+       · notifica a Telegram ([OK] / ERROR con tail del log)
+       · logs en ~/backups/luanti/  (cron.log + offsite-<fecha>.log)
 ```
 
-### Lo bueno
+**Mundos incluidos:** `original` (Wetlands), `valdivia` y `gaelsin`, todos en el
+mismo tarball. Valdivia entra como `./valdivia/map.sqlite` + `auth.sqlite`.
 
-- Backups automatizados cada 12 horas (00:00 y 12:00)
-- Contenedor dedicado, independiente del servidor de juego
-- Rotacion automatica: mantiene ultimos 8 backups (4 dias)
-- Incluye AMBOS mundos (Wetlands + Valdivia) en un solo tar.gz
-- Disco VPS con 159 GB libres (sin presion de espacio)
-- Backups consistentes en tamano (~1 GB cada uno, ~1.2 GB con Valdivia)
+## Qué se implementó (vs. el plan de marzo)
 
-### Lo malo
+| Prioridad (marzo) | Estado | Cómo quedó |
+|-------------------|--------|-----------|
+| P1 · Backup offsite | ✅ HECHO | **Cloudflare R2** (no Google Drive) vía rclone. |
+| P2 · SQLite seguro | ✅ HECHO | `sqlite3 .backup` con `.timeout 60000`, fallback a `cp`. |
+| P4 · Notificaciones | ✅ HECHO | **Telegram** (no Discord webhook) en el script offsite. |
+| P5 · Retención offsite | ✅ HECHO | R2: 6 días (cabe en el plan gratuito de 10 GB). |
+| P3 · Verificación integridad | ⏳ PENDIENTE | Falta `tar -tzf` + `PRAGMA integrity_check` post-backup. |
+| P5 · Retención mensual | ⏳ PENDIENTE | Solo hay retención diaria (6d local-offsite); sin snapshots mensuales. |
 
-| Problema | Riesgo | Severidad |
-|----------|--------|-----------|
-| **Sin backup offsite** | Si el VPS de Oracle muere, se pierde TODO (mundo, auth, config) | CRITICO |
-| **SQLite hot-copy inseguro** | `tar` comprime mientras el servidor escribe en map.sqlite/auth.sqlite -- puede generar backups corruptos | ALTO |
-| **Sin verificacion de integridad** | No se valida que el tar.gz sea legible ni que los .sqlite sean consistentes | MEDIO |
-| **Sin notificacion de fallos** | Si el backup falla, nadie se entera (WEBHOOK_URL no configurado) | MEDIO |
-| **Retencion corta** | Solo 4 dias de historia; un problema no detectado a tiempo se pierde | BAJO |
+## Coordenadas del offsite (R2)
 
-## Plan de mejora
+| Elemento | Valor |
+|----------|-------|
+| Remoto rclone | `r2-backup:` (también existe `r2:`) |
+| Bucket | `vps-backups-oracle` |
+| Prefijo | `luanti/` |
+| Retención | 6 días (`rclone delete --min-age 6d`) |
+| Tamaño por objeto | ~1.7 GB |
+| Uso del bucket | ~10.6 GB (≈6 objetos) |
+| Credenciales | `~/.backup-credentials` (tokens R2 + Telegram) — **no** en git |
+| Config rclone | `~/.config/rclone/rclone.conf` |
+| Script | `~/vps-do/scripts/backup-luanti-offsite.sh` (repo `infra/vps-oracle`) |
 
-### Prioridad 1: Backup offsite (CRITICO)
-
-Enviar backups automaticamente a un almacenamiento externo al VPS.
-
-#### Opcion A: Google Drive via rclone (RECOMENDADA)
-
-[rclone](https://rclone.org/) es la herramienta CLI estandar para sincronizar archivos con servicios cloud. Soporta Google Drive, S3, Backblaze, etc. Es mas maduro y mantenido que alternativas como gdrive o oclaw.
-
-**Ventajas:**
-- Open source, muy estable, ampliamente usado en servidores Linux
-- Soporta Google Drive con autenticacion OAuth2
-- Puede encriptar backups antes de subir
-- Soporta bandwidth limit para no saturar la red del VPS
-- Comando simple: `rclone copy /backups gdrive:wetlands-backups/`
-
-**Setup:**
-```bash
-# 1. Instalar rclone en el VPS
-curl https://rclone.org/install.sh | sudo bash
-
-# 2. Configurar Google Drive (requiere OAuth2, interactivo la primera vez)
-rclone config
-# -> New remote -> google drive -> seguir instrucciones OAuth
-
-# 3. Probar
-rclone ls gdrive:
-
-# 4. Agregar al script de backup
-rclone copy /backups/ultimo_backup.tar.gz gdrive:wetlands-backups/ \
-  --bwlimit 5M --log-file=/var/log/rclone-backup.log
-```
-
-**Autenticacion headless (VPS sin browser):**
-- Opcion 1: Configurar rclone en la maquina local (con browser) y copiar el rclone.conf al VPS
-- Opcion 2: Usar `rclone authorize` en local y pegar el token en el VPS
-
-#### Opcion B: Backblaze B2 (alternativa economica)
-
-- 10 GB gratis, luego $0.005/GB/mes
-- rclone tambien lo soporta nativamente
-- Sin limites de API como Google Drive
-- Mas predecible para automatizacion
-
-#### Opcion C: rsync a segundo VPS
-
-- Si hubiera un segundo servidor disponible
-- No aplica actualmente (solo tenemos Oracle Cloud)
-
-#### Opcion D: GitHub Releases (emergencia)
-
-- Subir backups comprimidos como releases del repo
-- Limite: 2 GB por archivo
-- No ideal pero funciona como ultimo recurso
-
-**Decision:** Opcion A (Google Drive via rclone) es la mas practica. Gabriel ya tiene Google Drive, no tiene costo adicional, y rclone es la herramienta correcta para el trabajo.
-
-### Prioridad 2: Safe SQLite backup (ALTO)
-
-Reemplazar `tar` directo por `sqlite3 .backup` para copias consistentes:
+## Cómo verificar que está funcionando
 
 ```bash
-# Antes (inseguro):
-tar -czf backup.tar.gz -C /worlds .
+# 1. Tarballs locales recientes (deben aparecer cada 12h)
+ssh gabriel@<VPS_IP> "ls -lht /home/gabriel/luanti-voxelibre-server/server/backups/*.tar.gz | head"
 
-# Despues (seguro):
-# 1. Copiar SQLite de forma segura
-sqlite3 /worlds/original/map.sqlite ".backup /tmp/world_map.sqlite"
-sqlite3 /worlds/original/auth.sqlite ".backup /tmp/world_auth.sqlite"
-sqlite3 /worlds/valdivia/map.sqlite ".backup /tmp/valdivia_map.sqlite"
+# 2. Log del offsite diario (busca 'Upload R2 OK' y 'FIN')
+ssh gabriel@<VPS_IP> "tail -n 20 /home/gabriel/backups/luanti/cron.log"
 
-# 2. Comprimir las copias seguras + resto de archivos
-tar -czf backup.tar.gz -C /tmp world_map.sqlite world_auth.sqlite valdivia_map.sqlite
+# 3. Objetos en R2 (últimos ~6 días)
+ssh gabriel@<VPS_IP> "rclone lsl r2-backup:vps-backups-oracle/luanti/ \
+  --config /home/gabriel/.config/rclone/rclone.conf"
+
+# 4. Confirmar que el tarball CONTIENE Valdivia (no solo que existe)
+ssh gabriel@<VPS_IP> "L=\$(ls -t .../server/backups/*.tar.gz | head -1); \
+  tar tzf \"\$L\" | grep -E 'valdivia/(map|auth)\.sqlite'"
 ```
 
-**Requisito:** Instalar `sqlite3` en el contenedor de backup (`apk add sqlite`).
+## Quirks conocidos
 
-### Prioridad 3: Verificacion de integridad (MEDIO)
+- **rclone + R2 `501 NotImplemented` en el intento 1/3, éxito en el 2/3.** Es un
+  comportamiento conocido de esta versión de rclone con la API de R2: reintenta
+  con otra operación y el upload **sí** se completa. El log se ve alarmante pero
+  no es una falla real. (`rclone v1.60.1-DEV` en el VPS.)
 
-Despues de crear el backup, verificar:
+## Limpieza 2026-07-05 (causa raíz de tarballs inflados)
 
-```bash
-# Verificar que el tar.gz es valido
-tar -tzf backup.tar.gz > /dev/null 2>&1 || echo "BACKUP CORRUPTO"
+El world dir `server/worlds/valdivia/` acumulaba ~2.2 GB de copias manuales
+viejas de SQLite (`map.sqlite.backup-before-remap`, `.v4`, `.backup-20260629`,
+`.backup-before-cherry-fix`, etc.). Se colaban en **cada** tarball porque el
+`rsync` de `backup.sh` sólo excluía `*.sqlite.backup.*` (con punto) y estas eran
+`.backup-*` (con guion). Acciones:
 
-# Verificar integridad SQLite (antes de comprimir)
-sqlite3 /tmp/world_map.sqlite "PRAGMA integrity_check;" | grep -q "ok"
-```
+1. **Borradas** del world dir (valdivia: 2.7 GB → 526 MB). Los archivos vivos
+   `map.sqlite` / `auth.sqlite` quedaron intactos. No se tocó el ownership
+   (`opc:opc`), sólo `sudo rm`.
+2. **`backup.sh` endurecido**: los excludes ahora usan `*.sqlite.*` y
+   `*.sqlite-*`, que cubren cualquier copia/versión futura. Así los próximos
+   tarballs suben más limpios a R2.
 
-### Prioridad 4: Notificaciones (MEDIO)
+> Regla operativa: **no dejar copias manuales de `.sqlite` dentro de
+> `server/worlds/`**. Si necesitas un snapshot puntual, ponlo en
+> `server/backups/` o fuera del repo; el world dir solo debe tener los `.sqlite`
+> vivos.
 
-Configurar DISCORD_WEBHOOK_URL en el .env del VPS para recibir notificaciones de:
-- Backup exitoso (con tamano y duracion)
-- Backup fallido (con error)
-- Upload offsite exitoso/fallido
+## Pendientes (prioridad baja)
 
-### Prioridad 5: Retencion extendida offsite (BAJO)
-
-- Local (VPS): mantener 8 backups (4 dias) -- actual, suficiente
-- Offsite (Google Drive): mantener 30 dias, eliminar automaticamente los mas antiguos
-- Estructura en Drive:
-  ```
-  wetlands-backups/
-    daily/        # ultimos 30 dias
-    monthly/      # primer backup de cada mes, mantener 6 meses
-  ```
-
-## Workflow de backup mejorado (futuro)
-
-```
-[Cada 12 horas]
-  1. sqlite3 .backup de map.sqlite y auth.sqlite (ambos mundos)
-  2. PRAGMA integrity_check en las copias
-  3. tar.gz de las copias + world.mt + configs
-  4. Guardar en /backups/ local (rotacion 8)
-  5. rclone copy a Google Drive (con bandwidth limit)
-  6. Verificar tar.gz valido
-  7. Notificar via Discord webhook (exito/fallo)
-```
-
-## Ejecucion
-
-Este plan se ejecutara en fases:
-1. Primero: instalar rclone y configurar Google Drive (requiere sesion interactiva)
-2. Segundo: modificar backup.sh para usar sqlite3 .backup
-3. Tercero: agregar verificacion + notificaciones
-4. Cuarto: configurar retencion offsite
+- Verificación de integridad post-backup (`tar -tzf` + `PRAGMA integrity_check`).
+- Retención mensual en R2 (guardar el 1º de cada mes por 6 meses).
 
 ---
 
-*Ultima actualizacion: 22 marzo 2026*
-*Estado: DIAGNOSTICADO - Plan definido, pendiente ejecucion*
+<details>
+<summary>Histórico — diagnóstico original (22 marzo 2026)</summary>
+
+En marzo el sistema hacía solo backups locales (sin offsite), con `tar` directo
+sobre SQLite en caliente y sin notificaciones. El riesgo crítico era "si el VPS
+de Oracle muere, se pierde todo". El plan propuso Google Drive vía rclone como
+opción recomendada; en la ejecución se eligió Cloudflare R2 (S3-compatible, plan
+gratuito 10 GB, sin los límites de API de Drive) y Telegram para notificar.
+
+</details>
+
+*Última actualización: 2026-07-05 — sistema operativo y verificado.*

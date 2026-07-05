@@ -42,13 +42,18 @@ for w in $WORLDS; do
     fi
   done
 
-  # Resto de archivos (excluye los SQLite ya snapshoteados y backups viejos)
+  # Resto de archivos. Excluye:
+  #  - los .sqlite limpios (ya snapshoteados arriba con sqlite3 .backup)
+  #  - artefactos de SQLite en caliente (-journal/-wal/-shm) via *.sqlite-*
+  #  - CUALQUIER copia/version vieja de un .sqlite via *.sqlite.* — cubre
+  #    map.sqlite.backup-before-remap, map.sqlite.v4, auth.sqlite.backup.YYYYMMDD,
+  #    etc. (antes se colaban ~2 GB de estas copias en cada tarball porque el
+  #    patron viejo *.sqlite.backup.* solo matcheaba la variante con punto).
   rsync -a \
     --exclude='*.sqlite' \
-    --exclude='*.sqlite-journal' \
-    --exclude='*.sqlite-wal' \
-    --exclude='*.sqlite-shm' \
-    --exclude='*.sqlite.backup.*' \
+    --exclude='*.sqlite-*' \
+    --exclude='*.sqlite.*' \
+    --exclude='*.bak' \
     --exclude='*.bak.*' \
     "$WORLD_DIR/$w/" "$STAGING/$w/"
 done
