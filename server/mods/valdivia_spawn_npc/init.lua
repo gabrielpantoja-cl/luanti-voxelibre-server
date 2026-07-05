@@ -153,7 +153,8 @@ local function show_guia(name)
         "image[8.8,1.5;2.7,2.7;" .. DISCORD_QR .. "]" ..
         "label[8.8,4.35;" .. F("(Discord con tu telefono)") .. "]"
     minetest.show_formspec(name, FORM_GUIA, fs)
-    enviar_discord(name)  -- eco al chat para que quede el enlace disponible
+    -- Sin eco al chat: el QR + el campo copiable del panel ya entregan el enlace.
+    -- Para pedirlo por chat existe el comando /discord.
 end
 
 local function show_lugares(name)
@@ -409,14 +410,12 @@ minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
     minetest.after(3, function()
         if not minetest.get_player_by_name(name) then return end
+        -- Bienvenida minimalista: sin Discord (ya vive en el panel del Guia con
+        -- QR + enlace copiable; repetirlo en el chat es bombardeo redundante).
         minetest.chat_send_player(name, minetest.colorize(C_TITULO,
-            "Bienvenid@ a Valdivia [Chile]!"))
-        minetest.chat_send_player(name,
-            "Habla con el " .. minetest.colorize(C_INFO, "Guia") ..
-            " en el spawn (click derecho) para el mapa, las reglas y el Discord.")
-        minetest.chat_send_player(name,
-            "O escribe " .. minetest.colorize(C_OK, "/discord") ..
-            " para unirte a la comunidad.")
+            "Bienvenid@ a Valdivia [Chile]!") ..
+            " Habla con el " .. minetest.colorize(C_INFO, "Guia") ..
+            " en el spawn para orientarte.")
     end)
 end)
 

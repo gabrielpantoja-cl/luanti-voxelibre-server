@@ -14,7 +14,7 @@ Estado: **en producción** desde 2026-07-05.
 | NPC guía (spawn) | Estático e inmortal (anti-grief). Skin `indie-boy` recortado a 64×32 sobre `mcl_armor_character.b3d`. Entidad `valdivia_spawn_npc:guia`. |
 | NPC guía (Parque Catrico) | Mismo comportamiento, **skin distinto** (`summer-gala`). Entidad `valdivia_spawn_npc:guia_parque`. Permite volver a la Plaza. |
 | Panel al click derecho | **QR de Discord** (escaneable) + enlace copiable + Reglas + menú de Lugares + Cerrar. |
-| Bienvenida | Mensaje en el chat ~3 s después de entrar, apuntando al guía y a `/discord`. |
+| Bienvenida | Mensaje **breve** en el chat ~3 s después de entrar, apuntando al guía. Sin Discord (evita bombardear el chat; el enlace vive en el panel del guía). |
 | Discord | `https://discord.gg/Y3vfy2JnX` (constante `DISCORD_INVITE`). QR en `textures/valdivia_guia_discord_qr.png` (`tools/generate_discord_qr.py`). |
 
 ## Comandos
