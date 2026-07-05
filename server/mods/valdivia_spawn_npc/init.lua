@@ -24,12 +24,11 @@ local C_TITULO = "#FFD966"
 local C_INFO   = "#8EC7FF"
 local C_OK     = "#7CFC7C"
 
--- Lugares por defecto. La Plaza de la Republica es el spawn verificado
--- (static_spawnpoint post-Arnis). El resto los registra el admin en vivo con
--- /lugar_guardar, evitando adivinar coordenadas viejas.
-local DEFAULT_LUGARES = {
-    {id = "plaza", nombre = "Plaza de la Republica (spawn)", pos = {x = 3766, y = -4, z = -3249}},
-}
+-- Lugares por defecto. Vacio a proposito: NO se incluye el spawn (no tiene
+-- sentido teletransportarse al lugar donde ya estas). El admin registra los
+-- destinos reales en vivo con /lugar_guardar, evitando adivinar coordenadas
+-- viejas post-Arnis. Los lugares se persisten en valdivia_lugares.json.
+local DEFAULT_LUGARES = {}
 
 -- ============================================================================
 -- 2. PERSISTENCIA DE LUGARES (worldpath/valdivia_lugares.json)
@@ -137,16 +136,27 @@ end
 
 local function show_lugares(name)
     if not name then return end
-    local alto = 1.5 + (#lugares + 1) * 1.0
-    local fs = "formspec_version[4]" ..
-        "size[8," .. alto .. "]" ..
-        "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]"
-    local y = 1.4
-    for _, l in ipairs(lugares) do
-        fs = fs .. "button[0.5," .. y .. ";7,0.8;tp_" .. l.id .. ";" .. F(l.nombre) .. "]"
-        y = y + 1.0
+    local fs
+    if #lugares == 0 then
+        -- Sin destinos aun: mensaje amable en vez de un menu vacio.
+        fs = "formspec_version[4]" ..
+            "size[8,3.2]" ..
+            "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]" ..
+            "label[0.5,1.4;" .. F("Todavia no hay lugares para viajar.") .. "]" ..
+            "label[0.5,1.9;" .. F("Un admin puede agregarlos con /lugar_guardar.") .. "]" ..
+            "button[0.5,2.3;7,0.8;btn_volver;" .. F("Volver") .. "]"
+    else
+        local alto = 1.5 + (#lugares + 1) * 1.0
+        fs = "formspec_version[4]" ..
+            "size[8," .. alto .. "]" ..
+            "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]"
+        local y = 1.4
+        for _, l in ipairs(lugares) do
+            fs = fs .. "button[0.5," .. y .. ";7,0.8;tp_" .. l.id .. ";" .. F(l.nombre) .. "]"
+            y = y + 1.0
+        end
+        fs = fs .. "button[0.5," .. y .. ";7,0.8;btn_volver;" .. F("Volver") .. "]"
     end
-    fs = fs .. "button[0.5," .. y .. ";7,0.8;btn_volver;" .. F("Volver") .. "]"
     minetest.show_formspec(name, FORM_LUGARES, fs)
 end
 
