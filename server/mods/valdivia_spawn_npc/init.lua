@@ -410,13 +410,38 @@ minetest.register_on_joinplayer(function(player)
     local name = player:get_player_name()
     minetest.after(3, function()
         if not minetest.get_player_by_name(name) then return end
-        -- Bienvenida minimalista: sin Discord (ya vive en el panel del Guia con
-        -- QR + enlace copiable; repetirlo en el chat es bombardeo redundante).
+        -- Bienvenida unica, corta y bonita: titulo en amarillo + una linea
+        -- descriptiva. Sin Discord (vive en el panel del Guia) ni "habla con el
+        -- guia". El MOTD queda vacio y el aviso "modo pacifico" de mcl_mobs se
+        -- des-registra (seccion 8) para no duplicar el saludo ni ensuciar el chat.
         minetest.chat_send_player(name, minetest.colorize(C_TITULO,
-            "Bienvenid@ a Valdivia [Chile]!") ..
-            " Habla con el " .. minetest.colorize(C_INFO, "Guia") ..
-            " en el spawn para orientarte.")
+            "¡Bienvenid@ a Valdivia [Chile]!") ..
+            " Explora la capital de Los Ríos y haz amigos en la ciudad más linda de Chile.")
     end)
+end)
+
+-- ============================================================================
+-- 8. SILENCIAR EL AVISO "Modo pacifico activo" DE mcl_mobs
+-- ============================================================================
+-- only_peaceful_mobs=true es necesario (bloquea huevos de mobs hostiles en
+-- creativo), pero hace que mcl_mobs imprima "Modo pacifico activo! No apareceran
+-- monstruos." al entrar. Es redundante con nuestra bienvenida y no hay setting
+-- para apagarlo; ademas el juego es un submodulo (no parcheable por el flujo
+-- normal). Solucion limpia desde el mod: quitar ese callback puntual del
+-- registro de on_joinplayer, identificandolo por su archivo fuente
+-- (mcl_mobs/api.lua tiene UN solo register_on_joinplayer, el del aviso). Se hace
+-- tras cargar todos los mods, antes de que entre cualquier jugador.
+minetest.register_on_mods_loaded(function()
+    local cbs = minetest.registered_on_joinplayer
+    if type(cbs) ~= "table" then return end
+    for i = #cbs, 1, -1 do
+        local ok, info = pcall(debug.getinfo, cbs[i], "S")
+        if ok and info and info.source and info.source:find("mcl_mobs/api%.lua") then
+            table.remove(cbs, i)
+            minetest.log("action", "[" .. modname ..
+                "] Aviso 'modo pacifico' de mcl_mobs silenciado")
+        end
+    end
 end)
 
 minetest.log("action", "[" .. modname .. "] Loaded successfully")
