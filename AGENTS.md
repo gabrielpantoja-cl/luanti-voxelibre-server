@@ -148,7 +148,7 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull
      If it matches origin/main, it's a pure artifact: `git restore <tracked files>` and `rm <untracked files>`, then re-pull (fast-forwards cleanly and rewrites them all). If a file does **not** match, it's genuine VPS-local work — stop and inspect, never delete it.
 - Always inspect first; never `git reset --hard` or `git clean -fd` to "make it go away".
 
-For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/02-VALDIVIA-30001/`.
+For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/02-VALDIVIA-30001/`. **Before any offline `map.sqlite` surgery** (node remap, scan, `sqlite3` edits) `docker compose stop luanti-<world>` first, run the edit with `sudo` (world files are `1000:1000`; keep that owner), then restart — never mutate the SQLite while the container is live. Node-name remaps use the in-place, length-prefixed byte-replacement pattern in `scripts/remap-*.py` / `scripts/fix-*.py` (scan first with a read-only pass to confirm the exact stale node name before rewriting).
 
 ## Development Workflow
 
@@ -218,6 +218,9 @@ for _, vtype in ipairs({"farmer", "librarian", "teacher", "explorer"}) do
 end
 ```
 
+### Formspec limits: links & copyable text (Luanti-wide)
+A server mod **cannot** open a URL in a player's browser: `core.open_url()` is client-only (main menu / CSM), never callable server-side by design, and `hypertext[]` only fires internal form actions — it does not open URLs. There is also **no read-only-but-copyable widget**: the only element whose text a player can select and copy is an *editable* `field[]`/`textarea[]` (so it is also deletable — labels/hypertext are not copyable in the client). For sharing a Discord/URL, the working pattern (see `valdivia_spawn_npc`) is: a **QR code** shown via `image[]` (scan with phone = one-tap open) **plus** a copyable `field[]` as fallback. Don't promise a "clickable, non-deletable" link — it's not achievable in vanilla Luanti.
+
 ### Nuclear config
 An out-of-band override is applied to disable certain game rules not exposed via `luanti-original.conf`. Apply with `./scripts/apply-nuclear-config.sh`. See `docs/00-SHARED/config/02-NUCLEAR_CONFIG.md`.
 
@@ -269,7 +272,9 @@ All containers share the same `server/games/` and `server/mods/` directories. Va
 
 **CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (only here now — the former Infierno world that shared it was replaced by GAELSIN survival). Not loaded in Wetlands/Valdivia/GAELSIN. See `docs/04-CTF-30003/`.
 
-**Valdivia-only mod — `valdivia_teleporter`** (`load_mod_valdivia_teleporter = true` in `luanti-valdivia.conf` only): a teleporter for the Valdivia world (30001). The `/ir` command and a physical pedestal node (`valdivia_teleporter:pad`, `on_rightclick`) open a formspec menu to jump to predefined city locations (Planeta Azul/spawn, Los Fundadores, Santa Elena, Huachocopihue). Coordinates live in the `DESTINOS` table in `server/mods/valdivia_teleporter/init.lua`; textures are regenerated with `tools/generate_textures.py`. The pad is `diggable = false` (anti-grief). Not loaded in Wetlands/GAELSIN.
+**Valdivia-only mod — `valdivia_spawn_npc`** (`load_mod_valdivia_spawn_npc = true` in `luanti-valdivia.conf` only): the spawn greeter + teleport system for Valdivia (30001). A static, immortal NPC "Guía" (skin `mcl_armor_character.b3d`) stands at spawn; right-click opens a formspec with a **Discord QR + copyable invite**, server rules, and a **context-aware teleport menu** ("Lugares") that hides whichever destination the player is already near (`HIDE_RADIUS`), making spawn↔place travel bidirectional from one list. Destinations live in `DEFAULT_LUGARES` + `worldpath/valdivia_lugares.json` (admin adds them live with `/lugar_guardar`). Two guide entities with different skins are placed with `/spawn_guia [parque]`. Commands: `/discord`, `/spawn_guia`, `/lugar_guardar`, `/lugares`. See `docs/02-VALDIVIA-30001/guia-spawn.md`. Not loaded in Wetlands/GAELSIN/CTF.
+
+**Valdivia-only mod — `valdivia_teleporter`** (currently **disabled**, `load_mod_valdivia_teleporter = false`): the older pedestal/`/ir` teleporter. Its `DESTINOS` coordinates are stale post-Arnis; superseded by `valdivia_spawn_npc`'s teleport menu. Left in the tree for reference — do not re-enable without re-verifying coordinates in-game.
 
 ## Enabled mods (authoritative list: `server/config/luanti-original.conf`)
 
@@ -325,7 +330,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 - `docs/00-SHARED/admin/QUICK_ADD_SKINS.md` — adding player skins
 
 ### Operations
-- `docs/00-SHARED/operations/BACKUP_STATUS.md` — backup system diagnosis and plan
+- `docs/00-SHARED/operations/BACKUP_STATUS.md` — backup system (**operativo**): tarballs locales cada 12h (`backup-cron` sidecar, snapshot `sqlite3 .backup` de los 3 mundos) + subida offsite diaria a **Cloudflare R2** (cron del host, `~/vps-do/scripts/backup-luanti-offsite.sh`). **Regla de oro:** nunca dejes copias manuales de `.sqlite` dentro de `server/worlds/` — el `rsync` de `backup.sh` las arrastra e inflan cada tarball/subida a R2 (pasó: ~2.2 GB de basura en `valdivia/`). Snapshots puntuales van a `server/backups/` o fuera del repo.
 - `docs/00-SHARED/operations/clonar-mundo-produccion-local.md` — pull a prod backup and run it locally
 - `docs/02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md` — bug del image `linuxserver/luanti` que hardcodea `--port 30000` y duplica servidores en `servers.luanti.org` cuando se usa otro puerto; fix via bind mount del script override en `server/container-overrides/svc-luanti/run`. El bug afecta directamente al mundo Valdivia (puerto 30001) por eso vive en su carpeta de operaciones. Cualquier servidor futuro con puerto ≠ 30000 también se verá afectado.
 
