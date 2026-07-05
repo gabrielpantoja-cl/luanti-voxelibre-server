@@ -433,15 +433,20 @@ end)
 -- tras cargar todos los mods, antes de que entre cualquier jugador.
 minetest.register_on_mods_loaded(function()
     local cbs = minetest.registered_on_joinplayer
+    minetest.log("action", "[" .. modname .. "] DIAG join cbs type=" ..
+        type(cbs) .. " n=" .. (type(cbs) == "table" and #cbs or -1))
     if type(cbs) ~= "table" then return end
+    local removed = 0
     for i = #cbs, 1, -1 do
         local ok, info = pcall(debug.getinfo, cbs[i], "S")
-        if ok and info and info.source and info.source:find("mcl_mobs/api%.lua") then
+        local src = (ok and info and (info.source or info.short_src)) or "?"
+        minetest.log("action", "[" .. modname .. "] DIAG cb " .. i .. " src=" .. tostring(src))
+        if type(src) == "string" and src:find("mcl_mobs") and src:find("api") then
             table.remove(cbs, i)
-            minetest.log("action", "[" .. modname ..
-                "] Aviso 'modo pacifico' de mcl_mobs silenciado")
+            removed = removed + 1
         end
     end
+    minetest.log("action", "[" .. modname .. "] DIAG peaceful removed=" .. removed)
 end)
 
 minetest.log("action", "[" .. modname .. "] Loaded successfully")
