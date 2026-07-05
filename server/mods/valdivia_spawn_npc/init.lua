@@ -25,10 +25,19 @@ local C_INFO   = "#8EC7FF"
 local C_OK     = "#7CFC7C"
 
 -- Lugares por defecto. Vacio a proposito: NO se incluye el spawn (no tiene
--- sentido teletransportarse al lugar donde ya estas). El admin registra los
--- destinos reales en vivo con /lugar_guardar, evitando adivinar coordenadas
--- viejas post-Arnis. Los lugares se persisten en valdivia_lugares.json.
-local DEFAULT_LUGARES = {}
+-- sentido teletransportarse al lugar donde ya estas). El menu de Lugares
+-- oculta automaticamente el destino mas cercano al jugador (ver HIDE_RADIUS),
+-- asi que un mismo NPC parado en la Plaza NO ofrece "ir a la Plaza", y uno en
+-- el Parque Catrico ofrece "volver a la Plaza". Bidireccional con una sola lista.
+-- El admin puede agregar mas destinos en vivo con /lugar_guardar (persisten en
+-- valdivia_lugares.json).
+local DEFAULT_LUGARES = {
+    {id = "plaza",   nombre = "Plaza de la Republica (spawn)", pos = {x = 3766,   y = -4,    z = -3249}},
+    {id = "catrico", nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
+}
+
+-- Radio (nodos) para ocultar en el menu el destino donde el jugador ya esta.
+local HIDE_RADIUS = 20
 
 -- ============================================================================
 -- 2. PERSISTENCIA DE LUGARES (worldpath/valdivia_lugares.json)
@@ -136,22 +145,38 @@ end
 
 local function show_lugares(name)
     if not name then return end
+
+    -- Ocultar el destino donde el jugador ya esta (dentro de HIDE_RADIUS),
+    -- para no ofrecer "viajar a donde ya estas". Esto hace el sistema
+    -- bidireccional: en la Plaza se ofrece el Parque, en el Parque la Plaza.
+    local player = minetest.get_player_by_name(name)
+    local ppos = player and player:get_pos()
+    local visibles = {}
+    for _, l in ipairs(lugares) do
+        if not (ppos and vector.distance(ppos, l.pos) <= HIDE_RADIUS) then
+            table.insert(visibles, l)
+        end
+    end
+
     local fs
-    if #lugares == 0 then
-        -- Sin destinos aun: mensaje amable en vez de un menu vacio.
+    if #visibles == 0 then
+        -- Nada que ofrecer: o no hay destinos, o el unico es donde ya estas.
+        local msg = (#lugares == 0)
+            and F("Todavia no hay lugares para viajar.")
+            or  F("Ya estas en el unico destino disponible.")
         fs = "formspec_version[4]" ..
             "size[8,3.2]" ..
             "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]" ..
-            "label[0.5,1.4;" .. F("Todavia no hay lugares para viajar.") .. "]" ..
-            "label[0.5,1.9;" .. F("Un admin puede agregarlos con /lugar_guardar.") .. "]" ..
+            "label[0.5,1.4;" .. msg .. "]" ..
+            "label[0.5,1.9;" .. F("Un admin puede agregar mas con /lugar_guardar.") .. "]" ..
             "button[0.5,2.3;7,0.8;btn_volver;" .. F("Volver") .. "]"
     else
-        local alto = 1.5 + (#lugares + 1) * 1.0
+        local alto = 1.5 + (#visibles + 1) * 1.0
         fs = "formspec_version[4]" ..
             "size[8," .. alto .. "]" ..
             "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]"
         local y = 1.4
-        for _, l in ipairs(lugares) do
+        for _, l in ipairs(visibles) do
             fs = fs .. "button[0.5," .. y .. ";7,0.8;tp_" .. l.id .. ";" .. F(l.nombre) .. "]"
             y = y + 1.0
         end
