@@ -432,21 +432,29 @@ end)
 -- (mcl_mobs/api.lua tiene UN solo register_on_joinplayer, el del aviso). Se hace
 -- tras cargar todos los mods, antes de que entre cualquier jugador.
 minetest.register_on_mods_loaded(function()
-    local cbs = minetest.registered_on_joinplayer
-    minetest.log("action", "[" .. modname .. "] DIAG join cbs type=" ..
-        type(cbs) .. " n=" .. (type(cbs) == "table" and #cbs or -1))
+    -- OJO: la tabla es PLURAL (registered_on_joinplayers) aunque la funcion de
+    -- registro sea singular (register_on_joinplayer) -- convencion de Luanti.
+    local cbs = minetest.registered_on_joinplayers
     if type(cbs) ~= "table" then return end
-    local removed = 0
+    -- Luanti guarda el origen de cada callback en callback_origins[fn].mod.
+    -- mcl_mobs registra UN solo on_joinplayer (el aviso de modo pacifico), asi
+    -- que basta con quitar el que provenga del mod "mcl_mobs".
+    local origins = minetest.callback_origins or {}
     for i = #cbs, 1, -1 do
-        local ok, info = pcall(debug.getinfo, cbs[i], "S")
-        local src = (ok and info and (info.source or info.short_src)) or "?"
-        minetest.log("action", "[" .. modname .. "] DIAG cb " .. i .. " src=" .. tostring(src))
-        if type(src) == "string" and src:find("mcl_mobs") and src:find("api") then
+        local fn = cbs[i]
+        local origin = origins[fn]
+        local from_mcl_mobs = origin and origin.mod == "mcl_mobs"
+        if not from_mcl_mobs then  -- respaldo por si callback_origins no estuviera
+            local ok, info = pcall(debug.getinfo, fn, "S")
+            from_mcl_mobs = ok and info and info.source
+                and info.source:find("mcl_mobs") and info.source:find("api")
+        end
+        if from_mcl_mobs then
             table.remove(cbs, i)
-            removed = removed + 1
+            minetest.log("action", "[" .. modname ..
+                "] Aviso 'modo pacifico' de mcl_mobs silenciado")
         end
     end
-    minetest.log("action", "[" .. modname .. "] DIAG peaceful removed=" .. removed)
 end)
 
 minetest.log("action", "[" .. modname .. "] Loaded successfully")
