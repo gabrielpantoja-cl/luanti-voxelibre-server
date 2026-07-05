@@ -11,17 +11,18 @@ Estado: **en producción** desde 2026-07-05.
 
 | Elemento | Detalle |
 |----------|---------|
-| NPC guía | Estático e inmortal (anti-grief). Skin `indie-boy` recortado a 64×32 sobre `mcl_armor_character.b3d`. Entidad `valdivia_spawn_npc:guia`. |
-| Panel al click derecho | Enlace de Discord copiable + Reglas de Valdivia + menú de Lugares + Cerrar. |
+| NPC guía (spawn) | Estático e inmortal (anti-grief). Skin `indie-boy` recortado a 64×32 sobre `mcl_armor_character.b3d`. Entidad `valdivia_spawn_npc:guia`. |
+| NPC guía (Parque Catrico) | Mismo comportamiento, **skin distinto** (`summer-gala`). Entidad `valdivia_spawn_npc:guia_parque`. Permite volver a la Plaza. |
+| Panel al click derecho | **QR de Discord** (escaneable) + enlace copiable + Reglas + menú de Lugares + Cerrar. |
 | Bienvenida | Mensaje en el chat ~3 s después de entrar, apuntando al guía y a `/discord`. |
-| Discord | `https://discord.gg/Y3vfy2JnX` (constante `DISCORD_INVITE` en `init.lua`). |
+| Discord | `https://discord.gg/Y3vfy2JnX` (constante `DISCORD_INVITE`). QR en `textures/valdivia_guia_discord_qr.png` (`tools/generate_discord_qr.py`). |
 
 ## Comandos
 
 | Comando | Priv | Uso |
 |---------|------|-----|
 | `/discord` | — | Muestra el enlace de Discord en el chat (respaldo del NPC). |
-| `/spawn_guia` | `server` | Coloca al guía en tu posición. Elimina duplicados en radio 6, así que puedes reubicarlo repitiendo el comando. |
+| `/spawn_guia [parque]` | `server` | Coloca un guía en tu posición. Sin arg = skin del spawn; `parque` = skin del Parque Catrico. Elimina cualquier guía duplicado en radio 6. |
 | `/lugar_guardar <id> <nombre>` | `server` | Guarda tu posición actual como destino de teletransporte. El `id` sólo admite `[a-zA-Z0-9_]`. |
 | `/lugares` | — | Lista los destinos registrados con sus coordenadas. |
 
@@ -40,16 +41,24 @@ Estado: **en producción** desde 2026-07-05.
   ≤`HIDE_RADIUS` (20 nodos) del jugador, así nunca ofrece "viajar a donde ya
   estás". Esto hace el teletransporte **bidireccional con una sola lista**: en
   la Plaza el menú ofrece "Parque Catrico"; en el Parque ofrece "Plaza de la
-  República". El **mismo** NPC `guia` sirve para ambos extremos — sólo hay que
-  plantar una segunda instancia en el Parque (ver despliegue).
+  República". Ambos guías comparten formspec/comportamiento vía
+  `register_guia(entity, skin)`; sólo se plantan por separado (ver despliegue).
 - **No toca `valdivia_teleporter`**, que sigue deshabilitado por coordenadas
   stale. Este guía lo reemplaza como puerta de entrada al teletransporte.
 
-### Skin
-El fuente `server/skins/2024_06_19_indie-boy-22622590.png` es 64×64 (formato skin
-moderno de Minecraft). Se recorta a 64×32 con `tools/convert_skin.py` (mismo
-proceso que los NPCs Star Wars de `wetlands_npcs`). El PNG resultante
-`textures/valdivia_guia_skin.png` está versionado; no hace falta re-generarlo.
+### Skins (dos, distintos a propósito)
+Cada guía usa un skin de jugador **64×32** sobre `mcl_armor_character.b3d`. Los
+fuentes en `server/skins/` son 64×64 (formato moderno de Minecraft) y se recortan
+a 64×32 con `tools/convert_skin.py` (lista `JOBS`). Los PNG resultantes están
+versionados; sólo re-generar si cambias el skin fuente.
+
+| Guía | Fuente | Textura |
+|------|--------|---------|
+| Spawn (Plaza) | `2024_06_19_indie-boy-*.png` | `textures/valdivia_guia_skin.png` |
+| Parque Catrico | `2026_06_30_summer-gala-*.png` | `textures/valdivia_guia_parque_skin.png` |
+
+Para cambiar un skin: edita la entrada en `JOBS` de `convert_skin.py`, córrelo y
+commitea la textura nueva.
 
 ## Despliegue (ya aplicado)
 
@@ -57,11 +66,11 @@ proceso que los NPCs Star Wars de `wetlands_npcs`). El PNG resultante
 2. Misma línea en `server/worlds/valdivia/world.mt` del VPS (sudo; `world.mt`
    gana sobre el `.conf`). Ver jerarquía de config en `AGENTS.md`.
 3. `docker compose restart luanti-valdivia`.
-4. In-game como admin, plantar **dos** instancias del guía:
+4. In-game como admin, plantar **dos** guías (skins distintos):
    - En el spawn: párate en la Plaza y corre `/spawn_guia`.
    - En el Parque Catrico: viaja allá (habla con el guía → Lugares → "Parque
-     Catrico") y corre `/spawn_guia` de nuevo. El NPC del Parque ofrecerá
-     "Plaza de la República" para volver.
+     Catrico") y corre **`/spawn_guia parque`** (usa el skin del parque). Ese NPC
+     ofrecerá "Plaza de la República" para volver.
    Cada NPC persiste con su mapblock (activo mientras haya jugadores cerca).
 
 ## Tareas pendientes
@@ -91,13 +100,14 @@ queremos que el jugador lo seleccione y copie a mano. Detalle:
   *editable* (y por eso, borrable). Los widgets de sólo-lectura (`label`,
   `textarea` sin nombre, `hypertext`) **no** son seleccionables/copiables en el
   cliente. Conclusión: para copiar-pegar manual, el campo **debe** ser borrable.
-- Mitigantes ya aplicados: el borrado es **cosmético y no persistente** (se
+- Mitigantes aplicados: el borrado es **cosmético y no persistente** (se
   restaura al reabrir el panel) y el enlace también se hace **eco al chat**.
-- **Mejor upgrade posible (pendiente): código QR.** Generar un PNG con el QR de
-  la invitación y mostrarlo en el formspec con `image[]`. El jugador lo escanea
-  con la cámara del teléfono y abre Discord — sin copiar ni escribir nada. Es la
-  vía "un toque" que reemplaza al link cliqueable. Requiere la lib `qrcode` de
-  Python para generar la textura (una vez, versionada).
+- **✅ Upgrade implementado (2026-07-05): código QR.** El panel muestra un QR de
+  la invitación (`image[]`) que el jugador escanea con la cámara del teléfono y
+  abre Discord — sin copiar ni escribir nada. Es la vía "un toque" que reemplaza
+  al link cliqueable. La textura se genera con `tools/generate_discord_qr.py`
+  (lib `qrcode` de Python) y queda versionada; sólo re-generar si cambia
+  `DISCORD_INVITE`. El campo copiable se mantiene como respaldo.
 
 ## Fuera de alcance
 

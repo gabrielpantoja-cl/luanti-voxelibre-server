@@ -13,9 +13,16 @@ local modname = minetest.get_current_modname()
 -- 1. CONSTANTES
 -- ============================================================================
 local DISCORD_INVITE = "https://discord.gg/Y3vfy2JnX"
-local NPC_ENTITY     = modname .. ":guia"
+local DISCORD_QR     = "valdivia_guia_discord_qr.png"  -- textura del QR (tools/generate_discord_qr.py)
 local NPC_HP         = 65535
 local ANCHOR_TOL     = 0.6   -- distancia (nodos) antes de re-anclar al guia
+
+-- Dos NPCs guia con MISMO comportamiento pero SKINS distintos: uno para el
+-- spawn (Plaza) y otro para el Parque Catrico. El del spawn conserva el nombre
+-- de entidad ":guia" para no romper la instancia ya plantada en produccion.
+local NPC_ENTITY        = modname .. ":guia"          -- guia del spawn
+local NPC_ENTITY_PARQUE = modname .. ":guia_parque"   -- guia del Parque Catrico
+local GUIA_ENTITIES = { [NPC_ENTITY] = true, [NPC_ENTITY_PARQUE] = true }
 
 local FORM_GUIA    = modname .. ":guia"
 local FORM_LUGARES = modname .. ":lugares"
@@ -24,8 +31,7 @@ local C_TITULO = "#FFD966"
 local C_INFO   = "#8EC7FF"
 local C_OK     = "#7CFC7C"
 
--- Lugares por defecto. Vacio a proposito: NO se incluye el spawn (no tiene
--- sentido teletransportarse al lugar donde ya estas). El menu de Lugares
+-- Lugares por defecto (Plaza + Parque Catrico). El menu de Lugares
 -- oculta automaticamente el destino mas cercano al jugador (ver HIDE_RADIUS),
 -- asi que un mismo NPC parado en la Plaza NO ofrece "ir a la Plaza", y uno en
 -- el Parque Catrico ofrece "volver a la Plaza". Bidireccional con una sola lista.
@@ -128,17 +134,24 @@ local F = minetest.formspec_escape
 
 local function show_guia(name)
     if not name then return end
+    -- Layout de dos columnas: a la izquierda campo/botones; a la derecha el QR
+    -- de Discord (se escanea con el telefono y abre la invitacion de un toque,
+    -- la via "cliqueable" que Luanti no permite server-side).
     local fs = "formspec_version[4]" ..
-        "size[10,7.2]" ..
+        "size[12,7.5]" ..
         "label[0.5,0.6;" .. minetest.colorize(C_TITULO, F("Guia de Valdivia")) .. "]" ..
         "label[0.5,1.2;" .. F("Bienvenid@ a la ciudad. Yo te oriento:") .. "]" ..
-        -- Enlace de Discord en un campo copiable (Luanti no puede abrir el navegador).
-        "field[0.5,2.1;9,0.8;discord_url;" .. F("Discord (selecciona y copia el enlace)") ..
+        -- Enlace de Discord en un campo copiable (unico widget seleccionable).
+        "field[0.5,2.1;7.8,0.8;discord_url;" .. F("Discord (selecciona y copia el enlace)") ..
             ";" .. F(DISCORD_INVITE) .. "]" ..
         "field_close_on_enter[discord_url;false]" ..
-        "button[0.5,3.4;9,0.8;btn_reglas;" .. F("Reglas del servidor") .. "]" ..
-        "button[0.5,4.4;9,0.8;btn_lugares;" .. F("Lugares de Valdivia") .. "]" ..
-        "button_exit[0.5,5.8;9,0.8;btn_cerrar;" .. F("Cerrar") .. "]"
+        "button[0.5,3.4;7.8,0.8;btn_reglas;" .. F("Reglas del servidor") .. "]" ..
+        "button[0.5,4.4;7.8,0.8;btn_lugares;" .. F("Lugares de Valdivia") .. "]" ..
+        "button_exit[0.5,5.8;7.8,0.8;btn_cerrar;" .. F("Cerrar") .. "]" ..
+        -- Columna derecha: QR de Discord
+        "label[8.8,1.2;" .. minetest.colorize(C_INFO, F("Escanea y unete:")) .. "]" ..
+        "image[8.8,1.5;2.7,2.7;" .. DISCORD_QR .. "]" ..
+        "label[8.8,4.35;" .. F("(Discord con tu telefono)") .. "]"
     minetest.show_formspec(name, FORM_GUIA, fs)
     enviar_discord(name)  -- eco al chat para que quede el enlace disponible
 end
@@ -216,10 +229,12 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 -- ============================================================================
--- 5. EL NPC (mcl_mobs, estatico e inmortal)
+-- 5. LOS NPC (mcl_mobs, estatico e inmortal)
 -- ============================================================================
-if minetest.get_modpath("mcl_mobs") and mcl_mobs and mcl_mobs.register_mob then
-    mcl_mobs.register_mob(NPC_ENTITY, {
+-- Mismo comportamiento para ambos guias; solo cambia el skin. La entidad del
+-- spawn y la del Parque Catrico comparten formspec, inmortalidad y anti-grief.
+local function register_guia(entity_name, skin)
+    mcl_mobs.register_mob(entity_name, {
         description = "Guia de Valdivia",
         type = "npc",
         spawn_class = "passive",
@@ -234,7 +249,7 @@ if minetest.get_modpath("mcl_mobs") and mcl_mobs and mcl_mobs.register_mob then
         visual = "mesh",
         mesh = "mcl_armor_character.b3d",
         -- 3 capas requeridas por mcl_armor_character.b3d: {skin, armor, cape}
-        textures = {{"valdivia_guia_skin.png", "blank.png", "blank.png"}},
+        textures = {{skin, "blank.png", "blank.png"}},
         makes_footstep_sound = false,
         -- Estatico: no camina, no salta, no huye.
         walk_velocity = 0,
@@ -297,8 +312,13 @@ if minetest.get_modpath("mcl_mobs") and mcl_mobs and mcl_mobs.register_mob then
             return false
         end,
     })
+end
+
+if minetest.get_modpath("mcl_mobs") and mcl_mobs and mcl_mobs.register_mob then
+    register_guia(NPC_ENTITY, "valdivia_guia_skin.png")               -- spawn (Plaza)
+    register_guia(NPC_ENTITY_PARQUE, "valdivia_guia_parque_skin.png") -- Parque Catrico
 else
-    minetest.log("error", "[" .. modname .. "] mcl_mobs no disponible; el NPC guia no se registro.")
+    minetest.log("error", "[" .. modname .. "] mcl_mobs no disponible; los NPC guia no se registraron.")
 end
 
 -- ============================================================================
@@ -313,25 +333,30 @@ minetest.register_chatcommand("discord", {
 })
 
 minetest.register_chatcommand("spawn_guia", {
-    description = "Coloca al NPC guia en tu posicion (admin). Elimina duplicados cercanos.",
+    params = "[parque]",
+    description = "Coloca un NPC guia en tu posicion (admin). Sin arg = skin del spawn; " ..
+        "'parque' = skin del Parque Catrico. Elimina duplicados cercanos.",
     privs = {server = true},
-    func = function(name)
+    func = function(name, param)
         local player = minetest.get_player_by_name(name)
         if not player then return false, "Jugador no encontrado" end
+        local tipo = (param or ""):lower():match("%S+")
+        local entity = (tipo == "parque") and NPC_ENTITY_PARQUE or NPC_ENTITY
         local pos = player:get_pos()
-        -- Quitar guias existentes en radio 6 para no duplicar.
+        -- Quitar cualquier guia (spawn o parque) en radio 6 para no duplicar.
         local quitados = 0
         for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 6)) do
             local le = obj:get_luaentity()
-            if le and le.name == NPC_ENTITY then
+            if le and le.name and GUIA_ENTITIES[le.name] then
                 obj:remove()
                 quitados = quitados + 1
             end
         end
         pos.y = pos.y + 0.5
-        local obj = minetest.add_entity(pos, NPC_ENTITY)
+        local obj = minetest.add_entity(pos, entity)
         if not obj then return false, "Error al colocar el guia" end
-        return true, "Guia colocado en " .. minetest.pos_to_string(vector.round(pos)) ..
+        local etiqueta = (entity == NPC_ENTITY_PARQUE) and "Guia (Parque Catrico)" or "Guia (spawn)"
+        return true, etiqueta .. " colocado en " .. minetest.pos_to_string(vector.round(pos)) ..
             (quitados > 0 and (" (se quitaron " .. quitados .. " duplicados)") or "")
     end,
 })
