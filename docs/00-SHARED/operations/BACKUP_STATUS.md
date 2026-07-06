@@ -60,6 +60,23 @@ mismo tarball. Valdivia entra como `./valdivia/map.sqlite` + `auth.sqlite`.
 | Config rclone | `~/.config/rclone/rclone.conf` |
 | Script | `~/vps-do/scripts/backup-luanti-offsite.sh` (repo `infra/vps-oracle`) |
 
+## ¿Cuánto tiempo hacia atrás puedo restaurar? (ventana de recuperación)
+
+| Capa | Retención | Cadencia |
+|------|-----------|----------|
+| Local (VPS) | **~4 días** (8 tarballs, `MAX_BACKUPS=8`) | cada 12h |
+| Offsite (R2) | **~6 días** (`RETENTION_DAYS=6`) | 1 por día |
+
+**Ventana efectiva: ~6 días.** Escenario grief: si el mundo se daña el día 0 y no
+te das cuenta hasta el día 7, **es tarde** — los 6 snapshots que quedan en R2 son
+todos posteriores al daño y el último limpio ya se borró. Hay que notar el
+problema y restaurar **dentro de ~6 días**.
+
+⚠️ **Pendiente recomendado**: extender la retención (tras la limpieza del
+2026-07-05 los tarballs pesan ~830 MB, cabe más historia en el plan gratuito de
+10 GB). Simple: subir `RETENTION_DAYS` a ~10–12. Mejor: escalonada (diarios 14d +
+semanales 8 sem + mensuales 6 meses). Ver `docs/02-VALDIVIA-30001/respaldos-y-restauracion.md`.
+
 ## Cómo verificar que está funcionando
 
 ```bash
