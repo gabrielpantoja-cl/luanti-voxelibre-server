@@ -52,30 +52,32 @@ mismo tarball. Valdivia entra como `./valdivia/map.sqlite` + `auth.sqlite`.
 |----------|-------|
 | Remoto rclone | `r2-backup:` (también existe `r2:`) |
 | Bucket | `vps-backups-oracle` |
-| Prefijo | `luanti/` |
-| Retención | 6 días (`rclone delete --min-age 6d`) |
-| Tamaño por objeto | ~1.7 GB |
-| Uso del bucket | ~10.6 GB (≈6 objetos) |
+| Prefijo | `luanti/{daily,weekly,monthly}/` (GFS) |
+| Retención | **GFS**: 5 diarios + 3 semanales + 2 mensuales (`DAILY_KEEP`/`WEEKLY_KEEP`/`MONTHLY_KEEP`) |
+| Tamaño por objeto | ~830 MB (post-limpieza 2026-07-05) |
+| Uso del bucket | ~2.7 GB tras migración a GFS (≈10 objetos en régimen ≈ 8.3 GB) |
 | Credenciales | `~/.backup-credentials` (tokens R2 + Telegram) — **no** en git |
 | Config rclone | `~/.config/rclone/rclone.conf` |
 | Script | `~/vps-do/scripts/backup-luanti-offsite.sh` (repo `infra/vps-oracle`) |
 
 ## ¿Cuánto tiempo hacia atrás puedo restaurar? (ventana de recuperación)
 
+Desde 2026-07-06 el offsite usa **retención escalonada (GFS)** en vez de 6 días planos:
+
 | Capa | Retención | Cadencia |
 |------|-----------|----------|
-| Local (VPS) | **~4 días** (8 tarballs, `MAX_BACKUPS=8`) | cada 12h |
-| Offsite (R2) | **~6 días** (`RETENTION_DAYS=6`) | 1 por día |
+| Local (VPS) | ~4 días (8 tarballs, `MAX_BACKUPS=8`) | cada 12h |
+| Offsite R2 diario | últimos **5 días** | 1 por día |
+| Offsite R2 semanal | últimas **3 semanas** | lunes |
+| Offsite R2 mensual | últimos **2 meses** | día 1 |
 
-**Ventana efectiva: ~6 días.** Escenario grief: si el mundo se daña el día 0 y no
-te das cuenta hasta el día 7, **es tarde** — los 6 snapshots que quedan en R2 son
-todos posteriores al daño y el último limpio ya se borró. Hay que notar el
-problema y restaurar **dentro de ~6 días**.
+**Ventana efectiva: días → ~2 meses. ✅** Escenario grief: si el mundo se daña el
+día 0 y lo notas el día 7, el **semanal** anterior al daño sigue disponible (y el
+**mensual** por 2 meses) → **sí puedes restaurar** a un estado limpio. La
+granularidad baja al alejarte, pero siempre hay punto de retorno hasta ~2 meses.
 
-⚠️ **Pendiente recomendado**: extender la retención (tras la limpieza del
-2026-07-05 los tarballs pesan ~830 MB, cabe más historia en el plan gratuito de
-10 GB). Simple: subir `RETENTION_DAYS` a ~10–12. Mejor: escalonada (diarios 14d +
-semanales 8 sem + mensuales 6 meses). Ver `docs/02-VALDIVIA-30001/respaldos-y-restauracion.md`.
+Ajustar cobertura vs. espacio: los knobs `DAILY_KEEP`/`WEEKLY_KEEP`/`MONTHLY_KEEP`
+en el script. 10 objetos × ~830 MB ≈ 8.3 GB, holgado en el tier gratuito (10 GB).
 
 ## Cómo verificar que está funcionando
 

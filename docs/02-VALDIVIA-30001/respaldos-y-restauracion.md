@@ -10,51 +10,52 @@ Para el detalle del sistema completo ver
 
 ## ¿Cuántos días hacia atrás puedo restaurar? (IMPORTANTE)
 
+Desde 2026-07-06 el offsite usa **retención escalonada (GFS: diario/semanal/mensual)**
+en vez de la vieja de 6 días planos.
+
 | Capa | Retención | Cadencia | Dónde |
 |------|-----------|----------|-------|
-| Local (VPS) | **~4 días** (8 tarballs) | cada 12h | `server/backups/` |
-| Offsite (Cloudflare R2) | **~6 días** (6 snapshots) | 1 por día, 08:00 UTC | `r2-backup:vps-backups-oracle/luanti/` |
+| Local (VPS) | ~4 días (8 tarballs) | cada 12h | `server/backups/` |
+| Offsite R2 — **diario** | últimos **5 días** | 1 por día, 08:00 UTC | `.../luanti/daily/` |
+| Offsite R2 — **semanal** | últimas **3 semanas** | lunes | `.../luanti/weekly/` |
+| Offsite R2 — **mensual** | últimos **2 meses** | día 1 del mes | `.../luanti/monthly/` |
 
-**Ventana efectiva de recuperación: ~6 días.**
+**Ventana efectiva de recuperación: desde días hasta ~2 meses atrás.**
+Config en `scripts/backup-luanti-offsite.sh` del repo `infra/vps-oracle`
+(`DAILY_KEEP=5`, `WEEKLY_KEEP=3`, `MONTHLY_KEEP=2` — knobs ajustables). Total
+~10 objetos × ~830 MB ≈ 8.3 GB → holgado en el tier gratuito de R2 (10 GB).
 
-### El escenario del grief (la pregunta clave)
+### El escenario del grief (la pregunta clave) — ✅ ahora cubierto
 
 > "Si alguien entra, rompe todo, y no me doy cuenta hasta una semana después,
 > ¿estoy a tiempo de restaurar?"
 
-**Con la configuración actual: NO — 7 días es tarde.** Ejemplo:
+**Sí.** Con GFS, aunque descubras el daño una semana (o hasta ~2 meses) después,
+hay un snapshot **anterior al daño**:
+- El daño ocurre el día 0; lo notas el día 7.
+- Los **diarios** (últimos 5 días) ya son post-daño, pero el **semanal** tomado
+  antes del día 0 sigue disponible por 3 semanas, y el **mensual** por 2 meses.
+- Restauras desde ese semanal/mensual limpio. Antes (retención plana de 6 días)
+  esto era imposible.
 
-- El daño ocurre el **día 0**.
-- Los respaldos son diarios y se guardan solo 6 días. El día 7, R2 tiene los
-  snapshots de los días 1–7 → **todos posteriores al daño**.
-- El último respaldo *limpio* (día 0, antes del daño) se borró al cumplir 6 días.
-- Resultado: solo podrías restaurar a un estado **ya dañado**.
-
-**Tienes ~6 días para notar el problema y restaurar** a un estado previo al daño.
-Pasada esa ventana, el estado limpio se pierde.
-
-### Recomendación
-
-Extender la retención para tolerar descubrir el grief más tarde. Tras la limpieza
-de basura (2026-07-05) cada tarball pesa ~830 MB (antes ~1.7 GB), así que hay
-espacio para más historia dentro del plan gratuito de R2 (10 GB). Opciones:
-
-- **Simple**: subir `RETENTION_DAYS` en `~/vps-do/scripts/backup-luanti-offsite.sh`
-  de 6 a ~10–12 días (≈ 10 GB con objetos de 830 MB).
-- **Mejor (escalonada)**: diarios 14 días + un semanal por 8 semanas + un mensual
-  por 6 meses. Da meses de cobertura con poco espacio. (Pendiente P5 en
-  `BACKUP_STATUS.md`.)
-
-> Mientras no se extienda, la regla operativa es: **revisar el mundo al menos una
-> vez cada ~5 días** para estar dentro de la ventana de restauración.
+> La granularidad baja al alejarte (día exacto la última semana, semana el último
+> mes, mes los últimos dos), pero **siempre hay un punto de retorno limpio** hasta
+> ~2 meses atrás. Aun así, mientras antes lo notes, menos construcción legítima
+> se pierde.
 
 ## Procedimiento de restauración (verificado 2026-07-05)
 
 ### 1. Listar y elegir un respaldo de R2
+Los objetos viven en tres subprefijos (GFS): `luanti/daily/`, `luanti/weekly/`,
+`luanti/monthly/`. Lista todo recursivo y elige el snapshot **anterior al daño**:
 ```bash
-ssh gabriel@<VPS_IP> "rclone lsl r2-backup:vps-backups-oracle/luanti/ \
+ssh gabriel@<VPS_IP> "rclone lsl r2-backup:vps-backups-oracle/luanti/ --recursive \
   --config ~/.config/rclone/rclone.conf"
 ```
+Para restaurar a un estado reciente usa `daily/`; para volver semanas/meses atrás
+usa `weekly/` o `monthly/`. En los comandos siguientes, `<OBJ>` incluye el
+subprefijo (p. ej. `daily/luanti_worlds_backup_YYYYMMDD-000001.tar.gz`).
+
 El panel web de Cloudflare **no** deja bajar objetos > 1 GB; usa siempre `rclone`
 (API S3, sin ese límite).
 
