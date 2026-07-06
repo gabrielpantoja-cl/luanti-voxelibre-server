@@ -32,6 +32,10 @@ Estado: **en producción** desde 2026-07-05.
   recepcionista), pero sí replica su patrón de inmortalidad y anti-grief.
 - **Estático**: `walk_chance = 0`, `jump = false`, `walk_velocity = 0`, más un
   *ancla* en `do_custom` que lo regresa a su posición si lo empujan (>0.6 nodos).
+- **Gira a mirar al jugador**: en `do_custom` orienta su yaw (suavemente) hacia
+  el jugador más cercano dentro de `FACE_RANGE` (12 nodos), para que nunca lo
+  encuentres de espalda. Misma convención de yaw que `wetlands_npcs`
+  (`atan2(dir.z, dir.x) - π/2`) para el modelo `mcl_armor_character.b3d`.
 - **Persistencia de lugares**: `worldpath/valdivia_lugares.json`
   (`minetest.write_json`). Sembrado por defecto con tres destinos: **Plaza de la
   República / spawn** (`3766,-4,-3249`), **Parque Catrico** (`5025.5,-17.5,-7028.5`)

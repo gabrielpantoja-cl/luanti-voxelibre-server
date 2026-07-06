@@ -16,6 +16,7 @@ local DISCORD_INVITE = "https://discord.gg/Y3vfy2JnX"
 local DISCORD_QR     = "valdivia_guia_discord_qr.png"  -- textura del QR (tools/generate_discord_qr.py)
 local NPC_HP         = 65535
 local ANCHOR_TOL     = 0.6   -- distancia (nodos) antes de re-anclar al guia
+local FACE_RANGE     = 12    -- distancia (nodos) para girar a mirar al jugador
 
 -- NPCs guia con MISMO comportamiento pero SKINS distintos, uno por lugar. Para
 -- agregar otro guia: crea el skin (tools/convert_skin.py) y anade una entrada
@@ -239,8 +240,22 @@ end)
 -- ============================================================================
 -- 5. LOS NPC (mcl_mobs, estatico e inmortal)
 -- ============================================================================
--- Mismo comportamiento para ambos guias; solo cambia el skin. La entidad del
--- spawn y la del Parque Catrico comparten formspec, inmortalidad y anti-grief.
+-- Jugador conectado mas cercano a pos dentro de `range` (o nil).
+local function nearest_player(pos, range)
+    local nearest, best = nil, range * range
+    for _, p in ipairs(minetest.get_connected_players()) do
+        local ppos = p:get_pos()
+        if ppos then
+            local dx, dy, dz = ppos.x - pos.x, ppos.y - pos.y, ppos.z - pos.z
+            local d = dx * dx + dy * dy + dz * dz
+            if d < best then best = d; nearest = p end
+        end
+    end
+    return nearest
+end
+
+-- Mismo comportamiento para todos los guias; solo cambia el skin. Comparten
+-- formspec, inmortalidad, anti-grief y el giro hacia el jugador mas cercano.
 local function register_guia(entity_name, skin)
     mcl_mobs.register_mob(entity_name, {
         description = "Guia de Valdivia",
@@ -288,16 +303,32 @@ local function register_guia(entity_name, skin)
                 self.object:set_hp(NPC_HP)
                 self.object:set_armor_groups({immortal = 1, fleshy = 0})
             end
+
+            local pos = self.object:get_pos()
+            if not pos then return end
+
+            -- Girar para mirar al jugador mas cercano (que no lo encuentren de
+            -- espalda). Giro suave; misma convencion de yaw que wetlands_npcs
+            -- para este modelo (mcl_armor_character.b3d).
+            local player = nearest_player(pos, FACE_RANGE)
+            if player then
+                local ppos = player:get_pos()
+                local dir = vector.subtract(ppos, pos)
+                local target_yaw = math.atan2(dir.z, dir.x) - math.pi / 2
+                local current_yaw = self.object:get_yaw() or 0
+                local diff = target_yaw - current_yaw
+                while diff > math.pi do diff = diff - 2 * math.pi end
+                while diff < -math.pi do diff = diff + 2 * math.pi end
+                self.object:set_yaw(current_yaw + diff * 0.3)
+            end
+
             -- Re-anclar si se movio (empujones, agua, etc.).
             self._anchor_check = (self._anchor_check or 0) + dtime
             if self._anchor_check > 1 then
                 self._anchor_check = 0
-                local pos = self.object:get_pos()
-                if pos and self._anchor then
-                    if vector.distance(pos, self._anchor) > ANCHOR_TOL then
-                        self.object:set_pos(self._anchor)
-                        self.object:set_velocity({x = 0, y = 0, z = 0})
-                    end
+                if self._anchor and vector.distance(pos, self._anchor) > ANCHOR_TOL then
+                    self.object:set_pos(self._anchor)
+                    self.object:set_velocity({x = 0, y = 0, z = 0})
                 end
             end
         end,
