@@ -22,8 +22,10 @@ TEX = os.path.join(MOD, "textures")
 # (skin fuente 64x64, textura destino 64x32). El del spawn y el del Parque
 # Catrico usan skins DISTINTOS a proposito.
 JOBS = [
-    ("2024_06_19_indie-boy-22622590.png", "valdivia_guia_skin.png"),        # guia del spawn
+    ("2024_06_19_indie-boy-22622590.png", "valdivia_guia_skin.png"),          # guia del spawn
     ("2026_06_30_summer-gala-24161243.png", "valdivia_guia_parque_skin.png"),  # guia del Parque Catrico
+    ("2025_06_17_vegan--anonymous-for-the-voiceless--av--animalrights-activist-23342807.png",
+     "valdivia_guia_santa_elena_skin.png"),                                    # guia de Santa Elena
 ]
 
 

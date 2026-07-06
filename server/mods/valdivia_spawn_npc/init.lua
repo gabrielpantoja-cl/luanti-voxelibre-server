@@ -17,12 +17,18 @@ local DISCORD_QR     = "valdivia_guia_discord_qr.png"  -- textura del QR (tools/
 local NPC_HP         = 65535
 local ANCHOR_TOL     = 0.6   -- distancia (nodos) antes de re-anclar al guia
 
--- Dos NPCs guia con MISMO comportamiento pero SKINS distintos: uno para el
--- spawn (Plaza) y otro para el Parque Catrico. El del spawn conserva el nombre
--- de entidad ":guia" para no romper la instancia ya plantada en produccion.
-local NPC_ENTITY        = modname .. ":guia"          -- guia del spawn
-local NPC_ENTITY_PARQUE = modname .. ":guia_parque"   -- guia del Parque Catrico
-local GUIA_ENTITIES = { [NPC_ENTITY] = true, [NPC_ENTITY_PARQUE] = true }
+-- NPCs guia con MISMO comportamiento pero SKINS distintos, uno por lugar. Para
+-- agregar otro guia: crea el skin (tools/convert_skin.py) y anade una entrada
+-- aqui. El del spawn conserva el nombre de entidad ":guia" para no romper la
+-- instancia ya plantada en produccion.
+local GUIAS = {
+    spawn       = { entity = modname .. ":guia",             skin = "valdivia_guia_skin.png",             label = "Guia (spawn)" },
+    parque      = { entity = modname .. ":guia_parque",      skin = "valdivia_guia_parque_skin.png",      label = "Guia (Parque Catrico)" },
+    santa_elena = { entity = modname .. ":guia_santa_elena", skin = "valdivia_guia_santa_elena_skin.png", label = "Guia (Santa Elena)" },
+}
+-- Set de nombres de entidad para deteccion de duplicados.
+local GUIA_ENTITIES = {}
+for _, g in pairs(GUIAS) do GUIA_ENTITIES[g.entity] = true end
 
 local FORM_GUIA    = modname .. ":guia"
 local FORM_LUGARES = modname .. ":lugares"
@@ -38,8 +44,9 @@ local C_OK     = "#7CFC7C"
 -- El admin puede agregar mas destinos en vivo con /lugar_guardar (persisten en
 -- valdivia_lugares.json).
 local DEFAULT_LUGARES = {
-    {id = "plaza",   nombre = "Plaza de la Republica (spawn)", pos = {x = 3766,   y = -4,    z = -3249}},
-    {id = "catrico", nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
+    {id = "plaza",       nombre = "Plaza de la Republica (spawn)", pos = {x = 3766,   y = -4,    z = -3249}},
+    {id = "catrico",     nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
+    {id = "santa_elena", nombre = "Santa Elena",                  pos = {x = 6323.1, y = -15.5, z = -7270}},
 }
 
 -- Radio (nodos) para ocultar en el menu el destino donde el jugador ya esta.
@@ -316,8 +323,9 @@ local function register_guia(entity_name, skin)
 end
 
 if minetest.get_modpath("mcl_mobs") and mcl_mobs and mcl_mobs.register_mob then
-    register_guia(NPC_ENTITY, "valdivia_guia_skin.png")               -- spawn (Plaza)
-    register_guia(NPC_ENTITY_PARQUE, "valdivia_guia_parque_skin.png") -- Parque Catrico
+    for _, g in pairs(GUIAS) do
+        register_guia(g.entity, g.skin)
+    end
 else
     minetest.log("error", "[" .. modname .. "] mcl_mobs no disponible; los NPC guia no se registraron.")
 end
@@ -334,17 +342,23 @@ minetest.register_chatcommand("discord", {
 })
 
 minetest.register_chatcommand("spawn_guia", {
-    params = "[parque]",
-    description = "Coloca un NPC guia en tu posicion (admin). Sin arg = skin del spawn; " ..
-        "'parque' = skin del Parque Catrico. Elimina duplicados cercanos.",
+    params = "[spawn|parque|santa_elena]",
+    description = "Coloca un NPC guia en tu posicion (admin). Sin arg = spawn; " ..
+        "el resto usa ese skin. Elimina guias duplicados cercanos.",
     privs = {server = true},
     func = function(name, param)
         local player = minetest.get_player_by_name(name)
         if not player then return false, "Jugador no encontrado" end
-        local tipo = (param or ""):lower():match("%S+")
-        local entity = (tipo == "parque") and NPC_ENTITY_PARQUE or NPC_ENTITY
+        local tipo = (param or ""):lower():match("%S+") or "spawn"
+        local g = GUIAS[tipo]
+        if not g then
+            local opts = {}
+            for k in pairs(GUIAS) do table.insert(opts, k) end
+            table.sort(opts)
+            return false, "Tipo invalido. Opciones: " .. table.concat(opts, ", ")
+        end
         local pos = player:get_pos()
-        -- Quitar cualquier guia (spawn o parque) en radio 6 para no duplicar.
+        -- Quitar cualquier guia (de cualquier tipo) en radio 6 para no duplicar.
         local quitados = 0
         for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 6)) do
             local le = obj:get_luaentity()
@@ -354,10 +368,9 @@ minetest.register_chatcommand("spawn_guia", {
             end
         end
         pos.y = pos.y + 0.5
-        local obj = minetest.add_entity(pos, entity)
+        local obj = minetest.add_entity(pos, g.entity)
         if not obj then return false, "Error al colocar el guia" end
-        local etiqueta = (entity == NPC_ENTITY_PARQUE) and "Guia (Parque Catrico)" or "Guia (spawn)"
-        return true, etiqueta .. " colocado en " .. minetest.pos_to_string(vector.round(pos)) ..
+        return true, g.label .. " colocado en " .. minetest.pos_to_string(vector.round(pos)) ..
             (quitados > 0 and (" (se quitaron " .. quitados .. " duplicados)") or "")
     end,
 })
