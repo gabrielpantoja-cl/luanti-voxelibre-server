@@ -106,9 +106,11 @@ En el juego (`luanti.gabrielpantoja.cl:30002`):
 
 ## Coordenadas importantes
 
-| Lugar | Coordenadas |
-|-------|-------------|
-| Casa del admin (spawn) | `313, 23, 86` |
+| Lugar | Coordenadas | Estado |
+|-------|-------------|--------|
+| Spawn actual | `293.6, 21.5, 71.8` | Activo (desde 2026-07-08) |
+| Casa del admin (spawn histórico) | `313, 23, 86` | Archivado |
+| Spawn original del mundo | `0, 15, 0` | Archivado |
 
 > Para arquitectura, pitfalls de VoxeLibre, texturas y comandos, la fuente única de
 > verdad es **[`AGENTS.md`](../../AGENTS.md)** en la raíz del repo.

@@ -7,7 +7,7 @@ Mundo survival puro con VoxeLibre, generado con seed `GAELSIN` y mapgen v7.
 | Puerto | 30002/UDP |
 | Juego | VoxeLibre (mineclone2) |
 | Mapgen | v7, seed `GAELSIN` |
-| Spawn | `318, 23, 86` (casa admin) |
+| Spawn | `293.6, 21.5, 71.8` (spawn actual, 2026-07-08) |
 | Creativo | No |
 | Daño | Sí |
 | PvP | Sí (global) |
