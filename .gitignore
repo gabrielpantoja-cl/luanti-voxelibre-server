@@ -15,6 +15,7 @@ debug.txt
 # AI agent local overrides (personal, not shared — secrets live here)
 .claude/settings.local.json
 .claude/*.lock
+.claude/*.bak-*        # backups created by scripts/setup-ai-shims.{sh,ps1} before junction replacement
 CLAUDE.local.md
 AGENTS.local.md
 

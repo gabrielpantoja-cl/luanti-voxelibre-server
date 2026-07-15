@@ -307,6 +307,87 @@ All containers share the same `server/games/` and `server/mods/` directories. Va
 | `auto_road_builder` | Road building tool |
 | `halloween_ghost`, `halloween_zombies` | Seasonal (activate in October) |
 
+## AI tooling
+
+This section inventories the AI/agent configuration that lives alongside this repo.
+**Canonical location**: `.opencode/` for OpenCode-native files. **Back-compat for Claude Code**: `.claude/`.
+**Single source of truth for instruction text**: this file (`AGENTS.md`), loaded automatically by OpenCode via `opencode.json` → `instructions`. Claude Code loads it via the `@AGENTS.md` import in `CLAUDE.md`.
+
+### Skills (on-demand)
+
+Loaded with the OpenCode `skill` tool. Discoverable by description (frontmatter `description:` field).
+
+| Skill | Purpose |
+|-------|---------|
+| `lua-style` | Lua coding conventions for Wetlands mods (structure, naming, kid-friendly content rules) |
+| `mod-structure` | Required mod directory structure, `luanti-original.conf`/`world.mt` enable rules, texture pitfalls |
+| `voxelibre-compat` | Item name remappings, `mod.conf` gotchas, `mcl_mobs` quirks, entity migration patterns, `default_privs` trap |
+| `add-music` | Add a new music disc to `wetlands-music` (download from YouTube, convert to OGG, register) |
+| `add-skin` | Add or update player skins (64×32 PNG) and NPC villager textures (64×64 PNG) |
+
+### Agents
+
+Defined in `.opencode/agents/` (OpenCode format). Invoke by name with `@<name>` from the chat, or by description matching. Most are specialists; `wetlands-orchestrator` is the project-wide delegator.
+
+| Agent | Purpose |
+|-------|---------|
+| `lua-mod-expert` | Senior Lua / VoxeLibre mod development for educational, child-friendly content |
+| `wetlands-landing-page-developer` | Specialist for the `server/landing-page/` site (HTML/CSS/JS, child-friendly UX) |
+| `wetlands-mod-deployment` | Deployment, CI/CD, VPS operations, Docker Compose, zero-downtime deployments |
+| `wetlands-mod-testing` | Pre-commit testing, VoxeLibre compatibility checks, QA |
+| `wetlands-npc-expert` | The `wetlands_npcs` mod (FSM-based AI, dual movement, missions, gestures) |
+| `wetlands-orchestrator` | Project-wide delegation hub for Docker/VPS/deployment coordination |
+
+**Equivalents in `.claude/agents/`** (legacy Claude Code location, deprecated but still discovered) keep working for Claude Code sessions. Per the project plan, `.claude/{agents,commands,skills}` are replaced by OS-detected shims that resolve to the canonical `.opencode/` content.
+
+### Fresh-clone setup
+
+After `git clone`, the canonical `.opencode/` tree is committed and works immediately. To make `.claude/{agents,commands,skills}/` symlinks/junctions pointing at `.opencode/` (single source of truth, no duplication):
+
+```bash
+./scripts/setup-ai-shims.sh         # Linux/macOS
+```
+
+```powershell
+powershell -File .\scripts\setup-ai-shims.ps1   # Windows
+```
+
+Both scripts are idempotent (safe to re-run), back up the original directories to `.claude/<dir>.bak-<timestamp>` before replacement, and print a rollback command per shim. Run with `--dry-run` / `-DryRun` first if you're cautious.
+
+If you skip the shim setup, both CLIs still work — `.opencode/` is canonical and `.claude/` is a tracked copy of the same content (trimmed of Claude-Code-only frontmatter). The shim just avoids the duplication.
+
+### Commands
+
+Slash-commands in `.opencode/commands/`. Invoke as `/<name> [arguments]`. Body uses `$ARGUMENTS` / `$1`/`$2`/`$3`.
+
+| Command | Purpose |
+|---------|---------|
+| `check-server` | Check VPS container status, recent log errors, mod loads, disk, players |
+| `deploy` | Pre-flight checks → push → VPS pull → restart → verify (covers the half-applied-pull pitfall) |
+| `new-mod` | Scaffold a new mod or adopt a third-party one, including the world.mt step on the VPS |
+
+### Models and data residency
+
+- **Primary model**: `MiniMax/MiniMax-M3` (1M context, multimodal, frontier coding) via the built-in `MiniMax` provider on OpenCode's provider list.
+- **Pricing tier**: paid Token Plan (pay-per-token). No fallback configured — single-model by design.
+- **Provider whitelist**: `enabled_providers: ["MiniMax"]` in `opencode.json` keeps the model picker clean.
+- **Data sensitivity tier for this repo**: **Tier D — code & tooling**. Public code, configs, docs. No PII in the repo. Tier A or Tier B data must not be pasted into chat sessions without explicit per-token review (none of those tiers exist in this repo today, but the rule stands in case more sensitive content lands here later).
+- **`.env`**: read access is denied by default in `opencode.json`; per-machine secrets live in `.env.local` (gitignored) and `.claude/settings.local.json` (gitignored). Their `AGENTS.local.md` mirror is also gitignored.
+
+### MCP servers
+
+Defined in `.mcp.json` at the project root (committed):
+- `context7` — upstream/up-to-date library docs lookup (no creds).
+- `playwright` — local browser automation (no creds; configured via `npx @playwright/mcp`).
+
+Credentialed servers (`github`, `google-analytics`) intentionally stay in local scope per `docs/00-SHARED/operations/MCP_SERVERS.md` — do not commit secrets.
+
+### When you change AI tooling
+
+1. Prefer the canonical `.opencode/` paths.
+2. Drop Claude-Code-only frontmatter (`model:` alias, `allowed-tools:`, `disable-model-invocation:`, `globs:`, `argument-hint:`) — OpenCode ignores them but clutter hurts maintainability.
+3. Update this section so the inventory stays truthful.
+
 ## Documentation index
 
 Detailed docs live under `docs/`, organized by world/port. Read these when you need specifics.
