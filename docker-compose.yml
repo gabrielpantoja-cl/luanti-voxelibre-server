@@ -74,7 +74,7 @@ services:
     networks:
       - luanti-network
 
-  # Discord notifier para Valdivia 2.0
+  # Discord notifier para Valdivia
   discord-notifier-valdivia:
     image: alpine:latest
     container_name: luanti-discord-notifier-valdivia
@@ -98,7 +98,7 @@ services:
       - luanti-network
 
   # =============================================
-  # VALDIVIA 2.0 - Ciudad real desde OpenStreetMap
+  # VALDIVIA - Ciudad real desde OpenStreetMap
   # =============================================
   # El script /etc/s6-overlay/s6-rc.d/svc-luanti/run del image linuxserver/luanti
   # hardcodea `--port 30000` antes de CLI_ARGS para el healthcheck (nc -zu localhost 30000).
@@ -188,10 +188,13 @@ services:
       - luanti-network
 
   # =============================================
-  # LLANURA CTF - Mundo plano para captura la bandera
+  # CTF - Captura la bandera (juego independiente de rubenwardy)
   # =============================================
-  # Llanura 100% plana de pura tierra (mod wetlands_flatworld sobre singlenode)
-  # para jugar captura la bandera (mod wetlands_ctf). Modo creativo.
+  # Servidor de Capture The Flag usando el juego `capturetheflag` de rubenwardy
+  # (NO VoxeLibre). Mapa singlenode + backend=dummy gestionado por el juego.
+  # NOTA: los mods server/mods/wetlands_ctf/ y server/mods/wetlands_flatworld/
+  # son vestigiales de una version anterior basada en VoxeLibre y no estan
+  # habilitados en luanti-ctf.conf — ver docs/04-CTF-30003/index.md.
   luanti-ctf:
     image: linuxserver/luanti:latest
     container_name: luanti-ctf-server
@@ -219,7 +222,7 @@ services:
     networks:
       - luanti-network
 
-  # Discord notifier para Llanura CTF
+  # Discord notifier para CTF
   discord-notifier-ctf:
     image: alpine:latest
     container_name: luanti-discord-notifier-ctf
@@ -230,7 +233,7 @@ services:
     environment:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-ctf-server
-      - SERVER_LABEL=Llanura CTF ⚔️
+      - SERVER_LABEL=CTF ⚔️
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "

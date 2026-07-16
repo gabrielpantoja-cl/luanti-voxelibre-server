@@ -1,7 +1,7 @@
 # 🚨 CONFIGURACIÓN NUCLEAR - OVERRIDE DE VOXELIBRE
 
 > **Aplica a:** Wetlands (30000) y Valdivia (30001) — mundos pacíficos sin mobs hostiles.
-> **NO aplica a:** GAELSIN (30002, survival con mobs de noche) ni Llanura CTF (30003). Esta técnica
+> **NO aplica a:** GAELSIN (30002, survival con mobs de noche) ni CTF (30003). Esta técnica
 > desactiva monstruos; los mundos PvP los quieren activos.
 
 ## ⚠️ CRÍTICO: Modificaciones Fuera del Repositorio

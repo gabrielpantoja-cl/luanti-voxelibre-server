@@ -14,7 +14,7 @@ Cómo descargar Luanti y conectarse a los servidores. Índice completo en [`../R
 | `luanti.gabrielpantoja.cl:30000` | Wetlands | Creativo / pacífico |
 | `luanti.gabrielpantoja.cl:30001` | Valdivia [Chile] | Ciudad OSM / pacífico |
 | `luanti.gabrielpantoja.cl:30002` | GAELSIN | Survival / **PvP** |
-| `luanti.gabrielpantoja.cl:30003` | Llanura CTF | Captura la bandera / **armas** |
+| `luanti.gabrielpantoja.cl:30003` | CTF | Captura la bandera / **armas** |
 
 > El tutorial de primeros pasos con la filosofía educativa de Wetlands se movió a
 > [`../../01-ORIGINAL-30000/quickstart/primeros-pasos.md`](../../01-ORIGINAL-30000/quickstart/primeros-pasos.md)

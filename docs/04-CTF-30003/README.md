@@ -1,14 +1,14 @@
-# Llanura CTF (Puerto 30003)
+# CTF (Puerto 30003)
 
-Capture the Flag con armas de fuego en mundo 100% plano de tierra.
+Capture the Flag con armas (espadas, pistolas, granadas) sobre el juego independiente
+[`capturetheflag`](https://github.com/MT-CTF/capturetheflag) de rubenwardy. **No usa VoxeLibre.**
 
 | Aspecto | Valor |
 |---------|-------|
 | Puerto | 30003/UDP |
-| Juego | Capture the Flag (rubenwardy) |
-| Mapgen | singlenode (superflat, pura tierra) |
+| Juego | Capture the Flag (rubenwardy, no VoxeLibre) |
+| Mapgen | singlenode + `backend = dummy` (gestionado por el juego) |
 | Creativo | No |
 | Daño | Sí |
 | PvP | Sí (CTF) |
-| Equipos | `rojo` y `azul` |
-| Comandos | `/ctf entrar\|salir\|base\|marcador\|reset` |
+| Comandos | los nativos del juego CTF |

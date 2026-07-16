@@ -68,9 +68,9 @@ carpeta de mundo y su servicio en `docker-compose.yml`:
 | Mundo | Puerto | Doc |
 |-------|--------|-----|
 | **Wetlands (este)** | 30000 | este documento |
-| Valdivia 2.0 | 30001 | `mundo-2-puerto-30001-valdivia.md` |
+| Valdivia | 30001 | `mundo-2-puerto-30001-valdivia.md` |
 | GAELSIN | 30002 | `mundo-3-puerto-30002-gaelsin.md` |
-| Llanura CTF | 30003 | `mundo-4-puerto-30003-ctf-llanura.md` |
+| CTF | 30003 | `mundo-4-puerto-30003-ctf.md` |
 
 > Para todos los detalles de arquitectura, pitfalls de VoxeLibre, texturas y comandos, la fuente
 > única de verdad es **[`AGENTS.md`](../../AGENTS.md)** en la raíz del repo.

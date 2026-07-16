@@ -5,6 +5,11 @@
 --   * y >  SURFACE_Y  -> aire
 -- Asi la superficie es instantanea y la tierra hacia abajo se materializa bajo
 -- demanda cuando los jugadores cavan, hasta el limite del motor (~ -31000).
+--
+-- ⚠️ DEPRECATED: el mundo CTF (puerto 30003) ahora usa el juego
+-- `capturetheflag` de rubenwardy (no VoxeLibre, no singlenode puro). Este mod
+-- YA NO SE CARGA (no aparece en luanti-ctf.conf). Mantenido solo como
+-- referencia historica. Ver docs/04-CTF-30003/index.md y AGENTS.md.
 
 local modname = minetest.get_current_modname()
 

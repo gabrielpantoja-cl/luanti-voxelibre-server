@@ -8,7 +8,7 @@ edits here, not in `CLAUDE.md`.** Personal, machine-local overrides (not shared)
 
 ## Project Overview
 
-Wetlands is a **Luanti (formerly Minetest) game server** — a creative, educational, kid-friendly environment. Custom mods promote animal care and non-violent exploration, while a dedicated PvP arena exists for opt-in combat. Public address: `luanti.gabrielpantoja.cl:30000` (Wetlands) and `:30001` (Valdivia 2.0).
+Wetlands is a **Luanti (formerly Minetest) game server** — a creative, educational, kid-friendly environment. Custom mods promote animal care and non-violent exploration, while a dedicated PvP arena exists for opt-in combat. Public address: `luanti.gabrielpantoja.cl:30000` (Wetlands) and `:30001` (Valdivia).
 
 ## Repository Scope
 
@@ -22,7 +22,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
 - **Deployment**: manual `git pull` on the VPS. There are **no GitHub Actions workflows** in this repo.
-- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia 2.0), 30002/UDP (GAELSIN), 30003/UDP (Llanura CTF), 80/443 (landing page via nginx on the VPS).
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia), 30002/UDP (GAELSIN), 30003/UDP (CTF), 80/443 (landing page via nginx on the VPS).
 - **UI language**: Spanish.
 
 ## File Structure
@@ -264,13 +264,13 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 | World | Container | Port | Config | Purpose |
 |-------|-----------|------|--------|---------|
 | Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main creative world — NPCs, mods, PvP arena |
-| Valdivia 2.0 | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
+| Valdivia | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
 | GAELSIN | `luanti-gaelsin-server` | 30002/UDP | `luanti-gaelsin.conf` | Pure VoxeLibre survival world generated from seed `GAELSIN` (mapgen v7) — PvP on, hostile mobs at night, creepers blocked, no area protection; minimal mod set |
-| Llanura CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | 100% flat dirt world (superflat) for capture-the-flag — creative |
+| CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | Capture-the-flag con armas sobre el juego `capturetheflag` de rubenwardy (no VoxeLibre) — singlenode mapgen + `backend = dummy`, armas y rondas automaticas |
 
 All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~420 MB / 1.15M mapblocks as of 2026-06-29, not in git). See `docs/02-VALDIVIA-30001/current.md`.
 
-**CTF-only mods — `wetlands_flatworld` + `wetlands_ctf`** (`luanti-ctf.conf` only): `wetlands_flatworld` makes the world 100% flat pure dirt — `mg_name = singlenode` + an `on_generated` callback fills `y <= 0` with `mcl_core:dirt`, air above; dirt materializes downward on demand to the mapgen limit. `wetlands_ctf` is a homemade capture-the-flag: two teams (`rojo`/`azul`), one glowing indestructible flag node per base (`wetlands_ctf:flag_<team>`, `diggable = false`), `/ctf entrar|salir|base|marcador|reset`, capture detection in a throttled globalstep, per-team respawn, HUD scoreboard. Team bases/spawns live in the `ctf.teams` table in `server/mods/wetlands_ctf/init.lua`. The CTF world also enables the `ctf_guns` ranged-combat modpack (only here now — the former Infierno world that shared it was replaced by GAELSIN survival). Not loaded in Wetlands/Valdivia/GAELSIN. See `docs/04-CTF-30003/`.
+**CTF world uses the official `capturetheflag` game by rubenwardy, not VoxeLibre.** The mods `server/mods/wetlands_flatworld/` and `server/mods/wetlands_ctf/` are vestigial from an earlier VoxeLibre-based implementation and are **NOT loaded** in `luanti-ctf.conf` — see `docs/04-CTF-30003/index.md` for the current setup (`default_game = capturetheflag`, `mg_name = singlenode`, `backend = dummy`). Decide whether to delete them or keep them as historical reference; if kept, add a `DEPRECATED` notice at the top of each `init.lua` to prevent future confusion.
 
 **Valdivia-only mod — `valdivia_spawn_npc`** (`load_mod_valdivia_spawn_npc = true` in `luanti-valdivia.conf` only): the spawn greeter + teleport system for Valdivia (30001). A static, immortal NPC "Guía" (skin `mcl_armor_character.b3d`) stands at spawn; right-click opens a formspec with a **Discord QR + copyable invite**, server rules, and a **context-aware teleport menu** ("Lugares") that hides whichever destination the player is already near (`HIDE_RADIUS`), making spawn↔place travel bidirectional from one list. Destinations live in `DEFAULT_LUGARES` + `worldpath/valdivia_lugares.json` (admin adds them live with `/lugar_guardar`). Two guide entities with different skins are placed with `/spawn_guia [parque]`. Commands: `/discord`, `/spawn_guia`, `/lugar_guardar`, `/lugares`. See `docs/02-VALDIVIA-30001/guia-spawn.md`. Not loaded in Wetlands/GAELSIN/CTF.
 
@@ -396,7 +396,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 - `docs/01-ORIGINAL-30000/` — Wetlands main creative world (port 30000)
 - `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001)
 - `docs/03-GAELSIN-30002/` — GAELSIN survival world (port 30002)
-- `docs/04-CTF-30003/` — Llanura CTF (port 30003)
+- `docs/04-CTF-30003/` — CTF (port 30003)
 - `docs/05-FUTBOL/` — Fútbol soccer (port 30004, planned)
 
 ### Shared Configuration

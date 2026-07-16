@@ -7,7 +7,7 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 > configuración específicas de cada mundo viven en su carpeta (`01-ORIGINAL-30000/`, `02-VALDIVIA-30001/`,
 > `03-GAELSIN-30002/`, `04-CTF-30003/`). En particular, **no todos los mundos comparten la filosofía
 > "sin violencia / compasión"**: Wetlands (30000) y Valdivia (30001) son pacíficos, pero **GAELSIN
-> (30002) es survival PvP con mobs hostiles** y **Llanura CTF (30003) es captura-la-bandera con armas**.
+> (30002) es survival PvP con mobs hostiles** y **CTF (30003) es captura-la-bandera con armas**.
 > Cuando un documento aquí solo aplica a algunos mundos, lo indica en una nota al inicio.
 
 ## Los 4 mundos (documentación específica en su carpeta)
@@ -17,7 +17,7 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 | 30000 | Wetlands | Creativo / educativo / pacífico | [`../01-ORIGINAL-30000/`](../01-ORIGINAL-30000/) |
 | 30001 | Valdivia [Chile] | Ciudad OSM / exploración / pacífico | [`../02-VALDIVIA-30001/`](../02-VALDIVIA-30001/) |
 | 30002 | GAELSIN | Survival / **PvP** / mobs hostiles | [`../03-GAELSIN-30002/`](../03-GAELSIN-30002/) |
-| 30003 | Llanura CTF | Captura la bandera / **armas** | [`../04-CTF-30003/`](../04-CTF-30003/) |
+| 30003 | CTF | Captura la bandera / **armas** | [`../04-CTF-30003/`](../04-CTF-30003/) |
 
 ## Contenido de esta carpeta
 
@@ -57,6 +57,7 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 |---------|-------------|
 | [BACKUP_STATUS.md](operations/BACKUP_STATUS.md) | Estado y plan del sistema de backups |
 | [clonar-mundo-produccion-local.md](operations/clonar-mundo-produccion-local.md) | Descargar un backup del VPS y correrlo localmente |
+| [DISCORD_NOTIFICATIONS.md](operations/DISCORD_NOTIFICATIONS.md) | Sistema de notificaciones de conexiones a Discord (sidecars `discord-notifier*`) |
 | [MCP_SERVERS.md](operations/MCP_SERVERS.md) | Servidores MCP disponibles |
 
 > Deploy, texture-recovery y troubleshooting profundos viven en el **repo privado**

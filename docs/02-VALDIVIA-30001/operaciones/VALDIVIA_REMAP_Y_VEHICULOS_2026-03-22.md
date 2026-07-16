@@ -108,8 +108,8 @@ El notificador Discord solo monitoreaba el servidor Wetlands (puerto 30000). Las
 ### Solucion
 
 1. **Script actualizado** (`scripts/discord-notifier.sh`): nueva variable `SERVER_LABEL` para diferenciar mensajes
-2. **docker-compose.yml**: nuevo servicio `discord-notifier-valdivia` con `CONTAINER_NAME=luanti-valdivia-server` y `SERVER_LABEL=Valdivia 2.0`
-3. **Documentacion actualizada**: `docs/operations/DISCORD_NOTIFICATIONS.md`
+2. **docker-compose.yml**: nuevo servicio `discord-notifier-valdivia` con `CONTAINER_NAME=luanti-valdivia-server` y `SERVER_LABEL=Valdivia 2.0` (posteriormente renombrado a `Valdivia 🏙️`)
+3. **Documentacion**: `docs/00-SHARED/operations/DISCORD_NOTIFICATIONS.md`
 
 ### Estado actual
 

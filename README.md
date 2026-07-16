@@ -49,7 +49,7 @@ Main creative world. The safe, family-friendly hub.
 | Music | Original ambient soundtrack |
 | Mods | 25+ custom and third-party mods |
 
-### Valdivia 2.0 — port `30001`
+### Valdivia — port `30001`
 
 A real-world recreation of Valdivia, Chile, generated from OpenStreetMap data via the [Arnis](https://github.com/luanti-org/arnis) tool. Explore the city's streets, plazas, and rivers as voxels.
 
@@ -57,9 +57,9 @@ A real-world recreation of Valdivia, Chile, generated from OpenStreetMap data vi
 
 Pure VoxeLibre survival world. No creative mode, no area protection, PvP on. Hostile mobs spawn at night (Creepers excluded). Generated from seed `GAELSIN` with mapgen v7.
 
-### Llanura CTF — port `30003`
+### CTF — port `30003`
 
-Capture-the-flag on a 100% flat dirt world. Two teams (`rojo` / `azul`), guns enabled, `/ctf entrar|salir|base|marcador|reset`.
+Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF/capturetheflag) game by rubenwardy (not VoxeLibre). Swords, guns, grenades; rounds start automatically when both teams have players.
 
 ## Known bugs
 
