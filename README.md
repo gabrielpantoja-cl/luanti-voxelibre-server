@@ -1,16 +1,17 @@
 # Wetlands
 
-**A Luanti (Minetest) server where compassion, creativity, and education thrive.**
+**A Luanti (Minetest) server where compassion, creativity, and education thrive — with a plant-based commitment.**
 
 > **[Visit our site](https://luanti.gabrielpantoja.cl/) | [Photo gallery](https://luanti.gabrielpantoja.cl/galeria.html)**
 
 ---
 
-**Wetlands** is a game world designed as a safe, controlled space for kids and families. Adventure and learning go hand in hand.
+**Wetlands** is a game world designed as a safe, controlled space for kids and families. Adventure and learning go hand in hand. The main world (port 30000) is **compassivo y plant-based** — we promote plant alternatives through mods (`vegan_food`, `vegan_replacements`, `education_blocks`) rather than hiding the ecosystem, so players have genuine plant-based options in a familiar VoxeLibre world.
 
 ## Philosophy
 
 - **Animal compassion:** we care for animals, we don't harm them.
+- **Plant-based by design:** mods replace animal items (meat, leather, etc.) with plant alternatives (tofu, seitan, plant milk, vegetables) and add new plant-based recipes — see [`docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md`](docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md) for the full commitment.
 - **Creative education:** learn about sustainability and conscious eating while you play.
 - **Controlled adventure:** by day you explore and build freely. At night hostile mobs spawn (Creepers excluded). There's a dedicated PvP arena for combat when you want it.
 

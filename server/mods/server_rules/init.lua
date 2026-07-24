@@ -37,10 +37,12 @@ minetest.register_chatcommand("reglas", {
             "   - No spam ni mensajes repetitivos",
             "   - Ayuda a crear un ambiente positivo",
             "",
-            "5. 🌱 ESPÍRITU COMPASIVO",
-            "   - Cuida a los animales del servidor",
-            "   - Comparte y ayuda a otros jugadores",
-            "   - Disfruta construyendo juntos",
+            "5. 🌱 COMPROMISO PLANT-BASED",
+            "   - Wetlands promueve alternativas vegetales y reemplaza items de origen animal",
+            "   - Mods activos: vegan_food, vegan_replacements, education_blocks",
+            "   - No se promueven estilos de juego basados en explotación animal",
+            "   - Cuida a los animales del servidor y comparte con la comunidad",
+            "   - Tip: /veganinfo para ver los mods y filosofía detallada",
             "",
             "⚠️ CONSECUENCIAS:",
             "1ra vez: Advertencia",
@@ -70,8 +72,8 @@ minetest.register_chatcommand("r", {
         local reglas_cortas = {
             "🌱 REGLAS RÁPIDAS:",
             "1) No molestar 2) Nombre apropiado",
-            "3) Respeto 4) Chat limpio 5) Ser compasivo",
-            "Usa /reglas para ver todas las reglas"
+            "3) Respeto 4) Chat limpio 5) Plant-based",
+            "Usa /reglas para ver todas  |  /veganinfo para los mods"
         }
 
         for _, linea in ipairs(reglas_cortas) do
@@ -79,7 +81,7 @@ minetest.register_chatcommand("r", {
         end
 
         return true
-    end
+    end,
 })
 
 -- Mostrar reglas automáticamente a TODOS los jugadores al conectarse

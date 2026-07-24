@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Wetlands - Servidor de Luanti (Minetest) en Chile. Cuatro mundos: creativo familiar, recreación de Valdivia desde OpenStreetMap, GAELSIN supervivencia, y CTF captura la bandera.">
-    <meta name="keywords" content="Luanti, Minetest, Minecraft, servidor, Chile, Valdivia, creativo, mods, gaelsin, supervivencia, pvp, ctf, captura la bandera, capture the flag">
+    <meta name="description" content="Wetlands - Servidor compassivo y plant-based de Luanti en Chile. Cuatro mundos: creativo familiar, recreación de Valdivia desde OpenStreetMap, GAELSIN supervivencia, y CTF captura la bandera.">
+    <meta name="keywords" content="Luanti, Minetest, Minecraft, servidor, Chile, Valdivia, creativo, mods, gaelsin, supervivencia, pvp, ctf, captura la bandera, capture the flag, plant-based, vegan, compassionate">
     <title>🌱 Wetlands Chile - Servidor de Luanti</title>
     
     <!-- Favicon -->
@@ -15,6 +15,54 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="assets/css/style.css?v=20260418b">
+    <style>
+        /* Filosofía Plant-Based section (added 2026-07-24) */
+        .philosophy-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-color, #333);
+        }
+        .philosophy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 0 auto 2rem;
+        }
+        .philosophy-card {
+            background: var(--card-bg, #f9f9f9);
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .philosophy-card:hover {
+            transform: translateY(-4px);
+        }
+        .philosophy-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .philosophy-card h3 {
+            color: #2E7D32;
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+        }
+        .philosophy-card p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #555;
+        }
+        .philosophy-cta {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 1rem;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -29,6 +77,7 @@
                 <a href="galeria.html" class="nav-link">🖼️ Galería</a>
                 <a href="#como-jugar" class="nav-link">¿Cómo Jugar?</a>
                 <a href="#caracteristicas" class="nav-link">Características</a>
+                <a href="#filosofia" class="nav-link">🌱 Filosofía</a>
                 <a href="#documentacion" class="nav-link">🌟 Guías</a>
                 <a href="https://discord.gg/JDmZ5uhKM" target="_blank" class="nav-link discord-link">💬 Discord</a>
             </div>
@@ -44,6 +93,7 @@
         <a href="galeria.html" class="mobile-nav-link">🖼️ Galería</a>
         <a href="#como-jugar" class="mobile-nav-link">¿Cómo Jugar?</a>
         <a href="#caracteristicas" class="mobile-nav-link">Características</a>
+        <a href="#filosofia" class="mobile-nav-link">🌱 Filosofía</a>
         <a href="#documentacion" class="mobile-nav-link">🌟 Guías</a>
         <a href="https://discord.gg/JDmZ5uhKM" target="_blank" class="mobile-nav-link">💬 Discord</a>
     </div>
@@ -58,7 +108,7 @@
                         🌱 WETLANDS VALDIVIA 🌱
                     </h1>
                     <p class="pixel-subtitle">
-                        Servidor Familiar
+                        Servidor Compassivo y Plant-Based
                     </p>
                     <div class="server-connect-box">
                         <div class="server-status">
@@ -263,6 +313,41 @@
                     <p>Capture The Flag de rubenwardy en el puerto 30003. Combate con espadas, armas y granadas. Captura la bandera del equipo enemigo antes que ellos capturen la tuya. Rondas automáticas.</p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Filosofía Plant-Based Section -->
+    <section id="filosofia" class="philosophy">
+        <div class="container">
+            <h2 class="section-title">🌱 Filosofía Plant-Based</h2>
+            <p class="philosophy-intro">
+                Wetlands es un servidor <strong>compassivo y plant-based</strong>. Esto significa que promovemos alternativas vegetales y reemplazamos los items de origen animal con sus equivalentes de plantas. No es un servidor "vegano radical" — los mobs animales y hostiles siguen existiendo (decisión consciente para mantener el mundo "natural" de VoxeLibre), pero sus drops problemáticos están interceptados.
+            </p>
+            <div class="philosophy-grid">
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">🥕</div>
+                    <h3>Items Animales → Vegetales</h3>
+                    <p>13 items como carne cruda, carne cocida y cuero se eliminan automáticamente y se reemplazan con manzana, papa, zanahoria, etc. El comando <code>/give</code> también intercepta y reemplaza.</p>
+                </div>
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">🌾</div>
+                    <h3>Recetas Plant-Based</h3>
+                    <p>Mod <code>vegan_food</code> añade tofu, seitan, "notfish", leche de plantas, siropes. Todo crafteable in-game desde el primer minuto.</p>
+                </div>
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">📚</div>
+                    <h3>Educación Continua</h3>
+                    <p>Mod <code>education_blocks</code> tiene bloques y comandos que enseñan sobre compasión y sostenibilidad. Un servidor que enseña, no solo entretiene.</p>
+                </div>
+                <div class="philosophy-card">
+                    <div class="philosophy-icon">🕊️</div>
+                    <h3>Sin Compromiso Agresivo</h3>
+                    <p>No escondemos que hay mobs animales. La filosofía es <em>transparente</em>: opciones plant-based disponibles, no obligatorias. Cada jugador elige.</p>
+                </div>
+            </div>
+            <p class="philosophy-cta">
+                📖 Detalles completos: <a href="https://github.com/gabrielpantoja-cl/luanti-voxelibre-server/blob/main/docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md" target="_blank" rel="noopener"><code>docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md</code></a>
+            </p>
         </div>
     </section>
 
