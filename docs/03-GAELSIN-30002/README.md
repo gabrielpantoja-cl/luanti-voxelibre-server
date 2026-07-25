@@ -12,4 +12,5 @@ Mundo survival puro con VoxeLibre, generado con seed `GAELSIN` y mapgen v7.
 | Daño | Sí |
 | PvP | Sí (global) |
 | Mobs hostiles | Sí (creepers bloqueados) |
+| Ayuda de minería | Oretracker `orehud` (opt-in) |
 | Protección | No |

@@ -22,6 +22,7 @@ Dirección pública: `luanti.gabrielpantoja.cl:30002`.
 | PvP | Activo (`enable_pvp = true`) — sin arena, todo el mundo |
 | Daño / mobs | Daño on; mobs hostiles de noche (`only_peaceful_mobs = false`) |
 | Creepers | **Bloqueados** (mod `wetlands_no_creeper`) |
+| Ayuda de minería | Oretracker `orehud` (activación individual) |
 | Protección de áreas | **Sin** (`voxelibre_protection` off) |
 | Fuego / TNT | Activos (supervivencia estándar) |
 | Discord label | `GAELSIN ⚔️` |
@@ -33,18 +34,24 @@ número determinista por hash, de modo que `fixed_map_seed = GAELSIN` + `mg_name
 reproduce siempre el mismo mundo. El seed efectivo lo fija `luanti-gaelsin.conf` en el
 primer arranque (un mundo fresco no tiene `map_meta.txt` previo que lo sobrescriba).
 
-## Mods habilitados (set mínimo)
+## Mods habilitados (set mínimo + ayuda de minería)
 
-Solo núcleo + WorldEdit admin. La lista autoritativa es `luanti-gaelsin.conf` y debe
-coincidir con el `world.mt` que escribe `scripts/setup-gaelsin-world.sh`:
+La lista autoritativa es `luanti-gaelsin.conf` y debe coincidir con el `world.mt`
+que escribe `scripts/setup-gaelsin-world.sh`:
 
 - `wetlands_gaelsin_newplayer` — otorga **solo `interact, shout`** a nuevos jugadores
   (apropiado para supervivencia; no usa el `wetlands_newplayer` de Wetlands que da
   fly/creative).
 - `wetlands_no_creeper` — bloquea creepers.
-- `server_rules`, `wetlands_lastpos`, `mcl_potions_hotfix`.
+- `server_rules`, `wetlands_lastpos`.
+- `orehud` de Oretracker v1.11 — muestra marcadores de los minerales situados hasta
+  8 nodos alrededor del jugador. Se activa y desactiva con `/orehud`.
 - `_world_folder_media`, `mcl_custom_world_skins` — skins.
 - `worldedit` (+ `_commands` / `_shortcommands`) — herramientas de admin.
+
+El submod `xray` está instalado como parte del paquete, pero permanece deshabilitado
+con `load_mod_xray = false`: modifica nodos temporalmente y no es apropiado para el
+mundo compartido.
 
 Todo lo demás (NPCs, música, vehículos, CTF guns, protección, arena PvP, decoración,
 Halloween) está explícitamente en `= false` como kill-switch en la config.
@@ -55,6 +62,19 @@ VoxeLibre ignora `default_privs`. Los privilegios los otorga el mod
 `server/mods/wetlands_gaelsin_newplayer/init.lua` vía `minetest.register_on_newplayer`.
 La tabla `PRIVS` da únicamente `interact` y `shout`. Editar esa tabla para cambiar el
 set por defecto.
+
+### Privilegio de ayuda minera
+
+`orehud` es opt-in y no se entrega automáticamente a nuevos jugadores. Un administrador
+puede habilitarlo para cada jugador, sin reiniciar, y luego el jugador alterna los
+marcadores de minerales:
+
+```text
+/grant <jugador> orehud
+/orehud
+```
+
+Para retirarlo: `/revoke <jugador> orehud`.
 
 ## Operaciones
 
@@ -94,13 +114,15 @@ sudo netfilter-persistent save
 ## Verificación post-deploy
 
 ```bash
-docker logs --since=2m luanti-gaelsin-server 2>&1 | grep -iE 'error|listening|seed'
+docker logs --since=2m luanti-gaelsin-server 2>&1 | grep -iE 'error|listening|seed|orehud|xray'
 ```
 
 En el juego (`luanti.gabrielpantoja.cl:30002`):
 - Mundo nuevo (no es el viejo Infierno).
 - Supervivencia: sin vuelo, sin inventario creativo.
 - Jugador nuevo: solo `interact, shout` (`/privs`).
+- Tras recibir el privilegio `orehud`, `/orehud` muestra los minerales cercanos.
+- El comando `/xray` no está disponible.
 - PvP activo; creepers ausentes; mobs hostiles de noche.
 - Notificación Discord con label `GAELSIN ⚔️`.
 

@@ -53,7 +53,9 @@ world_name = gaelsin
 load_mod_wetlands_gaelsin_newplayer = true
 load_mod_server_rules = true
 load_mod_wetlands_lastpos = true
-load_mod_mcl_potions_hotfix = true
+load_mod_orehud = true
+load_mod_mcl_potions_hotfix = false
+load_mod_xray = false
 
 # Creepers bloqueados
 load_mod_wetlands_no_creeper = true
