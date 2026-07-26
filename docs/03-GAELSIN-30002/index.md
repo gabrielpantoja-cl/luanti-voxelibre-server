@@ -22,7 +22,7 @@ Dirección pública: `luanti.gabrielpantoja.cl:30002`.
 | PvP | Activo (`enable_pvp = true`) — sin arena, todo el mundo |
 | Daño / mobs | Daño on; mobs hostiles de noche (`only_peaceful_mobs = false`) |
 | Creepers | **Bloqueados** (mod `wetlands_no_creeper`) |
-| Ayuda de minería | Oretracker `orehud` (activación individual) |
+| Ayuda de minería | Oretracker — `orehud` + `xray` (opt-in, ambos) — ver [`oretracker.md`](oretracker.md) |
 | Protección de áreas | **Sin** (`voxelibre_protection` off) |
 | Fuego / TNT | Activos (supervivencia estándar) |
 | Discord label | `GAELSIN ⚔️` |
@@ -44,14 +44,18 @@ que escribe `scripts/setup-gaelsin-world.sh`:
   fly/creative).
 - `wetlands_no_creeper` — bloquea creepers.
 - `server_rules`, `wetlands_lastpos`.
-- `orehud` de Oretracker v1.11 — muestra marcadores de los minerales situados hasta
-  8 nodos alrededor del jugador. Se activa y desactiva con `/orehud`.
+- `orehud` de Oretracker v1.11 — muestra marcadores (waypoints en HUD) de los
+  minerales situados hasta 8 nodos alrededor del jugador. Se activa con `/orehud`.
+- `xray` de Oretracker v1.11 (submod del mismo paquete) — **habilitado desde
+  2026-07-26** tras prueba in-game. Reemplaza temporalmente la piedra y similares
+  por un nodo `glasslike` con `light_source = 4` en un radio de 6 bloques, lo que
+  deja ver cuevas y vetas como "agujeros" luminosos. Se activa con `/xray`. Es
+  server-side (afecta al mundo), así que un jugador con xray hace que otros cerca
+  vean piedras "transparentes" en esa zona. Decisión consciente de supervivencia
+  con asistencia opcional — ver [`oretracker.md`](oretracker.md) para detalles,
+  pitfalls y cosas a observar.
 - `_world_folder_media`, `mcl_custom_world_skins` — skins.
 - `worldedit` (+ `_commands` / `_shortcommands`) — herramientas de admin.
-
-El submod `xray` está instalado como parte del paquete, pero permanece deshabilitado
-con `load_mod_xray = false`: modifica nodos temporalmente y no es apropiado para el
-mundo compartido.
 
 Todo lo demás (NPCs, música, vehículos, CTF guns, protección, arena PvP, decoración,
 Halloween) está explícitamente en `= false` como kill-switch en la config.
@@ -63,18 +67,29 @@ VoxeLibre ignora `default_privs`. Los privilegios los otorga el mod
 La tabla `PRIVS` da únicamente `interact` y `shout`. Editar esa tabla para cambiar el
 set por defecto.
 
-### Privilegio de ayuda minera
+### Privilegios de ayuda minera
 
-`orehud` es opt-in y no se entrega automáticamente a nuevos jugadores. Un administrador
-puede habilitarlo para cada jugador, sin reiniciar, y luego el jugador alterna los
-marcadores de minerales:
+Tanto `orehud` como `xray` son opt-in y no se entregan automáticamente a nuevos
+jugadores. Un administrador los habilita por jugador, sin reiniciar:
 
 ```text
 /grant <jugador> orehud
-/orehud
+/grant <jugador> xray
 ```
 
-Para retirarlo: `/revoke <jugador> orehud`.
+Luego el jugador alterna cada ayuda con su comando:
+
+```text
+/orehud    -- toggle waypoints de minerales cercanos (8 nodos)
+/xray      -- toggle piedra/granito/andesita/diorita/areniscas/blackstone/
+              basalto/netherrack/deepslate invisibles en 6 nodos a la redonda
+```
+
+Para retirar: `/revoke <jugador> orehud` / `/revoke <jugador> xray`.
+
+Ver [`oretracker.md`](oretracker.md) para entender cómo funciona cada uno por dentro,
+los pitfalls conocidos (xray es server-side, nodos pueden quedar "fantasma" si
+logout con xray prendido, etc.) y los parámetros de tuning.
 
 ## Operaciones
 
@@ -122,7 +137,8 @@ En el juego (`luanti.gabrielpantoja.cl:30002`):
 - Supervivencia: sin vuelo, sin inventario creativo.
 - Jugador nuevo: solo `interact, shout` (`/privs`).
 - Tras recibir el privilegio `orehud`, `/orehud` muestra los minerales cercanos.
-- El comando `/xray` no está disponible.
+- Tras recibir el privilegio `xray`, `/xray` vuelve invisible la piedra y similares
+  en un radio de 6 nodos.
 - PvP activo; creepers ausentes; mobs hostiles de noche.
 - Notificación Discord con label `GAELSIN ⚔️`.
 
