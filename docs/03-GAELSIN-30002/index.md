@@ -54,7 +54,7 @@ que escribe `scripts/setup-gaelsin-world.sh`:
   vean piedras "transparentes" en esa zona. Decisión consciente de supervivencia
   con asistencia opcional — ver [`oretracker.md`](oretracker.md) para detalles,
   pitfalls y cosas a observar.
-- `_world_folder_media`, `mcl_custom_world_skins` — skins.
+- `_world_folder_media`, `mcl_custom_world_skins` — skins. Ver [`skins.md`](skins.md) para el set actual, recetas de alta/baja y pitfalls.
 - `worldedit` (+ `_commands` / `_shortcommands`) — herramientas de admin.
 
 Todo lo demás (NPCs, música, vehículos, CTF guns, protección, arena PvP, decoración,
