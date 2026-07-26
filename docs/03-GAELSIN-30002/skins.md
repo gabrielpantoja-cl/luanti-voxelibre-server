@@ -30,9 +30,9 @@ Gate secundario (default):
 
 ## Skins pobladas
 
-8 skins, todas `gender = "male"`. La octava (`indie_boy`) se agregó al final
-porque el PNG original venía en formato Minecraft de 64×64 y se recortó a 64×32
-antes de copiarlo (ver [Receta: agregar una skin](#receta-agregar-una-skin)).
+11 skins, todas `gender = "male"`. Las marcadas con **↻ crop** vinieron en
+formato Minecraft de 64×64 y se recortaron a 64×32 antes de copiarse (ver
+[Receta: agregar una skin](#receta-agregar-una-skin)).
 
 | # | texture (`skins.txt`) | gender | Origen | Tamaño PNG | Notas |
 |---|-----------------------|--------|--------|------------|-------|
@@ -43,7 +43,10 @@ antes de copiarlo (ver [Receta: agregar una skin](#receta-agregar-una-skin)).
 | 5 | `santa_ho_ho_ho` | male | Wetlands | 1032 B | estacional (navidad) |
 | 6 | `pepe` | male | Wetlands | 1017 B | clon directo |
 | 7 | `lloyd_possesion_suit` | male | Wetlands | 2364 B | clon directo |
-| 8 | `indie_boy` | male | MinecraftSkins | 637 B | recortada 64×64 → 64×32 |
+| 8 | `indie_boy` | male | MinecraftSkins | 637 B | ↻ crop 64×64 → 64×32 |
+| 9 | `wetlands_npc_luke` | male | `wetlands_npcs/textures/` | 824 B | textura del NPC Luke reutilizada como skin de jugador |
+| 10 | `mandalorian` | male | MinecraftSkins | 1463 B | ↻ crop 64×64 → 64×32 |
+| 11 | `diamond_armor` | male | MinecraftSkins | 1822 B | ↻ crop 64×64 → 64×32 |
 
 Adicionalmente, el archivo `enderman.png` vive en la carpeta de texturas pero
 **no** está en `skins.txt`. Lo registra el mod custom `wetlands_gabo_skin`
@@ -136,7 +139,7 @@ cargado pero no registrará nada.
 |---------|------------------|-----------------|
 | Mod cargando | mismo `mcl_custom_world_skins` | mismo |
 | Set de skins | el de `server/worlds/original/skins.txt` | el de `server/worlds/gaelsin/skins.txt` |
-| Tamaño del set | 7 | 8 (Wetlands + `indie_boy`) |
+| Tamaño del set | 7 | 11 (Wetlands + 4 nuevas: `indie_boy`, `wetlands_npc_luke`, `mandalorian`, `diamond_armor`) |
 | Skins con disfraz oculto (no en menú) | depende | `enderman` (vía `wetlands_gabo_skin`) |
 
 Las skins **no se sincronizan automáticamente** entre mundos — el set de
