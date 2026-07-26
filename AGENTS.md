@@ -243,9 +243,30 @@ Recovery protocol for corrupted textures lives in the private repo: `infra/priva
 |--------|------|-------|---------|-----------|
 | Player skin | 64×32 | `mcl_armor_character.b3d` | `server/skins/`, Star Wars NPCs | Steve/Alex (head, torso, arms, legs) |
 | Villager texture | 64×64 | `mobs_mc_villager.b3d` | Classic NPCs (farmer, etc.) | Minecraft villager (robe, hat overlay, nose) |
-| Minecraft skin (downloaded) | 64×64 | N/A — must convert | Source from MinecraftSkins.com | Player skin format; **must be cropped to 64×32** before use |
+| Minecraft skin (downloaded) | 64×64 | N/A — must convert | Source from MinecraftSkins.com | Player skin format with **two layers** (base + overlay); both must be preserved in the 64×32 output |
 
-To convert a downloaded Minecraft skin: `img.crop((0, 0, 64, 32))` with PIL, or use https://godly.github.io/minetest-skin-converter/.
+**Converting a downloaded Minecraft skin to a 64×32 player skin** — the
+64×64 file has **two layers**: a base layer and an overlay layer painted on
+top with alpha (armor plates, helmets, capes, jackets, sleeves, trousers).
+A naive `img.crop((0, 0, 64, 32))` only takes the base and silently
+discards every overlay pixel — armor becomes invisible, helmets disappear,
+capes vanish. The fix is to **bake the overlay onto the base** before
+cropping:
+
+- **Recommended for any skin with visible overlay detail**: drive
+  <https://godly.github.io/minetest-skin-converter/> via the `playwright`
+  MCP server — it has Copy Cape / Copy Jacket / Copy Trouser / Copy Sleeve
+  buttons that composite the overlay regions onto a 64×32 output with
+  adjustable per-region alpha. Full step-by-step automation in the
+  [`add-skin` skill](.opencode/skills/add-skin/SKILL.md) — search for
+  "Method 1 (Recommended)".
+- **Only for overlay-free plain characters** (bottom 32 rows of the 64×64
+  are fully transparent): `img.crop((0, 0, 64, 32))` with PIL is enough.
+
+A documented case of the lossy crop biting us: GAELSIN `mandalorian` lost
+its helmet and `diamond_armor` lost its chestplate until re-processed with
+godly on 2026-07-26. The godlier version of the doc with full recipes lives
+at `docs/03-GAELSIN-30002/skins.md`.
 
 ### NPC dual model system (`wetlands_npcs`)
 | NPC type | Model | Texture | Pose |
