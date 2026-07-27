@@ -54,27 +54,116 @@ For NPC textures, the project has `server/mods/wetlands_npcs/tools/generate_text
 
 ### Conversion from Minecraft (64x64 -> 64x32)
 
-Crop the top half only:
+**The 64x64 Minecraft format has TWO layers** stacked into a single file:
+**base** (the character's "undershirt") and **overlay** (armor, helmet, cape,
+jackets, sleeves, trousers — painted on top with alpha). A naive top-half crop
+keeps only the base and **silently discards every overlay pixel** — armor
+becomes invisible, helmets disappear, capes vanish.
+
+Real example from GAELSIN (2026-07-26): `mandalorian` lost its helmet and
+`diamond_armor` lost its chestplate after a simple `crop((0,0,64,32))`.
+
+#### Method 1 (Recommended for ANY skin with armor/helmet/cape/clothing overlay): godly via Playwright
+
+**godly Minetest Skin Converter** (<https://godly.github.io/minetest-skin-converter/>,
+GPLv3, 18★ on GitHub, runs 100% in the browser) does the right thing: it
+copies the overlay regions (cape, jacket, sleeves, trousers) onto the base
+with controllable alpha per region. This is the only method that recovers
+the full Minecraft skin.
+
+The MCP server `playwright` is configured at `.mcp.json` (project root) for
+this. Drive godly programmatically with these steps:
+
+1. **Navigate** to the converter:
+   ```
+   browser_navigate https://godly.github.io/minetest-skin-converter/
+   ```
+
+2. **Click the file input** to open the chooser, then upload the 64x64 PNG:
+   ```
+   browser_evaluate(() => document.querySelector('input[type=file]').click())
+   browser_file_upload(paths=["/abs/path/to/source_64x64.png"])
+   ```
+   The source canvas updates automatically once the file loads.
+
+3. **Set ALL alpha inputs to `1.0`** (the page defaults to `0.5` which makes
+   overlays semi-transparent — wrong for faithful conversion):
+   ```js
+   ['alphaJacket','alphaTrouserLeft','alphaTrouserRight','alphaSleeveLeft','alphaSleeveRight']
+     .forEach(id => { const el = document.getElementById(id); if (el) el.value = '1.0'; });
+   ```
+   Apply via `browser_evaluate`.
+
+4. **Click every Copy button in order** (each composes one overlay region
+   onto the 64x32 output canvas):
+   - Copy Cape
+   - Copy Jacket
+   - Copy Left Trouser
+   - Copy Right Trouser
+   - Copy Left Sleeve
+   - Copy Right Sleeve
+
+   Use `browser_click` with the button text. The 3D preview is irrelevant
+   (it shows the base layer only); the real output is the top-left 64x32 image.
+
+5. **Extract the resulting 64x32 PNG** as a data URL from the new-skin
+   `<img>`, then decode and save:
+   ```js
+   const url = document.querySelector('img[alt^="Placeholder for new skin"]').src;
+   // url is "data:image/png;base64,..." — strip prefix, base64-decode, write to disk
+   ```
+   The output is always 64x32 RGBA with overlays baked in.
+
+6. **Re-load for the next skin**: `browser_navigate` the URL again to get a
+   clean state, then repeat from step 2. (Loading a new file does NOT clear
+   the destination canvas — the overlays accumulate on top of the previous
+   skin's result. Always refresh between files.)
+
+The Playwright session stores screenshots and console logs in
+`.playwright-mcp/` (gitignored). Comparison images (lossy-crop vs godly
+side-by-side) help the user see the improvement before deploying.
+
+#### Method 2 (Fallback, ONLY for skins without overlay): top-half crop
+
+If the Minecraft skin has **no armor, no helmet, no cape, no jacket** (a
+plain character with only the base layer visible), a simple top-half crop
+is enough. Use this method ONLY when you've inspected the 64x64 and
+confirmed there is no overlay detail to recover.
+
 ```bash
 magick [input.png] -crop 64x32+0+0 +repage [output.png]
 ```
 
-Or use the automated script:
+Or in Python:
+```python
+from PIL import Image
+Image.open('source_64x64.png').crop((0, 0, 64, 32)).save('output_64x32.png')
+```
+
+Heuristic to decide between methods: open the 64x64 and check if the
+**bottom half** (rows 32-63) has any non-transparent pixels. If yes → godly
+(Method 1). If empty → crop (Method 2) is safe.
+
+Or use the automated script (uses top-half crop internally — only valid for
+overlay-free skins):
 ```bash
 ./scripts/add-skin.sh [input.png] [clean_name] [male|female]
 ```
 
 The script automatically:
-- Detects 64x64 and converts to 64x32
+- Detects 64x64 and converts to 64x32 via top-half crop
 - Sanitizes the filename
 - Copies to `server/worlds/world/_world_folder_media/textures/`
 - Updates `skins.txt`
 
 ### Manual Process (if script unavailable on Windows)
 
-1. **Convert** (if 64x64):
+1. **Convert** (if 64x64) — pick Method 1 or Method 2 above. Method 1 is
+   the only correct one for overlay-bearing skins:
 ```bash
+# Method 2 (crop) — overlay-free skins only
 magick [input.png] -crop 64x32+0+0 +repage [clean_name].png
+# Method 1 (godly) — see step-by-step in "Conversion from Minecraft" above
 ```
 
 2. **Copy texture** to:
@@ -224,3 +313,13 @@ feat(npcs): Add [type] NPC to Wetlands
 3. **NPC textures MUST be 64x64** -- 64x32 will look corrupted on villager model
 4. **skins.txt texture field** omits `.png` extension
 5. **World folder files** are NOT in Git -- also copy to `server/skins/` for tracking
+6. **Top-half crop LOSES the overlay layer.** A `crop((0,0,64,32))` of a
+   Minecraft 64x64 keeps only the base layer and discards the armor, helmet,
+   cape, jacket, sleeves, and trousers that were painted on top with alpha.
+   Use godly (Method 1 in "Conversion from Minecraft" above) for any skin
+   with visible overlay detail. The crop is safe only for plain characters
+   where the bottom 32 rows of the 64x64 are entirely transparent.
+7. **When reprocessing a skin, ALWAYS refresh the godly page** between
+   files. The destination canvas accumulates overlays from prior sessions;
+   loading a new file via the chooser does NOT reset it. Use
+   `browser_navigate` to the converter URL again to get a clean state.
