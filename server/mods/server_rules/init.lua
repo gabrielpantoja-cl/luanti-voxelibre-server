@@ -84,66 +84,16 @@ minetest.register_chatcommand("r", {
     end,
 })
 
--- Mostrar reglas automáticamente a TODOS los jugadores al conectarse
+-- Mostrar reglas automáticamente a TODOS los jugadores al conectarse.
+-- 2026-07-30: deshabilitado para mantener el chat minimalista al ingresar.
+-- La bienvenida breve vive en `motd` (luanti-original.conf). Toda la
+-- información detallada sigue accesible via /reglas, /ayuda, /veganinfo.
 minetest.register_on_joinplayer(function(player)
-    local name = player:get_player_name()
-
-    minetest.after(3, function()
-        -- Mensaje de bienvenida mejorado
-        minetest.chat_send_player(name, "🌈 ════════════════════════════════════ 🌈")
-        minetest.chat_send_player(name, "🌱 ¡Bienvenid@ a Wetlands, " .. name .. "! 🌱")
-        minetest.chat_send_player(name, "🏠 Servidor Creativo y Educativo (7+ años)")
-        minetest.chat_send_player(name, "🎮 De día construye, de noche sobrevive. PvP solo en arenas.")
-        minetest.chat_send_player(name, "🌈 ════════════════════════════════════ 🌈")
-        minetest.chat_send_player(name, "")
-
-        -- Reglas básicas automáticas
-        minetest.chat_send_player(name, "📋 REGLAS BÁSICAS IMPORTANTES:")
-        minetest.chat_send_player(name, "1) 🚫 No molestes a otros jugadores")
-        minetest.chat_send_player(name, "2) 👤 Usa un nombre apropiado y respetuoso")
-        minetest.chat_send_player(name, "3) 🤝 Respeta a todos por igual")
-        minetest.chat_send_player(name, "4) 💬 Chat limpio (ambiente familiar)")
-        minetest.chat_send_player(name, "5) 🌱 Cuida y respeta a los animales")
-        minetest.chat_send_player(name, "")
-
-        -- Comandos útiles
-        minetest.chat_send_player(name, "⚡ COMANDOS ÚTILES:")
-        minetest.chat_send_player(name, "• /ayuda - Información completa del servidor")
-        minetest.chat_send_player(name, "• /back_to_spawn - Volver a tu spawn (cama o spawn principal)")
-        minetest.chat_send_player(name, "• /arena_tp - Ir rápido a Arena Principal (PVP)")
-        minetest.chat_send_player(name, "• /pos1 y /pos2 - Marcar área a proteger")
-        minetest.chat_send_player(name, "• /protect_area - Proteger tu área marcada")
-        minetest.chat_send_player(name, "• /list_areas - Ver todas tus áreas protegidas")
-        minetest.chat_send_player(name, "• Duerme en una cama para establecer tu spawn personal")
-        minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "👤 Importante: Usa siempre el mismo nombre de usuario para evitar confusiones y gestionar tus áreas protegidas")
-    end)
 end)
 
--- Mostrar mensaje especial adicional para jugadores nuevos
+-- Mostrar mensaje especial adicional para jugadores nuevos.
+-- 2026-07-30: deshabilitado por la misma razon que el bloque on_joinplayer.
 minetest.register_on_newplayer(function(player)
-    local name = player:get_player_name()
-
-    minetest.after(8, function()
-        minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🎆 ¡Jugador Nuevo Detectado! 🎆")
-        minetest.chat_send_player(name, "🌱 Bienvenido a tu primer día en Wetlands")
-        minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🎯 QUÉ HACE ESPECIAL A NUESTRO SERVIDOR:")
-        minetest.chat_send_player(name, "• 🏗️ Modo creativo: construye sin limites")
-        minetest.chat_send_player(name, "• 🌙 Mobs hostiles de noche para la aventura")
-        minetest.chat_send_player(name, "• 🌈 Comunidad amigable para familias")
-        minetest.chat_send_player(name, "• ⚔️ Arena PvP dedicada para combatir")
-        minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "🚀 TU AVENTURA COMIENZA:")
-        minetest.chat_send_player(name, "1. 🏗️ Construye tu casa y protegela con /protect_area")
-        minetest.chat_send_player(name, "2. 🌍 Explora biomas, cuevas y estructuras")
-        minetest.chat_send_player(name, "3. 🌾 Planta cultivos y crea jardines")
-        minetest.chat_send_player(name, "4. ⚔️ Pelea en la arena PvP con /arena_tp")
-        minetest.chat_send_player(name, "5. 🤝 Haz amigos y construyan proyectos juntos")
-        minetest.chat_send_player(name, "")
-        minetest.chat_send_player(name, "💚 ¡Disfruta tu aventura!")
-    end)
 end)
 
 -- Comando /santuario para información sobre cuidado animal
@@ -327,28 +277,19 @@ minetest.register_chatcommand("discord", {
 --
 -- Cada lista rota: cada ANNOUNCEMENT_INTERVAL segundos se emite el
 -- siguiente mensaje. Lista vacía o mundo no listado → no se anuncia nada.
+--
+-- 2026-07-30: anuncios desactivados en todos los mundos para mantener el
+-- chat minimalista (consistente con la bienvenida breve en `motd`). Los
+-- comandos (/reglas, /ayuda, /veganinfo, /discord) siguen disponibles.
 
 local ANNOUNCEMENT_INTERVAL = 60
 
 local ANNOUNCEMENTS = {
-    -- Wetlands (puerto público 30000): mundo original, conservación + promo
-    world = {
-        "** WETLANDS ** Este es el mundo original del servidor, corriendo desde agosto de 2025. Respétalo y consérvalo. **",
-        "** WETLANDS ** Aquí no se destruye: construye, embellece, protege tu área con /protect_area. **",
-        "** WETLANDS ** Si quieres destruir, para eso están otros mundos. Aquí cuidamos lo construido entre todos. **",
-        "** NUEVO MUNDO ** Valdivia - Ciudad real de Chile recreada a escala! Conectate a luanti.gabrielpantoja.cl:30001 y explorala! **",
-        "** NUEVO MUNDO ** GAELSIN - Mundo de supervivencia: sobrevive, explora y construye desde cero! luanti.gabrielpantoja.cl:30002 **",
-    },
-    -- Valdivia (puerto público 30001)
-    valdivia = {
-        "** VALDIVIA 2.0 ** Este mundo es una parte de la ciudad real de Valdivia, Chile, recreada a escala 1 nodo = 1 metro. **",
-        "** VALDIVIA 2.0 ** Construido desde datos geoespaciales reales: OpenStreetMap (calles, edificios, ríos) + elevación SRTM. **",
-        "** VALDIVIA 2.0 ** Cubre ~5x5 km de la ciudad: Río Valdivia, Miraflores, Torobayo, Colegio Planeta Azul y zonas industriales. **",
-        "** VALDIVIA 2.0 ** Generado automáticamente con Arnis (PR #808 de Luanti) — el terreno y los edificios no fueron construidos a mano. **",
-    },
-    -- GAELSIN (puerto público 30002): supervivencia VoxeLibre pura.
-    -- Anuncios recurrentes desactivados a pedido del usuario (2026-06-27):
-    -- saturaban el chat. Los comandos (/reglas, /ayuda) siguen disponibles.
+    -- Wetlands (puerto público 30000): anuncios desactivados (minimalismo).
+    world = {},
+    -- Valdivia (puerto público 30001): anuncios desactivados (minimalismo).
+    valdivia = {},
+    -- GAELSIN (puerto público 30002): sin anuncios desde 2026-06-27.
     gaelsin = {},
 }
 

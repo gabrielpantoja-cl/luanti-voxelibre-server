@@ -269,15 +269,8 @@ minetest.register_on_joinplayer(function(player)
 
         minetest.log("action", "[PVP Arena] Player " .. name .. " joined - CREATIVE mode with infinite inventory")
 
-        -- Mensaje de bienvenida
-        minetest.after(2, function()
-            if minetest.get_player_by_name(name) then
-                minetest.chat_send_player(name,
-                    minetest.colorize("#66BB6A", "🌱 ¡Bienvenido a Wetlands! Modo creativo con inventario infinito."))
-                minetest.chat_send_player(name,
-                    minetest.colorize("#81C784", "   Presiona E para acceder a todos los items. ¡Diviértete!"))
-            end
-        end)
+        -- 2026-07-30: bienvenida en chat deshabilitada por chat minimalista.
+        -- La bienvenida breve vive en `motd` (luanti-original.conf).
     end
 end)
 

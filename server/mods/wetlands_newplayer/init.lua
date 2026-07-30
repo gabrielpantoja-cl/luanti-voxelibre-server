@@ -17,12 +17,9 @@ local PRIVS = {
 	shout = true,
 }
 
-local VEGAN_WELCOME = {
-	"🌱 ¡Bienvenid@ a Wetlands!",
-	"   Servidor compassivo y plant-based.",
-	"   Construimos un mundo basado en plantas, sin items de origen animal.",
-	"   Tip: /reglas para las reglas, /veganinfo para ver los mods activos.",
-}
+-- 2026-07-30: VEGAN_WELCOME ya no se envia al join (chat minimalista).
+-- La bienvenida breve vive en `motd` (luanti-original.conf) y /veganinfo
+-- sigue disponible bajo demanda.
 
 local VEGAN_MODS = {
 	{mod = "vegan_food",          desc = "Recetas plant-based: tofu, seitan, notfish, plant milk, syrups"},
@@ -44,12 +41,11 @@ minetest.register_on_newplayer(function(player)
 	minetest.log("action", "[" .. modname .. "] Privilegios otorgados a nuevo jugador: " .. name)
 end)
 
--- Mensaje plant-based en CADA join (no solo primer join)
+-- Mensaje plant-based en CADA join (no solo primer join).
+-- 2026-07-30: deshabilitado para mantener el chat minimalista al ingresar.
+-- La bienvenida breve vive en `motd` (luanti-original.conf). El detalle sigue
+-- disponible via /veganinfo.
 minetest.register_on_joinplayer(function(player)
-	local name = player:get_player_name()
-	for _, line in ipairs(VEGAN_WELCOME) do
-		minetest.chat_send_player(name, line)
-	end
 end)
 
 -- Comando /veganinfo: muestra los mods veganos activos y resumen
