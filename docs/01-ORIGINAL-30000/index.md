@@ -26,7 +26,8 @@ en una arena opt-in. Dirección pública: `luanti.gabrielpantoja.cl:30000`.
 - `only_peaceful_mobs = false` — los mobs hostiles aparecen de noche. Los Creepers se bloquean por
   separado con el mod `wetlands_no_creeper`. Resumen para jugadores: **"de día seguro, de noche
   peligroso excepto Creepers"**.
-- `static_spawnpoint = 0,15,0`
+- `static_spawnpoint = 655.1,18.5,243.9` — spawn actual.
+- Spawn historico original: `0,15,0` (usado antes del cambio de julio de 2026).
 - `max_users = 20`
 
 ## Privilegios de nuevos jugadores

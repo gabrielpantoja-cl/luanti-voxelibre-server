@@ -7,7 +7,8 @@ Mundo principal: creativo, educativo, apto para niños, **compassivo y plant-bas
 | Puerto | 30000/UDP |
 | Juego | VoxeLibre (mineclone2) |
 | Mapgen | v7 |
-| Spawn | `0,15,0` |
+| Spawn actual | `655.1,18.5,243.9` |
+| Spawn historico original | `0,15,0` (usado antes del cambio de julio de 2026) |
 | Creativo | Sí |
 | Daño | Sí (mobs hostiles de noche) |
 | PvP | Solo en arena (mod `pvp_arena`) |
