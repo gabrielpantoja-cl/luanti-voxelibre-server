@@ -188,3 +188,50 @@ docker compose restart luanti-mineclonia
 > **Cuidado**: actualizar Mineclonia puede romper compatibilidad
 > con mapas existentes. Si el mundo 30004 ya tiene progreso,
 > testear primero en una copia local.
+
+## Regenerar el mundo (rotar la seed o cambiar mapgen)
+
+Si querés regenerar el mundo desde cero (después de un cambio de seed,
+de mapgen, o simplemente para empezar limpio), el procedimiento es:
+
+```bash
+ssh <VPS_USER>@<VPS_IP>
+cd /home/<VPS_USER>/luanti-voxelibre-server
+
+# 1. Detener el container
+docker compose stop luanti-mineclonia
+
+# 2. Borrar TODO el contenido del directorio de mundo (mantener dir)
+sudo rm -rf server/worlds/mineclonia/*
+
+# 3. Restaurar permisos para que gabriel pueda escribir el world.mt
+sudo chown -R gabriel:gabriel server/worlds/mineclonia
+
+# 4. Re-crear el world.mt con el gameid correcto
+cat > server/worlds/mineclonia/world.mt <<'EOF'
+gameid = mineclonia
+world_name = mineclonia
+EOF
+
+# 5. Levantar el container (regenera el mundo con la seed actual)
+docker compose up -d luanti-mineclonia
+
+# 6. Verificar
+docker logs --since='1m' luanti-mineclonia-server 2>&1 \
+  | grep -iE 'action|error|server for'
+```
+
+### ¿Por qué `mg_name = singlenode`?
+
+El mod `mcl_levelgen` (que da el terreno Minecraft-fiel) está
+**registrado bajo el mapgen `singlenode`** — NO bajo `mcl_levelgen`
+ni `v7`. Si se omite `mg_name`, Luanti 5.16 hace fallback a `v7`
+(el mapgen genérico de Minetest), que **no** es Minecraft-fiel.
+
+Ver `mods/MAPGEN/mcl_levelgen/README.txt` en el game base para el
+detalle:
+> This mod is enabled by selecting the mapgen "singlenode".
+
+Pitfall encontrado el 2026-08-01:
+> `mg_name = mcl_levelgen` da error `EmergeManager: mapgen 'mcl_levelgen'
+> not valid; falling back to v7`. El nombre correcto es `singlenode`.
