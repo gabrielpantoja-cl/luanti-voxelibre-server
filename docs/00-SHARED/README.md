@@ -1,23 +1,25 @@
 # 📚 Documentación compartida (00-SHARED)
 
-Documentación **transversal a los 4 mundos** del servidor: mecánica del motor Luanti/VoxeLibre,
+Documentación **transversal a los 5 mundos** del servidor: mecánica del motor Luanti/VoxeLibre,
 técnicas de configuración, guías de mods reutilizables, operaciones e infraestructura web.
 
 > ⚠️ **Qué NO va aquí.** Esto es documentación **agnóstica al mundo**. La filosofía, las reglas y la
 > configuración específicas de cada mundo viven en su carpeta (`01-ORIGINAL-30000/`, `02-VALDIVIA-30001/`,
-> `03-GAELSIN-30002/`, `04-CTF-30003/`). En particular, **no todos los mundos comparten la filosofía
-> "sin violencia / compasión"**: Wetlands (30000) y Valdivia (30001) son pacíficos, pero **GAELSIN
-> (30002) es survival PvP con mobs hostiles** y **CTF (30003) es captura-la-bandera con armas**.
+> `03-GAELSIN-30002/`, `04-CTF-30003/`, `05-MINECLONIA-30004/`). En particular, **no todos los mundos
+> comparten la filosofía "sin violencia / compasión"**: Wetlands (30000) y Valdivia (30001) son
+> relativamente pacíficos, pero **GAELSIN (30002) es survival PvP con mobs hostiles**, **CTF (30003)
+> es captura-la-bandera con armas** y **Mineclonia (30004) es creativo puro sin violencia**.
 > Cuando un documento aquí solo aplica a algunos mundos, lo indica en una nota al inicio.
 
-## Los 4 mundos (documentación específica en su carpeta)
+## Los 5 mundos (documentación específica en su carpeta)
 
 | Puerto | Mundo | Tipo | Carpeta |
 |--------|-------|------|---------|
-| 30000 | Wetlands | Creativo / educativo / pacífico | [`../01-ORIGINAL-30000/`](../01-ORIGINAL-30000/) |
+| 30000 | Wetlands | Supervivencia / educativo / pacífico | [`../01-ORIGINAL-30000/`](../01-ORIGINAL-30000/) |
 | 30001 | Valdivia [Chile] | Ciudad OSM / exploración / pacífico | [`../02-VALDIVIA-30001/`](../02-VALDIVIA-30001/) |
 | 30002 | GAELSIN | Survival / **PvP** / mobs hostiles | [`../03-GAELSIN-30002/`](../03-GAELSIN-30002/) |
 | 30003 | CTF | Captura la bandera / **armas** | [`../04-CTF-30003/`](../04-CTF-30003/) |
+| 30004 | Mineclonia | Creativo puro / Minecraft fiel (fork de VoxeLibre) | [`../05-MINECLONIA-30004/`](../05-MINECLONIA-30004/) |
 
 ## Contenido de esta carpeta
 

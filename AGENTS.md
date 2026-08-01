@@ -22,7 +22,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
 - **Deployment**: manual `git pull` on the VPS. There are **no GitHub Actions workflows** in this repo.
-- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia), 30002/UDP (GAELSIN), 30003/UDP (CTF), 80/443 (landing page via nginx on the VPS).
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia), 30002/UDP (GAELSIN), 30003/UDP (CTF), 30004/UDP (Mineclonia), 80/443 (landing page via nginx on the VPS).
 - **UI language**: Spanish.
 
 ## File Structure
@@ -288,8 +288,9 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 | Valdivia | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
 | GAELSIN | `luanti-gaelsin-server` | 30002/UDP | `luanti-gaelsin.conf` | Pure VoxeLibre survival world generated from seed `GAELSIN` (mapgen v7) — PvP on, hostile mobs at night, creepers blocked, no area protection; minimal mod set |
 | CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | Capture-the-flag con armas sobre el juego `capturetheflag` de rubenwardy (no VoxeLibre) — singlenode mapgen + `backend = dummy`, armas y rondas automaticas |
+| Mineclonia | `luanti-mineclonia-server` | 30004/UDP | `luanti-mineclonia.conf` | Mineclonia 0.123.0 (fork de VoxeLibre, no es VoxeLibre) — modo creativo puro, sin dano, sin mods custom, seed `apple` |
 
-All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~420 MB / 1.15M mapblocks as of 2026-06-29, not in git). See `docs/02-VALDIVIA-30001/current.md`.
+All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~420 MB / 1.15M mapblocks as of 2026-06-29, not in git). See `docs/02-VALDIVIA-30001/current.md`. Mineclonia se sirve desde `server/games/mineclonia/` (clonado de Codeberg, ~50 MB, committeado igual que `server/games/mineclone2/`). Ver `docs/05-MINECLONIA-30004/install.md`.
 
 **CTF world uses the official `capturetheflag` game by rubenwardy, not VoxeLibre.** The mods `server/mods/wetlands_flatworld/` and `server/mods/wetlands_ctf/` are vestigial from an earlier VoxeLibre-based implementation and are **NOT loaded** in `luanti-ctf.conf` — see `docs/04-CTF-30003/index.md` for the current setup (`default_game = capturetheflag`, `mg_name = singlenode`, `backend = dummy`). Decide whether to delete them or keep them as historical reference; if kept, add a `DEPRECATED` notice at the top of each `init.lua` to prevent future confusion.
 
@@ -418,7 +419,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 - `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001)
 - `docs/03-GAELSIN-30002/` — GAELSIN survival world (port 30002)
 - `docs/04-CTF-30003/` — CTF (port 30003)
-- `docs/05-FUTBOL/` — Fútbol soccer (port 30004, planned)
+- `docs/05-MINECLONIA-30004/` — Mineclonia creativo (port 30004) — antes planeado como `05-FUTBOL/`, redefinido 2026-08-01 a Mineclonia (fork de VoxeLibre).
 
 ### Shared Configuration
 - `docs/00-SHARED/config/01-CONFIGURATION_HIERARCHY.md` — luanti-original.conf vs world.mt

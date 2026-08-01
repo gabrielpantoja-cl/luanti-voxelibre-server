@@ -20,7 +20,7 @@
 1. **Install Luanti** for [PC](https://www.luanti.org) or mobile ([Android](https://play.google.com/store/apps/details?id=net.minetest.minetest) / [iOS](https://apps.apple.com/app/minetest/id1190647064)).
 2. **Add our server:**
    - **Address:** `luanti.gabrielpantoja.cl`
-   - **Port:** `30000` (Wetlands), `30001` (Valdivia), `30002` (GAELSIN), `30003` (CTF)
+   - **Port:** `30000` (Wetlands), `30001` (Valdivia), `30002` (GAELSIN), `30003` (CTF), `30004` (Mineclonia)
 3. **That's it.** Jump in, explore, and create.
 
 ## What you can do here

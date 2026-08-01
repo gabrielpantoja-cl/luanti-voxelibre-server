@@ -5,13 +5,13 @@
 
 Este documento explica el ecosistema de mods del servidor: qué mods existen, de dónde vienen, cómo se relacionan entre sí, y por qué desarrollamos mods propios.
 
-> ⚠️ **Alcance.** El directorio `server/mods/` es **compartido por los 4 mundos**, pero cada mundo
+> ⚠️ **Alcance.** El directorio `server/mods/` es **compartido por los 5 mundos**, pero cada mundo
 > carga un subconjunto distinto (ver el `load_mod_*` de su `luanti-<mundo>.conf`). La motivación
 > "compasión / no violencia" descrita abajo es el **origen de Wetlands (30000)** y aplica a Wetlands
-> y Valdivia; **GAELSIN (30002)** es survival PvP y **CTF (30003)** usa el juego `capturetheflag`
-> de rubenwardy con armas,
-> así que para esos mundos la filosofía pacífica NO aplica. Los mods **específicos** de cada mundo se
-> documentan en la carpeta de ese mundo.
+> y Valdivia; **GAELSIN (30002)** es survival PvP, **CTF (30003)** usa el juego `capturetheflag`
+> de rubenwardy con armas, y **Mineclonia (30004)** es creativo puro sin mods custom de Wetlands —
+> en Mineclonia solo se carga el game base, ningún mod de `server/mods/` se habilita.
+> Los mods **específicos** de cada mundo se documentan en la carpeta de ese mundo.
 
 ---
 

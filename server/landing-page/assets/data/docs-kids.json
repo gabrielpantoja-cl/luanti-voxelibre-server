@@ -56,7 +56,7 @@
           "id": "conectar-servidor",
           "title": "🌐 Paso 2: Conectar al servidor",
           "level": 1,
-           "content": "1. Abre Luanti\n2. Clic en **\"Unirse al juego\"**\n3. Dirección: `luanti.gabrielpantoja.cl`\n4. Puerto:\n   - `30000` Wetlands (mundo familiar)\n   - `30001` Valdivia (ciudad real)\n   - `30002` GAELSIN (supervivencia)\n   - `30003` CTF (captura la bandera, armas)\n5. Clic en **\"Conectar\"**\n\n💡 Si es la primera vez, el servidor crea tu cuenta automáticamente cuando eliges nombre y contraseña."
+           "content": "1. Abre Luanti\n2. Clic en **\"Unirse al juego\"**\n3. Dirección: `luanti.gabrielpantoja.cl`\n4. Puerto:\n   - `30000` Wetlands (mundo familiar)\n   - `30001` Valdivia (ciudad real)\n   - `30002` GAELSIN (supervivencia)\n   - `30003` CTF (captura la bandera, armas)\n   - `30004` Mineclonia (creativo, Minecraft fiel)\n5. Clic en **\"Conectar\"**\n\n💡 Si es la primera vez, el servidor crea tu cuenta automáticamente cuando eliges nombre y contraseña."
         },
         {
           "id": "primer-personaje",
@@ -77,7 +77,7 @@
           "id": "bienvenida",
           "title": "🎉 ¡Bienvenido!",
           "level": 1,
-           "content": "En Wetlands puedes:\n\n- 🌲 **Supervivencia compassiva** en Wetlands (puerto 30000): desde 2026-07-31 es supervivencia pura. Recolecta madera, piedra y materiales; construye tu casa pieza por pieza. Cuidado con los mobs de noche (excepto Creepers, bloqueados).\n- 🌆 **Explorar** Valdivia (puerto 30001), una recreación de la ciudad real\n- ⚔️ **Jugar GAELSIN** (puerto 30002): un mundo de supervivencia generado desde cero donde empiezas sin nada, juntas recursos, sobrevives a la noche y construyes tu base. PvP activo.\n- 🏴 **Jugar CTF** (puerto 30003): captura la bandera con espadas, armas y granadas. Rondas automáticas.\n\nNota historica: hasta julio 2026 Wetlands fue creativo con arena PvP opt-in. Ahora es supervivencia sin PvP; solo el admin `gabo` conserva inventario creativo + worldedit via whitelist."
+           "content": "En Wetlands puedes:\n\n- 🌲 **Supervivencia compassiva** en Wetlands (puerto 30000): desde 2026-07-31 es supervivencia pura. Recolecta madera, piedra y materiales; construye tu casa pieza por pieza. Cuidado con los mobs de noche (excepto Creepers, bloqueados).\n- 🌆 **Explorar** Valdivia (puerto 30001), una recreación de la ciudad real\n- ⚔️ **Jugar GAELSIN** (puerto 30002): un mundo de supervivencia generado desde cero donde empiezas sin nada, juntas recursos, sobrevives a la noche y construyes tu base. PvP activo.\n- 🏴 **Jugar CTF** (puerto 30003): captura la bandera con espadas, armas y granadas. Rondas automáticas.\n- 🎮 **Construir en Mineclonia** (puerto 30004): mundo creativo puro con la esencia del Minecraft vanilla. Sin daño, inventario creativo, sin reglas. Toma cualquier item y construye lo que imagines.\n\nNota historica: hasta julio 2026 Wetlands fue creativo con arena PvP opt-in. Ahora es supervivencia sin PvP; solo el admin `gabo` conserva inventario creativo + worldedit via whitelist."
         },
         {
           "id": "controles-basicos",

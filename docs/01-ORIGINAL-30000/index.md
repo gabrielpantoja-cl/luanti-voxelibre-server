@@ -72,7 +72,7 @@ muebles (`3dforniture`), decoración (`mcl_decor`), `mypark`, `chess`, `celevato
 
 ## Relación con los otros mundos
 
-Los cuatro mundos comparten `server/games/` y `server/mods/`, pero cada uno tiene su `.conf`, su
+Los cinco mundos comparten `server/games/` y `server/mods/`, pero cada uno tiene su `.conf`, su
 carpeta de mundo y su servicio en `docker-compose.yml`:
 
 | Mundo | Puerto | Doc |
@@ -81,6 +81,7 @@ carpeta de mundo y su servicio en `docker-compose.yml`:
 | Valdivia | 30001 | `mundo-2-puerto-30001-valdivia.md` |
 | GAELSIN | 30002 | `mundo-3-puerto-30002-gaelsin.md` |
 | CTF | 30003 | `mundo-4-puerto-30003-ctf.md` |
+| Mineclonia | 30004 | `../../05-MINECLONIA-30004/index.md` |
 
 > Para todos los detalles de arquitectura, pitfalls de VoxeLibre, texturas y comandos, la fuente
 > única de verdad es **[`AGENTS.md`](../../AGENTS.md)** en la raíz del repo.

@@ -35,12 +35,13 @@ extrae el nombre y publica un `POST` al webhook.
 | `discord-notifier-valdivia` | `luanti-valdivia-server` | `Valdivia 🏙️` |
 | `discord-notifier-gaelsin` | `luanti-gaelsin-server` | `GAELSIN ⚔️` |
 | `discord-notifier-ctf` | `luanti-ctf-server` | `CTF ⚔️` |
+| `discord-notifier-mineclonia` | `luanti-mineclonia-server` | `Mineclonia 🎮` |
 
-Los 4 sidecars comparten la **misma variable de entorno `DISCORD_WEBHOOK_URL`**
+Los 5 sidecars comparten la **misma variable de entorno `DISCORD_WEBHOOK_URL`**
 (la URL del webhook se lee desde `.env` en la raíz). Eso significa: **un único
-canal de Discord para los 4 mundos**, diferenciados solo por el `SERVER_LABEL`
-dentro del texto. Si quieres un canal por mundo, hay que crear 4 webhooks
-distintos y 4 variables (`DISCORD_WEBHOOK_URL_WETLANDS`, `_VALDIVIA`, etc.) y
+canal de Discord para los 5 mundos**, diferenciados solo por el `SERVER_LABEL`
+dentro del texto. Si quieres un canal por mundo, hay que crear 5 webhooks
+distintos y 5 variables (`DISCORD_WEBHOOK_URL_WETLANDS`, `_VALDIVIA`, etc.) y
 asignarlas en el bloque `environment` de cada sidecar.
 
 ## Formato del mensaje

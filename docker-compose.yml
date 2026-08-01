@@ -245,6 +245,65 @@ services:
     networks:
       - luanti-network
 
+  # =============================================
+  # MINECLONIA - Mundo creativo fiel a Minecraft
+  # =============================================
+  # Quinto mundo: Mineclonia 0.123.0 (fork de VoxeLibre, NO es VoxeLibre).
+  # Game base descargado desde https://codeberg.org/mineclonia/mineclonia
+  # y commiteado a server/games/mineclonia/. Modo creativo puro, sin dano,
+  # sin mods custom de Wetlands, seed "apple".
+  # Mapeo: 30004 host -> 30000 container (mismo patron que GAELSIN/CTF).
+  # Ver docs/05-MINECLONIA-30004/index.md.
+  luanti-mineclonia:
+    image: linuxserver/luanti:latest
+    container_name: luanti-mineclonia-server
+    restart: unless-stopped
+    ports:
+      - "30004:30000/udp"
+    volumes:
+      - ./server/config/luanti-mineclonia.conf:/config/.minetest/main-config/minetest.conf
+      - ./server/mods:/config/.minetest/mods
+      - ./server/worlds/mineclonia:/config/.minetest/worlds/mineclonia
+      - ./server/games:/config/.minetest/games
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Santiago
+      - CLI_ARGS=--worldname mineclonia
+    healthcheck:
+      test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      - luanti-server
+    networks:
+      - luanti-network
+
+  # Discord notifier para Mineclonia
+  discord-notifier-mineclonia:
+    image: alpine:latest
+    container_name: luanti-discord-notifier-mineclonia
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./scripts:/scripts:ro
+    environment:
+      - TZ=America/Santiago
+      - CONTAINER_NAME=luanti-mineclonia-server
+      - SERVER_LABEL=Mineclonia 🎮
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    command: >
+      sh -c "
+        apk add --no-cache curl docker-cli bash &&
+        bash /scripts/discord-notifier.sh
+      "
+    depends_on:
+      - luanti-mineclonia
+    networks:
+      - luanti-network
+
 networks:
   luanti-network:
     driver: bridge
