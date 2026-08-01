@@ -103,6 +103,36 @@ Deberia loggear algo como:
 ... INFO[Server]: Server: World seed "mineclonia" loaded
 ```
 
+## ⚠️ Pitfall: world.mt faltante en Luanti 5.16+
+
+Cuando se crea un mundo nuevo en Luanti 5.16+ (image
+`linuxserver/luanti` 5.16.1+), el contenedor espera que el directorio
+del mundo ya tenga un `world.mt` con `gameid` y `world_name`. Si el
+dir está vacío, Luanti arranca pero crea el mundo en `worlds/world/`
+(un path NO bind-mounted a host) y los datos se pierden en cada reinicio.
+
+**Solución**: crear el `world.mt` en el host antes del primer start:
+
+```bash
+ssh <VPS_USER>@<VPS_IP>
+# El bind-mount expone server/worlds/mineclonia → /config/.minetest/worlds/mineclonia
+mkdir -p /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/mineclonia
+sudo chown -R <VPS_USER>:<VPS_USER> \
+    /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/mineclonia
+
+cat > /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/mineclonia/world.mt <<'EOF'
+gameid = mineclonia
+world_name = mineclonia
+EOF
+
+# Recién ahora arrancar el container
+cd /home/<VPS_USER>/luanti-voxelibre-server
+docker compose up -d luanti-mineclonia
+```
+
+Luegodel primer arranque exitoso, Luanti completa el world.mt con
+backend (sqlite3, etc.) y demás. **No hace falta volver a tocarlo**.
+
 ## Troubleshooting
 
 ### "Failed to load game 'mineclonia'"
