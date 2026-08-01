@@ -2,8 +2,8 @@
 
 Primer y principal mundo del servidor: un entorno **supervivencia dura, educativa y kid-friendly** (apto
 para niños 7+) con filosofía compassiva y plant-based. Es el mundo "canónico" del servidor. Mods
-propios promueven el cuidado de animales y la exploración no violenta; el PvP solo existe
-en una arena opt-in. Dirección pública: `luanti.gabrielpantoja.cl:30000`.
+propios promueven el cuidado de animales y la exploración no violenta; **no hay PvP** (deshabilitado
+a nivel engine + arena opt-in retirada el 2026-07-31). Dirección pública: `luanti.gabrielpantoja.cl:30000`.
 
 ## Resumen
 
@@ -22,8 +22,8 @@ en una arena opt-in. Dirección pública: `luanti.gabrielpantoja.cl:30000`.
 - `creative_mode = false`, `mcl_enable_creative_mode = false`, `mcl_creative_is_survival_like = true`,
   `give_initial_stuff = false`, `keepInventory = false` — **supervivencia dura desde 2026-07-31**.
 - `enable_damage = true` — el daño está activo globalmente. Es **intencional**: los mobs hostiles
-  pueden dañar de noche y la arena PvP lo necesita. El PvP fuera de la arena lo impide la lógica del
-  mod `pvp_arena`, no este flag.
+  pueden dañar de noche. **PvP deshabilitado** (`enable_pvp = false`) en todo el mundo desde
+  el 2026-07-31 — la arena opt-in se retiró al pasar a supervivencia dura.
 - `enable_fire = true`, `enable_tnt = true` — fuego y TNT habilitados como en supervivencia estándar.
 - `only_peaceful_mobs = false` — los mobs hostiles aparecen de noche. Los Creepers se bloquean por
   separado con el mod `wetlands_no_creeper`. Resumen para jugadores: **"de día seguro, de noche
@@ -49,10 +49,10 @@ existentes que los tuvieran del periodo creativo.
 Supervivencia dura desactivó mods no aplicables: NPCs, música, navidad, vehículos (`automobiles_*`),
 muebles (`3dforniture`), decoración (`mcl_decor`), `mypark`, `chess`, `celevator`,
 `auto_road_builder`, `halloween_*`, `broom_racing`, `protector`, `voxelibre_protection`,
-`vegan_food`, `vegan_replacements`, `education_blocks`. Mantiene núcleo y PvP arena.
+`vegan_food`, `vegan_replacements`, `education_blocks`, `pvp_arena`. Mantiene núcleo de supervivencia.
 
 ### Propios de Wetlands (activos)
-`wetlands_newplayer`, `wetlands_no_creeper`, `wetlands_lastpos`, `server_rules`, `pvp_arena`,
+`wetlands_newplayer`, `wetlands_no_creeper`, `wetlands_lastpos`, `server_rules`,
 `mcl_custom_world_skins`.
 
 ### Terceros (activos)

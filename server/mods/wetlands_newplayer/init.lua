@@ -58,6 +58,15 @@ end)
 -- Reconcilia privilegios al reconectar un jugador existente. Garantiza que
 -- jugadores en supervivencia no acumulen creative/fly/noclip de cuando el
 -- servidor estaba en modo creativo.
+--
+-- 2026-07-31 fix supervivencia dura: ademas de las privs, forzamos
+-- `meta.gamemode = "survival"` para jugadores no-admin. Antes el mod
+-- `pvp_arena` setaba `gamemode = "creative"` + otorgaba la priv creative
+-- en su propio register_on_joinplayer (fix 2026-01-16), lo que dejaba a
+-- pepelomo/gabo77 con inventario creativo aunque wetlands_newplayer les
+-- quitara la priv. Ahora pvp_arena ya no toca gamemode en join; nosotros
+-- lo forzamos a survival via `minetest.after(0, ...)` para correr DESPUES
+-- de cualquier callback de otro mod en este mismo join.
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	local target = ADMIN_NAMES[name] and ADMIN_PRIVS or DEFAULT_PRIVS
@@ -82,6 +91,19 @@ minetest.register_on_joinplayer(function(player)
 		minetest.set_player_privs(name, current)
 		minetest.log("action", "[" .. modname .. "] Privilegios reconciliados para " .. name
 			.. (ADMIN_NAMES[name] and " (admin)" or " (supervivencia)"))
+	end
+
+	-- Forzar gamemode survival para no-admin (incluso si pvp_arena lo
+	-- intento setear a creative en este mismo join). Deferred 0s para
+	-- correr al final del tick actual, despues de otros on_joinplayer.
+	if not ADMIN_NAMES[name] then
+		minetest.after(0, function()
+			local p = minetest.get_player_by_name(name)
+			if p then
+				p:get_meta():set_string("gamemode", "survival")
+				minetest.log("action", "[" .. modname .. "] gamemode forzado a survival para " .. name)
+			end
+		end)
 	end
 end)
 

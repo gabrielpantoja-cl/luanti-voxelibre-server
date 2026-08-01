@@ -154,8 +154,10 @@ function pvp_arena.set_pvp(player_name, enabled)
         if previous_gamemode and previous_gamemode == "creative" then
             meta:set_string("gamemode", "creative")
         else
-            -- Por defecto, habilitar creative para todos
-            meta:set_string("gamemode", "creative")
+            -- 2026-07-31 fix: antes este else forzaba "creative" para todos, lo
+            -- cual era incompatible con el mundo survival. Si previous_gamemode
+            -- es "" o "survival", ya esta correcto (la entrada a la arena lo
+            -- puso en survival); no lo tocamos.
         end
 
         -- TAMBIÉN restaurar privilegio creative
@@ -248,31 +250,36 @@ function pvp_arena.show_exit_message(player)
         minetest.colorize("#66BB6A", "🌱 Estás de vuelta en zona pacífica"))
 end
 
--- Configurar jugadores al unirse: MODO CREATIVO con inventario infinito (Fix 2026-01-16)
-minetest.register_on_joinplayer(function(player)
-    local name = player:get_player_name()
-    local meta = player:get_meta()
-
-    -- Verificar si está en arena
-    local in_arena = pvp_arena.is_player_in_arena(name)
-
-    if not in_arena then
-        -- MODO CREATIVO: Establecer gamemode creative para inventario infinito
-        meta:set_string("gamemode", "creative")
-
-        -- Asegurar que tienen privilegio creative para inventario infinito
-        local privs = minetest.get_player_privs(name)
-        if not privs.creative then
-            privs.creative = true
-            minetest.set_player_privs(name, privs)
-        end
-
-        minetest.log("action", "[PVP Arena] Player " .. name .. " joined - CREATIVE mode with infinite inventory")
-
-        -- 2026-07-30: bienvenida en chat deshabilitada por chat minimalista.
-        -- La bienvenida breve vive en `motd` (luanti-original.conf).
-    end
-end)
+-- Configurar jugadores al unirse.
+-- 2026-07-31 fix: este callback antes otorgaba `creative` y setaba
+-- `gamemode = "creative"` a todos los jugadores al unirse fuera de arena.
+-- Eso era incompatible con el modo supervivencia dura del mundo Wetlands.
+-- El comportamiento PvP (entrar/salir de arena) se mantiene intacto:
+--   - Al entrar a la arena: guardar priv creative previo, forzar survival.
+--   - Al salir de la arena: restaurar priv creative previo.
+-- Los jugadores que NO son admin conservan sus privs reales
+-- (otorgadas por `wetlands_newplayer`) y su gamemode lo maneja VoxeLibre
+-- segun el privilege `creative` (sin esta hack de meta). Admin (`gabo`)
+-- conserva inventario creativo via privilege `creative` en ADMIN_PRIVS.
+--
+-- Si en el futuro se quiere un comportamiento creativo-fuera-arena +
+-- survival-dentro-arena (como antes), reintroducir el bloque aqui Y
+-- revertir el whitelist en `wetlands_newplayer` para que admin no sea el
+-- unico con creative.
+-- minetest.register_on_joinplayer(function(player)
+--     local name = player:get_player_name()
+--     local meta = player:get_meta()
+--     local in_arena = pvp_arena.is_player_in_arena(name)
+--     if not in_arena then
+--         meta:set_string("gamemode", "creative")
+--         local privs = minetest.get_player_privs(name)
+--         if not privs.creative then
+--             privs.creative = true
+--             minetest.set_player_privs(name, privs)
+--         end
+--         minetest.log("action", "[PVP Arena] Player " .. name .. " joined - CREATIVE mode with infinite inventory")
+--     end
+-- end)
 
 -- Inicialización
 minetest.register_on_mods_loaded(function()

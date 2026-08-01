@@ -1,6 +1,6 @@
 # Wetlands (Puerto 30000)
 
-Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta para niños. NPCs no-violentos, animales, PvP arena opt-in, sin creepers.
+Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta para niños. NPCs no-violentos, animales, sin creepers, sin PvP.
 
 | Aspecto | Valor |
 |---------|-------|
@@ -11,9 +11,9 @@ Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta par
 | Spawn historico original | `0,15,0` (usado antes del cambio de julio de 2026) |
 | Creativo | **No** (supervivencia dura desde 2026-07-31) |
 | Daño | Sí (mobs hostiles de noche, sin creepers) |
-| PvP | Solo en arena (mod `pvp_arena`) |
+| PvP | **No** (deshabilitado a nivel engine + arena opt-in retirada 2026-07-31) |
 | Filosofía | 🌱 Compassivo y plant-based (ver [VEGAN_PHILOSOPHY.md](VEGAN_PHILOSOPHY.md)) |
-| Mods clave | `wetlands_no_creeper`, `wetlands_lastpos`, `pvp_arena`, `worldedit`, `mcl_custom_world_skins` |
+| Mods clave | `wetlands_no_creeper`, `wetlands_lastpos`, `worldedit`, `mcl_custom_world_skins` |
 | Admin (`gabo`) | Conserva inventario creativo + fly/noclip/worldedit/debug vía whitelist en `wetlands_newplayer` |
 
 ## Documentación de este mundo
@@ -32,7 +32,7 @@ Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta par
 - [quickstart/primeros-pasos.md](quickstart/primeros-pasos.md) — tutorial inicial con la filosofía educativa (nota: actualizado para supervivencia dura)
 
 ### Construcción y otros
-- [pvp/PVP_ARENA_WORLDEDIT_GUIDE.md](pvp/PVP_ARENA_WORLDEDIT_GUIDE.md) — arena PvP
+- [pvp/PVP_ARENA_WORLDEDIT_GUIDE.md](pvp/PVP_ARENA_WORLDEDIT_GUIDE.md) — guía histórica de la arena PvP (arena retirada el 2026-07-31 al pasar a supervivencia dura)
 - [auto-road-builder/](auto-road-builder/) — mod constructor de caminos (deshabilitado en supervivencia)
 
 > Mecánica agnóstica al mundo (jerarquía de config, VoxeLibre, mods, backups) vive en

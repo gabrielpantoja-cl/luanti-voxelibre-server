@@ -1,7 +1,14 @@
 # 🏟️ Construcción de Arena PVP con WorldEdit - Guía Completa
 
+> ⚠️ **DEPRECATED 2026-07-31**: esta guía describe la arena opt-in de PvP que
+> existió hasta el 2026-07-31, cuando Wetlands pasó a supervivencia dura y se
+> deshabilitó `pvp_arena` + `enable_pvp = false`. La arena física sigue en el
+> mundo (centro 41, 23, 232, radio 25) como construcción histórica sin función
+> PvP. Si en el futuro se reactiva PvP en otro mundo, esta guía puede servir
+> como referencia de construcción de arena.
+
 **Servidor**: Wetlands 🌱 Luanti/VoxeLibre
-**Arena**: Arena Principal
+**Arena**: Arena Principal (histórica, sin función PvP desde 2026-07-31)
 **Coordenadas**: Centro (41, 23, 232)
 **Radio**: 25 bloques
 **Fecha**: 26 de Octubre 2025
