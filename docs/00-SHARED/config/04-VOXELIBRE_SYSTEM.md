@@ -1,6 +1,19 @@
 # 04 - VOXELIBRE SYSTEM: Complete Technical Guide
 
-**Última actualización**: 2026-01-16
+> ⚠️ **CONTEXTO 2026-07-31**: la lista de mods en este doc es historica. Mods
+> marcados como activos pueden estar deshabilitados hoy en Wetlands (30000)
+> tras el paso a supervivencia dura. Wetlands activo: wetlands_newplayer,
+> wetlands_no_creeper, wetlands_lastpos, server_rules, mcl_custom_world_skins,
+> worldedit (+commands/+shortcuts), voxelibre_tv, _world_folder_media.
+> `pvp_arena`, `creative_force`, `voxelibre_protection`, `protector`, `mcl_decor`,
+> `3dforniture`, `mypark`, `celevator`, `chess`, `auto_road_builder`,
+> `halloween_*`, `broom_racing`, `wetlands_npcs`, `wetlands_music`,
+> `wetlands_christmas`, `wetlands_supreme_zombie`, `vegan_food`,
+> `vegan_replacements`, `education_blocks` = deshabilitados. Ver
+> `server/config/luanti-original.conf` y `server/worlds/original/world.mt`
+> para la lista autoritativa.
+
+**Última actualización**: 2026-01-16 (banner agregado 2026-07-31)
 **Estado**: ✅ Sistema funcionando correctamente
 **Cobertura**: Arquitectura interna, sistema de mods, optimización
 

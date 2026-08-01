@@ -2,7 +2,7 @@
 
 ## Vision
 
-Unificar el mundo original Wetlands (creativo/educativo) con la ciudad de Valdivia (generada por Arnis desde OpenStreetMap) en un **unico mundo** con un portal de teleport entre ambos. Resultado: un solo servidor, un solo puerto (30000), inventario compartido, experiencia seamless para los jugadores.
+Unificar el mundo original Wetlands (supervivencia compassiva desde el 2026-07-31, antes creativo/educativo) con la ciudad de Valdivia (generada por Arnis desde OpenStreetMap) en un **unico mundo** con un portal de teleport entre ambos. Resultado: un solo servidor, un solo puerto (30000), inventario compartido, experiencia seamless para los jugadores.
 
 ## Estado actual
 

@@ -612,7 +612,7 @@ ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
 
 | Servidor | Direccion | Puerto | Mundo |
 |----------|-----------|--------|-------|
-| Wetlands | `luanti.gabrielpantoja.cl:30000` | 30000/UDP | world (VoxeLibre creative) |
+| Wetlands | `luanti.gabrielpantoja.cl:30000` | 30000/UDP | world (VoxeLibre **supervivencia** desde 2026-07-31) |
 | Valdivia | `luanti.gabrielpantoja.cl:30001` | 30001/UDP | valdivia (recreacion OSM) |
 
 ---

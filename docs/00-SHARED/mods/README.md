@@ -166,10 +166,12 @@ Nuestros mods dependen de estas APIs estables de VoxeLibre:
 
 Algunos mods base de VoxeLibre están deshabilitados o modificados para cumplir nuestra filosofía:
 
-- **Mobs hostiles**: Deshabilitados completamente (configuración nuclear)
-- **Sistema de daño**: Modificado para modo creativo
-- **PvP**: Deshabilitado completamente
-- **Fuego**: Deshabilitado para seguridad
+- **Mobs hostiles**: De noche sí spawnean (supervivencia desde 2026-07-31 en Wetlands);
+  Creepers bloqueados por `wetlands_no_creeper`. GAELSIN/Valdivia/CTF各有 su propia config.
+- **Sistema de daño**: Activo en Wetlands (enable_damage=true); gaelsin también.
+- **PvP**: Deshabilitado a nivel engine en Wetlands (enable_pvp=false) +
+  arena opt-in retirada el 2026-07-31 (`load_mod_pvp_arena = false`).
+- **Fuego**: Habilitado en supervivencia (enable_fire=true) — los jugadores pueden quemarse.
 
 ---
 

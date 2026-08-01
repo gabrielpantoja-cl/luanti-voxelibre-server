@@ -1,12 +1,12 @@
 {
   "meta": {
     "title": "Guías para Jugadores de Wetlands",
-    "description": "Documentación breve sobre conexión, controles y comandos.",
-    "version": "2.0.0",
+    "description": "Documentación breve sobre conexión, controles y comandos (Wetlands es supervivencia desde 2026-07-31).",
+    "version": "2.1.0",
     "audience": "jugadores",
     "totalDocs": 4,
     "totalSections": 13,
-    "lastUpdated": "2026-04-18"
+    "lastUpdated": "2026-07-31"
   },
   "navigation": [
     {
@@ -62,7 +62,7 @@
           "id": "primer-personaje",
           "title": "🎨 Paso 3: Tu personaje",
           "level": 1,
-          "content": "- Elige un **nombre** que no sea tu nombre real\n- Elige una **contraseña** fácil de recordar (pero no la compartas)\n- Al entrar ya tienes modo creativo con inventario completo\n- Para cambiar de skin: comando `/skin` en el chat"
+          "content": "- Elige un **nombre** que no sea tu nombre real\n- Elige una **contraseña** fácil de recordar (pero no la compartas)\n- En Wetlands (30000) empiezas en modo **supervivencia** desde 2026-07-31: tu primer paso es talar madera con la mano\n- Para cambiar de skin: comando `/skin` en el chat"
         }
       ]
     },
@@ -77,19 +77,19 @@
           "id": "bienvenida",
           "title": "🎉 ¡Bienvenido!",
           "level": 1,
-           "content": "En Wetlands puedes:\n\n- 🏗️ **Construir** lo que quieras en modo creativo\n- 🌆 **Explorar** Valdivia (puerto 30001), una recreación de la ciudad real\n- 🗣️ **Hablar con NPCs** que tienen voz y diálogos\n- 🏎️ **Conducir vehículos** (vespas, motos, buggies)\n- ♟️ **Jugar ajedrez** y carreras de escobas\n- ⚔️ **Combatir** en la arena PvP (opcional)\n- ⚔️ **Jugar GAELSIN** (puerto 30002): un mundo de supervivencia generado desde cero donde empiezas sin nada, juntas recursos, sobrevives a la noche y construyes tu base. PvP activo.\n- 🏴 **Jugar CTF** (puerto 30003): captura la bandera con espadas, armas y granadas. Rondas automáticas."
+           "content": "En Wetlands puedes:\n\n- 🌲 **Supervivencia compassiva** en Wetlands (puerto 30000): desde 2026-07-31 es supervivencia pura. Recolecta madera, piedra y materiales; construye tu casa pieza por pieza. Cuidado con los mobs de noche (excepto Creepers, bloqueados).\n- 🌆 **Explorar** Valdivia (puerto 30001), una recreación de la ciudad real\n- ⚔️ **Jugar GAELSIN** (puerto 30002): un mundo de supervivencia generado desde cero donde empiezas sin nada, juntas recursos, sobrevives a la noche y construyes tu base. PvP activo.\n- 🏴 **Jugar CTF** (puerto 30003): captura la bandera con espadas, armas y granadas. Rondas automáticas.\n\nNota historica: hasta julio 2026 Wetlands fue creativo con arena PvP opt-in. Ahora es supervivencia sin PvP; solo el admin `gabo` conserva inventario creativo + worldedit via whitelist."
         },
         {
           "id": "controles-basicos",
           "title": "🎮 Controles básicos",
           "level": 1,
-          "content": "**Movimiento:**\n- **W A S D**: caminar\n- **Espacio**: saltar / volar arriba\n- **Shift**: agacharse / volar abajo\n- **K** o doble **Espacio**: activar/desactivar vuelo\n- **J**: velocidad rápida\n\n**Interacción:**\n- **Clic izquierdo**: romper bloques\n- **Clic derecho**: colocar bloques\n- **I**: inventario\n- **T**: chat\n- **F12**: captura de pantalla"
+          "content": "**Movimiento:**\n- **W A S D**: caminar (no hay vuelo en supervivencia)\n- **Espacio**: saltar\n- **Shift**: agacharse\n- **Clic izquierdo**: romper bloques\n- **Clic derecho**: colocar bloques\n- **I**: inventario (muestra lo que recolectaste)\n- **T**: chat\n- **F12**: captura de pantalla\n\n💡 Para sobrevivir tu primera noche: junta madera, craftea un refugio y coloca antorchas antes del atardecer."
         },
         {
           "id": "primera-casa",
           "title": "🏠 Construye tu primera casa",
           "level": 1,
-          "content": "Estás en modo creativo, así que tienes todos los bloques del inventario.\n\n1. Busca un lugar que te guste (cerca del spawn o explora)\n2. Elige bloques que combinen (madera, piedra, vidrio)\n3. Arma paredes, techo, puerta y ventanas\n4. Protege tu construcción con `/protect_area [nombre]` para que nadie la modifique\n\n💡 Si quieres herramientas avanzadas, pide el privilegio `worldedit` a un admin."
+          "content": "Estás en modo supervivencia, así que tu primer paso es recolectar materiales.\n\n1. Talar árboles con la mano (o un hacha de madera que tú crafteas) para juntar troncos\n2. Convertir troncos en tablas de madera en la mesa de crafteo\n3. Craftear herramientas (hacha, pico, pala) y un refugio básico\n4. Coloca antorches para que no spawnean mobs hostiles dentro\n\n💡 WorldEdit (construccion masiva) solo lo tiene el admin `gabo`. Para proteger zonas, coordina con el equipo en el chat."
         },
         {
           "id": "hacer-amigos",
@@ -120,9 +120,9 @@
         },
         {
           "id": "comandos-construccion",
-          "title": "🏗️ Construcción y protección",
+          "title": "🏗️ Construcción y herramientas",
           "level": 1,
-          "content": "- **`/protect_area <nombre>`**: protege un área para que solo tú puedas modificarla\n- **`/skin`**: abrir el selector de skin\n- **`//pos1`** y **`//pos2`**: marcar esquinas (requiere privilegio worldedit)\n- **`//set <bloque>`**: llenar un área (requiere worldedit)"
+          "content": "- **`/skin`**: abrir el selector de skin\n- **`/reglas`**: ver las reglas (importante: nada de griefing ni trampas)\n- **`/back_to_spawn`**: volver al spawn\n- WorldEdit (//pos1, //set, etc.) solo lo tiene el admin `gabo`. Para ediciones grandes pide ayuda a un admin en el chat."
         },
         {
           "id": "como-usar-comandos",
@@ -149,7 +149,7 @@
           "id": "construcciones-respetuosas",
           "title": "🏗️ Construcciones",
           "level": 1,
-          "content": "**Sí puedes:**\n- Construir lo que quieras en modo creativo\n- Usar cualquier bloque del inventario\n- Proteger tu construcción con `/protect_area`\n\n**No hagas:**\n- Destruir o modificar construcciones ajenas (están protegidas)\n- Bloquear caminos o el spawn\n- Construir cosas ofensivas (hay niños jugando)"
+          "content": "**Sí puedes:**\n- Construir lo que quieras en supervivencia con los materiales que recolectes\n- Pedirle al admin `gabo` que use worldedit para ayudarte con ediciones grandes\n\n**No hagas:**\n- Destruir o modificar construcciones ajenas\n- Bloquear caminos o el spawn\n- Construir cosas ofensivas (hay niños jugando)"
         },
         {
           "id": "chat-amigable",

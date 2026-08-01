@@ -74,12 +74,16 @@
     {
       "id": "area-protection-2025-10",
       "filename": "protect_area.jpeg",
-      "title": "Protege Tu Casa",
+      "title": "Protege Tu Casa (historico 2025-10)",
       "emoji": "🛡️",
-      "description": "Todos los jugadores pueden proteger sus construcciones! Usa /area_pos1 y /area_pos2 para marcar tu area y /protect [nombre] para protegerla.",
+      "description": "Desde el 2026-07-31 el sistema /area_pos1 y /protect esta deshabilitado en Wetlands (paso a supervivencia dura). Las construcciones se protegen pidiendo a un admin que delimite con worldedit. Esta imagen queda como recuerdo del periodo creativo.",
       "date": "2025-10",
       "dateLabel": "Oct 2025",
-      "badge": null,
+      "badge": {
+        "text": "HISTORICO",
+        "emoji": "📜",
+        "type": "deprecated"
+      },
       "category": "updates",
       "featured": false,
       "priority": 6
@@ -115,7 +119,7 @@
       "filename": "wetlands-gameplay-2025-09-13.png",
       "title": "Momentos de Relajacion",
       "emoji": "😎",
-      "description": "Disfruta de momentos tranquilos en la piscina con amigos y aldeanos en tu ciudad personalizada. El modo creativo permite construir lugares increibles!",
+      "description": "Disfruta de momentos tranquilos en la piscina con amigos y aldeanos en tu ciudad personalizada. Imagen del periodo creativo de Wetlands (anterior al 2026-07-31).",
       "date": "2025-09-13",
       "dateLabel": "Sep 2025",
       "badge": null,

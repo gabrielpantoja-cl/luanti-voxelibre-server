@@ -1,6 +1,18 @@
 # 🚨 CONFIGURACIÓN NUCLEAR - OVERRIDE DE VOXELIBRE
 
-> **Aplica a:** Wetlands (30000) y Valdivia (30001) — mundos pacíficos sin mobs hostiles.
+> ⚠️ **CONTEXTO 2026-07-31**: este documento describe la configuración nuclear
+> (creative_mode=true + enable_damage=false + mobs off) que Wetlands aplicaba a
+> `games/mineclone2/minetest.conf` dentro del contenedor hasta el 2026-07-31.
+> Desde esa fecha Wetlands paso a **supervivencia dura** y la nuclear NO esta
+> aplicada al contenedor `luanti-voxelibre-server`. Verificar con
+> `docker exec luanti-voxelibre-server grep -E 'creative_mode|mobs_spawn'
+> /config/.minetest/games/mineclone2/minetest.conf` antes de aplicar nada.
+>
+> El doc queda como referencia: si Valdivia o cualquier mundo futuro quiere el
+> comportamiento creativo pacifico, el patron documentado aqui funciona (mobs off,
+> creative forzado, kit de inicio, default_privs maximo).
+>
+> **Aplica hoy a:** ninguno por defecto. Historicamente: Wetlands (30000) y Valdivia (30001) — mundos creativos sin mobs hostiles.
 > **NO aplica a:** GAELSIN (30002, survival con mobs de noche) ni CTF (30003). Esta técnica
 > desactiva monstruos; los mundos PvP los quieren activos.
 

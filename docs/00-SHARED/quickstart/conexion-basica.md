@@ -78,7 +78,7 @@ Al conectarte recibirás:
 - **Mouse**: Mirar alrededor
 - **Clic izquierdo**: Romper bloques
 - **Clic derecho**: Colocar bloques/interactuar
-- **I**: Abrir inventario (modo creativo)
+- **I**: Abrir inventario (en supervivencia, solo los items que recolectes; solo el admin `gabo` tiene inventario creativo via whitelist en `wetlands_newplayer`)
 - **T**: Abrir chat
 
 ## 🌱 Comandos Útiles

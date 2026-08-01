@@ -1,15 +1,22 @@
 # 08 - MODO CREATIVO NATIVO: Inventario Infinito VoxeLibre
 
-> **Aplica a:** mundos creativos — Wetlands (30000) y Valdivia (30001).
-> **NO aplica a:** GAELSIN (30002, survival) ni CTF (30003), que corren sin modo creativo.
-> Para el caso específico de Valdivia (inventario creativo con `creative_mode=false` y sin vuelo
-> global) ver [`../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md).
+> ⚠️ **CONTEXTO 2026-07-31**: este documento describe el modo creativo nativo
+> que Wetlands uso hasta el 2026-07-31. Desde esa fecha Wetlands (30000) paso a
+> **supervivencia dura** y la pieza `creative_mode=true` ya no aplica ahi.
+> Ahora aplica solo a **Valdivia (30001)**, que mantiene el inventario creativo
+> via `mcl_enable_creative_mode=true` con `creative_mode=false` (modo hibrido
+> documentado en [`../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md)).
+> En Wetlands el admin `gabo` es el unico con inventario creativo (whitelist en
+> `wetlands_newplayer`); el resto de jugadores esta en supervivencia.
+>
+> **Aplica a:** Valdivia (30001) — mundo creativo hibrido.
+> **NO aplica a:** Wetlands (30000, supervivencia desde 2026-07-31), GAELSIN (30002, survival) ni CTF (30003).
 
 **Autor**: Gabriel Pantoja
-**Fecha de Implementación**: 2026-01-16
-**Versión**: 1.0.0
+**Fecha de Implementación**: 2026-01-16 (Wetlands), re-evaluado 2026-07-31 (Wetlands pasa a survival)
+**Versión**: 1.1.0
 **Servidor**: Wetlands Luanti/VoxeLibre
-**Estado**: ✅ PRODUCCIÓN ACTIVA
+**Estado**: ⚠️ HISTORICO para Wetlands, ACTIVO solo para Valdivia
 
 ---
 

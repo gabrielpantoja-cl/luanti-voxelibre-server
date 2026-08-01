@@ -59,34 +59,37 @@ entrada explícita ahí.
 `sudo chown 1000:1000` para restaurar ownership del container; **nunca** chownear
 `server/worlds` al usuario SSH). Reiniciá el container.
 
-## 📊 Matriz de Configuraciones Críticas
+## 📊 Matriz de Configuraciones Críticas (Wetlands 30000, vigente 2026-07-31)
 
 | Configuración | luanti-original.conf | world.mt | Docker | **Resultado Final** |
 |---------------|-------------|----------|--------|-------------------|
-| `creative_mode` | `true` ✅ | `false` | - | **CREATIVE** ✅ |
-| `enable_damage` | `false` ✅ | `true` | - | **NO DAMAGE** ✅ |
+| `creative_mode` | `false` ✅ | `false` | - | **SURVIVAL** ✅ |
+| `enable_damage` | `true` ✅ | `true` | - | **DAÑO ACTIVO** ✅ |
 | `gameid` | - | `mineclone2` ✅ | - | **VoxeLibre** ✅ |
-| `default_privs` | `interact,shout,creative,give,fly` ✅ | - | - | **Creative Privs** ✅ |
+| `default_privs` | `interact,shout,teleport` ✅ | - | - | **Privs supervivencia** ✅ |
 | Puerto servidor | - | - | `30000:30000` ✅ | **Puerto 30000** ✅ |
 
 ## 🎯 Casos de Uso Prácticos
 
 ### Caso 1: Cambiar Modo de Juego
-**Objetivo**: Cambiar de creativo a supervivencia
+**Objetivo**: Cambiar de supervivencia a creativo (o al reves)
 
 **❌ INCORRECTO**:
 ```bash
 # Editar solo world.mt
-echo "creative_mode = false" >> server/worlds/original/world.mt
+echo "creative_mode = true" >> server/worlds/original/world.mt
 ```
 
-**✅ CORRECTO**:
+**✅ CORRECTO** (Wetlands paso de creativo a supervivencia asi el 2026-07-31):
 ```bash
 # Editar luanti-original.conf (autoridad final)
 sed -i 's/creative_mode = true/creative_mode = false/' server/config/luanti-original.conf
 sed -i 's/enable_damage = false/enable_damage = true/' server/config/luanti-original.conf
-# Actualizar privilegios por defecto
-sed -i 's/default_privs = interact,shout,creative,give,fly,fast,noclip,home/default_privs = interact,shout,home/' server/config/luanti-original.conf
+# Actualizar privilegios por defecto (supervivencia dura)
+sed -i 's/default_privs = interact,shout,creative,give,fly,fast,noclip,home/default_privs = interact,shout,teleport/' server/config/luanti-original.conf
+# Tambien editar world.mt (gate autoritativo por AGENTS.md):
+sudo sed -i 's/^creative_mode = true$/creative_mode = false/' server/worlds/original/world.mt
+docker compose restart luanti-server
 ```
 
 ### Caso 2: Habilitar Nuevo Mod
@@ -105,27 +108,32 @@ echo "# Privilegios para new_animals mod" >> server/config/luanti-original.conf
 ```
 
 ### Caso 3: Debugging de Configuración Conflictiva
-**Problema**: El servidor no está en modo creativo a pesar de configurar `world.mt`
+**Problema**: El servidor no esta en supervivencia a pesar de configurar `world.mt` y conf
 
 **🔍 DIAGNÓSTICO**:
 ```bash
 # Paso 1: Ver configuración del mundo
 cat server/worlds/original/world.mt | grep creative
-# Output: creative_mode = true
+# Output: creative_mode = false
 
 # Paso 2: Ver configuración del servidor (AUTORIDAD FINAL)
 cat server/config/luanti-original.conf | grep creative
-# Output: creative_mode = false  <-- ¡AQUÍ ESTÁ EL CONFLICTO!
+# Output: creative_mode = false  <-- ambos consistentes
 
 # Paso 3: Ver resultado en el servidor
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker-compose logs luanti-server | grep creative"
+# Si aun asi ve inventario creativo, sospechar de mods tipo pvp_arena
+# que otorguen priv creative en register_on_joinplayer (ver AGENTS.md).
 ```
 
 **✅ SOLUCIÓN**:
 ```bash
-# Cambiar la autoridad final (luanti-original.conf)
-sed -i 's/creative_mode = false/creative_mode = true/' server/config/luanti-original.conf
-docker-compose restart luanti-server
+# Verificar que NINGUN mod otorga creative en on_joinplayer.
+grep -rn 'set_player_privs\|register_on_joinplayer' server/mods/ 2>/dev/null
+# Apagar load_mod_* del mod ofensor en luanti-original.conf y world.mt.
+sed -i 's/^load_mod_pvp_arena = true$/load_mod_pvp_arena = false/' server/config/luanti-original.conf
+sudo sed -i 's/^load_mod_pvp_arena = true$/load_mod_pvp_arena = false/' server/worlds/original/world.mt
+docker compose restart luanti-server
 ```
 
 ### Caso 4: Configuración de Seguridad
@@ -148,14 +156,16 @@ echo "mcl_creative_is_survival_like = false" >> server/config/luanti-original.co
 **Causa**: Editaste un archivo de menor autoridad
 **Solución**: Siempre edita `luanti-original.conf` primero
 
-### Problema 2: "Los jugadores no tienen privilegios creativos"
-**Causa**: `default_privs` en `luanti-original.conf` no incluye `creative`
+### Problema 2: "Los jugadores no tienen los privilegios que esperaba"
+**Causa**: `default_privs` en `luanti-original.conf` no incluye los privs deseados
 **Solución**:
 ```bash
 # Verificar privilegios actuales
 grep default_privs server/config/luanti-original.conf
-# Agregar creative si falta
-sed -i 's/default_privs = interact,shout/default_privs = interact,shout,creative,give/' server/config/luanti-original.conf
+# En Wetlands supervivencia 2026-07-31 el set basico es interact,shout,teleport
+# Para admin (whitelist), editar wetlands_newplayer/init.lua (ADMIN_PRIVS).
+# VoxeLibre ignora default_privs de minetest.conf; los privs reales los otorga
+# el mod wetlands_newplayer via register_on_newplayer / register_on_joinplayer.
 ```
 
 ### Problema 3: "Los mods no cargan"
@@ -224,5 +234,5 @@ docker-compose up -d
 ---
 
 **Última actualización**: Septiembre 25, 2025
-**Estado del servidor**: Producción estable en modo creativo
-**Configuración crítica**: ✅ creative_mode=true, enable_damage=false
+**Estado del servidor**: Producción estable en modo supervivencia dura (2026-07-31)
+**Configuración crítica**: ✅ creative_mode=false, enable_damage=true, enable_fire=true, enable_tnt=true, enable_pvp=false, load_mod_pvp_arena=false

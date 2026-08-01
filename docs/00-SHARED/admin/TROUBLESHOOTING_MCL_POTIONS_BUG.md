@@ -61,7 +61,7 @@ docker compose restart luanti-server
 **Trade-offs**:
 - ❌ Pociones no disponibles en el servidor
 - ✅ Servidor 100% estable
-- ✅ Alineado con filosofía del servidor (modo creativo compasivo)
+- ✅ Alineado con filosofía del servidor (supervivencia compassiva y plant-based, sin pociones problematicas)
 
 ### Verificación de la Solución
 
