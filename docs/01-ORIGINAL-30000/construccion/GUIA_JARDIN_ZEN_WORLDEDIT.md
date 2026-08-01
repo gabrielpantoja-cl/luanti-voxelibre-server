@@ -4,7 +4,9 @@ Instrucciones paso a paso para construir un jardin zen japones en la zona ex-Hal
 
 **Ubicacion**: `128, 18, -212` — Teleport: `/teleport gabo 128 18 -212`
 **Fecha de construccion**: 22 de Febrero, 2026
-**Requisitos:** Privilegios `worldedit` y modo creativo activo.
+**Requisitos:** Privilegios `worldedit` y modo creativo activo. Ambos los tiene
+solo el admin `gabo` (whitelist en `wetlands_newplayer`); el resto de jugadores
+está en supervivencia desde el 2026-07-31.
 
 **Tip general:** Usa `//1` (golpe izq.) y `//2` (golpe der.) para marcar esquinas de seleccion. Siempre verifica tu seleccion con `//mark` antes de ejecutar.
 

@@ -1,6 +1,13 @@
 # Guía de Gestión del Inventario Creativo - Servidor Wetlands
 
-**Última actualización:** 10 de Octubre, 2025
+> ⚠️ **CONTEXTO 2026-07-31**: Wetlands paso a **supervivencia dura**. Solo el
+> admin `gabo` (whitelist en `wetlands_newplayer`) conserva inventario creativo
+> + fly + noclip + worldedit + debug. El resto de los jugadores esta en modo
+> supervivencia y **no tiene inventario creativo**. Esta guia sigue siendo util
+> para gestionar los items visibles al admin en su inventario creativo, pero ya
+> no aplica al grueso de los jugadores.
+
+**Última actualización:** 10 de Octubre, 2025 (banner agregado 2026-07-31)
 **Propósito:** Controlar qué items aparecen en el inventario creativo para mantener la filosofía vegana y educativa del servidor
 
 ---

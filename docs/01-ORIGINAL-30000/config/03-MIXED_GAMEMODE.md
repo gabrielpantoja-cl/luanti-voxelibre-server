@@ -1,7 +1,21 @@
 # 03 - MIXED GAMEMODE: Creative + Survival Configuration
 
+> ⚠️ **DEPRECATED 2026-07-31**: este documento describe el sistema de modo mixto
+> (creativo para todos + supervivencia opt-in via `pvp_arena`/`creative_force`) que
+> Wetlands uso hasta el 2026-07-31, cuando el mundo paso a **supervivencia dura**
+> y se deshabilitaron `pvp_arena` + `enable_pvp=false`. La pieza clave era que
+> `pvp_arena` sobreescribia el gamemode del jugador en cada join (lo que ahora
+> identificamos como bug que daba inventario creativo a jugadores en survival).
+>
+> El sistema de whitelist por nombre (`survival_players`, `creative_force`) ya no
+> aplica: ahora todos los jugadores nuevos reciben el mismo set basico de privs,
+> y solo el admin `gabo` (whitelist en `wetlands_newplayer`) conserva creative.
+>
+> Si en el futuro se quiere reactivar un modo mixto, este doc sirve como
+> referencia historica, pero la implementacion actual debe rehacerse desde cero.
+
 **Autor**: Gabriel Pantoja
-**Última actualización**: 2026-01-16
+**Última actualización**: 2026-01-16 (contenido histórico; banner agregado 2026-07-31)
 **Versión**: 1.1.0
 **Servidor**: Wetlands Luanti/VoxeLibre
 

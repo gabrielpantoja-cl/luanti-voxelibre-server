@@ -1,5 +1,15 @@
 # 🛡️ Guía Completa: Sistema de Protección de Bloques en Wetlands
 
+> ⚠️ **DEPRECATED 2026-07-31**: este sistema de bloques protectores (`protector`
+> + `voxelibre_protection`) esta **deshabilitado** en Wetlands desde el paso a
+> supervivencia dura. En supervivencia, los jugadores construyen con los recursos
+> que recolectan; los mods de proteccion por bloque quedaron en `false` en
+> `luanti-original.conf` y `world.mt`. La guia queda como referencia historica.
+>
+> Proteccion contra griefing en supervivencia se logra via `worldedit` (admin)
+> + reporte al equipo de moderadores. Cualquier reactivacion de estos mods debe
+> pasar por editar ambos archivos (per AGENTS.md jerarquia de configuracion).
+
 ## 📋 Índice
 1. [¿Qué es el Sistema de Protección?](#qué-es-el-sistema-de-protección)
 2. [Cómo Obtener Bloques Protectores](#cómo-obtener-bloques-protectores)

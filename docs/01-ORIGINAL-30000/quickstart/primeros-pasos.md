@@ -1,4 +1,10 @@
-# 🌟 Primeros Pasos en Wetlands Valdivia
+# 🌟 Primeros Pasos en Wetlands (puerto 30000)
+
+> ⚠️ **MODO SUPERVIVENCIA 2026-07-31**: este tutorial asume el modo supervivencia
+> vigente. Inventario creativo, vuelo y noclip **no estan disponibles** para
+> jugadores nuevos. Solo el admin `gabo` los conserva (whitelist en
+> `wetlands_newplayer`). Para construir, recolecta madera, piedra y demas
+> recursos del mundo. WorldEdit solo lo tiene el admin.
 
 Tutorial completo para nuevos jugadores sobre cómo comenzar en nuestro servidor compasivo.
 
@@ -30,15 +36,15 @@ Al conectarte por primera vez:
 - **Clic izquierdo**: Romper bloques
 - **Clic derecho**: Colocar bloques / Interactuar con objetos
 - **Rueda del ratón**: Cambiar item en la mano
-- **I**: Abrir inventario (modo creativo)
+- **I**: Abrir inventario (en supervivencia, solo los items que recolectes)
 - **T**: Abrir chat para escribir mensajes
 - **F1**: Alternar interfaz (útil para capturas)
 
-### Modo Creativo
-- **Inventario infinito**: Todos los bloques disponibles sin límite
-- **Vuelo libre**: Puedes volar por todo el mundo
-- **Sin daño**: No puedes morir ni lastimarte
-- **Instantáneo**: Rompes bloques al instante
+### Modo Supervivencia (vigente desde 2026-07-31)
+- **Inventario físico**: solo lo que recolectas, crafteas o recoges del suelo
+- **Sin vuelo**: caminas, nadas, saltas; el agua y lava te hacen daño
+- **Con daño**: los mobs hostiles de noche te atacan (excepto Creepers, bloqueados)
+- **Inventario inicial vacío**: tu primer paso es talar madera con la mano
 
 ## 🏗️ Tus Primeras Construcciones
 
@@ -92,7 +98,8 @@ Ensalada = Vegetales variados
 - **Pide permiso**: Antes de construir cerca de otros
 - **Colabora**: Únete a proyectos comunitarios
 - **Respeta**: No modifiques construcciones ajenas
-- **Comparte recursos**: El modo creativo permite generosidad
+- **Comparte recursos**: Reparte lo que recolectes; sin inventario creativo todos
+  dependemos de juntar materiales entre todos
 
 ## 🐾 Cuidado de Animales
 
