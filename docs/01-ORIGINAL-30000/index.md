@@ -1,8 +1,8 @@
-# Proyecto WETLANDS — Mundo principal creativo y educativo
+# Proyecto WETLANDS — Mundo principal de supervivencia compassivo
 
-Primer y principal mundo del servidor: un entorno **creativo, educativo y kid-friendly** (apto para
-niños 7+). Es el mundo "canónico" del servidor. Mods propios promueven el cuidado de animales y la
-exploración no violenta; el PvP solo existe
+Primer y principal mundo del servidor: un entorno **supervivencia dura, educativa y kid-friendly** (apto
+para niños 7+) con filosofía compassiva y plant-based. Es el mundo "canónico" del servidor. Mods
+propios promueven el cuidado de animales y la exploración no violenta; el PvP solo existe
 en una arena opt-in. Dirección pública: `luanti.gabrielpantoja.cl:30000`.
 
 ## Resumen
@@ -19,39 +19,48 @@ en una arena opt-in. Dirección pública: `luanti.gabrielpantoja.cl:30000`.
 
 ## Características del mundo
 
-- `creative_mode = true` — modo creativo nativo de VoxeLibre.
+- `creative_mode = false`, `mcl_enable_creative_mode = false`, `mcl_creative_is_survival_like = true`,
+  `give_initial_stuff = false`, `keepInventory = false` — **supervivencia dura desde 2026-07-31**.
 - `enable_damage = true` — el daño está activo globalmente. Es **intencional**: los mobs hostiles
   pueden dañar de noche y la arena PvP lo necesita. El PvP fuera de la arena lo impide la lógica del
   mod `pvp_arena`, no este flag.
+- `enable_fire = true`, `enable_tnt = true` — fuego y TNT habilitados como en supervivencia estándar.
 - `only_peaceful_mobs = false` — los mobs hostiles aparecen de noche. Los Creepers se bloquean por
   separado con el mod `wetlands_no_creeper`. Resumen para jugadores: **"de día seguro, de noche
   peligroso excepto Creepers"**.
 - `static_spawnpoint = 655.1,18.5,243.9` — spawn actual.
 - Spawn historico original: `0,15,0` (usado antes del cambio de julio de 2026).
-- `max_users = 20`
+- `max_users = 20`.
 
-## Privilegios de nuevos jugadores
+## Privilegios
 
-VoxeLibre **ignora** `default_privs` en `minetest.conf`. Los privilegios iniciales los otorga el mod
-`wetlands_newplayer` (`server/mods/wetlands_newplayer/init.lua`) — la tabla `PRIVS` ahí es la fuente
-de verdad. No agregar `default_privs` en ningún lado.
+VoxeLibre **ignora** `default_privs` en `minetest.conf`. Los privilegios los otorga el mod
+`wetlands_newplayer` (`server/mods/wetlands_newplayer/init.lua`):
+
+- **Jugadores nuevos / no-admin**: solo `interact`, `shout`, `teleport`.
+- **`gabo` (admin whitelist)**: además `fly`, `fast`, `noclip`, `give`, `creative`, `worldedit`,
+  `debug`. Mantiene inventario creativo y herramientas de admin en un servidor survival.
+
+El mod reconcilia los privilegios en cada `join` para retirar creative/fly/noclip a jugadores
+existentes que los tuvieran del periodo creativo.
 
 ## Mods (lista autoritativa: `server/config/luanti-original.conf`)
 
-### Propios de Wetlands
-`wetlands_npcs` (NPCs interactivos Star Wars + clásicos con IA/voces/diálogos), `wetlands_newplayer`,
-`wetlands_music`, `wetlands_christmas`, `wetlands_no_creeper`, `wetlands_lastpos`, `mcl_back_to_spawn`,
-`server_rules` (`/reglas`), `pvp_arena` (único lugar con PvP), `mcl_custom_world_skins`,
-`voxelibre_protection`, `voxelibre_tv`.
+Supervivencia dura desactivó mods no aplicables: NPCs, música, navidad, vehículos (`automobiles_*`),
+muebles (`3dforniture`), decoración (`mcl_decor`), `mypark`, `chess`, `celevator`,
+`auto_road_builder`, `halloween_*`, `broom_racing`, `protector`, `voxelibre_protection`,
+`vegan_food`, `vegan_replacements`, `education_blocks`. Mantiene núcleo y PvP arena.
 
-### Terceros
-`worldedit` (+commands/+shortcuts), `chess`, `celevator`, `automobiles_*` (vespa, beetle, motorcycle,
-buggy…), `3dforniture`, `mcl_decor`, `broom_racing`, `auto_road_builder`, `halloween_ghost` /
-`halloween_zombies` (estacionales).
+### Propios de Wetlands (activos)
+`wetlands_newplayer`, `wetlands_no_creeper`, `wetlands_lastpos`, `server_rules`, `pvp_arena`,
+`mcl_custom_world_skins`.
+
+### Terceros (activos)
+`worldedit` (+commands/+shortcuts), `_world_folder_media`.
 
 ## Operación
 
-- **Jerarquía de config** (CRÍTICO): un mod carga solo si `world.mt` (en el VPS) lo habilita; y
+- **Jerarquía de config** (CRÍTICA): un mod carga solo si `world.mt` (en el VPS) lo habilita; y
   `luanti-original.conf = false` lo apaga incondicionalmente (kill-switch). Detalle en
   `docs/config/01-CONFIGURATION_HIERARCHY.md` y en `AGENTS.md`.
 - **Deploy**: flujo estándar `git push → ssh git pull → docker compose restart luanti-server →

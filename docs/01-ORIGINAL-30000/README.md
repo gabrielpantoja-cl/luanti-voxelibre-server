@@ -1,6 +1,6 @@
 # Wetlands (Puerto 30000)
 
-Mundo principal: creativo, educativo, apto para niños, **compassivo y plant-based**. NPCs no-violentos, animales, música, PvP arena opt-in.
+Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta para niños. NPCs no-violentos, animales, PvP arena opt-in, sin creepers.
 
 | Aspecto | Valor |
 |---------|-------|
@@ -9,11 +9,12 @@ Mundo principal: creativo, educativo, apto para niños, **compassivo y plant-bas
 | Mapgen | v7 |
 | Spawn actual | `655.1,18.5,243.9` |
 | Spawn historico original | `0,15,0` (usado antes del cambio de julio de 2026) |
-| Creativo | Sí |
-| Daño | Sí (mobs hostiles de noche) |
+| Creativo | **No** (supervivencia dura desde 2026-07-31) |
+| Daño | Sí (mobs hostiles de noche, sin creepers) |
 | PvP | Solo en arena (mod `pvp_arena`) |
 | Filosofía | 🌱 Compassivo y plant-based (ver [VEGAN_PHILOSOPHY.md](VEGAN_PHILOSOPHY.md)) |
-| Mods clave | `wetlands_npcs`, `wetlands_music`, `wetlands_no_creeper`, `wetlands_lastpos`, `voxelibre_protection`, `pvp_arena`, `vegan_food`, `vegan_replacements`, `education_blocks` |
+| Mods clave | `wetlands_no_creeper`, `wetlands_lastpos`, `pvp_arena`, `worldedit`, `mcl_custom_world_skins` |
+| Admin (`gabo`) | Conserva inventario creativo + fly/noclip/worldedit/debug vía whitelist en `wetlands_newplayer` |
 
 ## Documentación de este mundo
 
@@ -21,21 +22,18 @@ Mundo principal: creativo, educativo, apto para niños, **compassivo y plant-bas
 - [VEGAN_PHILOSOPHY.md](VEGAN_PHILOSOPHY.md) — 🌱 qué significa "compassivo y plant-based" en Wetlands, mods que lo implementan, qué se mantiene y qué se cambia
 
 ### Configuración (específica de Wetlands)
-- [config/03-MIXED_GAMEMODE.md](config/03-MIXED_GAMEMODE.md) — creativo + supervivencia simultáneos (caso pepelomo)
-- [config/05-BLOCK_PROTECTION.md](config/05-BLOCK_PROTECTION.md) — sistema de bloques protectores anti-griefing
+- [config/05-BLOCK_PROTECTION.md](config/05-BLOCK_PROTECTION.md) — sistema de bloques protectores anti-griefing (deshabilitado en supervivencia)
 - [config/06-RULES_SYSTEM.md](config/06-RULES_SYSTEM.md) — sistema de reglas (`/reglas`, `/veganinfo`) y moderación
 
 ### Admin
 - [admin/CREATIVE_INVENTORY_MANAGEMENT.md](admin/CREATIVE_INVENTORY_MANAGEMENT.md) — ocultar items del inventario creativo (filosofía vegana)
 
 ### Jugadores
-- [quickstart/primeros-pasos.md](quickstart/primeros-pasos.md) — tutorial inicial con la filosofía educativa
+- [quickstart/primeros-pasos.md](quickstart/primeros-pasos.md) — tutorial inicial con la filosofía educativa (nota: actualizado para supervivencia dura)
 
 ### Construcción y otros
-- [construccion/](construccion/) — guías de WorldEdit (edificio de oficinas, jardín zen, ascensor)
-- [construccion/SCHEMATICS_REMapeADOS_DESDE_MG_VILLAGES.md](construccion/SCHEMATICS_REMapeADOS_DESDE_MG_VILLAGES.md) — intento de importar chateau/biblioteca/torre medievales desde Sokomine/mg_villages; documenta el script de remap y el lío con el comando `/mtschemplace` vs `/load`
 - [pvp/PVP_ARENA_WORLDEDIT_GUIDE.md](pvp/PVP_ARENA_WORLDEDIT_GUIDE.md) — arena PvP
-- [auto-road-builder/](auto-road-builder/) — mod constructor de caminos
+- [auto-road-builder/](auto-road-builder/) — mod constructor de caminos (deshabilitado en supervivencia)
 
 > Mecánica agnóstica al mundo (jerarquía de config, VoxeLibre, mods, backups) vive en
 > [`../00-SHARED/`](../00-SHARED/).
