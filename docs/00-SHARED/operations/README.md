@@ -24,5 +24,5 @@ docker compose restart luanti-<mundo>      # reinicio de un mundo
 
 ## Bugs de operación por mundo
 
-- [Servidor duplicado en la lista pública de Luanti](../../02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md)
+- [Servidor duplicado en la lista pública de Luanti](../../02-VALDIVIA-30001/operations/SERVER_LIST_DUPLICATE_BUG.md)
   — la imagen `linuxserver/luanti` hardcodea `--port 30000`; afecta a cualquier mundo con puerto ≠ 30000.

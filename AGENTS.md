@@ -435,7 +435,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 ### Operations
 - `docs/00-SHARED/operations/BACKUP_STATUS.md` — backup system (**operational**): local tarballs every 12h (`backup-cron` sidecar, `sqlite3 .backup` snapshot of all 3 worlds) + daily offsite upload to **Cloudflare R2** (host cron, `~/vps-do/scripts/backup-luanti-offsite.sh`). **Golden rule:** never leave manual `.sqlite` copies inside `server/worlds/` — `backup.sh`'s `rsync` sweeps them into every tarball and inflates each R2 upload (this happened: ~2.2 GB of junk in `valdivia/`). Put one-off snapshots in `server/backups/` or outside the repo.
 - `docs/00-SHARED/operations/clonar-mundo-produccion-local.md` — pull a prod backup and run it locally
-- `docs/02-VALDIVIA-30001/operaciones/SERVER_LIST_DUPLICATE_BUG.md` — bug del image `linuxserver/luanti` que hardcodea `--port 30000` y duplica servidores en `servers.luanti.org` cuando se usa otro puerto; fix via bind mount del script override en `server/container-overrides/svc-luanti/run`. El bug afecta directamente al mundo Valdivia (puerto 30001) por eso vive en su carpeta de operaciones. Cualquier servidor futuro con puerto ≠ 30000 también se verá afectado.
+- `docs/02-VALDIVIA-30001/operations/SERVER_LIST_DUPLICATE_BUG.md` — bug del image `linuxserver/luanti` que hardcodea `--port 30000` y duplica servidores en `servers.luanti.org` cuando se usa otro puerto; fix via bind mount del script override en `server/container-overrides/svc-luanti/run`. El bug afecta directamente al mundo Valdivia (puerto 30001) por eso vive en su carpeta de operaciones. Cualquier servidor futuro con puerto ≠ 30000 también se verá afectado.
 
 ### Mods
 - `docs/00-SHARED/mods/MODDING_GUIDE.md` — general modding guide

@@ -27,7 +27,7 @@ La versión corregida:
 
 ```bash
 WM=/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/worldmods/arnis_mapgen/init.lua
-scp docs/02-VALDIVIA-30001/operaciones/reference/arnis_mapgen-init.lua.corrected \
+scp docs/02-VALDIVIA-30001/operations/reference/arnis_mapgen-init.lua.corrected \
   gabriel@VPS:/tmp/arnis_fix.lua
 ssh gabriel@VPS "sudo cp \$WM \${WM}.bak-\$(date +%Y%m%d-%H%M%S) && \
   sudo cp /tmp/arnis_fix.lua \$WM && sudo chown 1000:1000 \$WM && rm /tmp/arnis_fix.lua"

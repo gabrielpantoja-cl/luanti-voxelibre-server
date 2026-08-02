@@ -24,7 +24,7 @@ la filosofía "sin violencia": GAELSIN y CTF son mundos de combate).
 - [Mods](00-SHARED/mods/) — Desarrollo y guías de mods
 - [Operaciones](00-SHARED/operations/) — Backups, clonar mundo, MCP
 - [Web](00-SHARED/web/) — Landing page, API, nginx
-- [Proyectos multi-mundo](PROYECTOS/) — Iniciativas que cruzan varios mundos
+- [Proyectos multi-mundo](projects/) — Iniciativas que cruzan varios mundos
 
 ## Enlaces útiles
 

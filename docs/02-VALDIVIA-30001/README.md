@@ -20,5 +20,5 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 - [`anti-explosivos.md`](anti-explosivos.md) — Anti-grief: sin explosiones ni incendios (`mcl_explosions_griefing=false` + `valdivia_no_explosions`)
 - [`respaldos-y-restauracion.md`](respaldos-y-restauracion.md) — Backups a R2, **cuántos días se guardan** (~6), y procedimiento de restauración verificado
 - [`legacy.md`](legacy.md) — Mundo anterior (Arnis PR#808, reemplazado)
-- [`operaciones/`](operaciones/) — Operaciones específicas de Valdivia
-  - [`SERVER_LIST_DUPLICATE_BUG.md`](operaciones/SERVER_LIST_DUPLICATE_BUG.md) — Bug del image `linuxserver/luanti` que duplica el servidor de Valdivia en la lista pública de Luanti (solo aplica porque Valdivia usa puerto 30001, no el 30000 default).
+- [`operations/`](operations/) — Operaciones específicas de Valdivia
+  - [`SERVER_LIST_DUPLICATE_BUG.md`](operations/SERVER_LIST_DUPLICATE_BUG.md) — Bug del image `linuxserver/luanti` que duplica el servidor de Valdivia en la lista pública de Luanti (solo aplica porque Valdivia usa puerto 30001, no el 30000 default).

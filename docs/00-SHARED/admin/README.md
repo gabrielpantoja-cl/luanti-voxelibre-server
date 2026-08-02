@@ -24,5 +24,5 @@ en el **repo privado** `infra/privado/luanti/` — nunca en este repo público.
 
 ## Ver también
 
-- Privilegios por mundo: cada carpeta de mundo (ej. [`../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md)).
+- Privilegios por mundo: cada carpeta de mundo (ej. [`../../02-VALDIVIA-30001/operations/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operations/PRIVILEGIOS.md)).
 - Gestión del inventario creativo de Wetlands: [`../../01-ORIGINAL-30000/admin/CREATIVE_INVENTORY_MANAGEMENT.md`](../../01-ORIGINAL-30000/admin/CREATIVE_INVENTORY_MANAGEMENT.md).

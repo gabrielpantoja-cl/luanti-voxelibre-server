@@ -5,7 +5,7 @@
 > **supervivencia dura** y la pieza `creative_mode=true` ya no aplica ahi.
 > Ahora aplica solo a **Valdivia (30001)**, que mantiene el inventario creativo
 > via `mcl_enable_creative_mode=true` con `creative_mode=false` (modo hibrido
-> documentado en [`../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operaciones/PRIVILEGIOS.md)).
+> documentado en [`../../02-VALDIVIA-30001/operations/PRIVILEGIOS.md`](../../02-VALDIVIA-30001/operations/PRIVILEGIOS.md)).
 > En Wetlands el admin `gabo` es el unico con inventario creativo (whitelist en
 > `wetlands_newplayer`); el resto de jugadores esta en supervivencia.
 >

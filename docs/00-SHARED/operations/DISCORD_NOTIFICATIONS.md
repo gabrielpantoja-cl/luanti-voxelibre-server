@@ -140,4 +140,4 @@ El label se controla con `SERVER_LABEL` en `docker-compose.yml`. Para cambiarlo:
 | `scripts/send-discord-test.sh` | Test con mensaje custom |
 | `docker-compose.yml` | 4 servicios `discord-notifier*` |
 | `.env` | `DISCORD_WEBHOOK_URL` (gitignored) |
-| `docs/02-VALDIVIA-30001/operaciones/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md` | Historial (anotó el alta del sidecar de Valdivia) |
+| `docs/02-VALDIVIA-30001/operations/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md` | Historial (anotó el alta del sidecar de Valdivia) |
