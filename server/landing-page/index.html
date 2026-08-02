@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Wetlands - Servidor compassivo y plant-based de Luanti en Chile. Cinco mundos: Wetlands supervivencia familiar (30000), Valdivia recreación OSM (30001), GAELSIN supervivencia (30002), CTF captura la bandera (30003), y Mineclonia creativo Minecraft fiel (30004).">
-    <meta name="keywords" content="Luanti, Minetest, Minecraft, servidor, Chile, Valdivia, supervivencia, mods, gaelsin, plant-based, vegan, compassionate, ctf, captura la bandera, capture the flag">
+    <meta name="description" content="Wetlands - Servidor de Luanti en Chile con cinco mundos: Wetlands supervivencia familiar (30000), Valdivia recreación OSM (30001), GAELSIN supervivencia (30002), CTF captura la bandera (30003), y Mineclonia creativo Minecraft fiel (30004).">
+    <meta name="keywords" content="Luanti, Minetest, Minecraft, servidor, Chile, Valdivia, supervivencia, mods, gaelsin, mineclonia, ctf, captura la bandera, capture the flag">
     <title>🌱 Wetlands Chile - Servidor de Luanti</title>
     
     <!-- Favicon -->
@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="assets/css/style.css?v=20260418b">
+    <link rel="stylesheet" href="assets/css/style.css?v=20260801a">
     <style>
         /* Filosofía Plant-Based section (added 2026-07-24) */
         .philosophy-intro {
@@ -62,6 +62,16 @@
             margin-top: 2rem;
             font-size: 1rem;
         }
+        .philosophy-note {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.4rem 0.85rem;
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            color: #555;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +87,7 @@
                 <a href="galeria.html" class="nav-link">🖼️ Galería</a>
                 <a href="#como-jugar" class="nav-link">¿Cómo Jugar?</a>
                 <a href="#caracteristicas" class="nav-link">Características</a>
-                <a href="#filosofia" class="nav-link">🌱 Filosofía</a>
+                <a href="#filosofia" class="nav-link">🌱 Filosofía del Wetlands</a>
                 <a href="#documentacion" class="nav-link">🌟 Guías</a>
                 <a href="https://discord.gg/JDmZ5uhKM" target="_blank" class="nav-link discord-link">💬 Discord</a>
             </div>
@@ -93,7 +103,7 @@
         <a href="galeria.html" class="mobile-nav-link">🖼️ Galería</a>
         <a href="#como-jugar" class="mobile-nav-link">¿Cómo Jugar?</a>
         <a href="#caracteristicas" class="mobile-nav-link">Características</a>
-        <a href="#filosofia" class="mobile-nav-link">🌱 Filosofía</a>
+        <a href="#filosofia" class="mobile-nav-link">🌱 Filosofía del Wetlands</a>
         <a href="#documentacion" class="mobile-nav-link">🌟 Guías</a>
         <a href="https://discord.gg/JDmZ5uhKM" target="_blank" class="mobile-nav-link">💬 Discord</a>
     </div>
@@ -397,12 +407,23 @@
         </div>
     </section>
 
-    <!-- Filosofía Plant-Based Section -->
+    <!-- Filosofía del Wetlands Section -->
     <section id="filosofia" class="philosophy">
         <div class="container">
-            <h2 class="section-title">🌱 Filosofía Plant-Based</h2>
+            <h2 class="section-title">🌱 Filosofía del Wetlands</h2>
             <p class="philosophy-intro">
-                Wetlands es un servidor <strong>compassivo y plant-based</strong>. Esto significa que promovemos alternativas vegetales y reemplazamos los items de origen animal con sus equivalentes de plantas. No es un servidor "vegano radical" — los mobs animales y hostiles siguen existiendo (decisión consciente para mantener el mundo "natural" de VoxeLibre), pero sus drops problemáticos están interceptados.
+                Esta sección aplica <strong>solo al mundo Wetlands (puerto 30000)</strong>, nuestro
+                mundo principal. Los otros cuatro mundos — Valdivia (30001), GAELSIN (30002),
+                CTF (30003) y Mineclonia (30004) — <strong>no son veganos ni plant-based</strong>:
+                son mundos donde la experiencia es fiel a Minecraft/VoxeLibre estándar, con PvP,
+                mobs hostiles y drops animales según el game base.
+            </p>
+            <p class="philosophy-intro">
+                En el <strong>Wetlands (30000)</strong> sí promovemos alternativas vegetales y
+                reemplazamos los items de origen animal con sus equivalentes de plantas. No es
+                "vegano radical" — los mobs animales y hostiles siguen existiendo (decisión
+                consciente para mantener el mundo "natural" de VoxeLibre), pero sus drops
+                problemáticos están interceptados.
             </p>
             <div class="philosophy-grid">
                 <div class="philosophy-card">
@@ -428,6 +449,8 @@
             </div>
             <p class="philosophy-cta">
                 📖 Detalles completos: <a href="https://github.com/gabrielpantoja-cl/luanti-voxelibre-server/blob/main/docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md" target="_blank" rel="noopener"><code>docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md</code></a>
+                <br>
+                <span class="philosophy-note">⚠️ Aplica únicamente al mundo Wetlands (puerto 30000). Los demás mundos usan mods/recetas del game base sin reemplazos.</span>
             </p>
         </div>
     </section>

@@ -1,18 +1,32 @@
 # Wetlands
 
-**A Luanti (Minetest) server where compassion, creativity, and education thrive — with a plant-based commitment.**
+**A Luanti (Minetest) server with five worlds on a single VPS — for kids, families, and anyone who wants to play.**
 
 > **[Visit our site](https://luanti.gabrielpantoja.cl/) | [Photo gallery](https://luanti.gabrielpantoja.cl/galeria.html)**
 
 ---
 
-**Wetlands** is a game world designed as a safe, controlled space for kids and families. Adventure and learning go hand in hand. The main world (port 30000) is **compassivo y plant-based** — we promote plant alternatives through mods (`vegan_food`, `vegan_replacements`, `education_blocks`) rather than hiding the ecosystem, so players have genuine plant-based options in a familiar VoxeLibre world.
+Wetlands hosts **five independent worlds** on one server. **Only the main world (port 30000)** is designed as a kid-friendly, education-focused, plant-based survival space. The other four worlds (Valdivia, GAELSIN, CTF, Mineclonia) follow their own game base rules — they are not vegan, not kid-safe, and not subject to the same content filters.
 
-## Philosophy
+See the per-world docs for what each world offers:
 
-- **Animal compassion:** we care for animals, we don't harm them.
-- **Plant-based by design:** mods replace animal items (meat, leather, etc.) with plant alternatives (tofu, seitan, plant milk, vegetables) and add new plant-based recipes — see [`docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md`](docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md) for the full commitment.
-- **Creative education:** learn about sustainability and conscious eating while you play.
+| Port | World | Game base | Kid-safe? | Plant-based? |
+|------|-------|-----------|-----------|--------------|
+| 30000 | Wetlands | VoxeLibre | ✅ Sí | ✅ Sí |
+| 30001 | Valdivia | VoxeLibre (OSM) | ✅ Sí (exploración) | ❌ No |
+| 30002 | GAELSIN | VoxeLibre | ❌ No (PvP + hostiles) | ❌ No |
+| 30003 | CTF | Capture the Flag | ❌ No (armas) | ❌ No |
+| 30004 | Mineclonia | Mineclonia | ✅ Sí (creativo) | ❌ No |
+
+## Wetlands (port 30000) — the family/educational world
+
+The main world (port 30000) is designed as a safe, controlled space for kids and families. Adventure and learning go hand in hand. It is **compassivo y plant-based** — we promote plant alternatives through mods (`vegan_food`, `vegan_replacements`, `education_blocks`) rather than hiding the ecosystem, so players have genuine plant-based options in a familiar VoxeLibre world.
+
+### Wetlands-specific philosophy
+
+- **Animal compassion:** we care for animals, we don't harm them (Wetlands-only).
+- **Plant-based by design:** mods replace animal items (meat, leather, etc.) with plant alternatives (tofu, seitan, plant milk, vegetables) and add new plant-based recipes — see [`docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md`](docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md) for the full commitment. **Wetlands-only.**
+- **Creative education:** learn about sustainability and conscious eating while you play (Wetlands-only).
 - **Controlled adventure:** by day you explore and build freely. At night hostile mobs spawn (Creepers excluded). There's a dedicated PvP arena for combat when you want it.
 
 ## How to join
@@ -23,7 +37,7 @@
    - **Port:** `30000` (Wetlands), `30001` (Valdivia), `30002` (GAELSIN), `30003` (CTF), `30004` (Mineclonia)
 3. **That's it.** Jump in, explore, and create.
 
-## What you can do here
+## What you can do here (in the Wetlands world, port 30000)
 
 - **Build animal sanctuaries** to protect wildlife
 - **Explore a rich world** full of biomes and secrets
@@ -37,7 +51,7 @@
 
 ### Wetlands — port `30000`
 
-Main creative world. The safe, family-friendly hub.
+Main creative world. The safe, family-friendly hub. **Only world with the plant-based/server-filosofía.**
 
 | Feature | Detail |
 |---------|--------|
@@ -52,15 +66,19 @@ Main creative world. The safe, family-friendly hub.
 
 ### Valdivia — port `30001`
 
-A real-world recreation of Valdivia, Chile, generated from OpenStreetMap data via the [Arnis](https://github.com/luanti-org/arnis) tool. Explore the city's streets, plazas, and rivers as voxels.
+A real-world recreation of Valdivia, Chile, generated from OpenStreetMap data via the [Arnis](https://github.com/luanti-org/arnis) tool. Explore the city's streets, plazas, and rivers as voxels. **Vegan-friendly in spirit (exploración sin combate) pero no es plant-based — sigue siendo VoxeLibre estándar.**
 
 ### GAELSIN — port `30002`
 
-Pure VoxeLibre survival world. No creative mode, no area protection, PvP on. Hostile mobs spawn at night (Creepers excluded). Generated from seed `GAELSIN` with mapgen v7.
+Pure VoxeLibre survival world. No creative mode, no area protection, PvP on. Hostile mobs spawn at night (Creepers excluded). Generated from seed `GAELSIN` with mapgen v7. **NO plant-based — PvP y mobs hostiles forman parte del desafio.**
 
 ### CTF — port `30003`
 
-Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF/capturetheflag) game by rubenwardy (not VoxeLibre). Swords, guns, grenades; rounds start automatically when both teams have players.
+Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF/capturetheflag) game by rubenwardy (not VoxeLibre). Swords, guns, grenades; rounds start automatically when both teams have players. **NO plant-based — armas y combate son el core.**
+
+### Mineclonia — port `30004`
+
+[Mineclonia](https://codeberg.org/mineclonia/mineclonia) 0.123.0, a fork of VoxeLibre that targets a faithful Minecraft vanilla experience. Creative mode, no damage, no PvP, no custom mods — just the game base. Seed `mineclonia`. **NO plant-based — experiencia Minecraft vanilla fiel.**
 
 ## Known bugs
 
@@ -69,7 +87,7 @@ Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF
 ## Tech stack
 
 - **Engine**: [Luanti](https://www.luanti.org) 5.16+
-- **Base game**: VoxeLibre (MineClone2) v0.90.1
+- **Base games**: VoxeLibre (MineClone2) v0.90.1, Mineclonia 0.123.0, capturetheflag (rubenwardy)
 - **Mod language**: Lua
 - **Infrastructure**: Docker Compose on a VPS (Oracle Cloud, ARM aarch64)
 
