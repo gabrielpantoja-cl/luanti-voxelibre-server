@@ -29,6 +29,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `valdivia_aliases` | Aliases de nodos viejos generados por Arnis → nombres actuales VoxeLibre |
 | `wetlands_lastpos` | Jugadores vuelven a su última posición al reconectarse |
 | `server_rules` | Comando `/reglas` |
+| `voxelibre_tv` | Televisores decorativos interactivos para hogares y edificios; tres canales animados y luz al encenderse. |
 | `valdivia_teleporter` | Teletransportador `/ir` — **deshabilitado** (coordenadas desactualizadas post-Arnis v2.9.0) |
 
 ### Aliases activos (`valdivia_aliases`)

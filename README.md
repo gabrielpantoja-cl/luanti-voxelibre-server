@@ -6,28 +6,29 @@
 
 ---
 
-Wetlands hosts **five independent worlds** on one server. **Only the main world (port 30000)** is designed as a kid-friendly, education-focused, plant-based survival space. The other four worlds (Valdivia, GAELSIN, CTF, Mineclonia) follow their own game base rules — they are not vegan, not kid-safe, and not subject to the same content filters.
+Wetlands hosts **five independent worlds** on one server. Each world has its own game, rules, configuration, and documentation.
 
 See the per-world docs for what each world offers:
 
-| Port | World | Game base | Kid-safe? | Plant-based? |
-|------|-------|-----------|-----------|--------------|
-| 30000 | Wetlands | VoxeLibre | ✅ Sí | ✅ Sí |
-| 30001 | Valdivia | VoxeLibre (OSM) | ✅ Sí (exploración) | ❌ No |
-| 30002 | GAELSIN | VoxeLibre | ❌ No (PvP + hostiles) | ❌ No |
-| 30003 | CTF | Capture the Flag | ❌ No (armas) | ❌ No |
-| 30004 | Mineclonia | Mineclonia | ✅ Sí (creativo) | ❌ No |
+| Port | World | Game base | Mode | PvP |
+|------|-------|-----------|------|-----|
+| 30000 | Wetlands | VoxeLibre | Hard survival, compassionate and plant-based | No |
+| 30001 | Valdivia | VoxeLibre + OSM | Exploration/survival | See world rules |
+| 30002 | GAELSIN | VoxeLibre | Survival | Yes |
+| 30003 | CTF | Capture the Flag | Team combat | Core gameplay |
+| 30004 | Mineclonia | Mineclonia | Creative, no damage | No |
+
+World-specific content should be confirmed in the corresponding configuration under `server/config/` and in the documentation under `docs/`.
 
 ## Wetlands (port 30000) — the family/educational world
 
-The main world (port 30000) is designed as a safe, controlled space for kids and families. Adventure and learning go hand in hand. It is **compassivo y plant-based** — we promote plant alternatives through mods (`vegan_food`, `vegan_replacements`, `education_blocks`) rather than hiding the ecosystem, so players have genuine plant-based options in a familiar VoxeLibre world.
+The main world (port 30000) is **hard survival** with no PvP. Its design is compassionate and plant-based, but it is not creative mode: players gather resources, craft, take damage, and face hostile mobs at night. Creepers are blocked separately.
 
 ### Wetlands-specific philosophy
 
-- **Animal compassion:** we care for animals, we don't harm them (Wetlands-only).
-- **Plant-based by design:** mods replace animal items (meat, leather, etc.) with plant alternatives (tofu, seitan, plant milk, vegetables) and add new plant-based recipes — see [`docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md`](docs/01-ORIGINAL-30000/VEGAN_PHILOSOPHY.md) for the full commitment. **Wetlands-only.**
-- **Creative education:** learn about sustainability and conscious eating while you play (Wetlands-only).
-- **Controlled adventure:** by day you explore and build freely. At night hostile mobs spawn (Creepers excluded). There's a dedicated PvP arena for combat when you want it.
+- **Animal compassion:** the Wetlands rules discourage harming animals.
+- **Plant-based identity:** the server identity and documentation are plant-based; optional legacy replacement/education mods are currently disabled in the authoritative Wetlands configuration.
+- **Controlled adventure:** hostile mobs spawn at night, Creepers are excluded, and PvP is disabled.
 
 ## How to join
 
@@ -39,30 +40,25 @@ The main world (port 30000) is designed as a safe, controlled space for kids and
 
 ## What you can do here (in the Wetlands world, port 30000)
 
-- **Build animal sanctuaries** to protect wildlife
-- **Explore a rich world** full of biomes and secrets
-- **Talk to educational NPCs** with their own voices, teaching about nature
-- **Drive vehicles** — vespas, motorcycles, buggies, beetles
-- **Play chess** with other players
-- **Fight in the PvP arena** — a dedicated area for those who want action
-- **Collaborate** with other players on large community projects
+- **Build and explore** within survival limits
+- **Protect wildlife** and collaborate on community projects
+- **Survive the night** without Creepers or PvP
+- **Use the currently enabled tools**, documented in `server/config/luanti-original.conf`
 
 ## Worlds
 
 ### Wetlands — port `30000`
 
-Main creative world. The safe, family-friendly hub. **Only world with the plant-based/server-filosofía.**
+Main hard-survival world with a compassionate identity. The authoritative settings are in `server/config/luanti-original.conf`; the world's `world.mt` on the VPS can override individual mod switches.
 
 | Feature | Detail |
 |---------|--------|
-| Mode | Creative (build without limits) |
-| Damage | On — hostile mobs spawn at night (Creepers excluded) |
-| PvP | Arena only |
+| Mode | Hard survival |
+| Damage | On — hostile mobs spawn at night; Creepers excluded |
+| PvP | Disabled |
 | Players | Up to 20 concurrent |
-| NPCs | Interactive villagers with Animal Crossing-style voices |
-| Vehicles | Vespa, motorcycle, buggy, beetle |
-| Music | Original ambient soundtrack |
-| Mods | 25+ custom and third-party mods |
+| Spawn | `655.1,18.5,243.9` |
+| Enabled custom content | `wetlands_newplayer`, `wetlands_no_creeper`, `wetlands_lastpos`, `server_rules`, custom skin support |
 
 ### Valdivia — port `30001`
 

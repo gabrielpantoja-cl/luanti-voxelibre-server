@@ -16,7 +16,7 @@ fork de VoxeLibre enfocado en clonar fielmente Minecraft vanilla.
 | Modo | Creativo, sin dano, sin PvP |
 | Mods custom | **Ninguno** — solo el game base |
 | Seed | `mineclonia` |
-| Spawn | `0,15,0` |
+| Spawn | `-14,4.5,240` |
 | Max jugadores | 15 |
 | Discord notifier | `luanti-discord-notifier-mineclonia` |
 

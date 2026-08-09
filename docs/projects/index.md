@@ -1,6 +1,10 @@
-# Proyecto: Merge de Mundos - Wetlands 3.0
+# Proyecto propuesto: Merge de Mundos - Wetlands 3.0
 
-## Vision
+> **Estado: no aprobado / no operativo.** Esta es una propuesta técnica histórica. No ejecutar sus comandos ni modificar SQLite de producción sin aprobación explícita, backups verificables y una prueba offline reproducible.
+
+La arquitectura vigente mantiene Wetlands y Valdivia como mundos independientes. El roadmap general del proyecto está en [`../../ROADMAP.md`](../../ROADMAP.md).
+
+## Visión propuesta
 
 Unificar el mundo original Wetlands (supervivencia compassiva desde el 2026-07-31, antes creativo/educativo) con la ciudad de Valdivia (generada por Arnis desde OpenStreetMap) en un **unico mundo** con un portal de teleport entre ambos. Resultado: un solo servidor, un solo puerto (30000), inventario compartido, experiencia seamless para los jugadores.
 
