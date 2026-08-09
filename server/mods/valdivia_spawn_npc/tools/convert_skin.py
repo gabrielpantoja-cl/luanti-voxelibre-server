@@ -26,6 +26,8 @@ JOBS = [
     ("2026_06_30_summer-gala-24161243.png", "valdivia_guia_parque_skin.png"),  # guia del Parque Catrico
     ("2025_06_17_vegan--anonymous-for-the-voiceless--av--animalrights-activist-23342807.png",
      "valdivia_guia_santa_elena_skin.png"),                                    # guia de Santa Elena
+    ("2026_06_26_hipster-24151100.png",
+     "valdivia_guia_huachocopihue_skin.png"),                                 # guia de Huachocopihue (Plaza Londres)
 ]
 
 

@@ -11,7 +11,7 @@ Estado: **en producción** desde 2026-07-05.
 
 | Elemento | Detalle |
 |----------|---------|
-| NPC guías (uno por lugar) | Estáticos e inmortales (anti-grief), mismo comportamiento pero **skin distinto** cada uno, sobre `mcl_armor_character.b3d`. Definidos en la tabla `GUIAS`: spawn (`:guia`, indie-boy), Parque Catrico (`:guia_parque`, summer-gala), Santa Elena (`:guia_santa_elena`, vegan-activist). |
+| NPC guías (uno por lugar) | Estáticos e inmortales (anti-grief), mismo comportamiento pero **skin distinto** cada uno, sobre `mcl_armor_character.b3d`. Definidos en la tabla `GUIAS`: spawn (`:guia`, indie-boy), Parque Catrico (`:guia_parque`, summer-gala), Santa Elena (`:guia_santa_elena`, vegan-activist), Huachocopihue / Plaza Londres (`:guia_huachocopihue`, hipster). |
 | Panel al click derecho | **QR de Discord** (escaneable) + enlace copiable + Reglas + menú de Lugares + Cerrar. |
 | Bienvenida | **Un solo** mensaje ~3 s después de entrar: título amarillo + "Explora la capital de Los Ríos y haz amigos en la ciudad más linda de Chile". El MOTD se vació y el aviso "Modo pacífico activo" de `mcl_mobs` se silencia (des-registro de su `on_joinplayer`) para no duplicar saludos ni ensuciar el chat. |
 | Discord | `https://discord.gg/Y3vfy2JnX` (constante `DISCORD_INVITE`). QR en `textures/valdivia_guia_discord_qr.png` (`tools/generate_discord_qr.py`). |
@@ -21,7 +21,7 @@ Estado: **en producción** desde 2026-07-05.
 | Comando | Priv | Uso |
 |---------|------|-----|
 | `/discord` | — | Muestra el enlace de Discord en el chat (respaldo del NPC). |
-| `/spawn_guia [spawn\|parque\|santa_elena]` | `server` | Coloca un guía en tu posición con el skin de ese lugar (sin arg = spawn). Elimina cualquier guía duplicado en radio 6. |
+| `/spawn_guia [spawn\|parque\|santa_elena\|huachocopihue]` | `server` | Coloca un guía en tu posición con el skin de ese lugar (sin arg = spawn). Elimina cualquier guía duplicado en radio 6. |
 | `/lugar_guardar <id> <nombre>` | `server` | Guarda tu posición actual como destino de teletransporte. El `id` sólo admite `[a-zA-Z0-9_]`. |
 | `/lugares` | — | Lista los destinos registrados con sus coordenadas. |
 
@@ -37,10 +37,10 @@ Estado: **en producción** desde 2026-07-05.
   encuentres de espalda. Misma convención de yaw que `wetlands_npcs`
   (`atan2(dir.z, dir.x) - π/2`) para el modelo `mcl_armor_character.b3d`.
 - **Persistencia de lugares**: `worldpath/valdivia_lugares.json`
-  (`minetest.write_json`). Sembrado por defecto con tres destinos: **Plaza de la
-  República / spawn** (`3766,-4,-3249`), **Parque Catrico** (`5025.5,-17.5,-7028.5`)
-  y **Santa Elena** (`6323.1,-15.5,-7270`). El admin puede agregar más en vivo
-  con `/lugar_guardar`.
+  (`minetest.write_json`). Sembrado por defecto con cuatro destinos: **Plaza de la
+  República / spawn** (`3766,-4,-3249`), **Parque Catrico** (`5025.5,-17.5,-7028.5`),
+  **Santa Elena** (`6323.1,-15.5,-7270`) y **Huachocopihue (Plaza Londres)**
+  (`4195.5,-5.6,-5943.8`). El admin puede agregar más en vivo con `/lugar_guardar`.
 - **Menú de Lugares consciente del contexto**: oculta el destino que esté a
   ≤`HIDE_RADIUS` (20 nodos) del jugador, así nunca ofrece "viajar a donde ya
   estás". Esto hace el teletransporte **bidireccional con una sola lista**: en
@@ -61,6 +61,7 @@ versionados; sólo re-generar si cambias el skin fuente.
 | Spawn (Plaza) | `2024_06_19_indie-boy-*.png` | `textures/valdivia_guia_skin.png` |
 | Parque Catrico | `2026_06_30_summer-gala-*.png` | `textures/valdivia_guia_parque_skin.png` |
 | Santa Elena | `2025_06_17_vegan-...-activist-*.png` | `textures/valdivia_guia_santa_elena_skin.png` |
+| Huachocopihue (Plaza Londres) | `2026_06_26_hipster-*.png` | `textures/valdivia_guia_huachocopihue_skin.png` |
 
 Para **agregar otro guía**: añade el skin a `JOBS` en `convert_skin.py` y córrelo,
 añade una entrada a la tabla `GUIAS` en `init.lua`, y (si es un destino nuevo) un
@@ -74,9 +75,10 @@ lugar a `DEFAULT_LUGARES`. Luego plántalo con `/spawn_guia <tipo>`.
 3. `docker compose restart luanti-valdivia`.
 4. In-game como admin, plantar un guía por lugar (skins distintos). Viaja a cada
    sitio (habla con un guía → Lugares) y planta el suyo:
-   - Spawn (Plaza): `/spawn_guia`
-   - Parque Catrico: `/spawn_guia parque`
-   - Santa Elena: `/spawn_guia santa_elena`
+- Spawn (Plaza): `/spawn_guia`
+    - Parque Catrico: `/spawn_guia parque`
+    - Santa Elena: `/spawn_guia santa_elena`
+    - Huachocopihue (Plaza Londres): `/spawn_guia huachocopihue`
    Cada NPC persiste con su mapblock (activo mientras haya jugadores cerca). El
    menú de Lugares oculta el destino donde ya estás, así cada guía ofrece viajar
    a los otros.

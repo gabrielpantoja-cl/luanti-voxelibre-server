@@ -23,9 +23,10 @@ local FACE_RANGE     = 12    -- distancia (nodos) para girar a mirar al jugador
 -- aqui. El del spawn conserva el nombre de entidad ":guia" para no romper la
 -- instancia ya plantada en produccion.
 local GUIAS = {
-    spawn       = { entity = modname .. ":guia",             skin = "valdivia_guia_skin.png",             label = "Guia (spawn)" },
-    parque      = { entity = modname .. ":guia_parque",      skin = "valdivia_guia_parque_skin.png",      label = "Guia (Parque Catrico)" },
-    santa_elena = { entity = modname .. ":guia_santa_elena", skin = "valdivia_guia_santa_elena_skin.png", label = "Guia (Santa Elena)" },
+    spawn          = { entity = modname .. ":guia",                 skin = "valdivia_guia_skin.png",                 label = "Guia (spawn)" },
+    parque         = { entity = modname .. ":guia_parque",          skin = "valdivia_guia_parque_skin.png",          label = "Guia (Parque Catrico)" },
+    santa_elena    = { entity = modname .. ":guia_santa_elena",     skin = "valdivia_guia_santa_elena_skin.png",     label = "Guia (Santa Elena)" },
+    huachocopihue  = { entity = modname .. ":guia_huachocopihue",   skin = "valdivia_guia_huachocopihue_skin.png",   label = "Guia (Huachocopihue)" },
 }
 -- Set de nombres de entidad para deteccion de duplicados.
 local GUIA_ENTITIES = {}
@@ -45,9 +46,10 @@ local C_OK     = "#7CFC7C"
 -- El admin puede agregar mas destinos en vivo con /lugar_guardar (persisten en
 -- valdivia_lugares.json).
 local DEFAULT_LUGARES = {
-    {id = "plaza",       nombre = "Plaza de la Republica (spawn)", pos = {x = 3766,   y = -4,    z = -3249}},
-    {id = "catrico",     nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
-    {id = "santa_elena", nombre = "Santa Elena",                  pos = {x = 6323.1, y = -15.5, z = -7270}},
+    {id = "plaza",          nombre = "Plaza de la Republica (spawn)", pos = {x = 3766,   y = -4,    z = -3249}},
+    {id = "catrico",        nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
+    {id = "santa_elena",    nombre = "Santa Elena",                  pos = {x = 6323.1, y = -15.5, z = -7270}},
+    {id = "huachocopihue",  nombre = "Huachocopihue (Plaza Londres)", pos = {x = 4195.5, y = -5.6,  z = -5943.8}},
 }
 
 -- Radio (nodos) para ocultar en el menu el destino donde el jugador ya esta.
@@ -373,7 +375,7 @@ minetest.register_chatcommand("discord", {
 })
 
 minetest.register_chatcommand("spawn_guia", {
-    params = "[spawn|parque|santa_elena]",
+    params = "[spawn|parque|santa_elena|huachocopihue]",
     description = "Coloca un NPC guia en tu posicion (admin). Sin arg = spawn; " ..
         "el resto usa ese skin. Elimina guias duplicados cercanos.",
     privs = {server = true},
