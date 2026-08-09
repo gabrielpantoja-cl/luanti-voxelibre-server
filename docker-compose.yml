@@ -63,6 +63,7 @@ services:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-voxelibre-server
       - SERVER_LABEL=Wetlands 🌱
+      - SERVER_PORT=30000
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
@@ -86,6 +87,7 @@ services:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-valdivia-server
       - SERVER_LABEL=Valdivia 🏙️
+      - SERVER_PORT=30001
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
@@ -176,6 +178,7 @@ services:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-gaelsin-server
       - SERVER_LABEL=GAELSIN ⚔️
+      - SERVER_PORT=30002
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
@@ -234,6 +237,7 @@ services:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-ctf-server
       - SERVER_LABEL=CTF ⚔️
+      - SERVER_PORT=30003
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "
@@ -297,6 +301,7 @@ services:
       - TZ=America/Santiago
       - CONTAINER_NAME=luanti-mineclonia-server
       - SERVER_LABEL=Mineclonia 🎮
+      - SERVER_PORT=30004
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
       sh -c "

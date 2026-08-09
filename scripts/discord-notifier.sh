@@ -21,6 +21,7 @@ NC='\033[0m' # No Color
 # Configuración
 CONTAINER_NAME="${CONTAINER_NAME:-luanti-voxelibre-server}"
 SERVER_LABEL="${SERVER_LABEL:-Wetlands 🌱}"
+SERVER_PORT="${SERVER_PORT:-}"
 # Leer webhook del .env si no está como variable de entorno
 if [ -z "$DISCORD_WEBHOOK_URL" ]; then
     DISCORD_WEBHOOK_URL=$(grep "DISCORD_WEBHOOK_URL=" .env 2>/dev/null | cut -d'=' -f2)
@@ -62,8 +63,12 @@ send_discord_notification() {
     local message="$1"
     local emoji="$2"  # Emoji para el mensaje (🟢, 🔴, 🤖)
 
-    # Crear mensaje simple (sin saltos de línea complicados)
-    local full_message="${emoji} ${message} | **Servidor:** ${SERVER_LABEL}"
+    local server_display="$SERVER_LABEL"
+    if [ -n "$SERVER_PORT" ]; then
+        server_display="${server_display} (:${SERVER_PORT})"
+    fi
+
+    local full_message="${emoji} ${message} | **Servidor:** ${server_display}"
 
     # Enviar a Discord
     local response=$(curl -s -w "%{http_code}" -o /dev/null \

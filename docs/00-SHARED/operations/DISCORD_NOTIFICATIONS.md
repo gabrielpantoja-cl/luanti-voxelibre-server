@@ -29,13 +29,13 @@ extrae el nombre y publica un `POST` al webhook.
 
 ## Sidecars (`docker-compose.yml`)
 
-| Sidecar | Contenedor que monitorea | Label que aparece en el mensaje |
+| Sidecar | Contenedor que monitorea | Identificación en el mensaje |
 |---|---|---|
-| `discord-notifier` | `luanti-voxelibre-server` | `Wetlands 🌱` |
-| `discord-notifier-valdivia` | `luanti-valdivia-server` | `Valdivia 🏙️` |
-| `discord-notifier-gaelsin` | `luanti-gaelsin-server` | `GAELSIN ⚔️` |
-| `discord-notifier-ctf` | `luanti-ctf-server` | `CTF ⚔️` |
-| `discord-notifier-mineclonia` | `luanti-mineclonia-server` | `Mineclonia 🎮` |
+| `discord-notifier` | `luanti-voxelibre-server` | `Wetlands 🌱 (:30000)` |
+| `discord-notifier-valdivia` | `luanti-valdivia-server` | `Valdivia 🏙️ (:30001)` |
+| `discord-notifier-gaelsin` | `luanti-gaelsin-server` | `GAELSIN ⚔️ (:30002)` |
+| `discord-notifier-ctf` | `luanti-ctf-server` | `CTF ⚔️ (:30003)` |
+| `discord-notifier-mineclonia` | `luanti-mineclonia-server` | `Mineclonia 🎮 (:30004)` |
 
 Los 5 sidecars comparten la **misma variable de entorno `DISCORD_WEBHOOK_URL`**
 (la URL del webhook se lee desde `.env` en la raíz). Eso significa: **un único
@@ -49,7 +49,7 @@ asignarlas en el bloque `environment` de cada sidecar.
 El webhook se publica como JSON plano:
 
 ```json
-{"content": "🟢 **Jugador Conectado:** pepelomo se ha conectado al servidor 🎮 | **Servidor:** Wetlands 🌱"}
+{"content": "🟢 **Jugador Conectado:** pepelomo se ha conectado al servidor 🎮 | **Servidor:** Wetlands 🌱 (:30000)"}
 ```
 
 Eventos:
@@ -60,7 +60,7 @@ Eventos:
 | Jugador desconecta | `🔴` | `**Jugador Desconectado:** <nombre> se ha desconectado del servidor 👋` |
 | Inicio del notifier | `🤖` | `**Monitor Iniciado:** Sistema de notificaciones activado correctamente ✅` |
 
-Todos terminan en `| **Servidor:** <LABEL>` para identificar el mundo.
+Todos terminan en `| **Servidor:** <LABEL> (:<PUERTO>)` para identificar el mundo y recordar su puerto de conexión.
 
 **No** se envía avatar personalizado, ni embed, ni ping `@everyone`/`@here`. Es
 el webhook plano por defecto de Discord.
@@ -89,11 +89,13 @@ En `docker-compose.yml`, cada sidecar toma:
 environment:
   - CONTAINER_NAME=luanti-<mundo>-server
   - SERVER_LABEL=<Label mostrado>
+  - SERVER_PORT=<Puerto público>
   - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
 ```
 
-`CONTAINER_NAME` y `SERVER_LABEL` se pueden sobreescribir localmente sin
-tocar el compose (definir antes de `docker compose up -d`).
+`CONTAINER_NAME`, `SERVER_LABEL` y `SERVER_PORT` se pueden sobreescribir localmente sin
+tocar el compose (definir antes de `docker compose up -d`). `SERVER_PORT` es opcional;
+si falta, el notifier conserva el formato anterior sin puerto.
 
 ## Pruebas
 
