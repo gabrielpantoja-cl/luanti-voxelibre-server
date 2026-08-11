@@ -351,16 +351,18 @@ Loaded with the OpenCode `skill` tool. Discoverable by description (frontmatter 
 
 ### Agents
 
-Defined in `.opencode/agents/` (OpenCode format). Invoke by name with `@<name>` from the chat, or by description matching. Most are specialists; `wetlands-orchestrator` is the project-wide delegator.
+Defined in `.opencode/agents/` (OpenCode format). Invoke by name with `@<name>` from the chat, or by description matching. **`orchestrator` is the PRIMARY default agent** (set via `default_agent` in `opencode.json`); all other custom agents are `mode: subagent` and only invokable via `@<name>` or task delegation.
 
-| Agent | Purpose |
-|-------|---------|
-| `lua-mod-expert` | Senior Lua / VoxeLibre mod development for educational, child-friendly content |
-| `wetlands-landing-page-developer` | Specialist for the `server/landing-page/` site (HTML/CSS/JS, child-friendly UX) |
-| `wetlands-mod-deployment` | Deployment, CI/CD, VPS operations, Docker Compose, zero-downtime deployments |
-| `wetlands-mod-testing` | Pre-commit testing, VoxeLibre compatibility checks, QA |
-| `wetlands-npc-expert` | The `wetlands_npcs` mod (FSM-based AI, dual movement, missions, gestures) |
-| `wetlands-orchestrator` | Project-wide delegation hub for Docker/VPS/deployment coordination |
+| Agent | Mode | Purpose |
+|-------|------|---------|
+| `orchestrator` | **primary** | **Default agent** — coordinates Docker/VPS/deployment, delegates to specialists |
+| `lua-mod-expert` | subagent | Senior Lua / VoxeLibre mod development for educational, child-friendly content |
+| `wetlands-landing-page-developer` | subagent | Specialist for the `server/landing-page/` site (HTML/CSS/JS, child-friendly UX) |
+| `wetlands-mod-deployment` | subagent | Deployment, CI/CD, VPS operations, Docker Compose, zero-downtime deployments |
+| `wetlands-mod-testing` | subagent | Pre-commit testing, VoxeLibre compatibility checks, QA |
+| `wetlands-npc-expert` | subagent | The `wetlands_npcs` mod (FSM-based AI, dual movement, missions, gestures) |
+
+Use `@build` for git operations (commit/push/super-commit) and `@plan` for pure planning sessions.
 
 **Equivalents in `.claude/agents/`** (legacy Claude Code location, deprecated but still discovered) keep working for Claude Code sessions. Per the project plan, `.claude/{agents,commands,skills}` are replaced by OS-detected shims that resolve to the canonical `.opencode/` content.
 

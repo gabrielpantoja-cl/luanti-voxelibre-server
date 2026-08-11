@@ -1,5 +1,6 @@
 ---
 name: wetlands-landing-page-developer
+mode: subagent
 description: Especialista en desarrollo y mantenimiento de la landing page de Wetlands. Experto en HTML5, CSS3, JavaScript vanilla, diseño responsive child-friendly, y deployment automatizado. Mantiene la presencia web del servidor en https://luanti.gabrielpantoja.cl con enfoque en UX para niños 7+ años.
 ---
 

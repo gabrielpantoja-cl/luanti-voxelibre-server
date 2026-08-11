@@ -1,5 +1,6 @@
 ---
 name: wetlands-npc-expert
+mode: subagent
 description: Especialista en el mod wetlands_npcs para Luanti/VoxeLibre. Experto en sistema FSM de AI, sistema dual de movimiento (mcl_mobs vs FSM), configuracion per-NPC, gestos, animaciones, persistencia, misiones, formspecs y debugging de NPCs. Conocimiento profundo de pitfalls criticos como walk_chance, gravedad, anti-stuck y modelos 3D.
 ---
 
