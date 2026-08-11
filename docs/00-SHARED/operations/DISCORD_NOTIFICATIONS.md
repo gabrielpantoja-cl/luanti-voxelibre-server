@@ -31,11 +31,11 @@ extrae el nombre y publica un `POST` al webhook.
 
 | Sidecar | Contenedor que monitorea | Identificación en el mensaje |
 |---|---|---|
-| `discord-notifier` | `luanti-voxelibre-server` | `Wetlands 🌱 (:30000)` |
-| `discord-notifier-valdivia` | `luanti-valdivia-server` | `Valdivia 🏙️ (:30001)` |
-| `discord-notifier-gaelsin` | `luanti-gaelsin-server` | `GAELSIN ⚔️ (:30002)` |
-| `discord-notifier-ctf` | `luanti-ctf-server` | `CTF ⚔️ (:30003)` |
-| `discord-notifier-mineclonia` | `luanti-mineclonia-server` | `Mineclonia 🎮 (:30004)` |
+| `discord-notifier` | `luanti-voxelibre-server` | `Wetlands 🌱 [30000]` |
+| `discord-notifier-valdivia` | `luanti-valdivia-server` | `Valdivia 🏙️ [30001]` |
+| `discord-notifier-gaelsin` | `luanti-gaelsin-server` | `GAELSIN ⚔️ [30002]` |
+| `discord-notifier-ctf` | `luanti-ctf-server` | `CTF ⚔️ [30003]` |
+| `discord-notifier-mineclonia` | `luanti-mineclonia-server` | `Mineclonia 🎮 [30004]` |
 
 Los 5 sidecars comparten la **misma variable de entorno `DISCORD_WEBHOOK_URL`**
 (la URL del webhook se lee desde `.env` en la raíz). Eso significa: **un único
@@ -49,7 +49,7 @@ asignarlas en el bloque `environment` de cada sidecar.
 El webhook se publica como JSON plano:
 
 ```json
-{"content": "🟢 **Jugador Conectado:** pepelomo se ha conectado al servidor 🎮 | **Servidor:** Wetlands 🌱 (:30000)"}
+{"content": "🟢 **Jugador Conectado:** pepelomo se ha conectado al servidor 🎮 | **Servidor:** Wetlands 🌱 [30000]"}
 ```
 
 Eventos:
@@ -60,7 +60,7 @@ Eventos:
 | Jugador desconecta | `🔴` | `**Jugador Desconectado:** <nombre> se ha desconectado del servidor 👋` |
 | Inicio del notifier | `🤖` | `**Monitor Iniciado:** Sistema de notificaciones activado correctamente ✅` |
 
-Todos terminan en `| **Servidor:** <LABEL> (:<PUERTO>)` para identificar el mundo y recordar su puerto de conexión.
+Todos terminan en `| **Servidor:** <LABEL> [<PUERTO>]` para identificar el mundo y recordar su puerto de conexión.
 
 **No** se envía avatar personalizado, ni embed, ni ping `@everyone`/`@here`. Es
 el webhook plano por defecto de Discord.

@@ -65,7 +65,7 @@ send_discord_notification() {
 
     local server_display="$SERVER_LABEL"
     if [ -n "$SERVER_PORT" ]; then
-        server_display="${server_display} (:${SERVER_PORT})"
+        server_display="${server_display} [${SERVER_PORT}]"
     fi
 
     local full_message="${emoji} ${message} | **Servidor:** ${server_display}"
