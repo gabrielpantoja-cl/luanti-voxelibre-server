@@ -42,6 +42,10 @@ que escribe `scripts/setup-gaelsin-world.sh`:
 - `wetlands_gaelsin_newplayer` — otorga **solo `interact, shout`** a nuevos jugadores
   (apropiado para supervivencia; no usa el `wetlands_newplayer` de Wetlands que da
   fly/creative).
+- `wetlands_gaelsin_admin_creative` — solo **gabo** recibe inventario creativo y el set
+  completo de privilegios admin (`creative`, `fly`, `noclip`, `give`, `worldedit`,
+  `ban`, `kick`, etc.). Los demás jugadores no se ven afectados. Ver la whitelist
+  `ADMIN_NAMES` en `server/mods/wetlands_gaelsin_admin_creative/init.lua`.
 - `wetlands_no_creeper` — bloquea creepers.
 - `server_rules`, `wetlands_lastpos`.
 - `orehud` de Oretracker v1.11 — muestra marcadores (waypoints en HUD) de los
