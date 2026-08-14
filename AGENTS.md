@@ -394,9 +394,9 @@ Slash-commands in `.opencode/commands/`. Invoke as `/<name> [arguments]`. Body u
 
 ### Models and data residency
 
-- **Primary model**: `MiniMax/MiniMax-M3` (1M context, multimodal, frontier coding) via the built-in `MiniMax` provider on OpenCode's provider list.
-- **Pricing tier**: paid Token Plan (pay-per-token). No fallback configured — single-model by design.
-- **Provider whitelist**: `enabled_providers: ["MiniMax"]` in `opencode.json` keeps the model picker clean.
+- **Primary model**: `openai/gpt-5.6-luna` via ChatGPT Plus/Pro OAuth.
+- **Pricing tier**: ChatGPT Plus subscription. No fallback configured, single-model by design.
+- **Provider whitelist**: `enabled_providers: ["openai"]` in `opencode.json` keeps the model picker clean.
 - **Data sensitivity tier for this repo**: **Tier D — code & tooling**. Public code, configs, docs. No PII in the repo. Tier A or Tier B data must not be pasted into chat sessions without explicit per-token review (none of those tiers exist in this repo today, but the rule stands in case more sensitive content lands here later).
 - **`.env`**: read access is denied by default in `opencode.json`; per-machine secrets live in `.env.local` (gitignored) and `.claude/settings.local.json` (gitignored). Their `AGENTS.local.md` mirror is also gitignored.
 
