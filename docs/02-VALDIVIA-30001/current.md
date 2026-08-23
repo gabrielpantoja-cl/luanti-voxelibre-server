@@ -90,6 +90,22 @@ extremos llegan aproximadamente a `x=3731..3751` y `z=-2965..-2948`.
 `voxelibre_protection` usa un cuadrado horizontal de `±radio`, no un círculo;
 la altura por defecto protegida va desde `y=-18` hasta `y=21`.
 
+### Corrección del teletransporte al spawn antiguo
+
+Después de cambiar el spawn, un usuario nuevo podía aparecer brevemente en
+Plaza Chile y ser enviado inmediatamente a la Plaza de la República. La causa
+era el worldmod `arnis_mapgen`, que conservaba una constante `SPAWN` antigua y
+la aplicaba desde sus callbacks de entrada y respawn. `static_spawnpoint` y
+`wetlands_newplayer` sí estaban usando Plaza Chile; el conflicto estaba
+únicamente en el worldmod generado por Arnis.
+
+La corrección quedó versionada en
+`scripts/update-valdivia-spawn.sh`. El script actualiza de forma idempotente
+la copia runtime del worldmod, crea un backup local antes de reemplazar la
+constante y verifica que el spawn antiguo ya no esté activo. La corrección se
+desplegó el 23 de agosto de 2026 y se reinició únicamente el contenedor de
+Valdivia. No se modificó la metadata de jugadores existentes.
+
 ---
 
 ## Diagnóstico del nuevo mundo (VPS, 29 junio 2026)
