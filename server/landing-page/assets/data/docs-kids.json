@@ -56,7 +56,7 @@
           "id": "conectar-servidor",
           "title": "🌐 Paso 2: Conectar al servidor",
           "level": 1,
-           "content": "1. Abre Luanti\n2. Clic en **\"Unirse al juego\"**\n3. Dirección: `luanti.gabrielpantoja.cl`\n4. Puerto:\n   - `30000` Wetlands (mundo familiar)\n   - `30001` Valdivia (ciudad real)\n   - `30002` GAELSIN (supervivencia)\n   - `30003` CTF (captura la bandera, armas)\n   - `30004` Mineclonia (creativo, Minecraft fiel)\n5. Clic en **\"Conectar\"**\n\n💡 Si es la primera vez, el servidor crea tu cuenta automáticamente cuando eliges nombre y contraseña."
+           "content": "1. Abre Luanti\n2. Clic en **\"Unirse al juego\"**\n3. Dirección: `luanti.gabrielpantoja.cl`\n4. Puerto: `30001`\n5. Clic en **\"Conectar\"**\n\n💡 Esta es la entrada pública de la comunidad. Si es la primera vez, el servidor crea tu cuenta automáticamente cuando eliges nombre y contraseña."
         },
         {
           "id": "primer-personaje",
@@ -77,7 +77,7 @@
           "id": "bienvenida",
           "title": "🎉 ¡Bienvenido!",
           "level": 1,
-           "content": "En Wetlands puedes:\n\n- 🌲 **Supervivencia compassiva** en Wetlands (puerto 30000): desde 2026-07-31 es supervivencia pura. Recolecta madera, piedra y materiales; construye tu casa pieza por pieza. Cuidado con los mobs de noche (excepto Creepers, bloqueados).\n- 🌆 **Explorar** Valdivia (puerto 30001), una recreación de la ciudad real\n- ⚔️ **Jugar GAELSIN** (puerto 30002): un mundo de supervivencia generado desde cero donde empiezas sin nada, juntas recursos, sobrevives a la noche y construyes tu base. PvP activo.\n- 🏴 **Jugar CTF** (puerto 30003): captura la bandera con espadas, armas y granadas. Rondas automáticas.\n- 🎮 **Construir en Mineclonia** (puerto 30004): mundo creativo puro con la esencia del Minecraft vanilla. Sin daño, inventario creativo, sin reglas. Toma cualquier item y construye lo que imagines.\n\nNota historica: hasta julio 2026 Wetlands fue creativo con arena PvP opt-in. Ahora es supervivencia sin PvP; solo el admin `gabo` conserva inventario creativo + worldedit via whitelist."
+            "content": "En Valdivia puedes:\n\n- 🌆 **Explorar** una recreación educativa de la ciudad real\n- 🗺️ **Recorrer** barrios, parques y lugares reconocibles\n- 🤝 **Compartir** construcciones y aprender con otros jugadores\n\nLa comunidad es pequeña y familiar. Trata a los demás con amabilidad y protege las construcciones ajenas."
         },
         {
           "id": "controles-basicos",
@@ -89,7 +89,7 @@
           "id": "primera-casa",
           "title": "🏠 Construye tu primera casa",
           "level": 1,
-          "content": "Estás en modo supervivencia, así que tu primer paso es recolectar materiales.\n\n1. Talar árboles con la mano (o un hacha de madera que tú crafteas) para juntar troncos\n2. Convertir troncos en tablas de madera en la mesa de crafteo\n3. Craftear herramientas (hacha, pico, pala) y un refugio básico\n4. Coloca antorches para que no spawnean mobs hostiles dentro\n\n💡 WorldEdit (construccion masiva) solo lo tiene el admin `gabo`. Para proteger zonas, coordina con el equipo en el chat."
+           "content": "Explora con calma y observa el entorno.\n\n1. Recorre los caminos y lugares de interés\n2. Busca espacios seguros para construir\n3. Respeta las construcciones existentes\n4. Si necesitas ayuda, pregunta en el chat\n\n💡 Las grandes ediciones las realiza el equipo administrador para proteger el mundo."
         },
         {
           "id": "hacer-amigos",
@@ -122,7 +122,7 @@
           "id": "comandos-construccion",
           "title": "🏗️ Construcción y herramientas",
           "level": 1,
-          "content": "- **`/skin`**: abrir el selector de skin\n- **`/reglas`**: ver las reglas (importante: nada de griefing ni trampas)\n- **`/back_to_spawn`**: volver al spawn\n- WorldEdit (//pos1, //set, etc.) solo lo tiene el admin `gabo`. Para ediciones grandes pide ayuda a un admin en el chat."
+           "content": "- **`/skin`**: abrir el selector de skin\n- **`/reglas`**: ver las reglas (importante: nada de griefing ni trampas)\n- **`/back_to_spawn`**: volver al spawn"
         },
         {
           "id": "como-usar-comandos",
@@ -149,7 +149,7 @@
           "id": "construcciones-respetuosas",
           "title": "🏗️ Construcciones",
           "level": 1,
-          "content": "**Sí puedes:**\n- Construir lo que quieras en supervivencia con los materiales que recolectes\n- Pedirle al admin `gabo` que use worldedit para ayudarte con ediciones grandes\n\n**No hagas:**\n- Destruir o modificar construcciones ajenas\n- Bloquear caminos o el spawn\n- Construir cosas ofensivas (hay niños jugando)"
+           "content": "**Sí puedes:**\n- Explorar y construir respetuosamente\n- Pedir ayuda a un administrador en el chat\n- Compartir ideas y construcciones\n\n**No hagas:**\n- Destruir o modificar construcciones ajenas\n- Bloquear caminos o el spawn\n- Construir cosas ofensivas (hay niños jugando)"
         },
         {
           "id": "chat-amigable",

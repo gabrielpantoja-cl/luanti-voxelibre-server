@@ -414,7 +414,7 @@ git push origin main
 
 **Mapeo de Nginx**:
 ```yaml
-# En vps-do/docker-compose.yml:
+# En el compose de la infraestructura del host:
 nginx-proxy:
   volumes:
     - <PROJECT_PATH>/server/landing-page:/var/www/luanti-landing:ro
@@ -603,7 +603,7 @@ du -h assets/images/*.png
 
 ### Headers de Caché (nginx)
 ```nginx
-# Ya configurado en vps-do/nginx/conf.d/luanti-landing.conf
+# Ya configurado en la capa nginx de la infraestructura del host
 location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
     expires 1y;
     add_header Cache-Control "public, immutable";

@@ -93,7 +93,7 @@ Los jugadores que regresan aparecen en la posición donde dejaron su personaje (
 | Arnis | v2.9.0 (release, CLI) |
 | Gameid | `mineclone2` (corregido post-generación) |
 | Servidor | Anunciado a `servers.luanti.org` |
-| Website URL | `https://luanti.gabrielpantoja.cl` (botón "Abrir sitio web" del cliente Luanti) |
+| Website URL | `https://luanti.gabrielpantoja.cl/` (botón "Abrir sitio web" del cliente Luanti) |
 
 ### Archivos en el VPS
 
@@ -165,7 +165,7 @@ Mundo generado exitosamente en la Legion 5 con Arnis v2.9.0 CLI.
 ### Comando ejecutado
 
 ```bash
-/home/gabriel/arnis/arnis-linux --luanti --terrain \
+$HOME/arnis/arnis-linux --luanti --terrain \
   --output-dir=/tmp/valdivia \
   --bbox="<VALDIVIA_BBOX>" \
   --spawn-lat=-39.81422 --spawn-lng=-73.24589
@@ -232,10 +232,10 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 - [x] **Remapeo v1:** Ejecutado `scripts/remap-mineclonia-to-voxelibre.py` (222.521 mapblocks)
 - [x] **Remapeo v2:** Ejecutado en VPS — 18.005 mapblocks de stairs/slabs/planchas
 - [x] **Baked lighting:** Generado con `--bake-lighting` — no necesita fixlight manual
-- [x] **Upload a VPS:** `rsync` a `gabriel@159.112.138.229` (~5 segundos)
+- [x] **Upload a VPS:** `rsync` a `<VPS_USER>@<VPS_IP>` (~5 segundos)
 - [x] **Permisos:** `sudo chown 1000:1000` (usuario container = opc)
 - [x] **Servidor iniciado:** Docker container `luanti-valdivia-server` anunciado a servidores públicos
-- [x] **Website URL:** `server_url = https://luanti.gabrielpantoja.cl` para botón "Abrir sitio web" en cliente Luanti
+- [x] **Website URL:** `server_url = https://luanti.gabrielpantoja.cl/` para botón "Abrir sitio web" en cliente Luanti
 - [x] **Wetlands deslistado:** `server_announce = false` en `luanti-original.conf` (ya no aparece en lista pública)
 
 ### Pendiente
@@ -307,7 +307,7 @@ El mundo se genera en `/tmp/valdivia/Arnis Luanti World 1/`.
 ```bash
 rsync -avz --progress \
   "/tmp/valdivia/Arnis Luanti World 1/" \
-  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/valdivia/
 ```
 
 ### Paso 4: Reemplazar el mundo actual (en VPS)
@@ -316,23 +316,23 @@ Detener container, reemplazar, chown, reiniciar:
 
 ```bash
 # Backup del mundo actual
-ssh gabriel@159.112.138.229 \
-  "cd /home/gabriel/luanti-voxelibre-server && \
+ssh <VPS_USER>@<VPS_IP> \
+  "cd $PROJECT_PATH && \
    docker compose stop luanti-valdivia && \
    mv server/worlds/valdivia server/worlds/valdivia_OLD_$(date +%Y%m%d)"
 
 # Copiar el nuevo mundo (desde PC local)
 rsync -avz --progress \
   "/tmp/valdivia/Arnis Luanti World 1/" \
-  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/valdivia/
 
 # Chown al usuario del container
-ssh gabriel@159.112.138.229 \
-  "sudo chown -R 1000:1000 /home/gabriel/luanti-voxelibre-server/server/worlds/valdivia"
+ssh <VPS_USER>@<VPS_IP> \
+  "sudo chown -R 1000:1000 $PROJECT_PATH/server/worlds/valdivia"
 
 # Reiniciar
-ssh gabriel@159.112.138.229 \
-  "cd /home/gabriel/luanti-voxelibre-server && docker compose start luanti-valdivia"
+ssh <VPS_USER>@<VPS_IP> \
+  "cd $PROJECT_PATH && docker compose start luanti-valdivia"
 ```
 
 ## Config para hacerlo público
@@ -343,7 +343,7 @@ En `server/config/luanti-valdivia.conf`, agregar o modificar:
 server_announce = true
 server_name = Valdivia [Chile]
 server_description = Recreación de Valdivia, Chile desde OpenStreetMap en Luanti. Explora la ciudad real, sus calles, ríos y edificios. Modo creativo.
-server_url = https://luanti.gabrielpantoja.cl
+server_url = https://luanti.gabrielpantoja.cl/
 server_keywords = valdivia,chile,ciudad,creativo,español
 ```
 
@@ -937,7 +937,7 @@ Definir un `<VALDIVIA_BBOX>` operativo que cubra el área urbana deseada.
 
 ## Coordenadas y teletransporte (referencia in-game)
 
-> Lista publica saneada (las coordenadas internas/privadas viven en el repo privado).
+> Lista pública saneada; las coordenadas internas no forman parte de esta documentación.
 > Documento vivo: actualizar con cada nueva ubicacion verificada en el juego.
 > El bbox exacto de conversión se mantiene fuera del repositorio público.
 

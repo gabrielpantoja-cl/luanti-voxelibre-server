@@ -24,7 +24,7 @@ sobre **Cloudflare R2** en vez de Drive. La sección histórica está al final.
 │    └─ Cron 03:00 -> rotate-backups-container.sh
 │
 └─ Cron del host (usuario gabriel, 08:00 UTC diario)
-     ~/vps-do/scripts/backup-luanti-offsite.sh   (vive en el repo infra/vps-oracle)
+     <HOST_BACKUP_SCRIPT>   (administrado fuera de este repositorio)
        · toma el tar.gz más reciente de server/backups/
        · rclone copy -> r2-backup:vps-backups-oracle/luanti/
        · retención R2: borra objetos > 6 días
@@ -58,7 +58,7 @@ mismo tarball. Valdivia entra como `./valdivia/map.sqlite` + `auth.sqlite`.
 | Uso del bucket | ~2.7 GB tras migración a GFS (≈10 objetos en régimen ≈ 8.3 GB) |
 | Credenciales | `~/.backup-credentials` (tokens R2 + Telegram) — **no** en git |
 | Config rclone | `~/.config/rclone/rclone.conf` |
-| Script | `~/vps-do/scripts/backup-luanti-offsite.sh` (repo `infra/vps-oracle`) |
+| Script | `<HOST_BACKUP_SCRIPT>` (administrado fuera de este repositorio) |
 
 ## ¿Cuánto tiempo hacia atrás puedo restaurar? (ventana de recuperación)
 
@@ -83,17 +83,16 @@ en el script. 10 objetos × ~830 MB ≈ 8.3 GB, holgado en el tier gratuito (10 
 
 ```bash
 # 1. Tarballs locales recientes (deben aparecer cada 12h)
-ssh gabriel@<VPS_IP> "ls -lht /home/gabriel/luanti-voxelibre-server/server/backups/*.tar.gz | head"
+ssh <VPS_USER>@<VPS_IP> "ls -lht <PROJECT_PATH>/server/backups/*.tar.gz | head"
 
 # 2. Log del offsite diario (busca 'Upload R2 OK' y 'FIN')
-ssh gabriel@<VPS_IP> "tail -n 20 /home/gabriel/backups/luanti/cron.log"
+ssh <VPS_USER>@<VPS_IP> "tail -n 20 <BACKUP_LOG_PATH>"
 
 # 3. Objetos en R2 (últimos ~6 días)
-ssh gabriel@<VPS_IP> "rclone lsl r2-backup:vps-backups-oracle/luanti/ \
-  --config /home/gabriel/.config/rclone/rclone.conf"
+ssh <VPS_USER>@<VPS_IP> "<OFFSITE_BACKUP_CHECK>"
 
 # 4. Confirmar que el tarball CONTIENE Valdivia (no solo que existe)
-ssh gabriel@<VPS_IP> "L=\$(ls -t .../server/backups/*.tar.gz | head -1); \
+ssh <VPS_USER>@<VPS_IP> "L=\$(ls -t <PROJECT_PATH>/server/backups/*.tar.gz | head -1); \
   tar tzf \"\$L\" | grep -E 'valdivia/(map|auth)\.sqlite'"
 ```
 

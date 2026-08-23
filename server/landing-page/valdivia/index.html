@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explora Valdivia, Chile, recreada en Luanti desde OpenStreetMap. Servidor público en el puerto 30001.">
+    <meta property="og:title" content="Valdivia en Luanti">
+    <meta property="og:description" content="Recorre calles, plazas, ríos y edificios de Valdivia en un mundo voxel recreado desde OpenStreetMap.">
+    <meta property="og:url" content="https://luanti.gabrielpantoja.cl/valdivia/">
+    <title>🏙️ Valdivia en Luanti</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏙️</text></svg>">
+    <link rel="stylesheet" href="../assets/css/style.css?v=20260823a">
+    <link rel="stylesheet" href="../assets/css/valdivia.css?v=20260823a">
+</head>
+<body class="valdivia-page">
+    <header class="valdivia-header">
+        <nav class="valdivia-nav" aria-label="Navegación principal">
+            <a class="valdivia-brand" href="#inicio" aria-label="Valdivia en Luanti, inicio">🏙️ Valdivia</a>
+            <button class="valdivia-menu-button" id="menu-button" type="button" aria-expanded="false" aria-controls="site-menu">Menú</button>
+            <div class="valdivia-menu" id="site-menu">
+                <a href="#explora">Explora</a>
+                <a href="#caracteristicas">Características</a>
+                <a href="#como-jugar">Cómo jugar</a>
+                <a href="#guia">Guía</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="valdivia-hero" id="inicio">
+            <div class="valdivia-hero-art" aria-hidden="true">🌊🏙️🌿</div>
+            <p class="valdivia-kicker">Servidor público · Puerto 30001</p>
+            <h1>Valdivia, Chile<br><span>recreada en Luanti</span></h1>
+            <p class="valdivia-lead">Recorre calles, plazas, ríos y edificios inspirados en la capital de Los Ríos, generada desde datos de OpenStreetMap.</p>
+            <div class="valdivia-connect-card" aria-label="Datos de conexión">
+                <div>
+                    <span class="connect-label">Dirección</span>
+                    <code>luanti.gabrielpantoja.cl</code>
+                </div>
+                <button class="valdivia-copy" type="button" data-copy="luanti.gabrielpantoja.cl">📋 Copiar dirección</button>
+                <div>
+                    <span class="connect-label">Puerto</span>
+                    <code>30001</code>
+                </div>
+                <button class="valdivia-copy" type="button" data-copy="30001">📋 Copiar puerto</button>
+            </div>
+            <p class="copy-feedback" id="copy-feedback" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="valdivia-section" id="explora">
+            <p class="valdivia-kicker">Una ciudad para descubrir</p>
+            <h2>Explora a tu ritmo</h2>
+            <div class="valdivia-cards">
+                <article><span aria-hidden="true">🌉</span><h3>Calles y plazas</h3><p>Camina por una ciudad voxel basada en el trazado urbano de Valdivia.</p></article>
+                <article><span aria-hidden="true">🌊</span><h3>Ríos y paisajes</h3><p>Descubre el entorno del río Valdivia y sus sectores urbanos.</p></article>
+                <article><span aria-hidden="true">🚗</span><h3>Recorridos en vehículo</h3><p>Usa vehículos para recorrer distancias y observar la ciudad desde otra perspectiva.</p></article>
+                <article><span aria-hidden="true">🧭</span><h3>Guía en el spawn</h3><p>Busca al NPC guía en la Plaza de la República para conocer lugares y reglas.</p></article>
+            </div>
+        </section>
+
+        <section class="valdivia-section valdivia-section-soft" id="caracteristicas">
+            <p class="valdivia-kicker">Información del mundo</p>
+            <h2>Un mapa urbano para explorar</h2>
+            <ul class="valdivia-features">
+                <li>🗺️ Recreación generada desde OpenStreetMap y Arnis.</li>
+                <li>🏙️ Mundo pre-generado para explorar una ciudad completa.</li>
+                <li>🚫 Sin aparición de mobs y con explosiones deshabilitadas.</li>
+                <li>🚙 Vehículos disponibles para recorrer la ciudad.</li>
+                <li>🧭 NPC guía y menú de lugares en español.</li>
+                <li>👥 Hasta 20 jugadores.</li>
+            </ul>
+            <p class="valdivia-notice">El mundo está pensado para explorar y construir. El daño y el PvP siguen activos: juega con cuidado y respeta a los demás.</p>
+        </section>
+
+        <section class="valdivia-section" id="como-jugar">
+            <p class="valdivia-kicker">Conéctate en pocos pasos</p>
+            <h2>Cómo jugar</h2>
+            <ol class="valdivia-steps">
+                <li><strong>Descarga Luanti</strong><span>Obtén el cliente gratuito desde <a href="https://www.luanti.org/downloads/" target="_blank" rel="noopener">luanti.org</a>.</span></li>
+                <li><strong>Abre “Unirse al juego”</strong><span>Busca la opción para añadir un servidor.</span></li>
+                <li><strong>Introduce los datos</strong><span>Dirección: <code>luanti.gabrielpantoja.cl</code> · Puerto: <code>30001</code>.</span></li>
+                <li><strong>Comienza a explorar</strong><span>Aparecerás cerca de la Plaza de la República. Busca al NPC guía.</span></li>
+            </ol>
+        </section>
+
+        <section class="valdivia-section valdivia-section-soft" id="guia">
+            <p class="valdivia-kicker">Ayuda dentro del mundo</p>
+            <h2>Comandos útiles</h2>
+            <div class="valdivia-command-list">
+                <p><code>/discord</code><span>Ver el enlace de la comunidad.</span></p>
+                <p><code>/lugares</code><span>Consultar los destinos disponibles.</span></p>
+                <p><code>/reglas</code><span>Leer las reglas de convivencia.</span></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="valdivia-footer">
+        <p>🏙️ Valdivia en Luanti · Puerto 30001</p>
+        <p>Una recreación voxel para explorar y aprender.</p>
+    </footer>
+
+    <script src="../assets/js/valdivia.js?v=20260823a"></script>
+</body>
+</html>

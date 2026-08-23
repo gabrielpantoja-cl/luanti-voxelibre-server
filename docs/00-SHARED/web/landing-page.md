@@ -140,7 +140,7 @@ Este documento detalla las mejoras significativas realizadas en la landing page 
 
 ### Archivos de Imágenes Utilizados
 1. **`server/landing-page/assets/images/Captura de pantalla de 2025-08-31 02-48-20.png`** - Screenshot del juego
-2. **`server/landing-page/assets/images/pepe-gabo.jpeg`** - Imagen de comunidad
+2. **Capturas de gameplay anonimizadas** - Imágenes de comunidad sin usernames ni chat
 3. **`server/landing-page/assets/images/wetlands-gameplay-2025-09-13.png`** - Nueva captura con animales (13 Sep 2025)
 
 ## 🚀 Impacto de las Mejoras
@@ -216,7 +216,7 @@ curl -I http://luanti.gabrielpantoja.cl
 
 **Mapeo directo**: La landing page está mapeada directamente desde el repositorio:
 ```yaml
-# En vps-do/docker-compose.yml
+# En el compose de la infraestructura del host
 volumes:
   - $PROJECT_PATH/server/landing-page:/var/www/luanti-landing:ro
 ```

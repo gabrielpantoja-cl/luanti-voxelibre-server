@@ -95,7 +95,7 @@ El mundo se genera en `/tmp/valdivia/Arnis Luanti World 1/`.
 ```bash
 rsync -avz --progress \
   "/tmp/valdivia/Arnis Luanti World 1/" \
-  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/valdivia/
 ```
 
 ### Paso 4: Reemplazar el mundo actual (en VPS)
@@ -104,23 +104,23 @@ Detener container, reemplazar, chown, reiniciar:
 
 ```bash
 # Backup del mundo actual
-ssh gabriel@159.112.138.229 \
-  "cd /home/gabriel/luanti-voxelibre-server && \
+ssh <VPS_USER>@<VPS_IP> \
+  "cd $PROJECT_PATH && \
    docker compose stop luanti-valdivia && \
    mv server/worlds/valdivia server/worlds/valdivia_OLD_$(date +%Y%m%d)"
 
 # Copiar el nuevo mundo (desde PC local)
 rsync -avz --progress \
   "/tmp/valdivia/Arnis Luanti World 1/" \
-  gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/
+  <VPS_USER>@<VPS_IP>:$PROJECT_PATH/server/worlds/valdivia/
 
 # Chown al usuario del container
-ssh gabriel@159.112.138.229 \
-  "sudo chown -R 1000:1000 /home/gabriel/luanti-voxelibre-server/server/worlds/valdivia"
+ssh <VPS_USER>@<VPS_IP> \
+  "sudo chown -R 1000:1000 $PROJECT_PATH/server/worlds/valdivia"
 
 # Reiniciar
-ssh gabriel@159.112.138.229 \
-  "cd /home/gabriel/luanti-voxelibre-server && docker compose start luanti-valdivia"
+ssh <VPS_USER>@<VPS_IP> \
+  "cd $PROJECT_PATH && docker compose start luanti-valdivia"
 ```
 
 ## Config para hacerlo público
@@ -695,7 +695,7 @@ Definir un `<VALDIVIA_BBOX>` operativo que cubra el área urbana deseada.
 
 ## Coordenadas y teletransporte (referencia in-game)
 
-> Lista publica saneada (las coordenadas internas/privadas viven en el repo privado).
+> Lista pública saneada; las coordenadas internas no forman parte de esta documentación.
 > Documento vivo: actualizar con cada nueva ubicacion verificada en el juego.
 > El bbox exacto de conversión se mantiene fuera del repositorio público.
 

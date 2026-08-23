@@ -116,13 +116,13 @@ MinecraftSkins, guiones convertidos a `_`. Ejemplos ya en uso: `zombie`,
 
 ```bash
 # Local → /tmp del VPS
-scp destino.png gabriel@<VPS_IP>:/tmp/destino.png
+scp destino.png <VPS_USER>@<VPS_IP>:/tmp/destino.png
 
 # Mover al world folder con owner correcto
-ssh gabriel@<VPS_IP> "sudo cp /tmp/destino.png \
-  /home/gabriel/luanti-voxelibre-server/server/worlds/gaelsin/_world_folder_media/textures/<nombre>.png && \
+ssh <VPS_USER>@<VPS_IP> "sudo cp /tmp/destino.png \
+  <PROJECT_PATH>/server/worlds/gaelsin/_world_folder_media/textures/<nombre>.png && \
   sudo chown 1000:1000 \
-  /home/gabriel/luanti-voxelibre-server/server/worlds/gaelsin/_world_folder_media/textures/<nombre>.png"
+  <PROJECT_PATH>/server/worlds/gaelsin/_world_folder_media/textures/<nombre>.png"
 ```
 
 ### 3. Editar `skins.txt`
@@ -137,15 +137,15 @@ entrada antes del cierre `}` del array:
 Con `sudo`:
 
 ```bash
-ssh gabriel@<VPS_IP> "sudo vim \
-  /home/gabriel/luanti-voxelibre-server/server/worlds/gaelsin/skins.txt"
+ssh <VPS_USER>@<VPS_IP> "sudo vim \
+  <PROJECT_PATH>/server/worlds/gaelsin/skins.txt"
 ```
 
 ### 4. Reiniciar y verificar
 
 ```bash
-ssh gabriel@<VPS_IP> "docker restart luanti-gaelsin-server"
-ssh gabriel@<VPS_IP> "docker logs --since='30s' luanti-gaelsin-server 2>&1 \
+ssh <VPS_USER>@<VPS_IP> "docker restart luanti-gaelsin-server"
+ssh <VPS_USER>@<VPS_IP> "docker logs --since='30s' luanti-gaelsin-server 2>&1 \
   | grep -iE 'error|warn' | grep -vE 'MINETEST_GAME_PATH|mineshaft'"
 ```
 

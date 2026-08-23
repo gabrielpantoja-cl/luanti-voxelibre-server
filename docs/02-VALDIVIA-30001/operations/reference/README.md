@@ -26,12 +26,12 @@ La versión corregida:
 ### Cómo aplicarla tras regenerar Valdivia con Arnis
 
 ```bash
-WM=/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/worldmods/arnis_mapgen/init.lua
+WM=<PROJECT_PATH>/server/worlds/valdivia/worldmods/arnis_mapgen/init.lua
 scp docs/02-VALDIVIA-30001/operations/reference/arnis_mapgen-init.lua.corrected \
-  gabriel@VPS:/tmp/arnis_fix.lua
-ssh gabriel@VPS "sudo cp \$WM \${WM}.bak-\$(date +%Y%m%d-%H%M%S) && \
+  <VPS_USER>@<VPS_HOST>:/tmp/arnis_fix.lua
+ssh <VPS_USER>@<VPS_HOST> "sudo cp \$WM \${WM}.bak-\$(date +%Y%m%d-%H%M%S) && \
   sudo cp /tmp/arnis_fix.lua \$WM && sudo chown 1000:1000 \$WM && rm /tmp/arnis_fix.lua"
-ssh gabriel@VPS "cd /home/gabriel/luanti-voxelibre-server && docker compose restart luanti-valdivia"
+ssh <VPS_USER>@<VPS_HOST> "cd <PROJECT_PATH> && docker compose restart luanti-valdivia"
 ```
 
 > ⚠️ Verificar que `SPAWN` en el archivo corresponda al spawn del mundo regenerado

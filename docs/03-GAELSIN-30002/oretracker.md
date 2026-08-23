@@ -175,8 +175,8 @@ Pre-flight de permisos antes del pull (los dirs `server/mods/oretracker/*`
 pueden estar owned por el container UID 1000 si el server los creo):
 
 ```bash
-ssh gabriel@159.112.138.229 \
-  "sudo chown -R gabriel:gabriel /home/gabriel/luanti-voxelibre-server/server/mods/oretracker"
+ssh <VPS_USER>@<VPS_IP> \
+  "sudo chown -R <VPS_USER>:<VPS_USER> <PROJECT_PATH>/server/mods/oretracker"
 ```
 
 ### Cambiar la lista de nodos xrayable

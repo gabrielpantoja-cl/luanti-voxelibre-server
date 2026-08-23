@@ -231,7 +231,7 @@ local MESSAGE = "FELIZ CUMPLEAÑOS 🎂"
    - Si te dice "Unknown item" → mod no cargado (revisar world.mt + restart container)
 2. Server logs (VPS):
    ```bash
-   ssh gabriel@159.112.138.229 "docker logs --since='30s' luanti-mineclonia-server 2>&1 | tail -20"
+   ssh <VPS_USER>@<VPS_IP> "docker logs --since='30s' luanti-mineclonia-server 2>&1 | tail -20"
    ```
    - Sin errores relacionados a `wetlands_mineclonia_trampas` → ok
    - Errores tipo `Failed to load mod` → revisar `init.lua` syntax + `mod.conf`
@@ -253,7 +253,7 @@ Si querés volver al estado "Mineclonia sin mods custom":
    ```
 2. `server/worlds/mineclonia/world.mt` (en VPS, vía `sudo`):
    ```bash
-   sudo sed -i '/load_mod_wetlands_mineclonia_trampas/d' /home/gabriel/luanti-voxelibre-server/server/worlds/mineclonia/world.mt
+   sudo sed -i '/load_mod_wetlands_mineclonia_trampas/d' <PROJECT_PATH>/server/worlds/mineclonia/world.mt
    ```
 3. `git push` + `git pull` en VPS + `docker compose restart luanti-mineclonia`.
 4. Los bloques `secret_heart` ya colocados se quedan en el mapa como `unknown node` (tienen textura gris/negra hasta que vuelvas a activar el mod). Si querés borrarlos todos de una, contactame — hay un script para eso.

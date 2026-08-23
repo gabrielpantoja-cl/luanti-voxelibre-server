@@ -17,10 +17,10 @@ mundos** salvo que se indique):
 Para comandos administrativos necesitas acceso SSH al VPS, privilegios de admin en el servidor
 Luanti (el admin es `gabo`) y, para editar privilegios, saber consultar la `auth.sqlite` del mundo.
 
-## 🔒 Documentación sensible (repo privado)
+## 🔒 Documentación sensible
 
 Análisis de usuarios, IPs bloqueadas, coordenadas privadas, credenciales del VPS y config DNS viven
-en el **repo privado** `infra/privado/luanti/` — nunca en este repo público.
+fuera de este repositorio público — nunca aquí.
 
 ## Ver también
 

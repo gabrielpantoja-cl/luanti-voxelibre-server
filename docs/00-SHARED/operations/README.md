@@ -8,10 +8,10 @@
 | [clonar-mundo-produccion-local.md](clonar-mundo-produccion-local.md) | Descargar un backup del VPS y correrlo localmente para pruebas/LAN |
 | [MCP_SERVERS.md](MCP_SERVERS.md) | Servidores MCP disponibles |
 
-## 🔒 Operaciones sensibles (repo privado)
+## 🔒 Operaciones sensibles
 
 Deploy detallado, recuperación de texturas, sync con VPS, credenciales y troubleshooting profundo
-viven en el **repo privado** `infra/privado/luanti/operations/`. Los comandos de deploy y las
+viven fuera de este repositorio público. Los comandos de deploy y las
 convenciones de `git pull` en el VPS también están en el [`AGENTS.md`](../../../AGENTS.md) raíz.
 
 ## Comandos rápidos

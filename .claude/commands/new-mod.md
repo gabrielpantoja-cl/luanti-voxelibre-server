@@ -67,7 +67,7 @@ Before cloning, verify upstream:
 ### Step 2: Clone without git history
 
 ```bash
-cd /home/gabriel/Developer/personal/luanti-voxelibre-server/server/mods
+cd server/mods
 git clone --depth 1 <upstream-url> $ARGUMENTS
 rm -rf $ARGUMENTS/.git
 ```

@@ -175,7 +175,7 @@ services:
 Es necesario recrear el contenedor:
 
 ```bash
-cd /home/gabriel/luanti-voxelibre-server
+cd <PROJECT_PATH>
 git pull origin main
 docker compose up -d --force-recreate --no-deps luanti-valdivia
 ```
@@ -315,7 +315,7 @@ fantasma** en `servers.luanti.org` que no podemos eliminar desde el VPS actual.
 | VPS | IP pública | Período | Puerto Valdivia |
 |-----|-----------|---------|-----------------|
 | DigitalOcean (anterior) | `IP_DO` (distinta) | Antes del fix | `:30000` y `:30001` (bug activo) |
-| Oracle (actual) | `159.112.138.229` | Post-fix | Solo `:30001` |
+| Oracle (actual) | `<VPS_PUBLIC_IP>` | Post-fix | Solo `:30001` |
 
 Cuando el servidor **aún estaba en DigitalOcean** y corría v5.13.0 con el bug
 del doble puerto, anunciaba Valdivia tanto en `:30000` como en `:30001`.
@@ -323,7 +323,7 @@ La entrada en `:30000` quedó almacenada en `servers.luanti.org` con llave
 primaria `(IP_DO, 30000)`.
 
 Al migrar a Oracle (cambiando la IP pública), el servidor actual anuncia
-Valdivia en `:30001` y la entrada se guarda con llave `(159.112.138.229, 30001)`.
+Valdivia en `:30001` y la entrada se guarda con la IP pública del host y el puerto `30001`.
 La entrada vieja en `(IP_DO, 30000)` quedó huérfana.
 
 ### Por qué no podemos borrarla vía API
@@ -346,7 +346,7 @@ def getWithIndex(self, ip, port):
 ```
 
 Para hacer `DELETE` de una entrada, la API busca por `(IP_del_request, puerto)`.
-Como hoy enviamos requests desde Oracle (`159.112.138.229`), la API no encuentra
+Como hoy enviamos requests desde el host Oracle, la API no encuentra
 la entrada guardada con `IP_DO`:
 
 ```bash

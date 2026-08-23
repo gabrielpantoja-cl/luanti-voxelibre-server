@@ -102,7 +102,7 @@ Ambos scripts se ejecutan **en el VPS, como `gabriel` con `sudo`**.
 ### Crear el mundo (primera vez)
 
 ```bash
-cd /home/gabriel/luanti-voxelibre-server
+cd <PROJECT_PATH>
 sudo ./scripts/setup-gaelsin-world.sh
 docker compose up -d luanti-gaelsin discord-notifier-gaelsin
 ```

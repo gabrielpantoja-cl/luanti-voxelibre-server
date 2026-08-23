@@ -62,7 +62,7 @@ creative_mode = false
 ### 1. Clonar el juego en el VPS
 
 ```bash
-ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && \
+ssh <VPS_USER>@<VPS_IP> "cd <PROJECT_PATH> && \
     git clone --recursive https://github.com/MT-CTF/capturetheflag.git \
     server/games/capturetheflag"
 ```
@@ -70,13 +70,13 @@ ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && \
 ### 2. Crear el mundo
 
 ```bash
-ssh gabriel@<VPS_IP> "mkdir -p /home/gabriel/luanti-voxelibre-server/server/worlds/ctf && \
-cat > /home/gabriel/luanti-voxelibre-server/server/worlds/ctf/world.mt <<'EOF'
+ssh <VPS_USER>@<VPS_IP> "mkdir -p <PROJECT_PATH>/server/worlds/ctf && \
+cat > <PROJECT_PATH>/server/worlds/ctf/world.mt <<'EOF'
 gameid = capturetheflag
 backend = dummy
 EOF"
 
-ssh gabriel@<VPS_IP> "sudo chown -R 1000:1000 /home/gabriel/luanti-voxelibre-server/server/worlds/ctf"
+ssh <VPS_USER>@<VPS_IP> "sudo chown -R 1000:1000 <PROJECT_PATH>/server/worlds/ctf"
 ```
 
 ### 3. Puerto 30003/UDP
@@ -89,20 +89,20 @@ ssh gabriel@<VPS_IP> "sudo chown -R 1000:1000 /home/gabriel/luanti-voxelibre-ser
 
 **b) Firewall del host:**
 ```bash
-ssh gabriel@<VPS_IP> "sudo ufw allow 30003/udp"
+ssh <VPS_USER>@<VPS_IP> "sudo ufw allow 30003/udp"
 ```
 
 ### 4. Levantar containers
 
 ```bash
-ssh gabriel@<VPS_IP> "cd /home/gabriel/luanti-voxelibre-server && \
+ssh <VPS_USER>@<VPS_IP> "cd <PROJECT_PATH> && \
     docker compose up -d luanti-ctf discord-notifier-ctf"
 ```
 
 ### 5. Verificar
 
 ```bash
-ssh gabriel@<VPS_IP> "docker logs --since=2m luanti-ctf-server 2>&1 | \
+ssh <VPS_USER>@<VPS_IP> "docker logs --since=2m luanti-ctf-server 2>&1 | \
     grep -iE 'error|warning|listening|capturetheflag'"
 ```
 

@@ -12,7 +12,7 @@ Wetlands is a **Luanti (formerly Minetest) game server** — a creative, educati
 
 ## Repository Scope
 
-This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, landing page, and deployment files. A separate repo, `infra/vps-oracle` (renamed from the older `vps-do`), owns host-level VPS configuration (nginx system service, Docker host, SSL). **Never** put Luanti-specific files in `vps-oracle`.
+This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, landing page, and Luanti deployment files. Host-level infrastructure (nginx, Docker host, and SSL) is managed separately. **Never** put host-only infrastructure in this repository.
 
 ## Key Technologies
 
@@ -236,7 +236,7 @@ The `mobs_mc_villager.b3d` model expects a 64×64 texture laid out in the Minecr
 
 Never draw a villager texture from scratch — you will get the UV wrong. Instead, recolor the base at `server/games/mineclone2/textures/mobs_mc_villager.png` using `server/mods/wetlands_npcs/tools/generate_textures.py`. A reference copy is at `server/mods/wetlands_npcs/textures/raw_skins/ref_villager_base.png`.
 
-Recovery protocol for corrupted textures lives in the private repo: `infra/privado/luanti/operations/texture-recovery.md`.
+Recovery protocol for corrupted textures is maintained outside this public repository.
 
 ### Skin / texture format matrix
 | Format | Size | Model | Used by | UV layout |
@@ -437,7 +437,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 - `docs/00-SHARED/admin/QUICK_ADD_SKINS.md` — adding player skins
 
 ### Operations
-- `docs/00-SHARED/operations/BACKUP_STATUS.md` — backup system (**operational**): local tarballs every 12h (`backup-cron` sidecar, `sqlite3 .backup` snapshot of all 3 worlds) + daily offsite upload to **Cloudflare R2** (host cron, `~/vps-do/scripts/backup-luanti-offsite.sh`). **Golden rule:** never leave manual `.sqlite` copies inside `server/worlds/` — `backup.sh`'s `rsync` sweeps them into every tarball and inflates each R2 upload (this happened: ~2.2 GB of junk in `valdivia/`). Put one-off snapshots in `server/backups/` or outside the repo.
+- `docs/00-SHARED/operations/BACKUP_STATUS.md` — public backup architecture and safety notes. Host-specific credentials, paths, remotes, retention details, and recovery commands are maintained outside this repository. **Golden rule:** never leave manual `.sqlite` copies inside `server/worlds/` — `backup.sh`'s `rsync` sweeps them into every tarball and inflates each upload. Put one-off snapshots in `server/backups/` or outside the repo.
 - `docs/00-SHARED/operations/clonar-mundo-produccion-local.md` — pull a prod backup and run it locally
 - `docs/02-VALDIVIA-30001/operations/SERVER_LIST_DUPLICATE_BUG.md` — bug del image `linuxserver/luanti` que hardcodea `--port 30000` y duplica servidores en `servers.luanti.org` cuando se usa otro puerto; fix via bind mount del script override en `server/container-overrides/svc-luanti/run`. El bug afecta directamente al mundo Valdivia (puerto 30001) por eso vive en su carpeta de operaciones. Cualquier servidor futuro con puerto ≠ 30000 también se verá afectado.
 
@@ -450,8 +450,6 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 ### Web
 - `docs/00-SHARED/web/landing-page.md` — landing page architecture and deployment
 
-### Private docs (separate repo: `infra/privado/luanti/`)
-- `operations/` — deploy, backups, VPS sync, texture recovery
-- `security/`, `incidents/` — security policies, past incident reports
-- `architecture/` — user privileges, real-world locations, NPC registry, internal coordinates
-- `credentials/` — VPS access, tokens, passwords
+### Operational documentation boundary
+- Host-specific deploy, backup, VPS sync, texture recovery, security, incident, privilege, and internal-location runbooks are intentionally maintained outside this public repository.
+- This repository contains only reproducible development guidance and sanitized public architecture notes. Never add credentials, private paths, player records, or production-world data here.

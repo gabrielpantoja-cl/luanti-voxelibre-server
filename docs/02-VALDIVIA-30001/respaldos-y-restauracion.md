@@ -21,7 +21,7 @@ en vez de la vieja de 6 días planos.
 | Offsite R2 — **mensual** | últimos **2 meses** | día 1 del mes | `.../luanti/monthly/` |
 
 **Ventana efectiva de recuperación: desde días hasta ~2 meses atrás.**
-Config en `scripts/backup-luanti-offsite.sh` del repo `infra/vps-oracle`
+Configuración del script offsite administrado por la infraestructura del host
 (`DAILY_KEEP=5`, `WEEKLY_KEEP=3`, `MONTHLY_KEEP=2` — knobs ajustables). Total
 ~10 objetos × ~830 MB ≈ 8.3 GB → holgado en el tier gratuito de R2 (10 GB).
 
@@ -49,7 +49,7 @@ hay un snapshot **anterior al daño**:
 Los objetos viven en tres subprefijos (GFS): `luanti/daily/`, `luanti/weekly/`,
 `luanti/monthly/`. Lista todo recursivo y elige el snapshot **anterior al daño**:
 ```bash
-ssh gabriel@<VPS_IP> "rclone lsl r2-backup:vps-backups-oracle/luanti/ --recursive \
+ssh <VPS_USER>@<VPS_IP> "rclone lsl <REMOTE_BACKUP_PATH> --recursive \
   --config ~/.config/rclone/rclone.conf"
 ```
 Para restaurar a un estado reciente usa `daily/`; para volver semanas/meses atrás
@@ -61,7 +61,7 @@ El panel web de Cloudflare **no** deja bajar objetos > 1 GB; usa siempre `rclone
 
 ### 2. Verificar integridad SIN descargar (streaming)
 ```bash
-ssh gabriel@<VPS_IP> "rclone cat r2-backup:vps-backups-oracle/luanti/<OBJ> \
+ssh <VPS_USER>@<VPS_IP> "rclone cat <REMOTE_BACKUP_PATH>/<OBJ> \
   --config ~/.config/rclone/rclone.conf | tar -tz | grep valdivia/map.sqlite"
 ```
 Si `tar` termina sin error y muestra `./valdivia/map.sqlite`, el respaldo está
@@ -70,11 +70,11 @@ Si `tar` termina sin error y muestra `./valdivia/map.sqlite`, el respaldo está
 ### 3. Restaurar en local para probar (sin tocar producción)
 ```bash
 # a) Bajar solo el mundo valdivia del respaldo al VPS y traerlo
-ssh gabriel@<VPS_IP> "cd /tmp && rclone copy \
+ssh <VPS_USER>@<VPS_IP> "cd /tmp && rclone copy \
   r2-backup:vps-backups-oracle/luanti/<OBJ> /tmp/ --config ~/.config/rclone/rclone.conf \
   && mkdir -p vx && tar xzf /tmp/<OBJ> -C vx ./valdivia \
   && tar czf valdivia_restore.tar.gz -C vx valdivia"
-scp gabriel@<VPS_IP>:/tmp/valdivia_restore.tar.gz server/backups/
+scp <VPS_USER>@<VPS_IP>:/tmp/valdivia_restore.tar.gz server/backups/
 
 # b) Preservar el mundo local actual y restaurar
 docker compose stop luanti-valdivia
@@ -105,8 +105,8 @@ docker compose start luanti-valdivia
 Mismo principio, en el VPS y con cuidado de permisos (`server/worlds` es `1000:1000`):
 
 ```bash
-ssh gabriel@<VPS_IP>
-cd /home/gabriel/luanti-voxelibre-server
+ssh <VPS_USER>@<VPS_IP>
+cd <PROJECT_PATH>
 docker compose stop luanti-valdivia
 sudo mv server/worlds/valdivia server/worlds/valdivia_DANADO_$(date +%Y%m%d_%H%M%S)
 rclone copy r2-backup:vps-backups-oracle/luanti/<OBJ_LIMPIO> /tmp/ --config ~/.config/rclone/rclone.conf

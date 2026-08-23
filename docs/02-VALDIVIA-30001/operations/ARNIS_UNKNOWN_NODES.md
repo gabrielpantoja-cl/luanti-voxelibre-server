@@ -29,9 +29,9 @@ cuyo mod **no existe** como directorio en el servidor:
 python3 << 'PYEOF'
 import sqlite3, struct, zstandard, os
 
-DB = '/home/gabriel/luanti-voxelibre-server/server/worlds/valdivia/map.sqlite'
-MODS_DIR = '/home/gabriel/luanti-voxelibre-server/server/games/mineclone2/mods'
-EXTERNAL_MODS = '/home/gabriel/luanti-voxelibre-server/server/mods'
+DB = '<PROJECT_PATH>/server/worlds/valdivia/map.sqlite'
+MODS_DIR = '<PROJECT_PATH>/server/games/mineclone2/mods'
+EXTERNAL_MODS = '<PROJECT_PATH>/server/mods'
 
 available_mods = set()
 for root, dirs, files in os.walk(MODS_DIR):
@@ -85,7 +85,7 @@ Para cada nombre viejo encontrado, buscar cómo se llama ahora:
 ```bash
 # Buscar en los mods del juego
 grep -r "register_node\|register_alias" \
-  /home/gabriel/luanti-voxelibre-server/server/games/mineclone2/mods \
+  <PROJECT_PATH>/server/games/mineclone2/mods \
   --include="*.lua" | grep "<nombre_del_nodo>"
 ```
 

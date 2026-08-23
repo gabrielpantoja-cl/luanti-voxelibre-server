@@ -10,7 +10,7 @@
 
 - ✅ Se descargaron 3 schematics (`.mts`) desde `Sokomine/mg_villages` en GitHub.
 - ✅ Se creó `scripts/remap_schematics.py` que reescribe los nombres de nodos de `minetest_game` a `VoxeLibre` directamente en el archivo binario (sin tocar el bloque zlib).
-- ✅ Se desplegaron los 3 schematics remapeados a `/home/gabriel/luanti-voxelibre-server/server/worlds/original/schems/` en el VPS (chown 1000:1000, 644).
+- ✅ Se desplegaron los 3 schematics remapeados a `<PROJECT_PATH>/server/worlds/original/schems/` en el VPS (chown 1000:1000, 644).
 - ❌ **No se pegó ningún schematic in-game** — el nombre del comando WorldEdit no era obvio y se perdió tiempo debuggeando.
 
 El comando que debería funcionar (no testeado): **`/mtschemplace <archivo>`** (con shortcommands) o **`//mtschemplace <archivo>`** (con doble barra). El detalle está en la sección "Cómo retomar".
@@ -106,7 +106,7 @@ python scripts/remap_schematics.py --backup server/worlds/original/schems/foo.mt
 ## 📁 Despliegue en el VPS
 
 Los 3 schematics están ahora en:
-- **Host**: `/home/gabriel/luanti-voxelibre-server/server/worlds/original/schems/`
+- **Host**: `<PROJECT_PATH>/server/worlds/original/schems/`
 - **Container**: `/config/.minetest/worlds/original/schems/` (vía bind-mount desde `./server/worlds/...`)
 
 Permisos: `opc:opc 644` (container user). El container los ve correctamente.
@@ -152,7 +152,7 @@ Esa es la descripción de `//load` (formato WorldEdit). El usuario la interpret�
 ```
 o desde SSH:
 ```bash
-ls /home/gabriel/luanti-voxelibre-server/server/worlds/original/schems/
+ls <PROJECT_PATH>/server/worlds/original/schems/
 ```
 
 ### Paso 2: Marcar pos1
@@ -198,7 +198,7 @@ Si se quieren bajar otros schematics de la comunidad, el flujo es:
 # Local
 curl -L -o server/worlds/original/schems/nuevo.mts https://raw.githubusercontent.com/.../nuevo.mts
 python scripts/remap_schematics.py server/worlds/original/schems/nuevo.mts
-scp server/worlds/original/schems/nuevo.mts gabriel@159.112.138.229:/home/gabriel/luanti-voxelibre-server/server/worlds/original/schems/
+scp server/worlds/original/schems/nuevo.mts <VPS_USER>@<VPS_IP>:<PROJECT_PATH>/server/worlds/original/schems/
 ```
 
 ## 🔗 Referencias

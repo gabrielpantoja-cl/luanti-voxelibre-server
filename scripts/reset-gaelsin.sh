@@ -13,7 +13,7 @@
 
 set -euo pipefail
 
-REPO_ROOT="/home/gabriel/luanti-voxelibre-server"
+REPO_ROOT="${PROJECT_PATH:-$(cd "$(dirname "$0")/.." && pwd)}"
 DST_WORLD="${REPO_ROOT}/server/worlds/gaelsin"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 ARCHIVE_DIR="${REPO_ROOT}/server/worlds/gaelsin_DESTROYED_${TIMESTAMP}"

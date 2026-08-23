@@ -62,8 +62,8 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 | [DISCORD_NOTIFICATIONS.md](operations/DISCORD_NOTIFICATIONS.md) | Sistema de notificaciones de conexiones a Discord (sidecars `discord-notifier*`) |
 | [MCP_SERVERS.md](operations/MCP_SERVERS.md) | Servidores MCP disponibles |
 
-> Deploy, texture-recovery y troubleshooting profundos viven en el **repo privado**
-> `infra/privado/luanti/operations/` (contienen credenciales y datos sensibles).
+> Deploy, texture-recovery y troubleshooting profundos se mantienen fuera de este
+> repositorio público porque pueden contener credenciales y datos sensibles.
 
 ### 🌐 [web/](web/) — Landing page e infraestructura web
 | Archivo | Descripción |
