@@ -3,7 +3,7 @@
 **Estado:** Mundo generado con Arnis v2.9.0 y **desplegado en VPS** (29 junio 2026)
 **Objetivo:** Recrear la ciudad completa de Valdivia, Chile desde OpenStreetMap en Luanti,
 incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Miraflores, Torobayo.
-**Spawn:** Plaza de la República.
+**Spawn actual:** Plaza Chile — `(3669.5, -8.5, -3055.5)`.
 **Servidor:** Público en la lista de Luanti con el nombre `Valdivia [Chile]`.
 
 ## Estado actual — 30 junio 2026
@@ -18,7 +18,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `creative_mode` | `false` (sin vuelo global — ver pitfall abajo) |
 | `enable_damage` | `true` (los jugadores reciben daño) |
 | `enable_pvp` | `true` |
-| Spawn histórico | Sector de prueba de Valdivia (coordenadas omitidas) |
+| Spawn actual | Plaza Chile — `(3669.5, -8.5, -3055.5)` |
 | Anunciado en servidores.luanti.org | Sí |
 
 ### Mods activos en Valdivia (además de VoxeLibre base)
@@ -30,6 +30,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `wetlands_lastpos` | Jugadores vuelven a su última posición al reconectarse |
 | `server_rules` | Comando `/reglas` |
 | `voxelibre_tv` | Televisores decorativos interactivos para hogares y edificios; tres canales animados y luz al encenderse. |
+| `voxelibre_protection` | Protección de áreas para proteger el nuevo spawn y lugares comunitarios. |
 | `valdivia_teleporter` | Teletransportador `/ir` — **deshabilitado** (coordenadas desactualizadas post-Arnis v2.9.0) |
 
 ### Aliases activos (`valdivia_aliases`)
@@ -68,6 +69,27 @@ Los jugadores que regresan aparecen en la posición donde dejaron su personaje (
 - [ ] Verificar y actualizar coordenadas del teletransportador `/ir` para el mundo Arnis v2.9.0 y re-habilitar `valdivia_teleporter`
 - [ ] Investigar más nodos desconocidos que aún puedan existir (el scanner cubre mods faltantes; renombres dentro de mods existentes son más difíciles de detectar)
 
+### Cambio de spawn — agosto 2026
+
+La **Plaza de la República** queda documentada como spawn histórico. Se cambió
+porque el área fue destruida y dejó de ser un punto seguro de llegada para
+jugadores nuevos. El spawn actual es **Plaza Chile**, en:
+
+```text
+(3669.5, -8.5, -3055.5)
+```
+
+Después del cambio, `gabo` debe situarse en Plaza Chile y ejecutar:
+
+```text
+/protect_here 110 spawn_plaza_chile
+```
+
+El radio 110 cubre la zona documentada del Hotel Dreams/Discoteca, cuyos
+extremos llegan aproximadamente a `x=3731..3751` y `z=-2965..-2948`.
+`voxelibre_protection` usa un cuadrado horizontal de `±radio`, no un círculo;
+la altura por defecto protegida va desde `y=-18` hasta `y=21`.
+
 ---
 
 ## Diagnóstico del nuevo mundo (VPS, 29 junio 2026)
@@ -85,7 +107,8 @@ Los jugadores que regresan aparecen en la posición donde dejaron su personaje (
 | Edificios Overture Maps | **34.653** |
 | Modelos 3D | 1 estadio (123.398 bloques), 1 avión |
 | Rango de elevación | **316.3 m** (vs 83 m del mundo anterior) |
-| Spawn generado | `3766, -4, -3249` (Plaza de la República — verificar) |
+| Spawn histórico | `3766, -4, -3249` (Plaza de la República, destruido; ya no es spawn) |
+| Spawn actual | `3669.5, -8.5, -3055.5` (Plaza Chile) |
 | Seed | `18241358796836382025` |
 | Remapeo v1 aplicado | 222.521 mapblocks (árboles, madera, bambú, steps) |
 | Remapeo v2 aplicado | 18.005 mapblocks (55 patrones stairs/slabs/planchas para 6 maderas + piedra) |

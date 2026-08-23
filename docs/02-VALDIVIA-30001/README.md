@@ -7,7 +7,8 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 | Puerto | 30001/UDP |
 | Juego | VoxeLibre (mineclone2) |
 | Mapgen | singlenode (mundo pre-generado) |
-| Spawn | `3766, -4, -3249` (Plaza de la República) |
+| Spawn actual | `3669.5, -8.5, -3055.5` (Plaza Chile) |
+| Spawn histórico | `3766, -4, -3249` (Plaza de la República; destruido) |
 | Creativo | Sí |
 | Vehículos | 10 mods automobiles |
 | Teletransporte | NPC guía del spawn (`valdivia_spawn_npc`) → menú "Lugares". El viejo `valdivia_teleporter` (`/ir`) está deshabilitado (coords stale). |
