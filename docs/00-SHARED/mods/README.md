@@ -245,7 +245,7 @@ Instalamos mods de terceros cuando:
 2. ✅ Son compatibles con VoxeLibre v0.90.1
 3. ✅ Están bien mantenidos y documentados
 4. ✅ No duplican funcionalidad que podemos desarrollar mejor
-5. ✅ Tienen licencia compatible (GPL v3 preferido)
+5. ✅ Tienen procedencia verificable y una licencia compatible con su distribución
 
 ---
 
@@ -453,7 +453,16 @@ Para problemas con mods:
 
 ---
 
+## Licencias del ecosistema
+
+`server/mods/` no tiene una licencia global única. El código y la documentación
+originales nuevos de Wetlands usan MIT por defecto, pero los mods propios con
+avisos históricos distintos y todos los componentes de terceros conservan sus
+licencias existentes. Consultar [`THIRD_PARTY_NOTICES.md`](../../../THIRD_PARTY_NOTICES.md)
+y los avisos incluidos dentro de cada mod; ninguno queda relicenciado por esta
+guía.
+
 **Última actualización**: Diciembre 7, 2025  
 **Mantenedor**: Equipo Wetlands  
-**Licencia**: GPL-3.0 (mods desarrollados por nosotros)
+**Licencias**: múltiples, según cada componente
 

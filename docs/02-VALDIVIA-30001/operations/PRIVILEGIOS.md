@@ -6,7 +6,7 @@
 
 ## Privilegios de jugadores nuevos
 
-| Privilegio | Nuevo jugador | gabo (admin) |
+| Privilegio | Nuevo jugador | ADMIN_A |
 |---|---|---|
 | `interact` | ✅ | ✅ |
 | `shout` | ✅ | ✅ |
@@ -66,10 +66,10 @@ Impone en **cada join** (vía `register_on_joinplayer` + `minetest.after(0)`):
 - metadata `gamemode = "creative"` → inventario creativo por jugador
 - metadata `mcl_privs:fly_changed = 1` → desactiva el auto-grant de fly de mcl_privs
 - para no-admin: el set exacto de `PRIVS` (sin fly, sin noclip, sin give)
-- para `gabo` (admin): no toca los privilegios (conserva todo, incluido fly)
+- para `ADMIN_A`: no toca los privilegios (conserva todo, incluido fly)
 
 ```lua
-local ADMIN = "gabo"
+local ADMIN = "ADMIN_A"
 local PRIVS = {
     interact = true, shout = true, creative = true,
     fast = true,     spawn = true,  teleport = true,
@@ -103,7 +103,7 @@ Editar `PRIVS` (o `ADMIN`) en `server/mods/valdivia_newplayer/init.lua`. Luego:
 
 ```bash
 git add -A && git commit -m "..." && git push
-ssh gabriel@VPS "cd ~/luanti-voxelibre-server && git pull && docker compose restart luanti-valdivia"
+ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && git pull && docker compose restart luanti-valdivia"
 ```
 
 Como el estado se impone en cada join, el cambio aplica a **todos** los jugadores (nuevos y existentes) la próxima vez que se conecten. No hace falta SQL manual salvo para casos puntuales (ver abajo).
@@ -112,22 +112,22 @@ Como el estado se impone en cada join, el cambio aplica a **todos** los jugadore
 
 ## Modificar privilegios de jugadores existentes
 
-### Ver todos los jugadores y sus privilegios
+### Ver los privilegios de una cuenta concreta
 
 ```bash
 sudo sqlite3 server/worlds/valdivia/auth.sqlite \
-  'SELECT a.name, group_concat(p.privilege, ", ")
+  'SELECT group_concat(p.privilege, ", ")
    FROM auth a LEFT JOIN user_privileges p ON a.id = p.id
-   GROUP BY a.name ORDER BY a.name;'
+   WHERE a.name = "PLAYER_A";'
 ```
 
-### Quitar un privilegio a todos excepto gabo
+### Quitar un privilegio a todos excepto ADMIN_A
 
 ```bash
 sudo sqlite3 server/worlds/valdivia/auth.sqlite \
   "DELETE FROM user_privileges
    WHERE privilege = 'fly'
-   AND id != (SELECT id FROM auth WHERE name='gabo');"
+   AND id != (SELECT id FROM auth WHERE name='ADMIN_A');"
 ```
 
 > ⚠️ **Si hay jugadores conectados al hacer el DELETE**: Luanti mantiene los privilegios en memoria y los escribe de vuelta a la DB cuando el jugador se desconecta, pisando el cambio SQL. Para evitarlo, detener el server antes (`docker compose stop luanti-valdivia`), hacer el DELETE, y reiniciar.
@@ -137,7 +137,7 @@ sudo sqlite3 server/worlds/valdivia/auth.sqlite \
 ```bash
 sudo sqlite3 server/worlds/valdivia/auth.sqlite \
   "INSERT OR IGNORE INTO user_privileges (id, privilege)
-   VALUES ((SELECT id FROM auth WHERE name='nombre'), 'fly');"
+   VALUES ((SELECT id FROM auth WHERE name='PLAYER_A'), 'fly');"
 ```
 
 > **Nota de permisos**: `auth.sqlite` es propiedad de `opc:opc` (el usuario del container). Necesita `sudo` para escribir. Para leer basta con `sqlite3` normal.
@@ -154,4 +154,4 @@ sudo sqlite3 server/worlds/valdivia/auth.sqlite \
 | 2026-06-30 | Creado `valdivia_newplayer`; quitados fly, noclip, give. Deshabilitado `wetlands_newplayer` en Valdivia |
 | 2026-06-30 | Fix: `default_privs` también actualizado para que coincida; `minetest.after(0)` para correr post-engine |
 | 2026-06-30 | Fix inventario creativo: VoxeLibre ignora privilegio `creative` con `creative_mode=false`; usar metadata `gamemode=creative` en `register_on_joinplayer` |
-| 2026-06-30 | Fix definitivo fly: `mcl_privs` auto-otorgaba fly a jugadores creativos (carrera de callbacks). `valdivia_newplayer` ahora impone privs en cada join con `minetest.after(0)` (gana siempre) + `mcl_privs:fly_changed=1`. Solo `gabo` conserva fly. Auto-reparable. |
+| 2026-06-30 | Fix definitivo fly: `mcl_privs` auto-otorgaba fly a jugadores creativos (carrera de callbacks). `valdivia_newplayer` ahora impone privs en cada join con `minetest.after(0)` (gana siempre) + `mcl_privs:fly_changed=1`. Solo `ADMIN_A` conserva fly. Auto-reparable. |

@@ -37,10 +37,10 @@ Estado: **en producción** desde 2026-07-05.
   encuentres de espalda. Misma convención de yaw que `wetlands_npcs`
   (`atan2(dir.z, dir.x) - π/2`) para el modelo `mcl_armor_character.b3d`.
 - **Persistencia de lugares**: `worldpath/valdivia_lugares.json`
-  (`minetest.write_json`). Sembrado por defecto con cuatro destinos: **Plaza de la
-  República / spawn** (`3766,-4,-3249`), **Parque Catrico** (`5025.5,-17.5,-7028.5`),
-  **Santa Elena** (`6323.1,-15.5,-7270`) y **Huachocopihue (Plaza Londres)**
-  (`4195.5,-5.6,-5943.8`). El admin puede agregar más en vivo con `/lugar_guardar`.
+  (`minetest.write_json`). Los destinos públicos se identifican por nombre, pero
+  sus coordenadas operativas se mantienen en el archivo del mundo y en el código
+  runtime correspondiente, no en esta documentación. El admin puede agregar más
+  en vivo con `/lugar_guardar`.
 - **Menú de Lugares consciente del contexto**: oculta el destino que esté a
   ≤`HIDE_RADIUS` (20 nodos) del jugador, así nunca ofrece "viajar a donde ya
   estás". Esto hace el teletransporte **bidireccional con una sola lista**: en

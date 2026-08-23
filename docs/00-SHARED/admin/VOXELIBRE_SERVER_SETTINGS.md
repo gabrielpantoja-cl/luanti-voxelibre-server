@@ -165,7 +165,7 @@ Para acceder a Server Settings, el usuario necesita:
 ### Verificar Privilegios
 ```bash
 # En el contenedor
-sqlite3 /config/.minetest/worlds/original/auth.sqlite "SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gabo');"
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='ADMIN_A');"
 ```
 
 ## Notas Importantes

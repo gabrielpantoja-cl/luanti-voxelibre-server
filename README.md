@@ -89,7 +89,16 @@ Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF
 
 ## Contributing
 
-This project is open source under the MIT License (see [LICENSE](LICENSE)). Third-party content inside `server/games/` and individual mods keeps its original license.
+This repository is an aggregate distribution containing independently licensed
+games, mods, libraries, and media. Original Wetlands code and documentation are
+provided under the [MIT License](LICENSE) unless a file or subdirectory says
+otherwise. Third-party components and previously licensed material keep their
+own terms; the root MIT license does not relicense them.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for a non-exhaustive list
+of verified principal components and assets still awaiting license/provenance
+verification. Component-level `LICENSE`, `COPYING`, `LEGAL`, README, and
+attribution files remain authoritative.
 
 If you want to contribute:
 

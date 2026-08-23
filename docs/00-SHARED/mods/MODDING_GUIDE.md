@@ -161,7 +161,7 @@ name = mi_mod_educativo
 title = Mod Educativo Para Wetlands
 description = Mod que promueve educación compasiva y cuidado animal
 author = TuNombre
-license = GPL v3
+license = MIT
 version = 1.0.0
 min_minetest_version = 5.4.0
 

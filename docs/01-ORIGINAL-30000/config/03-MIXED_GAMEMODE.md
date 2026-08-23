@@ -9,12 +9,12 @@
 >
 > El sistema de whitelist por nombre (`survival_players`, `creative_force`) ya no
 > aplica: ahora todos los jugadores nuevos reciben el mismo set basico de privs,
-> y solo el admin `gabo` (whitelist en `wetlands_newplayer`) conserva creative.
+> y solo `ADMIN_A` (whitelist en `wetlands_newplayer`) conserva creative.
 >
 > Si en el futuro se quiere reactivar un modo mixto, este doc sirve como
 > referencia historica, pero la implementacion actual debe rehacerse desde cero.
 
-**Autor**: Gabriel Pantoja
+**Autor**: <ADMIN_USER>
 **Última actualización**: 2026-01-16 (contenido histórico; banner agregado 2026-07-31)
 **Versión**: 1.1.0
 **Servidor**: Wetlands Luanti/VoxeLibre
@@ -31,7 +31,7 @@
 6. [Verificación y Troubleshooting](#6-verificación-y-troubleshooting)
 7. [Casos de Uso](#7-casos-de-uso)
 8. [Resumen Técnico](#8-resumen-técnico)
-9. [APÉNDICE A: Caso de Estudio - Migración pepelomo](#apéndice-a-caso-de-estudio---migración-pepelomo-2026-01-16)
+9. [APÉNDICE A: Caso de Estudio - Migración PLAYER_A](#apéndice-a-caso-de-estudio---migración-player_a-2026-01-16)
 
 ---
 
@@ -77,10 +77,9 @@ Ambos mods usan esta estructura al inicio del archivo:
 ```lua
 -- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
 local survival_players = {
-    ["jugador1"] = true,  -- Ejemplo de jugador en survival
+    ["PLAYER_A"] = true,  -- Ejemplo de jugador en survival
     -- Agregar más jugadores aquí:
-    -- ["jugador2"] = true,
-    -- ["jugador3"] = true,
+    -- ["PLAYER_B"] = true,
 }
 ```
 
@@ -99,7 +98,7 @@ local survival_players = {
 ```lua
 -- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
 local survival_players = {
-    ["jugador_survival"] = true,  -- Nombre exacto del jugador
+    ["PLAYER_A"] = true,  -- Nombre exacto del jugador
 }
 ```
 
@@ -169,7 +168,7 @@ end)
 ```lua
 -- ⚠️ SURVIVAL MODE EXCEPTIONS - Players who should NOT get creative privileges
 local survival_players = {
-    ["jugador_survival"] = true,  -- DEBE SER IDÉNTICA a creative_force
+    ["PLAYER_A"] = true,  -- DEBE SER IDÉNTICA a creative_force
 }
 ```
 
@@ -213,8 +212,8 @@ end)
 
 ```lua
 local survival_players = {
-    ["jugador_existente"] = true,
-    ["nuevo_jugador"] = true,  -- ⬅️ AGREGAR AQUÍ
+    ["PLAYER_A"] = true,
+    ["PLAYER_B"] = true,  -- AGREGAR AQUI
 }
 ```
 
@@ -230,7 +229,7 @@ Simplemente comenta o elimina la línea:
 
 ```lua
 local survival_players = {
-    -- ["jugador"] = true,  -- ⬅️ COMENTADO = vuelve a creativo
+    -- ["PLAYER_A"] = true,  -- COMENTADO = vuelve a creativo
 }
 ```
 
@@ -253,10 +252,10 @@ Comentar o eliminar la entrada del jugador en:
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
-  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
+  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"PLAYER_A\");'"
 ```
 
-**⚠️ Reemplazar**: `NOMBRE_JUGADOR` con el nombre exacto del jugador
+**Reemplazar** `PLAYER_A` por el nombre exacto del jugador al ejecutar el comando, sin documentarlo en el repositorio.
 
 ### Paso 3: Reiniciar Servidor
 
@@ -280,7 +279,7 @@ El jugador debe:
 ```bash
 # 1. Commit los cambios localmente
 git add server/mods/creative_force/init.lua server/mods/pvp_arena/init.lua
-git commit -m "feat: Cambiar modo de juego para jugador X"
+git commit -m "feat: Cambiar modo de juego para PLAYER_A"
 git push origin main
 
 # 2. GitHub Actions despliega automáticamente
@@ -305,7 +304,7 @@ cat "$PROJECT_PATH/server/mods/pvp_arena/init.lua" | \
 # 3. Limpiar privilegios del jugador
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
-  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
+  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"PLAYER_A\");'"
 
 # 4. Reiniciar servidor
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker compose restart luanti-server"
@@ -320,7 +319,7 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && docker compose restart luanti-serve
 ### 6.1.1. En el Juego (como admin)
 
 ```
-/privs nombre_jugador
+/privs PLAYER_A
 ```
 
 **Resultado esperado (Supervivencia)**:
@@ -338,27 +337,27 @@ interact, shout, home, spawn, creative, give, fly, fast, noclip, teleport, setti
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
-  'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"nombre_jugador\");'"
+  'SELECT privilege FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"PLAYER_A\");'"
 ```
 
 ## 6.2. Revisar Logs del Servidor
 
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
-  docker compose logs --tail=50 luanti-server | grep -i 'jugador\|survival\|creative_force\|pvp.*arena'"
+  docker compose logs --tail=50 luanti-server | grep -i 'PLAYER_A\|survival\|creative_force\|pvp.*arena'"
 ```
 
 **Logs correctos para jugador en supervivencia**:
 ```
-[creative_force] Player jugador is in SURVIVAL mode - skipping creative privileges
-[PVP Arena] Player jugador is in SURVIVAL mode - skipping creative
+[creative_force] Player PLAYER_A is in SURVIVAL mode - skipping creative privileges
+[PVP Arena] Player PLAYER_A is in SURVIVAL mode - skipping creative
 ```
 
 **Logs correctos para jugador en creativo**:
 ```
-[creative_force] Granted privilege 'creative' to player jugador
-[creative_force] Granted privilege 'fly' to player jugador
-[creative_force] Filled inventory with XX essential vegan/creative items for player jugador
+[creative_force] Granted privilege 'creative' to player PLAYER_A
+[creative_force] Granted privilege 'fly' to player PLAYER_A
+[creative_force] Filled inventory with XX essential vegan/creative items for player PLAYER_A
 ```
 
 ## 6.3. Problemas Comunes
@@ -381,10 +380,10 @@ ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
 
 **Solución**: Otorgar privilegios básicos manualmente
 ```
-/grant jugador interact
-/grant jugador shout
-/grant jugador home
-/grant jugador spawn
+/grant PLAYER_A interact
+/grant PLAYER_A shout
+/grant PLAYER_A home
+/grant PLAYER_A spawn
 ```
 
 ### Problema 3: Cambios No Aplican
@@ -416,9 +415,8 @@ docker compose restart luanti-server
 
 ```lua
 local survival_players = {
-    ["estudiante1"] = true,
-    ["estudiante2"] = true,
-    ["estudiante3"] = true,
+    ["PLAYER_A"] = true,
+    ["PLAYER_B"] = true,
     -- profesor NO está en la lista = modo creativo
 }
 ```
@@ -429,8 +427,8 @@ local survival_players = {
 
 ```lua
 local survival_players = {
-    ["aventurero1"] = true,
-    ["explorador2"] = true,
+    ["PLAYER_A"] = true,
+    ["PLAYER_B"] = true,
     -- builders NO están en la lista = modo creativo
 }
 ```
@@ -441,14 +439,14 @@ local survival_players = {
 
 ```lua
 local survival_players = {
-    ["jugador"] = true,  -- Desafío por X tiempo
+    ["PLAYER_A"] = true,  -- Desafío por X tiempo
 }
 ```
 
 Después del periodo:
 ```lua
 local survival_players = {
-    -- ["jugador"] = true,  -- ⬅️ COMENTADO = vuelve a creativo
+    -- ["PLAYER_A"] = true,  -- COMENTADO = vuelve a creativo
 }
 ```
 
@@ -462,7 +460,7 @@ local survival_players = {}
 
 -- O con excepciones específicas
 local survival_players = {
-    ["jugador_especial"] = true,  -- Solo este jugador en supervivencia
+    ["PLAYER_A"] = true,  -- Solo este jugador en supervivencia
 }
 ```
 
@@ -514,7 +512,7 @@ Usa esta checklist cada vez que agregues/remuevas un jugador:
 - [ ] Commit y push a repositorio (o deployment manual)
 - [ ] Esperar deployment automático O reiniciar servidor manualmente
 - [ ] Pedir al jugador que se desconecte y vuelva a entrar
-- [ ] Verificar privilegios con `/privs jugador`
+- [ ] Verificar privilegios con `/privs PLAYER_A`
 - [ ] Revisar logs del servidor para confirmar modo correcto
 - [ ] Notificar al jugador sobre su nuevo modo de juego
 
@@ -534,26 +532,23 @@ Usa esta checklist cada vez que agregues/remuevas un jugador:
 ---
 ---
 
-# APÉNDICE A: Caso de Estudio - Migración pepelomo (2026-01-16)
+# APÉNDICE A: Caso de Estudio - Migración PLAYER_A (2026-01-16)
 
-**Jugador**: pepelomo  
+**Jugador**: PLAYER_A
 **Fecha de Migración**: 2026-01-16  
 **Dirección**: Supervivencia → Creativo  
-**Duración en Survival**: ~1 día (2026-01-15 a 2026-01-16)  
 **Resultado**: ✅ Migración exitosa completa
 
 ---
 
 ## A.1. Resumen Ejecutivo
 
-El usuario **pepelomo** experimentó con el **modo supervivencia** durante aproximadamente 1 día, pero decidió volver al **modo creativo** para continuar explorando la creatividad sin las restricciones de recolección de recursos.
+`PLAYER_A` fue migrado de **modo supervivencia** a **modo creativo**. El caso conserva únicamente los pasos técnicos reproducibles.
 
-### A.1.1. Resultado del Experimento
+### A.1.1. Resultado Técnico
 
-- ✅ Sistema de modo mixto funcionó correctamente
-- ✅ pepelomo disfrutó el desafío temporal de supervivencia
-- ✅ Se confirmó que el modo supervivencia es entretenido y funcional
-- ✅ Migración de vuelta a creativo completada exitosamente sin pérdida de datos
+- Sistema de modo mixto verificado
+- Migración a creativo completada sin pérdida de datos
 
 ---
 
@@ -566,12 +561,12 @@ El usuario **pepelomo** experimentó con el **modo supervivencia** durante aprox
 ```lua
 -- ANTES (supervivencia activa):
 local survival_players = {
-    ["pepelomo"] = true,  -- Requested to play in survival mode
+    ["PLAYER_A"] = true,
 }
 
 -- DESPUÉS (vuelta a creativo):
 local survival_players = {
-    -- ["pepelomo"] = true,  -- ❌ DESACTIVADO 2026-01-16: Volvió a modo creativo después de 1 día en survival
+    -- ["PLAYER_A"] = true,
 }
 ```
 
@@ -582,12 +577,12 @@ local survival_players = {
 ```lua
 -- ANTES (supervivencia activa):
 local survival_players = {
-    ["pepelomo"] = true,  -- Requested to play in survival mode
+    ["PLAYER_A"] = true,
 }
 
 -- DESPUÉS (vuelta a creativo):
 local survival_players = {
-    -- ["pepelomo"] = true,  -- ❌ DESACTIVADO 2026-01-16: Volvió a modo creativo después de 1 día en survival
+    -- ["PLAYER_A"] = true,
 }
 ```
 
@@ -597,10 +592,10 @@ local survival_players = {
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
-  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"pepelomo\");'"
+  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"PLAYER_A\");'"
 ```
 
-**Resultado**: Todos los privilegios de pepelomo eliminados exitosamente.
+**Resultado**: privilegios persistidos de `PLAYER_A` eliminados exitosamente.
 
 ### A.2.4. Paso 4: Deployment Manual al VPS
 
@@ -645,12 +640,12 @@ docker compose restart luanti-server
 ```bash
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
-  'SELECT a.name, GROUP_CONCAT(up.privilege, \", \") as privileges FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name=\"pepelomo\" GROUP BY a.name;'"
+  'SELECT GROUP_CONCAT(up.privilege, \", \") AS privileges FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name=\"PLAYER_A\";'"
 ```
 
 **Resultado**:
 ```
-pepelomo|basic_privs, creative, debug, fast, fly, give, home, interact, noclip, settime, shout, spawn, teleport
+basic_privs, creative, debug, fast, fly, give, home, interact, noclip, settime, shout, spawn, teleport
 ```
 
 ✅ **Todos los privilegios creativos otorgados correctamente**
@@ -707,9 +702,8 @@ pepelomo|basic_privs, creative, debug, fast, fly, give, home, interact, noclip, 
 
 ### A.5.2. Modo Supervivencia
 
-1. ✅ **Atractivo para jugadores**: El desafío adicional fue bien recibido
-2. ✅ **Compatible con filosofía compasiva**: Sin necesidad de matar animales
-3. ✅ **Puede ser temporal**: Funciona bien como experimento por tiempo limitado
+1. **Compatible con la filosofía compasiva**: no requiere mecánicas violentas
+2. **Puede ser temporal**: el cambio es reversible
 
 ### A.5.3. Proceso de Migración
 
@@ -732,7 +726,7 @@ Si se necesita replicar este proceso con otro jugador:
 # 2. Limpiar privilegios
 ssh <VPS_USER>@<VPS_IP> "cd $PROJECT_PATH && \
   docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite \
-  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"NOMBRE_JUGADOR\");'"
+  'DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name=\"PLAYER_A\");'"
 
 # 3. Copiar archivos al VPS
 cat "server/mods/creative_force/init.lua" | ssh <VPS_USER>@<VPS_IP> "cat > $PROJECT_PATH/server/mods/creative_force/init.lua"
@@ -782,17 +776,16 @@ ssh <VPS_USER>@<VPS_IP> "grep -q 'load_mod_creative_force' $PROJECT_PATH/server/
 
 ## A.9. Conclusión del Caso de Estudio
 
-La migración de **pepelomo** de modo supervivencia a modo creativo fue **completamente exitosa**. Demostró que el sistema de modo mixto del servidor Wetlands es:
+La migración de `PLAYER_A` de modo supervivencia a modo creativo verificó que el sistema permite:
 
 - ✅ **Robusto**: Sin errores ni conflictos
 - ✅ **Flexible**: Fácil cambiar entre modos en cualquier momento
-- ✅ **Divertido**: pepelomo disfrutó ambas experiencias
-- ✅ **Educativo**: Confirma que el modo supervivencia es una opción válida para desafíos
+- **Reversible**: conserva el mundo y las construcciones
 
-**Estado Final**: pepelomo está de vuelta en modo creativo con todos los privilegios y herramientas para continuar explorando su creatividad sin límites. 🌱
+**Estado final**: `PLAYER_A` quedó en modo creativo con el conjunto esperado de privilegios.
 
 ---
 
-**Caso documentado por**: Gabriel Pantoja (gabo)  
+**Caso documentado por**: <ADMIN_USER>
 **Fecha**: 2026-01-16  
 **Estado**: ✅ Completado exitosamente

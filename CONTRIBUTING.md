@@ -130,12 +130,25 @@ Ver `/docs/.gitignore` para archivos excluidos.
 
 ## 📄 Licencia
 
-Wetlands es GPL v3. Todas las contribuciones se licencian bajo los mismos términos.
+Las contribuciones originales nuevas a código y documentación de Wetlands se
+envían bajo la licencia MIT del archivo [`LICENSE`](LICENSE), salvo que el
+archivo o subdirectorio afectado declare expresamente otra licencia. No cambies
+ni elimines avisos de copyright o licencia existentes sin revisar autoría y
+tener autorización suficiente.
 
-Al contribuir aceptas que tu código sea:
-- De código abierto
-- Modificable por la comunidad
-- Usado para fines educativos
+Si una contribución incluye o adapta material de terceros, el PR debe indicar:
+
+- autor o titular y fuente exacta;
+- licencia aplicable y enlace o copia del texto correspondiente;
+- archivos incorporados o modificados;
+- cambios realizados y atribuciones exigidas por la licencia.
+
+Solo se acepta material que la persona contribuidora tenga derecho a aportar y
+cuya licencia sea compatible con su uso y distribución en este repositorio. No
+marques skins, música, fan art, texturas, modelos ni código encontrado en
+Internet como "libre" sin evidencia verificable. Conserva las licencias de
+terceros y actualiza [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) cuando
+corresponda.
 
 ## 🙏 Agradecimientos
 

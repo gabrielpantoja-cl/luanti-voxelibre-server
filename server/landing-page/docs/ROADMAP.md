@@ -2,7 +2,7 @@
 
 Propuestas de mejora para la landing page de Wetlands.
 
-**Estado actual**: Landing page funcional con sistema de galeria centralizado JSON, 11 imagenes, 2 paginas (index + galeria).
+**Estado actual**: Landing page funcional con sistema de galeria centralizado JSON, 1 imagen publica, 2 paginas (index + galeria).
 
 ---
 
@@ -66,7 +66,7 @@ Activar proxy de Cloudflare para cache global, proteccion DDoS y analytics sin G
 Permitir compartir links directos a una imagen especifica de la galeria:
 
 ```
-https://luanti.gabrielpantoja.cl/galeria.html?image=vehicles-2025-11
+https://luanti.gabrielpantoja.cl/galeria.html?image=bathroom-kit-2025-10
 ```
 
 Leer query param al cargar y abrir modal automaticamente.

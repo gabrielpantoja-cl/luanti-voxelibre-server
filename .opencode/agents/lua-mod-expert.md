@@ -198,7 +198,7 @@ description = Mod que promueve educación compasiva y cuidado animal
 depends = mcl_core
 optional_depends = mcl_mobs, mcl_farming, doc_items
 author = TuNombre
-license = GPL v3
+license = MIT
 version = 1.0.0
 min_minetest_version = 5.4.0
 
@@ -934,7 +934,7 @@ name = $MOD_NAME
 title = Mod Educativo $MOD_NAME
 description = Mod educativo para Wetlands que promueve compasión
 author = $(whoami)
-license = GPL v3
+license = MIT
 version = 1.0.0
 depends = mcl_core
 optional_depends = mcl_mobs, mcl_farming

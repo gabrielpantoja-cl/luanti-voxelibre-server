@@ -12,7 +12,7 @@
 **Coordenadas**: Centro (41, 23, 232)
 **Radio**: 25 bloques
 **Fecha**: 26 de Octubre 2025
-**Autor**: Gabriel Pantoja (gabo)
+**Autor**: <ADMIN_USER>
 
 ---
 
@@ -38,7 +38,7 @@
     center = {x = 41, y = 23, z = 232},
     radius = 25,  -- Radio de 25 bloques = 51x51 área
     enabled = true,
-    created_by = "gabo",
+    created_by = "ADMIN_A",
     created_at = os.time()
 }
 ```
@@ -543,7 +543,7 @@ Para usar WorldEdit necesitas el privilegio `worldedit`:
 /privs
 
 # Si no tienes worldedit, otorgarlo
-/grant gabo worldedit
+/grant ADMIN_A worldedit
 ```
 
 ---
@@ -559,5 +559,5 @@ Para usar WorldEdit necesitas el privilegio `worldedit`:
 
 **Última Actualización**: 26 de Octubre 2025
 **Versión**: 1.0.0
-**Autor**: Gabriel Pantoja (gabo)
+**Autor**: <ADMIN_USER>
 **Licencia**: MIT

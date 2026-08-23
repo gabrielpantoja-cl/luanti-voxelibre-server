@@ -49,7 +49,7 @@ asignarlas en el bloque `environment` de cada sidecar.
 El webhook se publica como JSON plano:
 
 ```json
-{"content": "🟢 **Jugador Conectado:** pepelomo se ha conectado al servidor 🎮 | **Servidor:** Wetlands 🌱 [30000]"}
+{"content": "🟢 **Jugador Conectado:** PLAYER_A se ha conectado al servidor 🎮 | **Servidor:** Wetlands 🌱 [30000]"}
 ```
 
 Eventos:

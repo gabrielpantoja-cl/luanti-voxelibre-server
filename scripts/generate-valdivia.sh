@@ -12,54 +12,21 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 VALDIVIA_WORLD="$PROJECT_DIR/server/worlds/valdivia"
 
-# Bounding boxes predefinidos
-# Colegio: Colegio Planeta Azul y alrededores (~600 x 600 m)
-BBOX_COLEGIO="-39.8387,-73.2600,-39.8332,-73.2540"
-# MVP: Centro + Costanera + Mercado Fluvial (~1.5 x 2 km)
-BBOX_MVP="-39.825,-73.255,-39.810,-73.235"
-# Expansion 1: + Isla Teja + Puentes (~3.5 x 4 km)
-BBOX_EXP1="-39.840,-73.265,-39.805,-73.225"
-# Expansion 2: + Barrios Las Animas, Jardin (~6.5 x 7.5 km)
-BBOX_EXP2="-39.855,-73.275,-39.795,-73.200"
-# Completa: Ciudad + Humedal Rio Cruces (~10 x 10 km)
-BBOX_FULL="-39.870,-73.280,-39.780,-73.180"
+# El bbox se suministra explicitamente para no versionar ubicaciones sensibles.
+# Formato Arnis: min_lat,min_lng,max_lat,max_lng
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Uso: $0 <OSM_BBOX> [nombre-area]"
+    echo "Ejemplo: $0 '<min_lat>,<min_lng>,<max_lat>,<max_lng>' valdivia"
+    exit 1
+fi
 
-# Default: colegio
-BBOX="$BBOX_COLEGIO"
-AREA_NAME="colegio"
+BBOX="$1"
+AREA_NAME="${2:-sector de Valdivia}"
 
-# Parsear argumentos
-case "${1:-colegio}" in
-    colegio)
-        BBOX="$BBOX_COLEGIO"
-        AREA_NAME="Colegio Planeta Azul (~600x600 m)"
-        ;;
-    mvp)
-        BBOX="$BBOX_MVP"
-        AREA_NAME="mvp (centro + costanera)"
-        ;;
-    exp1)
-        BBOX="$BBOX_EXP1"
-        AREA_NAME="expansion 1 (+ Isla Teja)"
-        ;;
-    exp2)
-        BBOX="$BBOX_EXP2"
-        AREA_NAME="expansion 2 (+ barrios)"
-        ;;
-    full)
-        BBOX="$BBOX_FULL"
-        AREA_NAME="ciudad completa"
-        ;;
-    *)
-        echo "Uso: $0 [colegio|mvp|exp1|exp2|full]"
-        echo "  colegio - Colegio Planeta Azul (~600x600 m) [default]"
-        echo "  mvp     - Centro + Costanera (~1.5x2 km)"
-        echo "  exp1    - + Isla Teja + Puentes (~3.5x4 km)"
-        echo "  exp2    - + Barrios Las Animas, Jardin (~6.5x7.5 km)"
-        echo "  full    - Ciudad completa + Humedal (~10x10 km)"
-        exit 1
-        ;;
-esac
+if ! [[ "$BBOX" =~ ^-?[0-9]+([.][0-9]+)?,-?[0-9]+([.][0-9]+)?,-?[0-9]+([.][0-9]+)?,-?[0-9]+([.][0-9]+)?$ ]]; then
+    echo "ERROR: bbox invalido. Usa min_lat,min_lng,max_lat,max_lng sin espacios."
+    exit 1
+fi
 
 echo "=== Generando mundo Valdivia ==="
 echo "Area: $AREA_NAME"

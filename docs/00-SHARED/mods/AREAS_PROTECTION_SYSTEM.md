@@ -5,12 +5,12 @@
 
 ## 🚨 PROBLEMA IDENTIFICADO
 
-### El Issue con "casaloxos"
+### Ejemplo de bypass en un área protegida
 
 **Situación actual**:
-- Área protegida: `casaloxos`
-- Propietarios autorizados: `gabo` y `loxos`
-- **PROBLEMA**: `pepelomo` puede romper bloques en esta área protegida
+- Área protegida: `AREA_A`
+- Propietario autorizado: `PLAYER_A`
+- **PROBLEMA**: `PLAYER_B` puede romper bloques sin ser propietario
 
 ### Causa Raíz
 
@@ -35,13 +35,11 @@ Donde `self.adminPrivs = {areas=true}`
 
 ### Usuarios con Privilegios de Bypass
 
-| Usuario | Privilegio `areas` | Privilegio `protection_bypass` | ¿Puede bypasear "casaloxos"? |
+| Rol | Privilegio `areas` | Privilegio `protection_bypass` | ¿Puede omitir la protección? |
 |---------|-------------------|-------------------------------|------------------------------|
-| **gabo** | ✅ SÍ | ✅ SÍ | ✅ SÍ (Super Admin - esperado) |
-| **pepelomo** | ✅ SÍ | ✅ SÍ | ✅ SÍ (PROBLEMA) |
-| **gaelsin** | ✅ SÍ | ✅ SÍ | ✅ SÍ (PROBLEMA) |
-| **loxos** | ❌ NO | ✅ SÍ | ⚠️ SÍ (por `protection_bypass`) |
-| **gapi** | ❌ NO | ❌ NO | ❌ NO |
+| `ADMIN_A` | SÍ | SÍ | SÍ (esperado) |
+| `PLAYER_A` | NO | NO | NO |
+| `PLAYER_B` | SÍ | SÍ | SÍ (configuración incorrecta) |
 
 ### Privilegios Críticos Identificados
 
@@ -53,10 +51,7 @@ Donde `self.adminPrivs = {areas=true}`
 - Listar todas las áreas
 - **¡BYPASS COMPLETO de todas las protecciones de áreas!**
 
-**Usuarios que lo tienen**:
-- `gabo` ✅ (Super Admin - correcto)
-- `pepelomo` ❌ (No debería tenerlo)
-- `gaelsin` ❌ (No debería tenerlo)
+Debe limitarse a `ADMIN_A`.
 
 #### 2. `areas_high_limit` (Límite Alto de Áreas)
 **Descripción**: "Can protect more, bigger areas"
@@ -67,9 +62,7 @@ Donde `self.adminPrivs = {areas=true}`
 
 **No permite bypass de protección** (este privilegio es seguro)
 
-**Usuarios que lo tienen**:
-- `pepelomo` ✅
-- `gaelsin` ✅
+Puede otorgarse a `PLAYER_A` o `PLAYER_B` sin habilitar bypass.
 
 #### 3. `protection_bypass` (Bypass General de Protección)
 **Descripción**: Bypass de sistema de protección general de VoxeLibre
@@ -79,11 +72,7 @@ Donde `self.adminPrivs = {areas=true}`
 - Ignorar protecciones de bloques individuales
 - **Posiblemente bypass de áreas protegidas** (depende de la implementación)
 
-**Usuarios que lo tienen**:
-- `gabo` ✅ (Super Admin - correcto)
-- `pepelomo` ❌ (Peligroso)
-- `gaelsin` ❌ (Peligroso)
-- `loxos` ❌ (Peligroso)
+Debe limitarse a `ADMIN_A`.
 
 ---
 
@@ -153,20 +142,8 @@ ssh <VPS_USER>@<VPS_IP>
 cd $PROJECT_PATH
 docker compose exec luanti-server /bin/bash
 
-# Remover privilegio 'areas' de pepelomo
-sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='pepelomo') AND privilege='areas';"
-
-# Remover privilegio 'areas' de gaelsin
-sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gaelsin') AND privilege='areas';"
-
-# Remover 'protection_bypass' de pepelomo
-sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='pepelomo') AND privilege='protection_bypass';"
-
-# Remover 'protection_bypass' de gaelsin
-sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='gaelsin') AND privilege='protection_bypass';"
-
-# Remover 'protection_bypass' de loxos
-sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='loxos') AND privilege='protection_bypass';"
+# Repetir para cada cuenta afectada, sustituyendo PLAYER_A al ejecutar
+sqlite3 /config/.minetest/worlds/original/auth.sqlite "DELETE FROM user_privileges WHERE id=(SELECT id FROM auth WHERE name='PLAYER_A') AND privilege IN ('areas', 'protection_bypass');"
 
 # Salir del contenedor
 exit
@@ -175,11 +152,7 @@ exit
 # docker compose restart luanti-server
 ```
 
-### Opción 2: Mantener Privilegios y Confiar en los Admins
-
-Si confías en pepelomo y gaelsin para no abusar de sus privilegios, puedes mantener la configuración actual. Sin embargo, ten en cuenta que **PUEDEN** modificar áreas protegidas.
-
-### Opción 3: Crear Rol de "Moderador" sin Bypass
+### Opción 2: Crear Rol de "Moderador" sin Bypass
 
 Definir un nuevo conjunto de privilegios para moderadores que **NO incluya**:
 - `areas`
@@ -198,20 +171,18 @@ Pero **SÍ incluya**:
 ### Comando para verificar privilegios actualizados
 
 ```bash
-ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite "SELECT a.name, GROUP_CONCAT(up.privilege, \", \") FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name IN (\"gabo\", \"pepelomo\", \"gaelsin\", \"loxos\") GROUP BY a.name;"'
+ssh <VPS_USER>@<VPS_IP> 'cd $PROJECT_PATH && docker compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite "SELECT GROUP_CONCAT(up.privilege, \", \") FROM auth a LEFT JOIN user_privileges up ON a.id = up.id WHERE a.name = \"PLAYER_A\";"'
 ```
 
 **Resultado esperado después de aplicar Opción 1**:
-- `gabo`: Debe mantener `areas` y `protection_bypass` (Super Admin)
-- `pepelomo`: No debe tener `areas` ni `protection_bypass`
-- `gaelsin`: No debe tener `areas` ni `protection_bypass`
-- `loxos`: No debe tener `protection_bypass` (pero puede ser propietario de "casaloxos")
+- `ADMIN_A`: puede mantener `areas` y `protection_bypass`
+- `PLAYER_A` y `PLAYER_B`: no deben tener `areas` ni `protection_bypass`
 
 ### Prueba en el juego
 
-1. Conectar con usuario `pepelomo`
-2. Intentar romper un bloque en área "casaloxos"
-3. **Resultado esperado**: Mensaje de error "casaloxos is protected by gabo, loxos"
+1. Conectar con `PLAYER_B`
+2. Intentar romper un bloque en `AREA_A`
+3. **Resultado esperado**: mensaje de área protegida
 
 ---
 
@@ -280,12 +251,12 @@ areas.self_protection_privilege (Self protection privilege) string protect
 ## Resumen Ejecutivo
 
 ### El Problema
-pepelomo y gaelsin tienen privilegios que les permiten **bypasear todas las protecciones de áreas**, incluyendo "casaloxos", debido a:
+Una cuenta no administrativa con estos privilegios puede **omitir todas las protecciones de áreas** debido a:
 1. Privilegio `areas` (bypass explícito en el código)
 2. Privilegio `protection_bypass` (bypass general de VoxeLibre)
 
 ### La Solución
-**Remover** los privilegios `areas` y `protection_bypass` de usuarios que no sean Super Admins (solo gabo debería tenerlos).
+**Remover** los privilegios `areas` y `protection_bypass` de cuentas que no sean `ADMIN_A`.
 
 ### El Impacto
 - ✅ Las áreas protegidas funcionarán correctamente

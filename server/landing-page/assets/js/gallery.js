@@ -61,6 +61,7 @@ function renderLatestGallery() {
 
     // Get latest 4 images
     const latestImages = galleryData.slice(0, 4);
+    container.classList.toggle('single-item', latestImages.length === 1);
 
     latestImages.forEach((image, index) => {
         const galleryItem = createGalleryItem(image, index === 0);
@@ -77,6 +78,7 @@ function renderFullGallery() {
 
     // Clear existing content
     container.innerHTML = '';
+    container.classList.toggle('single-item', galleryData.length === 1);
 
     galleryData.forEach((image, index) => {
         const galleryItem = createGalleryItemFull(image, index === 0);
@@ -157,8 +159,10 @@ function updateGalleryStats() {
 
     // Update stat numbers
     const statNumbers = statsContainer.querySelectorAll('.stat-number');
+    const statLabels = statsContainer.querySelectorAll('.stat-label');
     if (statNumbers[0]) statNumbers[0].textContent = totalImages;
     if (statNumbers[1]) statNumbers[1].textContent = 'Actualizado';
+    if (statLabels[1]) statLabels[1].textContent = latestMonth;
 
     console.log(`📊 Gallery stats updated: ${totalImages} images, latest: ${latestMonth}`);
 }

@@ -38,7 +38,7 @@ Esto ocurre específicamente en la función `make_invisible()` línea 1717 de `f
 ### Impacto
 
 - **Jugabilidad**: Interrupciones constantes durante el juego
-- **Experiencia del usuario**: Frustrante para jugadores (gabo y pepelomo afectados)
+- **Experiencia del usuario**: desconexiones para `ADMIN_A` y `PLAYER_A`
 - **Estabilidad del servidor**: Reinicios cada ~30 segundos cuando el efecto de la poción está activo
 
 ## Solución Implementada
@@ -167,11 +167,11 @@ docker compose logs luanti-server | grep -A 5 "mcl_potions"
 
 ## Contacto y Soporte
 
-- **Admin del servidor**: gabo
+- **Admin del servidor**: `ADMIN_A`
 - **Issue tracker**: https://github.com/gabrielpantoja-cl/luanti-voxelibre-server/issues
 - **VoxeLibre ContentDB**: https://content.luanti.org/packages/Wuzzy/mineclone2/
 
 ---
 
-**Documentado por**: Claude Code + Gabriel Pantoja
+**Documentado por**: <ADMIN_USER>
 **Última actualización**: 2025-10-12

@@ -18,7 +18,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `creative_mode` | `false` (sin vuelo global — ver pitfall abajo) |
 | `enable_damage` | `true` (los jugadores reciben daño) |
 | `enable_pvp` | `true` |
-| Spawn | `2389, -55, -2887` (Colegio Planeta Azul — spawn estático en `world.mt`) |
+| Spawn histórico | Sector de prueba de Valdivia (coordenadas omitidas) |
 | Anunciado en servidores.luanti.org | Sí |
 
 ### Mods activos en Valdivia (además de VoxeLibre base)
@@ -48,7 +48,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 ### Privilegios e inventario creativo
 
 - **Jugadores nuevos**: `interact, shout, creative, fast, spawn, teleport` — sin `fly` ni `noclip`
-- **gabo** (admin): todos los privilegios incluido `fly`
+- **ADMIN_A**: todos los privilegios incluido `fly`
 - **Inventario creativo**: todos los jugadores tienen acceso al inventario creativo completo de VoxeLibre
 
 > ⚠️ **Pitfall VoxeLibre (documentado 30-jun-2026):** con `creative_mode = false`, el privilegio `creative` de Luanti no activa el inventario creativo de VoxeLibre. VoxeLibre sobreescribe `minetest.is_creative_enabled()` en `mcl_inventory/init.lua` y con el modo global apagado solo devuelve `true` si el jugador tiene la metadata `gamemode = "creative"`. El mod `valdivia_newplayer` setea esta metadata en `register_on_joinplayer` para todos los jugadores al conectarse.
@@ -139,7 +139,7 @@ Los jugadores que regresan aparecen en la posición donde dejaron su personaje (
 > | Cobertura N-S | ~6.0 km | **~9.5 km** (+58%) |
 > | Modelos 3D | No | Sí (estadio, avión) |
 > | Terreno | Plano | Realista con elevaciones |
-> | Spawn anterior | Colegio Planeta Azul (2389, -55, -2887) | Plaza de la República (3766, -4, -3249) |
+> | Spawn anterior | Sector de prueba de Valdivia | Plaza de la República |
 > | Arnis | PR #808 (compilación manual) | **v2.9.0** (release oficial) |
 > | Lighting | Fixlight manual (~12h) | **Baked lighting** (instantáneo) |
 
@@ -167,7 +167,7 @@ Mundo generado exitosamente en la Legion 5 con Arnis v2.9.0 CLI.
 ```bash
 /home/gabriel/arnis/arnis-linux --luanti --terrain \
   --output-dir=/tmp/valdivia \
-  --bbox="-39.870,-73.290,-39.785,-73.215" \
+  --bbox="<VALDIVIA_BBOX>" \
   --spawn-lat=-39.81422 --spawn-lng=-73.24589
 ```
 
@@ -218,7 +218,7 @@ Mundo generado exitosamente en la Legion 5 con Arnis v2.9.0 CLI.
 | Área total | ~47 km² | **~61 km²** (+30%) |
 | Modelos 3D | No | Estadio + avión |
 | Terreno | Plano | Realista con cerros |
-| Spawn | Colegio Planeta Azul | Plaza de la República (3766, -4, -3249) |
+| Spawn | Sector de prueba de Valdivia | Plaza de la República |
 
 **Nota:** El mundo nuevo tiene menos mapblocks pero más calidad: edificios 3D reales,
 elevación realista (316 m vs 83 m), y mayor cobertura N-S (9.5 km vs 6.0 km).
@@ -250,7 +250,7 @@ Para cubrir toda la ciudad incluyendo Isla Teja, Las Ánimas, Santa Elena y Toro
 
 | Parámetro | Valor |
 |-----------|-------|
-| **Bbox** | `-39.870, -73.290, -39.785, -73.215` |
+| **Bbox** | `<VALDIVIA_BBOX>` (definir fuera del repositorio) |
 | **Dimensiones** | ~9.5 km N-S × ~6.5 km E-O |
 | **Spawn** | Plaza de la República (`--spawn-lat=-39.81422`, `--spawn-lng=-73.24589`) |
 | **Área total** | ~62 km² (~5× más que el mundo actual) |
@@ -295,7 +295,7 @@ cargo build --release
   --luanti-game mineclonia \
   --terrain \
   --output-dir=/tmp/valdivia \
-  --bbox="-39.870,-73.290,-39.785,-73.215" \
+  --bbox="<VALDIVIA_BBOX>" \
   --spawn-lat=-39.81422 \
   --spawn-lng=-73.24589
 ```
@@ -364,7 +364,7 @@ en sección "Incompatibilidad de Nodos" más abajo).
 
 ## Resumen Ejecutivo
 
-Recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y modelos de elevacion SRTM. **La via principal es Arnis con soporte nativo Luanti** (PR #808, branch `luanti-support`), que genera directamente mundos Luanti desde OSM sin necesidad de conversion intermedia. El PR fue compilado y testeado exitosamente el 21 de marzo de 2026. Se realizaron tres generaciones progresivas hasta alcanzar la cobertura final (v3) con Rio Valdivia, Colegio Planeta Azul, industrias, Miraflores y Torobayo. El servidor esta en produccion publica en `luanti.gabrielpantoja.cl:30001`.
+Recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y modelos de elevacion SRTM. **La via principal es Arnis con soporte nativo Luanti** (PR #808, branch `luanti-support`), que genera directamente mundos Luanti desde OSM sin necesidad de conversion intermedia. El PR fue compilado y testeado exitosamente el 21 de marzo de 2026. Se realizaron tres generaciones progresivas hasta alcanzar cobertura urbana con Rio Valdivia, industrias, Miraflores y Torobayo. El servidor esta en produccion publica en `luanti.gabrielpantoja.cl:30001`.
 
 ---
 
@@ -393,9 +393,9 @@ Recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y
   --luanti-game mineclonia \
   --terrain \
   --output-dir=/ruta/existente \
-  --bbox="-39.860,-73.285,-39.812,-73.225" \
-  --spawn-lat=-39.835957 \
-  --spawn-lng=-73.257018
+  --bbox="<VALDIVIA_BBOX>" \
+  --spawn-lat=<SPAWN_LAT> \
+  --spawn-lng=<SPAWN_LNG>
 ```
 
 **Notas importantes:**
@@ -411,21 +411,21 @@ Recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y
 
 ## Tres Generaciones Realizadas
 
-### v1: Colegio solamente (~600x500m) -- DESCARTADA
+### v1: Sector de prueba (~600x500m) -- DESCARTADA
 
 | Aspecto | Valor |
 |---------|-------|
-| **Bbox** | `-39.8387,-73.2600,-39.8332,-73.2540` |
+| **Bbox** | `<TEST_BBOX>` |
 | **Area** | ~600 x 500 metros |
 | **Mapblocks** | 1,549 |
 | **Tamano archivo** | 716 KB |
-| **Resultado** | Demasiado pequena, solo el colegio y alrededores inmediatos |
+| **Resultado** | Demasiado pequena, solo cubria un sector de prueba |
 
-### v2: Colegio + alrededores (~3.6x2.9km) -- DESCARTADA
+### v2: Sector ampliado (~3.6x2.9km) -- DESCARTADA
 
 | Aspecto | Valor |
 |---------|-------|
-| **Bbox** | `-39.852,-73.272,-39.820,-73.238` |
+| **Bbox** | `<EXPANDED_BBOX>` |
 | **Area** | ~3.6 x 2.9 km |
 | **Mapblocks** | 61,324 |
 | **Tamano archivo** | 26 MB |
@@ -435,19 +435,19 @@ Recreacion fiel de Valdivia usando datos geoespaciales reales de OpenStreetMap y
 
 | Aspecto | Valor |
 |---------|-------|
-| **Bbox** | `-39.860,-73.285,-39.812,-73.225` |
+| **Bbox** | `<VALDIVIA_BBOX>` |
 | **Area** | ~5.3 x 5.1 km |
 | **Mapblocks totales** | 172,796 |
 | **Mapblocks remapeados** | 45,128 |
 | **Tamano archivo** | 70 MB |
 | **Rango de elevacion** | 83.0 metros (cerros realistas) |
-| **Spawn** | 2389, -55, -2664 (coordenadas del Colegio Planeta Azul) |
+| **Spawn** | Sector de prueba de Valdivia (coordenadas omitidas) |
 | **Tiempo de generacion** | ~2 minutos |
-| **Cobertura** | Rio Valdivia, Colegio Planeta Azul, industrias, Miraflores, Torobayo |
+| **Cobertura** | Rio Valdivia, sectores urbanos, industrias, Miraflores y Torobayo |
 
 ### Cobertura OSM del area
 
-- Colegio Planeta Azul **NO** esta mapeado por nombre en OSM (solo Colegio San Lucas cercano)
+- La cobertura OSM del sector de prueba contiene edificios sin nombres específicos
 - Buena cobertura general: calles (Arica, Pedro Ruiz Manriquez), arboles con datos de especie, parques, cancha deportiva, piscina, grifos, ciclovias
 - Edificios aparecen como estructuras pero sin nombres especificos
 
@@ -542,7 +542,7 @@ Archivo: `server/worlds/valdivia/worldmods/arnis_mapgen/init.lua`
 | `server/worlds/valdivia/world.mt` | Metadata del mundo Valdivia (gameid = mineclone2) |
 | `server/worlds/valdivia/worldmods/arnis_mapgen/` | Worldmod que maneja spawn, respawn y emerge parcial |
 | `scripts/setup-arnis.sh` | Instala Rust, clona Arnis, compila desde PR #808 |
-| `scripts/generate-valdivia.sh` | Genera mundo con presets de bbox (colegio, mvp, exp1, exp2, full) |
+| `scripts/generate-valdivia.sh` | Genera mundo con un bbox suministrado explícitamente |
 | `scripts/remap-mineclonia-to-voxelibre.py` | Corrige incompatibilidad de nombres de nodos (19 nodos) |
 
 ### Arquitectura del servidor dual
@@ -631,16 +631,13 @@ ssh -i ~/.ssh/id_ed25519 <VPS_USER>@<VPS_IP> \
 
 | Preset | Area | Bbox | Tamano aprox |
 |--------|------|------|-------------|
-| `colegio` | Colegio Planeta Azul | `-39.8387,-73.2600,-39.8332,-73.2540` | ~600 x 500 m |
-| `mvp` | Centro + Costanera + Mercado Fluvial | `-39.825,-73.255,-39.810,-73.235` | ~1.5 x 2 km |
-| `exp1` | + Isla Teja + Puentes | `-39.840,-73.265,-39.805,-73.225` | ~3.5 x 4 km |
-| `exp2` | + Barrios Las Animas, Jardin | `-39.855,-73.275,-39.795,-73.200` | ~6.5 x 7.5 km |
-| `full` | Ciudad completa + Humedal Rio Cruces | `-39.870,-73.280,-39.780,-73.180` | ~10 x 10 km |
+| `test` | Sector de prueba | `<TEST_BBOX>` | ~600 x 500 m |
+| `urban` | Área urbana de Valdivia | `<VALDIVIA_BBOX>` | Definido por el operador |
 
 ### Cobertura actual (v3)
 
 El mundo en produccion cubre:
-- Colegio Planeta Azul (punto de spawn)
+- Sector urbano inicial
 - Rio Valdivia
 - Miraflores
 - Torobayo
@@ -674,7 +671,7 @@ El mundo en produccion cubre:
 | Script | Lenguaje | Proposito |
 |--------|----------|-----------|
 | `scripts/setup-arnis.sh` | Bash | Instala Rust, clona y compila Arnis PR #808 |
-| `scripts/generate-valdivia.sh` | Bash | Genera mundo con presets de bbox |
+| `scripts/generate-valdivia.sh` | Bash | Genera mundo con un bbox explícito no versionado |
 | `scripts/remap-mineclonia-to-voxelibre.py` | Python | Remplaza nombres de nodos Mineclonia por VoxeLibre en map.sqlite (19 nodos) |
 
 ### Via fallback: Arnis (MC) + MC2MT conversion
@@ -715,9 +712,9 @@ El mundo en produccion cubre:
 
 ### FASE 1 -- Generaciones iterativas -- COMPLETADA
 
-- [x] v1: Generar area de prueba: Colegio Planeta Azul (~600x500m) -- demasiado pequena
+- [x] v1: Generar un sector de prueba (~600x500m) -- demasiado pequeno
 - [x] v2: Generar area ampliada (~3.6x2.9km) -- todavia pequena, sin rio
-- [x] v3 (FINAL): Generar area completa (~5.3x5.1km) -- incluye Rio Valdivia, Colegio, industrias, Miraflores, Torobayo
+- [x] v3 (FINAL): Generar area completa (~5.3x5.1km) -- incluye Rio Valdivia, sectores urbanos, industrias, Miraflores y Torobayo
 - [x] Descubrir incompatibilidad de nodos Mineclonia vs VoxeLibre
 - [x] Crear script de remapeo `remap-mineclonia-to-voxelibre.py` (19 nodos)
 - [x] Remapear 45,128 de 172,796 mapblocks exitosamente
@@ -822,7 +819,7 @@ Pendiente futuro: senaletica de calles OSM y mapa interactivo con mas puntos de 
 
 ## Datos tecnicos comparativos
 
-| Aspecto | v1 Colegio (real) | v2 Ampliado (real) | v3 Final (real) | Ciudad completa (estimado) |
+| Aspecto | v1 Prueba (real) | v2 Ampliado (real) | v3 Final (real) | Ciudad completa (estimado) |
 |---------|-------------------|-------------------|-----------------|---------------------------|
 | Area | ~600 x 500 m | ~3.6 x 2.9 km | ~5.3 x 5.1 km | ~10 x 10 km |
 | Mapblocks | 1,549 | 61,324 | 172,796 | ~2,000,000+ |
@@ -844,7 +841,7 @@ Pendiente futuro: senaletica de calles OSM y mapa interactivo con mas puntos de 
 | Permisos de archivos en container | Cierta | Mundo no carga | **RESUELTO:** `sudo chown -R 911:911 server/worlds/` (UID 911 = user abc) |
 | Puerto 30001 bloqueado | Cierta | No se conectan | **RESUELTO:** Regla de ingreso UDP 30001 en Oracle Cloud Security List |
 | Arnis crashea con areas grandes | Baja | No genera | v3 de 5.3x5.1km genero sin problemas en ~2 min |
-| Edificios OSM incompletos | Media | Faltan estructuras | Colegio Planeta Azul no aparece por nombre en OSM. Enriquecer con WorldEdit |
+| Edificios OSM incompletos | Media | Faltan estructuras | Algunos edificios no aparecen por nombre en OSM; enriquecer con WorldEdit |
 | Bordes del mundo generado = vacio | Cierta | Jugadores caen | Mod `valdivia_borders` pendiente |
 | Compilacion Arnis en ARM (VPS) | Baja | No compila | Generar en PC local (x86), subir map.sqlite al VPS |
 | Impacto en servidor Wetlands | Ninguno | -- | Mundo completamente separado (puerto 30001) |
@@ -857,18 +854,14 @@ Pendiente futuro: senaletica de calles OSM y mapa interactivo con mas puntos de 
 **Ciudad:** Valdivia, Region de Los Rios, Chile
 
 ### Cobertura actual (v3 en produccion)
-```
-min_lat: -39.860   max_lat: -39.812
-min_lng: -73.285   max_lng: -73.225
-```
+
+El bbox exacto se mantiene fuera del repositorio público como `<VALDIVIA_BBOX>`.
 
 ### Cobertura futura (ciudad completa)
-```
-min_lat: -39.870   max_lat: -39.780
-min_lng: -73.280   max_lng: -73.180
-```
 
-**Cobertura actual:** Rio Valdivia, Colegio Planeta Azul, Miraflores, Torobayo, zona industrial
+Definir un `<VALDIVIA_BBOX>` operativo que cubra el área urbana deseada.
+
+**Cobertura actual:** Rio Valdivia, Miraflores, Torobayo y zona industrial
 **Cobertura futura:** Centro historico, Isla Teja (UACh, Parque Saval), Humedal Rio Cruces, Rio Calle-Calle, Barrios Jardin, Las Animas, Collico, Pedro de Valdivia Norte
 
 ---
@@ -946,8 +939,7 @@ min_lng: -73.280   max_lng: -73.180
 
 > Lista publica saneada (las coordenadas internas/privadas viven en el repo privado).
 > Documento vivo: actualizar con cada nueva ubicacion verificada en el juego.
-> Bbox de referencia para la conversion de abajo: `-39.862,-73.285,-39.810,-73.195`
-> (cobertura expandida; el build documentado arriba como v3 usa `-39.860,-73.285,-39.812,-73.225`).
+> El bbox exacto de conversión se mantiene fuera del repositorio público.
 
 ### Teletransportador `/ir` (menu del mod `valdivia_teleporter`)
 
@@ -971,7 +963,6 @@ en `server/mods/valdivia_teleporter/init.lua`.
 | Lugar | Comando teleport | Coords reales (lat, lng) | Notas |
 |-------|-----------------|--------------------------|-------|
 | **Plaza de la República** (spawn) | `/teleport 3766,-4,-3249` | -39.81422, -73.24589 | Nuevo spawn (verificar) |
-| **Plaza estacionamiento Colegio** | `/teleport 2343,-56,-3148` | ~-39.838, -73.257 | Acceso al colegio |
 | **Av Pedro Montt / Circunvalacion** | `/teleport 4517,-48,-3885` | ~-39.845, -73.233 | Cruce de avenidas |
 | **Supermercado Trebol** | `/teleport 3358,-42,-3537` | ~-39.842, -73.246 | Av Simpson / Circunvalacion |
 | **Plaza Civica Guacamayo** | `/teleport 2715,-47,-4381` | ~-39.849, -73.253 | |
@@ -980,7 +971,6 @@ en `server/mods/valdivia_teleporter/init.lua`.
 | **Los Fundadores** | `/teleport 4360,-51,-4211` | | |
 | **Plaza Londres (Huachocopihue)** | `/teleport 3761,-43,-3170` | | |
 | **Asociacion de Ferroviarios** | `/teleport 5079,-49,-2076` | | Destino del teletransportador `/ir` |
-| **Colegio Windsor** | `/teleport 3727,-44,-2619` | | Francia / Simpson |
 | **Puente Pedro de Valdivia** | `/teleport 3111,-50,-176` | | Cruza el Rio Valdivia |
 
 ### Lugares por descubrir (estimados, pendientes de verificar)
@@ -995,23 +985,23 @@ en `server/mods/valdivia_teleporter/init.lua`.
 ### Convertir coordenadas reales (lat, lng) -> coordenadas del juego
 
 ```
-Bbox: min_lat=-39.862, min_lng=-73.285, max_lat=-39.810, max_lng=-73.195
-Tamano: 5772m (N-S) x 7651m (E-O)
+Bbox: min_lat, min_lng, max_lat, max_lng (cargados desde <VALDIVIA_BBOX>)
+Tamano: width_m (E-O) x height_m (N-S)
 
-X = ((-73.285) - lng) / ((-73.285) - (-73.195)) * 7651
-Z = -((-39.862) - lat) / ((-39.862) - (-39.810)) * 5772
+X = (min_lng - lng) / (min_lng - max_lng) * width_m
+Z = -(min_lat - lat) / (min_lat - max_lat) * height_m
 Y = probar entre -30 y -55 (depende de la elevacion del terreno)
 ```
 
 ---
 
-*Documento creado por Gabriel Pantoja + Claude -- Marzo 2026*
+*Documento mantenido por <ADMIN_USER> -- Marzo 2026*
 *Ultima actualizacion: 30 junio 2026*
 
 ### Historial de sesiones
 
 - **30 junio 2026:** Corrección de nodos desconocidos (daylight_detector, noteblock, redstone_torch, banners, vegetación acuática del río). Nuevo mod `valdivia_newplayer` — privilegios sin fly. Desactivado `creative_mode` global para bloquear vuelo universal. Habilitado `wetlands_lastpos` (última posición al reconectarse). Nombre del servidor corregido: "Valdivia 2.0" → "Valdivia". Fix inventario creativo admin: VoxeLibre ignora privilegio `creative` con `creative_mode=false` — se resolvió seteando metadata `gamemode=creative` por jugador en `register_on_joinplayer`. Documentación completa en `operations/PRIVILEGIOS.md`.
-- **30 junio 2026 (fix definitivo fly):** `mcl_privs` de VoxeLibre auto-otorgaba `fly` a todos los jugadores creativos (carrera de callbacks de join). `valdivia_newplayer` reescrito para imponer privilegios en **cada join** con `minetest.after(0)` (corre después de mcl_privs → gana siempre) + metadata `mcl_privs:fly_changed=1`. Auto-reparable. Ahora **solo `gabo` puede volar**; todos tienen `fast` e inventario creativo completo. Reconexión a última posición sigue activa vía `wetlands_lastpos`.
+- **30 junio 2026 (fix definitivo fly):** `mcl_privs` de VoxeLibre auto-otorgaba `fly` a todos los jugadores creativos (carrera de callbacks de join). `valdivia_newplayer` reescrito para imponer privilegios en **cada join** con `minetest.after(0)` (corre después de mcl_privs → gana siempre) + metadata `mcl_privs:fly_changed=1`. Auto-reparable. Ahora **solo `ADMIN_A` puede volar**; todos tienen `fast` e inventario creativo completo. Reconexión a última posición sigue activa vía `wetlands_lastpos`.
 - **30 junio 2026 (fix reconexión a última posición):** el worldmod `arnis_mapgen` (VPS-only) forzaba el spawn en cada join y otorgaba fly a todos, pisando a `wetlands_lastpos` (bug "siempre aparecen en spawn"). Corregido su `register_on_joinplayer`: solo fuerza spawn a jugadores nuevos (sin `wetlands_lastpos:pos`) y ya no toca privilegios. Backup en VPS: `worldmods/arnis_mapgen/init.lua.bak-*`. **Reaplicar si se regenera Valdivia con Arnis.**
 - **29 junio 2026 (sesión 2):** Fix spawn Y=-4 (emerge_area + world.mt). Fix Wetlands server_announce=false (deslistado). Fix Valdivia server_url=https://luanti.gabrielpantoja.cl. Remapeo v2 corriendo en VPS. Docs actualizados.
 - **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/02-VALDIVIA-30001/operations/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`

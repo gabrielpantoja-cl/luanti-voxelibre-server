@@ -144,7 +144,11 @@ volumes:
 | `sethome` | ContentDB | `/sethome`, `/home` | Sistema de homes |
 | `worldedit` | ContentDB | `//pos1`, `//pos2`, etc. | Editor de mundos |
 
-**Nota:** Ver `CLAUDE.md` sección "Third-Party Content Attribution" para más detalles de mods de terceros.
+**Licencias:** `server/mods/` es una colección multilicencia. La licencia raíz
+MIT solo cubre material original Wetlands sin un aviso distinto; cada mod y sus
+assets conservan las condiciones indicadas en sus propios archivos. Ver
+[`THIRD_PARTY_NOTICES.md`](../../THIRD_PARTY_NOTICES.md) y los `LICENSE`,
+`COPYING`, `mod.conf`, README y archivos de atribución de cada componente.
 
 ---
 
@@ -320,4 +324,4 @@ Para documentación detallada sobre el ecosistema completo de mods, ver:
 
 **Última actualización:** 2025-10-04
 **Mantenedor:** Gabriel Pantoja
-**Licencia:** GPL-3.0
+**Licencias:** múltiples; consultar los avisos de cada mod y `THIRD_PARTY_NOTICES.md`

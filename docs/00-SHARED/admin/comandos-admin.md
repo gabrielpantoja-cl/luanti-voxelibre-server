@@ -6,7 +6,7 @@
 ```
 /teleport <nombre_jugador> <tu_nombre>
 ```
-**Ejemplo**: `/teleport Juan admin_name`
+**Ejemplo**: `/teleport PLAYER_A ADMIN_A`
 
 **Nota**: También funciona la forma corta:
 ```
@@ -72,7 +72,7 @@
 ```
 /give <nombre_jugador> <item> [cantidad]
 ```
-**Ejemplo**: `/give Juan mcl_core:dirt 64`
+**Ejemplo**: `/give PLAYER_A mcl_core:dirt 64`
 
 ### Cambiar Modo de Juego
 ```
@@ -354,7 +354,7 @@ Spawnea la entidad en tu posicion actual.
 Apunta al nodo con el crosshair y ejecuta esto en el chat (una sola línea):
 
 ```
-/lua local p=minetest.get_player_by_name("gabo");local pos=p:get_pos();local dir=p:get_look_dir();for i=1,15 do local n=minetest.get_node(vector.round(vector.add(pos,vector.multiply(dir,i))));if n.name~="air" then minetest.chat_send_player("gabo","NODO: "..n.name);break end end
+/lua local p=minetest.get_player_by_name("ADMIN_A");local pos=p:get_pos();local dir=p:get_look_dir();for i=1,15 do local n=minetest.get_node(vector.round(vector.add(pos,vector.multiply(dir,i))));if n.name~="air" then minetest.chat_send_player("ADMIN_A","NODO: "..n.name);break end end
 ```
 
 Imprime el nombre exacto del nodo en el chat (`mod:nombre`). Requiere privilegio `server`.
@@ -405,18 +405,15 @@ Dentro de Luanti, presionar **F12** para capturar pantalla.
 
 ## 🔗 Comandos de Conexión Rápida
 
-Para consultar usuarios registrados:
-```bash
-# Desde VPS
-docker-compose exec -T luanti-server sqlite3 /config/.minetest/worlds/original/auth.sqlite 'SELECT name FROM auth;'
-```
-
 Para otorgar privilegios admin desde base de datos (emergencia):
 ```bash
 # Ver ID del usuario
-sqlite3 auth.sqlite "SELECT id FROM auth WHERE name='username';"
+sqlite3 auth.sqlite "SELECT id FROM auth WHERE name='ADMIN_A';"
 
 # Otorgar todos los privilegios admin
-sqlite3 auth.sqlite "INSERT OR IGNORE INTO user_privileges (id, privilege) VALUES 
-(1, 'server'), (1, 'privs'), (1, 'teleport'), (1, 'ban'), (1, 'give');"
+sqlite3 auth.sqlite "INSERT OR IGNORE INTO user_privileges (id, privilege)
+SELECT id, privilege FROM auth CROSS JOIN (
+  SELECT 'server' AS privilege UNION ALL SELECT 'privs' UNION ALL
+  SELECT 'teleport' UNION ALL SELECT 'ban' UNION ALL SELECT 'give'
+) WHERE name='ADMIN_A';"
 ```
