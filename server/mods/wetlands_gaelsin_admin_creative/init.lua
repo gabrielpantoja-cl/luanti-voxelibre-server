@@ -38,7 +38,9 @@ local ADMIN_PRIVS = {
 	settime = true,
 	debug = true,
 	password = true,
-	rollback_check = true,
+	-- `rollback_check` NO es un privilegio de Luanti. /rollback_check y
+	-- /rollback exigen ambos `rollback` (builtin/game/chat.lua).
+	rollback = true,
 }
 
 -- Garantiza que el jugador vea el inventario creativo de VoxeLibre/Mineclonia.
