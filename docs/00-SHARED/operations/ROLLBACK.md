@@ -93,6 +93,33 @@ Sin flush forzado, una prueba de un solo bloque **no aparece** en la base
 aunque el registro funcione: sigue en el buffer. Un conteo en cero justo
 despues de romper un bloque no prueba nada.
 
+## Revertir: dos comportamientos que sorprenden
+
+Verificado en GAELSIN el 2026-08-31 con `/rollback gabo 600`.
+
+**1. La reversion se registra a nombre de quien la ejecuta.** `/rollback` corre
+dentro de `Server::handleChat()`, que abre un `RollbackScopeActor` con el nombre
+del jugador (`src/server.cpp`). Por eso cada `set_node` de la reversion entra en
+`rollback.sqlite` como una accion mas del admin. Es util para auditoria, pero
+**ejecutar `/rollback <jugador> <segundos>` dos veces seguidas revierte la
+reversion** y deja todo como estaba. Uno por incidente, y comprobar antes de
+repetir.
+
+**2. La mitad del inventario del jugador puede fallar, y no pasa nada.** Salida
+real:
+
+```
+Successfully reverted step (10) modify_inventory_stack ("nodemeta:314,23,91", "main", 25, add, "mcl_core:granite 64")
+Revert of step (12) modify_inventory_stack ("player:gabo", "main", 5, add, "mcl_core:granite 2") failed
+Reverting actions succeeded.
+```
+
+Los `nodemeta:x,y,z` son los **cofres** y revierten siempre. Los `player:<nombre>`
+son slots del inventario del jugador: devolver un item a un slot concreto falla
+si ese slot cambio de contenido. En un robo real el ladron ya se desconecto y su
+inventario no existe, asi que solo cuenta el lado del cofre: **los items vuelven
+al cofre igual**.
+
 ## Retencion
 
 Luanti nunca limpia esta base (`settingtypes.txt`: *"Luanti will not
