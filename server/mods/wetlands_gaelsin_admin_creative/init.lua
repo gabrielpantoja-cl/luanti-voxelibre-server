@@ -13,6 +13,7 @@ local modname = minetest.get_current_modname()
 -- Mantener sincronizado con `admin_name` en server/config/luanti-gaelsin.conf.
 local ADMIN_NAMES = {
 	gabo = true,
+	therian67 = true,
 }
 
 -- Privilegios que `name = gabo` debe tener para usar el mundo como admin.
