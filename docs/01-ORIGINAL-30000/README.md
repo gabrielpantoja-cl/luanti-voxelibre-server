@@ -24,6 +24,7 @@ Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta par
 ### Configuración (específica de Wetlands)
 - [config/05-BLOCK_PROTECTION.md](config/05-BLOCK_PROTECTION.md) — sistema de bloques protectores anti-griefing (deshabilitado en supervivencia)
 - [config/06-RULES_SYSTEM.md](config/06-RULES_SYSTEM.md) — sistema de reglas (`/reglas`, `/veganinfo`) y moderación
+- [WHATSAPP_ADMIN_ALERTS_PLAN.md](WHATSAPP_ADMIN_ALERTS_PLAN.md) — plan del piloto de avisos privados al administrador
 
 ### Admin
 - [admin/CREATIVE_INVENTORY_MANAGEMENT.md](admin/CREATIVE_INVENTORY_MANAGEMENT.md) — ocultar items del inventario creativo (filosofía vegana)
