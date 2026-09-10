@@ -1,0 +1,24 @@
+# textdomain: wetlands_contact
+Do not write your real name, phone number, address, passwords or other personal data. This is help for the game, not an emergency service: if you are in danger, talk to a trusted adult.=No escribas tu nombre real, teléfono, dirección, contraseñas ni otros datos personales. Es ayuda para el juego, no un servicio de emergencias: si estás en peligro, habla con un adulto de confianza.
+Can send messages to the admin with /gabo during the pilot=Puede enviar mensajes al administrador con /gabo durante el piloto
+Messages to gabo are not available right now.=Los mensajes para gabo no están disponibles en este momento.
+You cannot send messages right now.=No puedes enviar mensajes en este momento.
+Messages to gabo are paused for now. Please try again later.=Los mensajes para gabo están en pausa por ahora. Intenta más tarde.
+Messages to gabo are being tested and are not available to everyone yet.=Los mensajes para gabo están en prueba y todavía no están disponibles para todos.
+Your previous message is still being sent. Please wait a moment.=Tu mensaje anterior se está enviando. Espera un momento.
+You sent a message recently. You can send another one in @1 minute(s).=Ya enviaste un mensaje hace poco. Podrás enviar otro en @1 minuto(s).
+There are a lot of messages right now. Please try again later.=Hay muchos mensajes en este momento. Intenta más tarde.
+Please write a slightly longer message so gabo can understand it.=Escribe un mensaje un poco más largo para que gabo pueda entenderlo.
+Your message has @1 characters; the maximum is @2.=Tu mensaje tiene @1 caracteres; el máximo es @2.
+It looks like you wrote a phone number or an email. For your safety, please remove it.=Parece que escribiste un teléfono o un correo. Por tu seguridad, quítalo.
+Messages cannot include links or web addresses.=Los mensajes no pueden incluir enlaces ni direcciones web.
+Your message has too many repetitions. Please write it more clearly.=El mensaje tiene demasiadas repeticiones. Escríbelo de forma más clara.
+You already sent this same message. No need to repeat it.=Ya enviaste este mismo mensaje. No hace falta repetirlo.
+Done! Your message will reach gabo. Thank you.=¡Listo! Tu mensaje le llegará a gabo. Gracias.
+Your message could not be sent right now. Please try again later.=No se pudo enviar tu mensaje ahora. Inténtalo de nuevo más tarde.
+<message>=<mensaje>
+Send a short message to the admin gabo (max. @1 characters)=Envía un mensaje breve al administrador gabo (máx. @1 caracteres)
+Usage: /gabo <your message>=Uso: /gabo <tu mensaje>
+Sending your message to gabo...=Enviando tu mensaje a gabo...
+Need help? Type /gabo <message>=¿Necesitas ayuda? Escribe /gabo <mensaje>
+to write directly to the admin=para escribirle directamente al administrador

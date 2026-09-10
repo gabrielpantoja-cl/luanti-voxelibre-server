@@ -311,6 +311,7 @@ All containers share the same `server/games/` and `server/mods/` directories. Va
 | `wetlands_christmas` | Seasonal Christmas content |
 | `wetlands_no_creeper` | Disables Creeper spawning (keeps other hostile mobs) |
 | `wetlands_lastpos` | On rejoin, teleports returning players to their last logged-out position |
+| `wetlands_contact` | `/gabo <message>` → direct HTTPS to the admin's Telegram bot or Discord webhook (no bridge). Rate-limited, child-safety filters, blinking HUD hint on join; player strings in **English** with `locale/*.es.tr` (international audience — exception to the Spanish-UI rule). Needs `secure.http_mods` + an out-of-git `worlds/original/wetlands_contact.conf`. See its `README.md` |
 | `mcl_back_to_spawn` | `/back_to_spawn` teleport |
 | `server_rules` | `/reglas` command, broadcast announcements |
 | `pvp_arena` | PvP arena system — the only place PvP is allowed |

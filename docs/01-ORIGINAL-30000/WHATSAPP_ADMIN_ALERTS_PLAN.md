@@ -1,5 +1,20 @@
 # Plan: avisos por WhatsApp para el administrador
 
+> **Decisión 2026-09-10 — WhatsApp descartado.** La Cloud API de WhatsApp
+> exige alta en Meta, plantillas de pago fuera de la ventana de 24 h y sacar el
+> número secundario de la app, lo que es desproporcionado para un canal de
+> avisos. Se reemplazó por **Telegram (bot) o Discord (webhook)**, a los que el
+> mod envía **directo**, sin puente privado:
+>
+> ```text
+> Jugador -> /gabo (wetlands_contact) -> HTTPS -> Telegram / Discord -> celular de gabo
+> ```
+>
+> Las fases 1 (alta en Meta) y 2 (puente privado) quedan **canceladas**. Los
+> límites, filtros y protección infantil de las fases 3–4 se mantienen en el
+> mod. Configuración vigente: `server/mods/wetlands_contact/README.md`. El resto
+> del documento se conserva como historia de la decisión.
+
 ## Objetivo del piloto
 
 Permitir que un jugador de **Wetlands (puerto 30000)** envíe un aviso breve
@@ -24,20 +39,30 @@ El número Business se usará mediante la API oficial de WhatsApp Business Cloud
 API. El segundo teléfono no tiene que permanecer encendido una vez completado
 el alta: los mensajes salen desde la infraestructura de Meta.
 
+La entrega es **directa**: Meta envía el mensaje desde el número Business al
+WhatsApp personal de gabo. No hay reenvío manual ni automático desde el
+teléfono secundario; ese teléfono solo se usa para verificar el número al
+registrarlo.
+
 ## Experiencia del jugador
 
-La primera versión ofrecerá un formulario accesible mediante `/avisar`, con:
+*(Actualizado 2026-09-10: se reemplazó el formulario `/avisar` con categorías
+por un comando de una línea, a pedido de gabo.)*
 
-- categoría: `ayuda`, `reporte` o `idea`;
-- mensaje de hasta 300 caracteres;
-- confirmación antes de enviar;
-- confirmación o error claro en el chat.
+- Comando `/gabo <mensaje>`, de hasta 300 caracteres; se envía al instante y el
+  jugador recibe confirmación o un error claro en el chat.
+- `/gabo` sin texto muestra el uso y el recordatorio de no compartir datos
+  personales.
+- Anuncio temporal en el HUD, abajo a la derecha, parpadeando en
+  amarillo/naranjo durante 60 s al entrar: *"Need help? Type /gabo <message> to
+  write directly to the admin"*.
+- Textos en **inglés** (Wetlands recibe jugadores de unos 35 países), con
+  traducción automática al español para clientes en español.
 
 Ejemplo de notificación recibida por el administrador:
 
 ```text
-🌿 Wetlands — aviso nuevo
-Categoría: ayuda
+🌿 Wetlands — mensaje para gabo
 Jugador: NombreJugador
 Mensaje: Necesito ayuda en mi construcción.
 ```
@@ -93,11 +118,13 @@ credenciales ni archivos `.env` en este repositorio.
 
 ### 3. Mod de Luanti
 
-1. Implementar `/avisar` y su formulario en `wetlands_contact`.
+1. Implementar `/gabo` en `wetlands_contact`.
 2. Obtener la API HTTP de Luanti durante la carga del mod y usar solicitudes
    asíncronas.
-3. Autorizar exclusivamente el mod en `secure.http_mods` mediante la
-   configuración privada gestionada por operaciones.
+3. Autorizar exclusivamente el mod en `secure.http_mods`. El nombre del mod no
+   es secreto y va en `luanti-original.conf`; el endpoint y el token del puente
+   van en `worlds/original/wetlands_contact.conf`, fuera de git y gestionado por
+   operaciones.
 4. Persistir el control de frecuencia con `mod_storage`.
 5. Devolver al jugador un resultado comprensible sin exponer detalles internos.
 
@@ -121,6 +148,21 @@ credenciales ni archivos `.env` en este repositorio.
 4. Piloto limitado en Wetlands.
 5. Revisión de entrega, spam, costos y falsos positivos durante una semana.
 6. Apertura general en Wetlands únicamente si el piloto cumple los criterios.
+
+## Estado de avance
+
+| Fase | Estado |
+|---|---|
+| 1. Alta de WhatsApp Business | **Cancelada** (se usa Telegram/Discord) |
+| 2. Servicio puente privado | **Cancelada** (el mod envía directo) |
+| 3. Mod de Luanti | **Hecho** (2026-09-10): `/gabo`, destinos Telegram y Discord, límites persistentes, filtros, `/gabo_admin`, anuncio HUD, traducción es |
+| 4. Seguridad y protección infantil | **Hecho en el mod**: 1 mensaje/10 min por jugador, 30/h global, rechazo de enlaces, teléfonos, correos y repeticiones, bloqueo de `@everyone`, pausa en caliente |
+| 5.1 Pruebas contra endpoint simulado | **Hecho**: `scripts/mock-telegram-discord.py`; probado en Luanti 5.17 con seguridad de mods activa, ambos destinos, incluyendo reinicio (los límites persisten) |
+| 5.2+ Prueba real y piloto | Pendiente de configurar el bot/webhook en el VPS |
+
+El mod arranca en modo `piloto` (solo privilegio `avisar`, que el admin tiene
+por defecto). Sin `wetlands_contact.conf` en el mundo, `/gabo` responde "not
+available" y no rompe nada.
 
 ## Criterios de aceptación del piloto
 
