@@ -89,10 +89,10 @@ apaga con `/gabo_admin anuncio off`.
 
 | Regla | Valor |
 |---|---|
-| Por jugador | 1 mensaje cada 10 min (los `server` quedan exentos para pruebas) |
-| Global | 30 mensajes por hora |
-| Longitud | 5–300 caracteres (UTF-8) |
-| Rechazo | enlaces, teléfonos (8+ dígitos seguidos), correos, repeticiones, mismo mensaje que el anterior |
+| Por jugador | 15 s entre mensajes y máximo 20 por hora (los `server` quedan exentos para pruebas) |
+| Global | 100 mensajes por hora entre todos |
+| Longitud | 2–300 caracteres (UTF-8): "hola" o "ayuda!" valen |
+| Rechazo | enlaces, teléfonos (8+ dígitos seguidos), correos, repeticiones, el mismo mensaje dentro de 3 min |
 | Persistencia | `mod_storage`: sobreviven a reinicios. Se guarda el hash del último mensaje, no el texto |
 | Fallos | Error HTTP, de red o timeout (10 s): el jugador ve "could not be sent" y recupera su turno. No hay reintentos automáticos |
 

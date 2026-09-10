@@ -156,7 +156,7 @@ credenciales ni archivos `.env` en este repositorio.
 | 1. Alta de WhatsApp Business | **Cancelada** (se usa Telegram/Discord) |
 | 2. Servicio puente privado | **Cancelada** (el mod envía directo) |
 | 3. Mod de Luanti | **Hecho** (2026-09-10): `/gabo`, destinos Telegram y Discord, límites persistentes, filtros, `/gabo_admin`, anuncio HUD, traducción es |
-| 4. Seguridad y protección infantil | **Hecho en el mod**: 1 mensaje/10 min por jugador, 30/h global, rechazo de enlaces, teléfonos, correos y repeticiones, bloqueo de `@everyone`, pausa en caliente |
+| 4. Seguridad y protección infantil | **Hecho en el mod**: 15 s entre mensajes y 20/h por jugador, 100/h global (ajustado tras la prueba de gabo, 2026-09-10), rechazo de enlaces, teléfonos, correos y repeticiones, bloqueo de `@everyone`, pausa en caliente |
 | 5.1 Pruebas contra endpoint simulado | **Hecho**: `scripts/mock-telegram-discord.py`; probado en Luanti 5.17 con seguridad de mods activa, ambos destinos, incluyendo reinicio (los límites persisten) |
 | 5.2+ Prueba real y piloto | Pendiente de configurar el bot/webhook en el VPS |
 

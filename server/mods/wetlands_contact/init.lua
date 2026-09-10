@@ -21,11 +21,13 @@ local storage = minetest.get_mod_storage()
 local http = minetest.request_http_api()
 
 local WORLD_NAME = "Wetlands"
-local MIN_CHARS = 5
+local MIN_CHARS = 2              -- "hola", "ayuda!" valen; solo se rechaza 1 letra suelta
 local MAX_CHARS = 300
-local PLAYER_COOLDOWN = 10 * 60 -- segundos entre mensajes del mismo jugador
-local GLOBAL_LIMIT = 30         -- mensajes entre todos los jugadores...
-local GLOBAL_WINDOW = 60 * 60   -- ...por esta ventana de segundos
+local PLAYER_COOLDOWN = 15       -- segundos entre mensajes del mismo jugador
+local PLAYER_LIMIT = 20          -- mensajes por jugador por WINDOW
+local GLOBAL_LIMIT = 100         -- mensajes entre todos los jugadores por WINDOW
+local WINDOW = 60 * 60           -- ventana de los limites, en segundos
+local DUPLICATE_WINDOW = 3 * 60  -- el mismo mensaje no se repite dentro de este plazo
 local HTTP_TIMEOUT = 10
 local CONFIG_FILE = minetest.get_worldpath() .. "/wetlands_contact.conf"
 
@@ -134,21 +136,22 @@ local function load_destination()
 	}
 end
 
--- Marcas de tiempo de los envios globales recientes, guardadas como
--- "t1,t2,..." para que el limite sobreviva a un reinicio.
-local function load_global_sends(now)
+-- Marcas de tiempo de los envios recientes (en orden), guardadas como
+-- "t1,t2,..." para que los limites sobrevivan a un reinicio. Una lista global
+-- ("global_sends") y una por jugador ("sends:<nombre>").
+local function load_sends(key, now)
 	local sends = {}
-	for ts in storage:get_string("global_sends"):gmatch("%d+") do
+	for ts in storage:get_string(key):gmatch("%d+") do
 		ts = tonumber(ts)
-		if now - ts < GLOBAL_WINDOW then
+		if now - ts < WINDOW then
 			sends[#sends + 1] = ts
 		end
 	end
 	return sends
 end
 
-local function save_global_sends(sends)
-	storage:set_string("global_sends", table.concat(sends, ","))
+local function save_sends(key, sends)
+	storage:set_string(key, table.concat(sends, ","))
 end
 
 local function utf8_len(s)
@@ -192,13 +195,18 @@ local function can_send(name)
 	local now = os.time()
 	-- Los admins pueden probar sin esperar; el limite global si les aplica.
 	if not minetest.check_player_privs(name, {server = true}) then
-		local wait = PLAYER_COOLDOWN - (now - storage:get_int("last:" .. name))
-		if wait > 0 then
-			return false, S("You sent a message recently. You can send another one in @1 minute(s).",
-				math.ceil(wait / 60))
+		local sends = load_sends("sends:" .. name, now)
+		local last = sends[#sends]
+		if last and now - last < PLAYER_COOLDOWN then
+			return false, S("Please wait @1 second(s) before sending another message.",
+				PLAYER_COOLDOWN - (now - last))
+		end
+		if #sends >= PLAYER_LIMIT then
+			return false, S("You have sent a lot of messages. You can send more in @1 minute(s).",
+				math.ceil((WINDOW - (now - sends[1])) / 60))
 		end
 	end
-	if #load_global_sends(now) >= GLOBAL_LIMIT then
+	if #load_sends("global_sends", now) >= GLOBAL_LIMIT then
 		return false, S("There are a lot of messages right now. Please try again later.")
 	end
 	return true
@@ -282,7 +290,9 @@ local function validate_message(name, raw)
 	if is_spammy(lower) then
 		return nil, S("Your message has too many repetitions. Please write it more clearly.")
 	end
-	if storage:get_string("hash:" .. name) == message_hash(clean) then
+	-- "dup:<nombre>" = "<hash>:<epoch>" del ultimo mensaje entregado.
+	local dup_hash, dup_at = storage:get_string("dup:" .. name):match("^(%x+):(%d+)$")
+	if dup_hash == message_hash(clean) and os.time() - tonumber(dup_at) < DUPLICATE_WINDOW then
 		return nil, S("You already sent this same message. No need to repeat it.")
 	end
 	return clean
@@ -307,10 +317,12 @@ local function send_message(name, message)
 
 	-- Se registra antes de enviar: ni un comando repetido ni un destino lento
 	-- permiten rebasar los limites.
-	storage:set_int("last:" .. name, now)
-	local sends = load_global_sends(now)
-	sends[#sends + 1] = now
-	save_global_sends(sends)
+	local player_key = "sends:" .. name
+	for _, key in ipairs({player_key, "global_sends"}) do
+		local sends = load_sends(key, now)
+		sends[#sends + 1] = now
+		save_sends(key, sends)
+	end
 	inflight[name] = true
 
 	http.fetch({
@@ -322,14 +334,21 @@ local function send_message(name, message)
 	}, function(res)
 		inflight[name] = nil
 		if res.succeeded and res.code >= 200 and res.code < 300 then
-			storage:set_string("hash:" .. name, message_hash(message))
+			storage:set_string("dup:" .. name, message_hash(message) .. ":" .. now)
 			minetest.log("action", "[" .. modname .. "] mensaje de " .. name ..
 				" entregado a " .. dest.name)
 			notify(name, S("Done! Your message will reach gabo. Thank you."))
 		else
 			-- El fallo no es culpa del jugador: le devolvemos su turno. El
 			-- limite global se mantiene para no martillar un destino caido.
-			storage:set_string("last:" .. name, "")
+			local sends = load_sends(player_key, os.time())
+			for i = #sends, 1, -1 do
+				if sends[i] == now then
+					table.remove(sends, i)
+					break
+				end
+			end
+			save_sends(player_key, sends)
 			minetest.log("warning", "[" .. modname .. "] mensaje de " .. name ..
 				" NO entregado a " .. dest.name .. ": code=" .. tostring(res.code) ..
 				" timeout=" .. tostring(res.timeout))
@@ -372,7 +391,8 @@ local function show_announcement(name)
 		type = "text",
 		position = {x = 1, y = 1},
 		alignment = {x = -1, y = -1},
-		size = {x = 2},
+		-- 1.5 en clientes >= 5.16; los anteriores redondean hacia abajo (1).
+		size = {x = 1.5},
 		style = 1,
 		text = text,
 	}
@@ -425,7 +445,7 @@ minetest.register_chatcommand("gabo_admin", {
 				announce_enabled() and "on" or "off",
 				http and "si" or "NO (falta secure.http_mods)",
 				dest and dest.name or "SIN CONFIGURAR",
-				#load_global_sends(os.time()), GLOBAL_LIMIT)
+				#load_sends("global_sends", os.time()), GLOBAL_LIMIT)
 		end
 		local announce = param:match("^anuncio%s+(%a+)$")
 		if announce == "on" or announce == "off" then
