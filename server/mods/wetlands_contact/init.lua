@@ -22,7 +22,7 @@ local http = minetest.request_http_api()
 
 -- Nombre del mundo en los avisos: world_name del wetlands_contact.conf del
 -- mundo, o el que corresponde al puerto. El mod puede correr en varios mundos a
--- la vez; cada uno tiene su propio conf (y su propio bot, ver mas abajo).
+-- la vez; cada uno tiene su propio conf y ambos pueden compartir un bot.
 local PORT_WORLD_NAMES = {
 	["30000"] = "Wetlands",
 	["30001"] = "Valdivia",
@@ -39,6 +39,13 @@ local WINDOW = 60 * 60           -- ventana de los limites, en segundos
 local DUPLICATE_WINDOW = 3 * 60  -- el mismo mensaje no se repite dentro de este plazo
 local HTTP_TIMEOUT = 10
 local CONFIG_FILE = minetest.get_worldpath() .. "/wetlands_contact.conf"
+local RELAY_DEFAULT_URL = "http://wetlands-contact-relay:8788"
+local RELAY_POLL_INTERVAL = 3
+local RELAY_KEY_CONTEXT = "wetlands-contact-relay-v1"
+local WORLD_IDS_BY_PORT = {
+	["30000"] = "original",
+	["30001"] = "valdivia",
+}
 
 -- Anuncio en el HUD (esquina inferior derecha) al entrar al mundo.
 local ANNOUNCE_DELAY = 5     -- segundos tras entrar, para no tapar la carga
@@ -97,6 +104,20 @@ local function world_name()
 		return name
 	end
 	return PORT_WORLD_NAMES[minetest.settings:get("port") or ""] or "Luanti"
+end
+
+local function world_id()
+	local expected = WORLD_IDS_BY_PORT[minetest.settings:get("port") or ""]
+	local conf = read_conf()
+	local configured = conf and conf:get("world_id")
+	if configured == "original" or configured == "valdivia" then
+		if expected and configured ~= expected then
+			minetest.log("error", "[" .. modname .. "] world_id no coincide con el puerto")
+			return nil
+		end
+		return configured
+	end
+	return expected
 end
 
 -- {api = "<base>/bot<token>", chat_id = "<chat del admin>"} o nil.
@@ -332,15 +353,54 @@ end
 
 -- Lo que recibe el admin en el celular. Sin IP, coordenadas ni datos del
 -- cliente: solo mundo, jugador y mensaje.
+local request_counter = 0
+
+local function player_hex(name)
+	return (name:gsub(".", function(char)
+		return string.format("%02x", char:byte())
+	end))
+end
+
+local function new_request_id(id, name)
+	request_counter = request_counter + 1
+	return minetest.sha256(table.concat({
+		id,
+		name,
+		tostring(os.time()),
+		tostring(minetest.get_us_time()),
+		tostring(request_counter),
+	}, ":"))
+end
+
 local function admin_text(name, message)
 	return "🌿 " .. world_name() .. " — mensaje para gabo\n" ..
 		"Jugador: " .. name .. "\n" ..
 		"Mensaje: " .. message
 end
 
+local function telegram_admin_text(id, name, message, request_id)
+	return admin_text(name, message) .. "\n\n" ..
+		"[[wetlands_contact:v1;world=" .. id .. ";player_hex=" ..
+		player_hex(name) .. ";request=" .. request_id .. "]]"
+end
+
 local function send_message(name, message)
 	local dest = load_destination()
-	local req = dest.build(admin_text(name, message))
+	if not dest then
+		notify(name, S("Your message could not be sent right now. Please try again later."))
+		return
+	end
+	local text = admin_text(name, message)
+	if dest.name == "telegram" then
+		local id = world_id()
+		if not id then
+			notify(name, S("Your message could not be sent right now. Please try again later."))
+			return
+		end
+		local request_id = new_request_id(id, name)
+		text = telegram_admin_text(id, name, message, request_id)
+	end
+	local req = dest.build(text)
 	local now = os.time()
 
 	-- Se registra antes de enviar: ni un comando repetido ni un destino lento
@@ -405,185 +465,136 @@ minetest.register_chatcommand("gabo", {
 	end,
 })
 
--- ---------------------------------------------------------------------------
--- Respuestas del admin: Telegram -> chat del juego, para todos los conectados.
---
--- El mod consulta getUpdates del bot con long polling (una peticion abierta
--- hasta POLL_TIMEOUT s que Telegram responde apenas llega un mensaje), sin
--- bloquear el servidor. Solo se aceptan mensajes del chat del admin
--- (telegram_chat_id); cualquier otro chat se ignora. Si el admin responde
--- (deslizar -> Responder) al aviso de un jugador, se antepone "@jugador".
--- Requiere un bot dedicado: si otro proceso leyera getUpdates del mismo bot,
--- ambos se robarian los mensajes. Se desactiva con telegram_replies = false.
--- ---------------------------------------------------------------------------
-
-local POLL_TIMEOUT = 25       -- segundos que Telegram mantiene abierta la consulta
-local POLL_RETRY_MIN = 10     -- espera tras un fallo; se duplica en cada fallo...
-local POLL_RETRY_MAX = 300    -- ...hasta este tope (cada fallo loguea la URL con token)
-local POLL_IDLE = 60          -- sin Telegram configurado, cada cuanto se revisa la config
-local REPLY_MAX_AGE = 10 * 60 -- lo escrito con el servidor apagado no se publica tarde
-local REPLY_MAX_CHARS = 500
+-- Las respuestas llegan desde el relay interno. Solo el sidecar consume
+-- getUpdates; cada mundo pide exclusivamente la cola del jugador conectado.
 local REPLY_PREFIX = minetest.colorize("#FFB000", "[gabo]") .. " "
+local relay_inflight = {}
 
-local REPLY_HELP = "Hola 👋 Lo que me escribas aquí se publica en el chat de " ..
-	WORLD_NAME .. " para todos los jugadores conectados, como [gabo]. Si " ..
-	"respondes (deslizar → Responder) al aviso de un jugador, el mensaje lo " ..
-	"menciona con @nombre."
+local function delivered_key(name)
+	return "relay_delivered:" .. name
+end
 
-local poll_failures = 0
+local function load_delivered(name, now)
+	local value = minetest.parse_json(storage:get_string(delivered_key(name)), nil, true)
+	local delivered = type(value) == "table" and value or {}
+	local entries = {}
+	for update_id, timestamp in pairs(delivered) do
+		if type(timestamp) ~= "number" or now - timestamp > 8 * 24 * 60 * 60 then
+			delivered[update_id] = nil
+		else
+			entries[#entries + 1] = {id = update_id, timestamp = timestamp}
+		end
+	end
+	-- Acota el mod_storage incluso si el relay estuvo inaccesible para recibir ACKs.
+	table.sort(entries, function(a, b) return a.timestamp > b.timestamp end)
+	for i = 101, #entries do
+		delivered[entries[i].id] = nil
+	end
+	return delivered
+end
 
--- Bot de Telegram para respuestas, o nil si no aplica (otro destino, sin
--- datos o desactivado).
-local function reply_bot()
+local function save_delivered(name, delivered)
+	storage:set_string(delivered_key(name), minetest.write_json(delivered))
+end
+
+local function relay_config()
 	local conf = read_conf()
-	if not conf or (conf:get("destination") or "telegram") ~= "telegram" or
-			not conf:get_bool("telegram_replies", true) then
+	local id = world_id()
+	if not conf or not id or (conf:get("destination") or "telegram") ~= "telegram" then
 		return nil
 	end
-	return telegram_bot(conf)
+	local token = conf:get("telegram_token")
+	if not token or token == "" then
+		return nil
+	end
+	local url = conf:get("relay_url") or RELAY_DEFAULT_URL
+	if not url:match("^https?://[%w%.%-]+:?%d*$") then
+		return nil
+	end
+	return {
+		world_id = id,
+		url = url,
+		key = minetest.sha256(RELAY_KEY_CONTEXT .. ":" .. token .. ":" .. id),
+	}
 end
 
-local function telegram_send(bot, text)
-	local req = telegram_message(bot, text)
+local function relay_ack(relay, name, update_id)
 	http.fetch({
-		url = req.url,
+		url = relay.url .. "/v1/ack?world_id=" .. relay.world_id ..
+			"&player=" .. minetest.urlencode(name),
 		method = "POST",
 		timeout = HTTP_TIMEOUT,
-		extra_headers = {"Content-Type: application/json"},
-		data = req.data,
+		extra_headers = {
+			"Content-Type: application/json",
+			"X-Wetlands-Relay-Key: " .. relay.key,
+		},
+		data = minetest.write_json({update_id = update_id}),
 	}, function(res)
-		if not (res.succeeded and res.code == 200) then
-			minetest.log("warning", "[" .. modname .. "] no se pudo avisar al admin en Telegram: code=" ..
-				tostring(res.code))
+		if not (res.succeeded and res.code >= 200 and res.code < 300) then
+			minetest.log("warning", "[" .. modname .. "] ACK del relay pendiente para " .. name)
 		end
 	end)
 end
 
--- Primeros n caracteres UTF-8 de s, sin partir un caracter multibyte.
-local function utf8_head(s, n)
-	local out = {}
-	for ch in s:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
-		if #out == n then
-			return table.concat(out) .. "…"
+local function handle_relay_messages(relay, name, messages)
+	local delivered = load_delivered(name, os.time())
+	for _, message in ipairs(messages) do
+		local update_id = type(message.update_id) == "number" and
+			string.format("%.0f", message.update_id) or tostring(message.update_id or "")
+		local valid = update_id:match("^%d+$") and message.world_id == relay.world_id and
+			message.player == name and type(message.text) == "string" and
+			utf8_len(message.text) > 0 and utf8_len(message.text) <= 500
+		if valid then
+			if not delivered[update_id] then
+				local player = minetest.get_player_by_name(name)
+				if not player then
+					return
+				end
+				minetest.chat_send_player(name, REPLY_PREFIX .. message.text)
+				delivered[update_id] = os.time()
+				save_delivered(name, delivered)
+				minetest.log("action", "[" .. modname .. "] respuesta privada entregada a " .. name)
+			end
+			relay_ack(relay, name, update_id)
+		else
+			minetest.log("warning", "[" .. modname .. "] respuesta invalida recibida del relay")
 		end
-		out[#out + 1] = ch
 	end
-	return s
 end
 
--- Ids de Telegram como texto sin notacion cientifica (superan 2^31).
-local function id_string(n)
-	return type(n) == "number" and string.format("%.0f", n) or tostring(n)
-end
-
-local function handle_update(bot, update)
-	local msg = update.message
-	if type(msg) ~= "table" or type(msg.chat) ~= "table" then
+local function poll_relay_for_player(name)
+	if relay_inflight[name] or not minetest.get_player_by_name(name) then
 		return
 	end
-	if id_string(msg.chat.id) ~= bot.chat_id then
-		minetest.log("action", "[" .. modname .. "] ignorado mensaje de un chat ajeno al admin")
+	local relay = relay_config()
+	if not relay then
 		return
 	end
-	local text = msg.text
-	local is_command = type(text) == "string" and text:sub(1, 1) == "/"
-	if os.time() - (tonumber(msg.date) or 0) > REPLY_MAX_AGE then
-		-- Escrito con el servidor apagado: publicarlo tarde confundiria.
-		if type(text) == "string" and not is_command then
-			telegram_send(bot, "⚠ No publiqué este mensaje porque llegó con " .. WORLD_NAME ..
-				" apagado: \"" .. utf8_head(normalize(text), 60) .. "\". Envíalo de nuevo si sigue vigente.")
-		end
-		return
-	end
-	if type(text) ~= "string" then
-		telegram_send(bot, "Solo puedo publicar mensajes de texto.")
-		return
-	end
-	if is_command then
-		telegram_send(bot, REPLY_HELP)
-		return
-	end
-	local clean = normalize(text)
-	local len = utf8_len(clean)
-	if len == 0 then
-		return
-	end
-	if len > REPLY_MAX_CHARS then
-		telegram_send(bot, "⚠ Mensaje muy largo (" .. len .. " caracteres, máximo " ..
-			REPLY_MAX_CHARS .. "). No lo publiqué.")
-		return
-	end
-
-	local reply_to = type(msg.reply_to_message) == "table" and msg.reply_to_message.text
-	local target = type(reply_to) == "string" and reply_to:match("Jugador: ([%w_%-]+)")
-	local players, target_online = {}, false
-	for _, player in ipairs(minetest.get_connected_players()) do
-		local name = player:get_player_name()
-		players[#players + 1] = name
-		target_online = target_online or name == target
-	end
-	if #players == 0 then
-		telegram_send(bot, "⚠ No hay nadie conectado en " .. WORLD_NAME .. "; no lo publiqué.")
-		return
-	end
-
-	minetest.chat_send_all(REPLY_PREFIX .. (target and ("@" .. target .. " ") or "") .. clean)
-	minetest.log("action", "[" .. modname .. "] respuesta del admin publicada para " ..
-		#players .. " jugador(es)")
-	local confirm = "✅ Publicado en " .. WORLD_NAME .. " para " .. #players ..
-		" jugador(es): " .. table.concat(players, ", ")
-	if target and not target_online then
-		confirm = confirm .. "\n(" .. target .. " ya no está conectado)"
-	end
-	telegram_send(bot, confirm)
-end
-
-local poll
-poll = function()
-	local bot = reply_bot()
-	if not bot then
-		minetest.after(POLL_IDLE, poll)
-		return
-	end
-	-- tg_offset = ultimo update_id procesado + 1: confirma a Telegram lo ya
-	-- leido y evita republicar mensajes tras un reinicio.
-	local offset = storage:get_string("tg_offset")
+	relay_inflight[name] = true
 	http.fetch({
-		url = bot.api .. "/getUpdates?timeout=" .. POLL_TIMEOUT ..
-			"&allowed_updates=%5B%22message%22%5D" ..
-			(offset ~= "" and ("&offset=" .. offset) or ""),
-		timeout = POLL_TIMEOUT + 10,
+		url = relay.url .. "/v1/messages?world_id=" .. relay.world_id ..
+			"&player=" .. minetest.urlencode(name),
+		timeout = HTTP_TIMEOUT,
+		extra_headers = {"X-Wetlands-Relay-Key: " .. relay.key},
 	}, function(res)
-		local data = res.succeeded and res.code == 200 and minetest.parse_json(res.data, nil, true)
-		if type(data) ~= "table" or data.ok ~= true or type(data.result) ~= "table" then
-			poll_failures = poll_failures + 1
-			local wait = math.min(POLL_RETRY_MIN * 2 ^ (poll_failures - 1), POLL_RETRY_MAX)
-			if poll_failures == 1 or wait == POLL_RETRY_MAX then
-				minetest.log("warning", "[" .. modname .. "] no se pudo leer Telegram (code=" ..
-					tostring(res.code) .. "), reintento en " .. wait .. " s")
-			end
-			minetest.after(wait, poll)
-			return
+		relay_inflight[name] = nil
+		local data = res.succeeded and res.code == 200 and
+			minetest.parse_json(res.data, nil, true)
+		if type(data) == "table" and data.ok == true and type(data.messages) == "table" then
+			handle_relay_messages(relay, name, data.messages)
 		end
-		if poll_failures > 0 then
-			minetest.log("action", "[" .. modname .. "] lectura de Telegram recuperada")
-			poll_failures = 0
-		end
-		for _, update in ipairs(data.result) do
-			if type(update.update_id) == "number" then
-				storage:set_string("tg_offset", id_string(update.update_id + 1))
-			end
-			local ok, err = pcall(handle_update, bot, update)
-			if not ok then
-				minetest.log("error", "[" .. modname .. "] error procesando respuesta: " .. tostring(err))
-			end
-		end
-		minetest.after(1, poll)
 	end)
+end
+
+local function poll_relay()
+	for _, player in ipairs(minetest.get_connected_players()) do
+		poll_relay_for_player(player:get_player_name())
+	end
+	minetest.after(RELAY_POLL_INTERVAL, poll_relay)
 end
 
 if http then
-	minetest.after(5, poll)
+	minetest.after(5, poll_relay)
 end
 
 -- Anuncio parpadeante en la esquina inferior derecha. Se dibuja dos veces
@@ -638,6 +649,7 @@ end
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	minetest.after(ANNOUNCE_DELAY, show_announcement, name)
+	minetest.after(1, poll_relay_for_player, name)
 end)
 
 minetest.register_chatcommand("gabo_admin", {
