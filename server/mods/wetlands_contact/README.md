@@ -64,6 +64,11 @@ apaga con `/gabo_admin anuncio off`.
    discord_webhook = https://discord.com/api/webhooks/<id>/<token>
    ```
 
+   Para Telegram, `bash scripts/set-gabo-telegram.sh` escribe este archivo en
+   el VPS a partir de `WETLANDS_TELEGRAM_BOT_TOKEN` y
+   `WETLANDS_TELEGRAM_CHAT_ID` del `.env` local (gitignored) y manda un mensaje
+   de prueba; úsalo también para rotar el token.
+
    Se relee en cada envío: cambiar de destino o rotar el token no requiere
    reiniciar. Si falta o está incompleto, `/gabo` queda "not available" y el
    log lo avisa al arrancar. Con Telegram, el admin debe haberle escrito
