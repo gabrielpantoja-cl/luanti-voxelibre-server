@@ -20,7 +20,16 @@ local storage = minetest.get_mod_storage()
 -- listado en secure.http_mods; en ese caso /gabo responde "no disponible".
 local http = minetest.request_http_api()
 
-local WORLD_NAME = "Wetlands"
+-- Nombre del mundo en los avisos: world_name del wetlands_contact.conf del
+-- mundo, o el que corresponde al puerto. El mod puede correr en varios mundos a
+-- la vez; cada uno tiene su propio conf (y su propio bot, ver mas abajo).
+local PORT_WORLD_NAMES = {
+	["30000"] = "Wetlands",
+	["30001"] = "Valdivia",
+	["30002"] = "GAELSIN",
+	["30003"] = "CTF",
+	["30004"] = "Mineclonia",
+}
 local MIN_CHARS = 2              -- "hola", "ayuda!" valen; solo se rechaza 1 letra suelta
 local MAX_CHARS = 300
 local PLAYER_COOLDOWN = 15       -- segundos entre mensajes del mismo jugador
@@ -73,6 +82,47 @@ local function announce_enabled()
 	return storage:get_string("announce") ~= "off"
 end
 
+local function read_conf()
+	local ok, conf = pcall(Settings, CONFIG_FILE)
+	if ok and conf then
+		return conf
+	end
+	return nil
+end
+
+local function world_name()
+	local conf = read_conf()
+	local name = conf and conf:get("world_name")
+	if name and name ~= "" then
+		return name
+	end
+	return PORT_WORLD_NAMES[minetest.settings:get("port") or ""] or "Luanti"
+end
+
+-- {api = "<base>/bot<token>", chat_id = "<chat del admin>"} o nil.
+local function telegram_bot(conf)
+	local token = conf:get("telegram_token")
+	local chat_id = conf:get("telegram_chat_id")
+	if not token or token == "" or not chat_id or chat_id == "" then
+		return nil
+	end
+	-- telegram_api solo se cambia para apuntar al simulador en pruebas.
+	local api = conf:get("telegram_api") or "https://api.telegram.org"
+	return {api = api .. "/bot" .. token, chat_id = chat_id}
+end
+
+local function telegram_message(bot, text)
+	return {
+		url = bot.api .. "/sendMessage",
+		-- Sin parse_mode: el texto se muestra tal cual, sin interpretar formato.
+		data = minetest.write_json({
+			chat_id = bot.chat_id,
+			text = text,
+			disable_web_page_preview = true,
+		}),
+	}
+end
+
 -- Cada destino arma la peticion HTTP (url + cuerpo JSON) para un texto, o
 -- devuelve nil si a la config le faltan datos. Ojo: el token de Telegram y el
 -- del webhook de Discord van DENTRO de la URL, y el motor escribe la URL en
@@ -80,23 +130,8 @@ end
 -- URL, pero los logs del servidor deben tratarse como privados.
 local DESTINATIONS = {
 	telegram = function(conf, text)
-		local token = conf:get("telegram_token")
-		local chat_id = conf:get("telegram_chat_id")
-		if not token or token == "" or not chat_id or chat_id == "" then
-			return nil
-		end
-		-- telegram_api solo se cambia para apuntar al simulador en pruebas.
-		local api = conf:get("telegram_api") or "https://api.telegram.org"
-		return {
-			url = api .. "/bot" .. token .. "/sendMessage",
-			-- Sin parse_mode: el texto del jugador se muestra tal cual, sin
-			-- interpretar formato.
-			data = minetest.write_json({
-				chat_id = chat_id,
-				text = text,
-				disable_web_page_preview = true,
-			}),
-		}
+		local bot = telegram_bot(conf)
+		return bot and telegram_message(bot, text)
 	end,
 	discord = function(conf, text)
 		local url = conf:get("discord_webhook")
@@ -106,7 +141,7 @@ local DESTINATIONS = {
 		-- write_json convierte {} en null, asi que allowed_mentions se agrega
 		-- a mano: "parse":[] impide que un "@everyone" del jugador notifique a
 		-- todo el servidor de Discord.
-		local body = minetest.write_json({username = WORLD_NAME, content = text})
+		local body = minetest.write_json({username = world_name(), content = text})
 		return {
 			url = url,
 			data = body:sub(1, -2) .. ',"allowed_mentions":{"parse":[]}}',
@@ -116,8 +151,8 @@ local DESTINATIONS = {
 
 -- Devuelve {name = destino, build = function(text) -> peticion} o nil.
 local function load_destination()
-	local ok, conf = pcall(Settings, CONFIG_FILE)
-	if not ok or not conf then
+	local conf = read_conf()
+	if not conf then
 		return nil
 	end
 	local name = conf:get("destination") or "telegram"
@@ -298,7 +333,7 @@ end
 -- Lo que recibe el admin en el celular. Sin IP, coordenadas ni datos del
 -- cliente: solo mundo, jugador y mensaje.
 local function admin_text(name, message)
-	return "🌿 " .. WORLD_NAME .. " — mensaje para gabo\n" ..
+	return "🌿 " .. world_name() .. " — mensaje para gabo\n" ..
 		"Jugador: " .. name .. "\n" ..
 		"Mensaje: " .. message
 end
@@ -369,6 +404,187 @@ minetest.register_chatcommand("gabo", {
 		return true, S("Sending your message to gabo...")
 	end,
 })
+
+-- ---------------------------------------------------------------------------
+-- Respuestas del admin: Telegram -> chat del juego, para todos los conectados.
+--
+-- El mod consulta getUpdates del bot con long polling (una peticion abierta
+-- hasta POLL_TIMEOUT s que Telegram responde apenas llega un mensaje), sin
+-- bloquear el servidor. Solo se aceptan mensajes del chat del admin
+-- (telegram_chat_id); cualquier otro chat se ignora. Si el admin responde
+-- (deslizar -> Responder) al aviso de un jugador, se antepone "@jugador".
+-- Requiere un bot dedicado: si otro proceso leyera getUpdates del mismo bot,
+-- ambos se robarian los mensajes. Se desactiva con telegram_replies = false.
+-- ---------------------------------------------------------------------------
+
+local POLL_TIMEOUT = 25       -- segundos que Telegram mantiene abierta la consulta
+local POLL_RETRY_MIN = 10     -- espera tras un fallo; se duplica en cada fallo...
+local POLL_RETRY_MAX = 300    -- ...hasta este tope (cada fallo loguea la URL con token)
+local POLL_IDLE = 60          -- sin Telegram configurado, cada cuanto se revisa la config
+local REPLY_MAX_AGE = 10 * 60 -- lo escrito con el servidor apagado no se publica tarde
+local REPLY_MAX_CHARS = 500
+local REPLY_PREFIX = minetest.colorize("#FFB000", "[gabo]") .. " "
+
+local REPLY_HELP = "Hola 👋 Lo que me escribas aquí se publica en el chat de " ..
+	WORLD_NAME .. " para todos los jugadores conectados, como [gabo]. Si " ..
+	"respondes (deslizar → Responder) al aviso de un jugador, el mensaje lo " ..
+	"menciona con @nombre."
+
+local poll_failures = 0
+
+-- Bot de Telegram para respuestas, o nil si no aplica (otro destino, sin
+-- datos o desactivado).
+local function reply_bot()
+	local conf = read_conf()
+	if not conf or (conf:get("destination") or "telegram") ~= "telegram" or
+			not conf:get_bool("telegram_replies", true) then
+		return nil
+	end
+	return telegram_bot(conf)
+end
+
+local function telegram_send(bot, text)
+	local req = telegram_message(bot, text)
+	http.fetch({
+		url = req.url,
+		method = "POST",
+		timeout = HTTP_TIMEOUT,
+		extra_headers = {"Content-Type: application/json"},
+		data = req.data,
+	}, function(res)
+		if not (res.succeeded and res.code == 200) then
+			minetest.log("warning", "[" .. modname .. "] no se pudo avisar al admin en Telegram: code=" ..
+				tostring(res.code))
+		end
+	end)
+end
+
+-- Primeros n caracteres UTF-8 de s, sin partir un caracter multibyte.
+local function utf8_head(s, n)
+	local out = {}
+	for ch in s:gmatch("[%z\1-\127\194-\244][\128-\191]*") do
+		if #out == n then
+			return table.concat(out) .. "…"
+		end
+		out[#out + 1] = ch
+	end
+	return s
+end
+
+-- Ids de Telegram como texto sin notacion cientifica (superan 2^31).
+local function id_string(n)
+	return type(n) == "number" and string.format("%.0f", n) or tostring(n)
+end
+
+local function handle_update(bot, update)
+	local msg = update.message
+	if type(msg) ~= "table" or type(msg.chat) ~= "table" then
+		return
+	end
+	if id_string(msg.chat.id) ~= bot.chat_id then
+		minetest.log("action", "[" .. modname .. "] ignorado mensaje de un chat ajeno al admin")
+		return
+	end
+	local text = msg.text
+	local is_command = type(text) == "string" and text:sub(1, 1) == "/"
+	if os.time() - (tonumber(msg.date) or 0) > REPLY_MAX_AGE then
+		-- Escrito con el servidor apagado: publicarlo tarde confundiria.
+		if type(text) == "string" and not is_command then
+			telegram_send(bot, "⚠ No publiqué este mensaje porque llegó con " .. WORLD_NAME ..
+				" apagado: \"" .. utf8_head(normalize(text), 60) .. "\". Envíalo de nuevo si sigue vigente.")
+		end
+		return
+	end
+	if type(text) ~= "string" then
+		telegram_send(bot, "Solo puedo publicar mensajes de texto.")
+		return
+	end
+	if is_command then
+		telegram_send(bot, REPLY_HELP)
+		return
+	end
+	local clean = normalize(text)
+	local len = utf8_len(clean)
+	if len == 0 then
+		return
+	end
+	if len > REPLY_MAX_CHARS then
+		telegram_send(bot, "⚠ Mensaje muy largo (" .. len .. " caracteres, máximo " ..
+			REPLY_MAX_CHARS .. "). No lo publiqué.")
+		return
+	end
+
+	local reply_to = type(msg.reply_to_message) == "table" and msg.reply_to_message.text
+	local target = type(reply_to) == "string" and reply_to:match("Jugador: ([%w_%-]+)")
+	local players, target_online = {}, false
+	for _, player in ipairs(minetest.get_connected_players()) do
+		local name = player:get_player_name()
+		players[#players + 1] = name
+		target_online = target_online or name == target
+	end
+	if #players == 0 then
+		telegram_send(bot, "⚠ No hay nadie conectado en " .. WORLD_NAME .. "; no lo publiqué.")
+		return
+	end
+
+	minetest.chat_send_all(REPLY_PREFIX .. (target and ("@" .. target .. " ") or "") .. clean)
+	minetest.log("action", "[" .. modname .. "] respuesta del admin publicada para " ..
+		#players .. " jugador(es)")
+	local confirm = "✅ Publicado en " .. WORLD_NAME .. " para " .. #players ..
+		" jugador(es): " .. table.concat(players, ", ")
+	if target and not target_online then
+		confirm = confirm .. "\n(" .. target .. " ya no está conectado)"
+	end
+	telegram_send(bot, confirm)
+end
+
+local poll
+poll = function()
+	local bot = reply_bot()
+	if not bot then
+		minetest.after(POLL_IDLE, poll)
+		return
+	end
+	-- tg_offset = ultimo update_id procesado + 1: confirma a Telegram lo ya
+	-- leido y evita republicar mensajes tras un reinicio.
+	local offset = storage:get_string("tg_offset")
+	http.fetch({
+		url = bot.api .. "/getUpdates?timeout=" .. POLL_TIMEOUT ..
+			"&allowed_updates=%5B%22message%22%5D" ..
+			(offset ~= "" and ("&offset=" .. offset) or ""),
+		timeout = POLL_TIMEOUT + 10,
+	}, function(res)
+		local data = res.succeeded and res.code == 200 and minetest.parse_json(res.data, nil, true)
+		if type(data) ~= "table" or data.ok ~= true or type(data.result) ~= "table" then
+			poll_failures = poll_failures + 1
+			local wait = math.min(POLL_RETRY_MIN * 2 ^ (poll_failures - 1), POLL_RETRY_MAX)
+			if poll_failures == 1 or wait == POLL_RETRY_MAX then
+				minetest.log("warning", "[" .. modname .. "] no se pudo leer Telegram (code=" ..
+					tostring(res.code) .. "), reintento en " .. wait .. " s")
+			end
+			minetest.after(wait, poll)
+			return
+		end
+		if poll_failures > 0 then
+			minetest.log("action", "[" .. modname .. "] lectura de Telegram recuperada")
+			poll_failures = 0
+		end
+		for _, update in ipairs(data.result) do
+			if type(update.update_id) == "number" then
+				storage:set_string("tg_offset", id_string(update.update_id + 1))
+			end
+			local ok, err = pcall(handle_update, bot, update)
+			if not ok then
+				minetest.log("error", "[" .. modname .. "] error procesando respuesta: " .. tostring(err))
+			end
+		end
+		minetest.after(1, poll)
+	end)
+end
+
+if http then
+	minetest.after(5, poll)
+end
 
 -- Anuncio parpadeante en la esquina inferior derecha. Se dibuja dos veces
 -- (sombra negra desplazada + texto de color) para que se lea sobre cielo,
