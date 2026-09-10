@@ -38,11 +38,14 @@ local ANNOUNCE_BLINK = 0.8   -- periodo del parpadeo entre ANNOUNCE_COLORS
 local ANNOUNCE_COLORS = {0xFFE000, 0xFF8000}
 local ANNOUNCE_OFFSET = {x = -24, y = -110}
 
--- piloto: solo jugadores con el privilegio "avisar"; abierto: cualquiera con
--- "shout"; pausa: nadie. Vive en mod_storage para que el admin lo cambie en
--- caliente con /gabo_admin sin tocar el mod ni reiniciar.
-local MODES = {piloto = true, abierto = true, pausa = true}
-local DEFAULT_MODE = "piloto"
+-- abierto: cualquier jugador con "shout" (wetlands_newplayer se lo garantiza
+-- a todos en cada ingreso); pausa: nadie. Vive en mod_storage para que el
+-- admin lo cambie en caliente con /gabo_admin sin tocar el mod ni reiniciar.
+-- No hay privilegio propio: wetlands_newplayer quita en cada ingreso toda
+-- priv que no este en su lista, asi que un /grant no duraria. Un "piloto"
+-- guardado por una version anterior se trata como "abierto".
+local MODES = {abierto = true, pausa = true}
+local DEFAULT_MODE = "abierto"
 
 -- Terminaciones de dominio que delatan un enlace aunque no lleve "http".
 local LINK_TLDS = {
@@ -57,12 +60,6 @@ local function safety_text()
 end
 
 local inflight = {} -- name -> true mientras se espera la respuesta del destino
-
-minetest.register_privilege("avisar", {
-	description = S("Can send messages to the admin with /gabo during the pilot"),
-	give_to_singleplayer = false,
-	give_to_admin = true,
-})
 
 local function get_mode()
 	local mode = storage:get_string("mode")
@@ -164,7 +161,7 @@ local function message_hash(message)
 	return minetest.sha1(message:lower())
 end
 
--- Si el jugador puede usar /gabo segun el modo y sus privilegios (sin mirar
+-- Si el jugador puede usar /gabo segun el modo y su "shout" (sin mirar
 -- limites de frecuencia). Tambien decide a quien se le muestra el anuncio.
 local function has_access(name)
 	if not http or not load_destination() then
@@ -173,12 +170,8 @@ local function has_access(name)
 	if not minetest.check_player_privs(name, {shout = true}) then
 		return false, S("You cannot send messages right now.")
 	end
-	local mode = get_mode()
-	if mode == "pausa" then
+	if get_mode() == "pausa" then
 		return false, S("Messages to gabo are paused for now. Please try again later.")
-	end
-	if mode == "piloto" and not minetest.check_player_privs(name, {avisar = true}) then
-		return false, S("Messages to gabo are being tested and are not available to everyone yet.")
 	end
 	return true
 end
@@ -432,7 +425,7 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 minetest.register_chatcommand("gabo_admin", {
-	params = "<piloto|abierto|pausa|estado|anuncio on|anuncio off>",
+	params = "<abierto|pausa|estado|anuncio on|anuncio off>",
 	description = "Controla el sistema de mensajes /gabo",
 	privs = {server = true},
 	func = function(name, param)
@@ -454,7 +447,7 @@ minetest.register_chatcommand("gabo_admin", {
 			return true, "Anuncio de /gabo: " .. announce
 		end
 		if not MODES[param] then
-			return false, "Uso: /gabo_admin <piloto|abierto|pausa|estado|anuncio on|anuncio off>"
+			return false, "Uso: /gabo_admin <abierto|pausa|estado|anuncio on|anuncio off>"
 		end
 		storage:set_string("mode", param)
 		minetest.log("action", "[" .. modname .. "] " .. name .. " cambio el modo a " .. param)

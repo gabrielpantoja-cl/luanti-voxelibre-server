@@ -38,8 +38,8 @@ Need help? Type /gabo <message>
 to write directly to the admin
 ```
 
-(en español para clientes en español). En modo `piloto` solo lo ven quienes
-tienen el privilegio `avisar`; sin destino configurado no lo ve nadie. Se
+(en español para clientes en español). Lo ve todo jugador con `shout`; en
+`pausa` o sin destino configurado no lo ve nadie. Se
 apaga con `/gabo_admin anuncio off`.
 
 ## Configuración
@@ -100,15 +100,16 @@ apaga con `/gabo_admin anuncio off`.
 
 | Comando | Priv | Efecto |
 |---|---|---|
-| `/gabo <mensaje>` | `shout` (+ `avisar` en modo piloto) | Envía el mensaje; sin texto muestra uso + aviso de seguridad |
+| `/gabo <mensaje>` | `shout` | Envía el mensaje; sin texto muestra uso + aviso de seguridad |
 | `/gabo_admin estado` | `server` | Modo, anuncio, API HTTP, destino, uso de la última hora |
 | `/gabo_admin pausa` | `server` | Corta los envíos al instante (sin reiniciar) |
-| `/gabo_admin piloto` | `server` | Solo jugadores con `avisar` (valor por defecto) |
-| `/gabo_admin abierto` | `server` | Cualquier jugador con `shout` |
+| `/gabo_admin abierto` | `server` | Cualquier jugador con `shout` (valor por defecto) |
 | `/gabo_admin anuncio on\|off` | `server` | Muestra u oculta el anuncio del HUD al entrar |
 
-Durante el piloto: `/grant <jugador> avisar`. El admin (`name` del `.conf`)
-recibe `avisar` automáticamente.
+No hay privilegio propio: basta `shout`, que `wetlands_newplayer` otorga a
+todo jugador (nuevo o existente) en cada ingreso. Ese mod además quita en cada
+ingreso cualquier privilegio que no esté en su lista, así que un privilegio
+dedicado otorgado con `/grant` no duraría.
 
 ## Prueba local
 
