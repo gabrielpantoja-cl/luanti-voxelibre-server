@@ -110,7 +110,7 @@ REMOTE_SCRIPT=$(cat <<'REMOTE_SCRIPT_EOF'
 
     # Mantener el resto del .env del VPS y reemplazar solo las dos variables del relay.
     filter_env() {
-        sudo bash -c '\''set -euo pipefail
+        sudo bash -c 'set -euo pipefail
         umask 077
         src=$1
         dst=$2
@@ -122,7 +122,7 @@ REMOTE_SCRIPT=$(cat <<'REMOTE_SCRIPT_EOF'
                 *) printf "%s\n" "$line" >> "$dst" ;;
             esac
           done < "$src"
-        fi'\'' bash "$1" "$2"
+        fi' bash "$1" "$2"
     }
     filter_env "$EF" "$OP"
     sudo cp "$OP" "$ET"
@@ -146,10 +146,10 @@ REMOTE_SCRIPT=$(cat <<'REMOTE_SCRIPT_EOF'
     # Cada reemplazo es atómico. Los backups permiten revertir el grupo si un
     # rename excepcional falla a mitad de la operación.
     backup_file() {
-        sudo bash -c '\''set -euo pipefail
+        sudo bash -c 'set -euo pipefail
         umask 077
         cp -p -- "$1" "$2"
-        chmod 600 "$2"'\'' bash "$1" "$2"
+        chmod 600 "$2"' bash "$1" "$2"
     }
     if sudo test -f "$OF"; then backup_file "$OF" "$OB"; fi
     if sudo test -f "$VF"; then backup_file "$VF" "$VB"; fi
@@ -174,9 +174,9 @@ REMOTE_SCRIPT=$(cat <<'REMOTE_SCRIPT_EOF'
     COMMITTED=1
     sudo rm -f "$OB" "$VB" "$EB" "$OP" "$NP"
     echo "OK: bot compartido configurado."
-    echo "Original: $(sudo stat -c '\''%U:%G %a'\'' "$OF")"
-    echo "Valdivia: $(sudo stat -c '\''%U:%G %a'\'' "$VF")"
-    echo "Relay env: $(sudo stat -c '\''%U:%G %a'\'' "$EF")"
+    echo "Original: $(sudo stat -c '%U:%G %a' "$OF")"
+    echo "Valdivia: $(sudo stat -c '%U:%G %a' "$VF")"
+    echo "Relay env: $(sudo stat -c '%U:%G %a' "$EF")"
 REMOTE_SCRIPT_EOF
 )
 
