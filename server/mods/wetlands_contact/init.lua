@@ -605,7 +605,7 @@ local function show_announcement(name)
 	if not player or not announce_enabled() or not has_access(name) then
 		return
 	end
-	local text = S("Need help? Type /gabo <message>") .. "\n" ..
+	local text = S("Type /gabo <message>") .. "\n" ..
 		S("to write directly to the admin")
 	local base = {
 		type = "text",

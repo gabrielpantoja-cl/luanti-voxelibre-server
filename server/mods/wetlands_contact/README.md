@@ -35,7 +35,7 @@ Al entrar al mundo, cada jugador que **puede** usar `/gabo` ve durante 60 s,
 abajo a la derecha y parpadeando en amarillo/naranjo:
 
 ```text
-Need help? Type /gabo <message>
+Type /gabo <message>
 to write directly to the admin
 ```
 

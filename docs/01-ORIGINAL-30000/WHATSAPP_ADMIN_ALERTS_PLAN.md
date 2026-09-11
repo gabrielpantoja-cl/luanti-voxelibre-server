@@ -54,8 +54,9 @@ por un comando de una línea, a pedido de gabo.)*
 - `/gabo` sin texto muestra el uso y el recordatorio de no compartir datos
   personales.
 - Anuncio temporal en el HUD, abajo a la derecha, parpadeando en
-  amarillo/naranjo durante 60 s al entrar: *"Need help? Type /gabo <message> to
-  write directly to the admin"*.
+  amarillo/naranjo durante 60 s al entrar: *"Type /gabo <message> to write
+  directly to the admin"*. Sin "Need help?": el canal queda abierto a ayuda,
+  ideas o cualquier mensaje para el admin.
 - Textos en **inglés** (Wetlands recibe jugadores de unos 35 países), con
   traducción automática al español para clientes en español.
 
