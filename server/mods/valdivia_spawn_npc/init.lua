@@ -2,18 +2,20 @@
 -- valdivia_spawn_npc
 -- ============================================================================
 -- NPC guia estatico del spawn de Valdivia (puerto 30001).
--- Al hacerle click derecho abre un panel con: enlace de Discord (copiable),
--- reglas del servidor y teletransporte a lugares de la ciudad.
--- Ademas: mensaje de bienvenida al entrar y comando /discord de respaldo.
+-- Al hacerle click derecho abre un panel con: reglas del servidor,
+-- teletransporte a lugares de la ciudad y el aviso de /gabo para pedir ayuda.
+-- Ademas: mensaje de bienvenida al entrar.
 -- Apropiado para ninos 7+. Idioma: espanol.
+--
+-- 2026-09-10: se quito el QR/enlace de Discord (nadie lo usaba). Discord queda
+-- solo para el admin (log de conexiones); los jugadores piden ayuda con /gabo
+-- (mod wetlands_contact), que llega directo al admin por Telegram.
 
 local modname = minetest.get_current_modname()
 
 -- ============================================================================
 -- 1. CONSTANTES
 -- ============================================================================
-local DISCORD_INVITE = "https://discord.gg/Y3vfy2JnX"
-local DISCORD_QR     = "valdivia_guia_discord_qr.png"  -- textura del QR (tools/generate_discord_qr.py)
 local NPC_HP         = 65535
 local ANCHOR_TOL     = 0.6   -- distancia (nodos) antes de re-anclar al guia
 local FACE_RANGE     = 12    -- distancia (nodos) para girar a mirar al jugador
@@ -115,13 +117,6 @@ load_lugares()
 -- ============================================================================
 -- 3. TEXTOS (chat)
 -- ============================================================================
-local function enviar_discord(name)
-    minetest.chat_send_player(name, minetest.colorize(C_TITULO,
-        "== Comunidad de Valdivia en Discord =="))
-    minetest.chat_send_player(name, "Copia este enlace y unete: " ..
-        minetest.colorize(C_INFO, DISCORD_INVITE))
-end
-
 local function enviar_reglas(name)
     local reglas = {
         minetest.colorize(C_TITULO, "== Reglas de Valdivia =="),
@@ -129,7 +124,7 @@ local function enviar_reglas(name)
         "2. No destruyas ni rayes las construcciones de otros (anti-grief).",
         "3. Construye, explora y comparte: la ciudad es de todos.",
         "4. Sin groserias en el chat. Es un espacio para ninos y familias.",
-        "5. Ante dudas o problemas, avisa a un admin o pregunta en Discord.",
+        "5. Ante dudas o problemas, escribele al admin con /gabo <mensaje>.",
         minetest.colorize(C_OK, "Gracias por hacer de Valdivia un lugar amable."),
     }
     for _, linea in ipairs(reglas) do
@@ -144,27 +139,16 @@ local F = minetest.formspec_escape
 
 local function show_guia(name)
     if not name then return end
-    -- Layout de dos columnas: a la izquierda campo/botones; a la derecha el QR
-    -- de Discord (se escanea con el telefono y abre la invitacion de un toque,
-    -- la via "cliqueable" que Luanti no permite server-side).
     local fs = "formspec_version[4]" ..
-        "size[12,7.5]" ..
+        "size[8.8,5.9]" ..
         "label[0.5,0.6;" .. minetest.colorize(C_TITULO, F("Guia de Valdivia")) .. "]" ..
         "label[0.5,1.2;" .. F("Bienvenid@ a la ciudad. Yo te oriento:") .. "]" ..
-        -- Enlace de Discord en un campo copiable (unico widget seleccionable).
-        "field[0.5,2.1;7.8,0.8;discord_url;" .. F("Discord (selecciona y copia el enlace)") ..
-            ";" .. F(DISCORD_INVITE) .. "]" ..
-        "field_close_on_enter[discord_url;false]" ..
-        "button[0.5,3.4;7.8,0.8;btn_reglas;" .. F("Reglas del servidor") .. "]" ..
-        "button[0.5,4.4;7.8,0.8;btn_lugares;" .. F("Lugares de Valdivia") .. "]" ..
-        "button_exit[0.5,5.8;7.8,0.8;btn_cerrar;" .. F("Cerrar") .. "]" ..
-        -- Columna derecha: QR de Discord
-        "label[8.8,1.2;" .. minetest.colorize(C_INFO, F("Escanea y unete:")) .. "]" ..
-        "image[8.8,1.5;2.7,2.7;" .. DISCORD_QR .. "]" ..
-        "label[8.8,4.35;" .. F("(Discord con tu telefono)") .. "]"
+        "button[0.5,1.8;7.8,0.8;btn_reglas;" .. F("Reglas del servidor") .. "]" ..
+        "button[0.5,2.8;7.8,0.8;btn_lugares;" .. F("Lugares de Valdivia") .. "]" ..
+        "label[0.5,4.0;" .. minetest.colorize(C_INFO,
+            F("¿Necesitas ayuda? Escribe /gabo <mensaje>")) .. "]" ..
+        "button_exit[0.5,4.6;7.8,0.8;btn_cerrar;" .. F("Cerrar") .. "]"
     minetest.show_formspec(name, FORM_GUIA, fs)
-    -- Sin eco al chat: el QR + el campo copiable del panel ya entregan el enlace.
-    -- Para pedirlo por chat existe el comando /discord.
 end
 
 local function show_lugares(name)
@@ -366,13 +350,11 @@ end
 -- ============================================================================
 -- 6. COMANDOS
 -- ============================================================================
-minetest.register_chatcommand("discord", {
-    description = "Muestra el enlace de la comunidad de Valdivia en Discord",
-    func = function(name)
-        enviar_discord(name)
-        return true
-    end,
-})
+-- Sin /discord en Valdivia: server_rules registra uno (con el Discord de
+-- Wetlands) y este mod carga despues (optional_depends), asi que se quita aqui.
+if minetest.registered_chatcommands["discord"] then
+    minetest.unregister_chatcommand("discord")
+end
 
 minetest.register_chatcommand("spawn_guia", {
     params = "[spawn|parque|santa_elena|huachocopihue]",
@@ -457,8 +439,7 @@ minetest.register_on_joinplayer(function(player)
     minetest.after(3, function()
         if not minetest.get_player_by_name(name) then return end
         -- Bienvenida unica, corta y bonita: titulo en amarillo + una linea
-        -- descriptiva. Sin Discord (vive en el panel del Guia) ni "habla con el
-        -- guia". El MOTD queda vacio y el aviso "modo pacifico" de mcl_mobs se
+        -- descriptiva. Sin Discord ni "habla con el guia". El MOTD queda vacio y el aviso "modo pacifico" de mcl_mobs se
         -- des-registra (seccion 8) para no duplicar el saludo ni ensuciar el chat.
         minetest.chat_send_player(name, minetest.colorize(C_TITULO,
             "¡Bienvenid@ a Valdivia [Chile]!") ..

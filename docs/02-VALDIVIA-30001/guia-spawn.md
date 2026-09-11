@@ -2,8 +2,8 @@
 
 Mod exclusivo de Valdivia (puerto 30001) que mejora la primera impresión del
 servidor: un **recepcionista estático** parado en el spawn (Plaza de la
-República) que da la bienvenida, entrega el enlace de Discord, muestra las
-reglas y teletransporta a lugares clave de la ciudad.
+República) que da la bienvenida, muestra las reglas, recuerda `/gabo` para
+pedir ayuda y teletransporta a lugares clave de la ciudad.
 
 Estado: **en producción** desde 2026-07-05.
 
@@ -12,15 +12,14 @@ Estado: **en producción** desde 2026-07-05.
 | Elemento | Detalle |
 |----------|---------|
 | NPC guías (uno por lugar) | Estáticos e inmortales (anti-grief), mismo comportamiento pero **skin distinto** cada uno, sobre `mcl_armor_character.b3d`. Definidos en la tabla `GUIAS`: spawn (`:guia`, indie-boy), Parque Catrico (`:guia_parque`, summer-gala), Santa Elena (`:guia_santa_elena`, vegan-activist), Huachocopihue / Plaza Londres (`:guia_huachocopihue`, hipster). |
-| Panel al click derecho | **QR de Discord** (escaneable) + enlace copiable + Reglas + menú de Lugares + Cerrar. |
+| Panel al click derecho | Reglas + menú de Lugares + aviso "¿Necesitas ayuda? Escribe /gabo <mensaje>" + Cerrar. |
 | Bienvenida | **Un solo** mensaje ~3 s después de entrar: título amarillo + "Explora la capital de Los Ríos y haz amigos en la ciudad más linda de Chile". El MOTD se vació y el aviso "Modo pacífico activo" de `mcl_mobs` se silencia (des-registro de su `on_joinplayer`) para no duplicar saludos ni ensuciar el chat. |
-| Discord | `https://discord.gg/Y3vfy2JnX` (constante `DISCORD_INVITE`). QR en `textures/valdivia_guia_discord_qr.png` (`tools/generate_discord_qr.py`). |
+| Discord | **Retirado para jugadores (2026-09-10).** El QR/enlace llevaba meses sin uso; Discord queda solo para el admin (notificador de conexiones). Los jugadores contactan al admin con `/gabo` (`wetlands_contact`, llega por Telegram). El mod además des-registra el `/discord` de `server_rules` en Valdivia. |
 
 ## Comandos
 
 | Comando | Priv | Uso |
 |---------|------|-----|
-| `/discord` | — | Muestra el enlace de Discord en el chat (respaldo del NPC). |
 | `/spawn_guia [spawn\|parque\|santa_elena\|huachocopihue]` | `server` | Coloca un guía en tu posición con el skin de ese lugar (sin arg = spawn). Elimina cualquier guía duplicado en radio 6. |
 | `/lugar_guardar <id> <nombre>` | `server` | Guarda tu posición actual como destino de teletransporte. El `id` sólo admite `[a-zA-Z0-9_]`. |
 | `/lugares` | — | Lista los destinos registrados con sus coordenadas. |
@@ -94,7 +93,11 @@ lugar a `DEFAULT_LUGARES`. Luego plántalo con `/spawn_guia <tipo>`.
       (`play_npc_voice`); falta cablearlo aquí.
 - [ ] **Mod de colectivo** que recorra la ciudad siguiendo recorridos reales de
       los colectivos de Valdivia (reemplazo elaborado del teletransporte).
-## Enlace de Discord: limitaciones de Luanti (investigado 2026-07-05)
+## Enlace de Discord: limitaciones de Luanti (investigado 2026-07-05, histórico)
+
+> El QR y el enlace se retiraron el 2026-09-10 (ver tabla de arriba). Se
+> conserva esta nota porque las limitaciones aplican a cualquier enlace futuro;
+> el generador `tools/generate_discord_qr.py` sigue en el historial de git.
 
 Resumen: en Luanti **no** se puede hacer el enlace *cliqueable* (que abra el
 navegador) desde un mod del servidor, y **sí** tiene que ser *borrable* si
