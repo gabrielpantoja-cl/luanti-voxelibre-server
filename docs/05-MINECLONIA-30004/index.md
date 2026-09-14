@@ -1,6 +1,6 @@
 # Mineclonia 🌮 — Puerto 30004
 
-Quinto mundo del servidor Wetlands. Mundo **creativo puro** corriendo
+Quinto mundo del servidor Wetlands. Mundo **supervivencia** corriendo
 [Mineclonia 0.123.0](https://codeberg.org/mineclonia/mineclonia),
 fork de VoxeLibre enfocado en clonar fielmente Minecraft vanilla.
 
@@ -13,7 +13,7 @@ fork de VoxeLibre enfocado en clonar fielmente Minecraft vanilla.
 | Puerto (container) | 30000 interno (mapeo 30004→30000 en docker-compose) |
 | Container | `luanti-mineclonia-server` |
 | Game base | Mineclonia 0.123.0 (NO VoxeLibre) |
-| Modo | Creativo, sin dano, sin PvP |
+| Modo | Supervivencia, dano activo, sin PvP |
 | Mods custom | **Ninguno** — solo el game base |
 | Seed | `mineclonia` |
 | Spawn | `-14,4.5,240` |
@@ -52,9 +52,9 @@ original de minecraft"*. Por eso:
 
 - **Cero mods custom** de Wetlands. Ni `wetlands_newplayer`, ni
   WorldEdit, ni NPCs, ni nada. El game base Mineclonia provee todo.
-- **Modo creativo puro** — todos pueden volar, tomar cualquier item
-  del inventario creativo y construir sin restricciones.
-- **Sin dano** — no hay mobs hostiles, no hay PvP, no hay hunger.
+- **Modo supervivencia** — mobs, hambre, crafting, muerte con drop.
+  Fiel a Minecraft vanilla.
+- **Sin PvP, sin fire, sin TNT** — anti-grief en un servidor para ninos.
 - **Cero contenido de Wetlands** — este mundo no comparte mods ni
   assets con los otros mundos. Es una "isla" dentro del servidor.
 
@@ -69,7 +69,7 @@ descargarlo en el VPS antes de arrancar el container. Ver
 Ver `server/config/luanti-mineclonia.conf`. Puntos clave:
 
 - `default_game = mineclonia` — game separado de VoxeLibre
-- `creative_mode = true` + `enable_damage = false` — creativo puro
+- `creative_mode = false` + `enable_damage = true` — supervivencia pura
 - `fixed_map_seed = mineclonia` — seed Minecraft-compatible
 - **Sin `mg_name`** — Mineclonia usa su propio mapgen Lua; forzarlo
   a `v7` usaria el mapgen de Minetest (no el de Minecraft)
@@ -109,10 +109,10 @@ luanti-mineclonia:
 | Aspecto | Wetlands | GAELSIN | Plano | Mineclonia |
 |---|---|---|---|---|
 | Game | VoxeLibre | VoxeLibre | capturetheflag | **Mineclonia** |
-| Modo | Supervivencia | Supervivencia | Creativo plano | **Creativo** |
+| Modo | Supervivencia | Supervivencia | Creativo plano | **Supervivencia** |
 | Mods custom | Muchos | Minimos | Cero | **Cero** |
 | PvP | No | Si | Si (arma) | **No** |
-| Dano | Si | Si | Si | **No** |
+| Dano | Si | Si | Si | **Si** |
 | Seed | Numerico | `GAELSIN` | Auto | **`mineclonia`** |
 | Puerto | 30000 | 30002 | 30003 | **30004** |
 
@@ -123,19 +123,18 @@ luanti-mineclonia:
 3. Direccion: `luanti.gabrielpantoja.cl`
 4. Puerto: `30004`
 5. Nombre + password (cuenta nueva)
-6. El inventario creativo aparece al lado de la busqueda — tomar
-   cualquier item y construir
+6. Spawn en el mundo — craftea herramientas, busca recursos, sobrevive
 
 ## Roadmap
 
-v0 (actual): creativo puro, sin mods, seed `mineclonia`.
+v0 (2026-08-01): creativo puro, sin mods, seed `mineclonia`.
+v1 (2026-09-13): supervivencia — mobs activos, dano, hambre.
 
 Cosas que se podrian agregar en el futuro (no estan):
 
-- WorldEdit (mod popular para construir rapido en creativo)
-- Mas seeds via `/gamemode` o nuevo mundo en otro puerto
+- WorldEdit para admins
+- Mas mods de calidad de vida (mapas, waypoints)
 - Coordenadas de "showcase" con builds destacados de la comunidad
-- Multi-creativo con varios worlds (tipo `mineclonia2`, etc.)
 
 ## Ver tambien
 

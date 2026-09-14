@@ -1,6 +1,6 @@
 # Mineclonia (Puerto 30004)
 
-Mundo creativo puro corriendo [Mineclonia 0.123.0](https://codeberg.org/mineclonia/mineclonia),
+Mundo **supervivencia** corriendo [Mineclonia 0.123.0](https://codeberg.org/mineclonia/mineclonia),
 fork de VoxeLibre enfocado en clonar Minecraft vanilla. **No usa VoxeLibre** — es un game
 independiente de Luanti.
 
@@ -10,11 +10,11 @@ independiente de Luanti.
 | Juego | Mineclonia 0.123.0 (fork de VoxeLibre, no es VoxeLibre) |
 | Mapgen | Mineclonia mapgen (Lua, compatible con seeds de Minecraft) |
 | Seed | `mineclonia` |
-| Creativo | Sí |
-| Daño | No |
-| PvP | No |
+| Creativo | No |
+| Daño | Sí |
+| PvP | No (desactivado, anti-grief) |
 | Mods custom | `wetlands_mineclonia_trampas` (única excepción — bloque trampa amistosa) |
-| Mobs | No spawnean |
+| Mobs | Sí — hostiles de noche, pacíficos de día |
 
 Documentación completa: [`index.md`](index.md). Instalación del game: [`install.md`](install.md).
 
@@ -24,7 +24,7 @@ Agregado el 2026-08-03 a pedido del admin para construir regalos/sorpresas en Mi
 
 **Qué hace**: registra un único nodo `wetlands_mineclonia_trampas:secret_heart` que **se ve idéntico a `mcl_core:stone`** (textura `default_stone.png`, drop `mcl_core:cobble`, sonido de piedra). Cuando un jugador pisa el bloque, ve en el chat el mensaje **`"ME ENCANTA JUGAR CONTIGO ❤️"`** color rosa fuerte, más una lluvia de partículas de corazón. Sin daño, sin knockback, sin romper nada — solo un guiño amistoso.
 
-**Por qué existe**: Mineclonia corre con `creative_mode = true`, `enable_damage = false`, `enable_fire = false`, `enable_tnt = false`. No se pueden usar las mecánicas vanilla de Minecraft (TNT + pressure plates + redstone) para trampas. Este mod provee una alternativa kids-friendly.
+**Por qué existe**: Mineclonia corre con `enable_fire = false`, `enable_tnt = false` (anti-grief). No se pueden usar mecánicas destructivas para trampas. Este mod provee una alternativa kids-friendly compatible con supervivencia.
 
 **Por qué el mod existe en `server/mods/` (no en `worldmods/`)**: para que sea reproducible desde el repo. La activación se hace vía `load_mod_wetlands_mineclonia_trampas = true` en `luanti-mineclonia.conf` + el `world.mt` del VPS. No se carga en Wetlands/Valdivia/GAELSIN/Plano.
 
