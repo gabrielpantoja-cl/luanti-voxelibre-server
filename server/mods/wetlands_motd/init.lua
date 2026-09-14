@@ -6,12 +6,8 @@ local modname = minetest.get_current_modname()
 
 -- MOTD principal en inglés (default para todos los clientes)
 local MOTD_EN = table.concat({
-	"Welcome to Wetlands 🌿 — the oldest and most beloved world of this server!",
-	"",
-	"This is a kid-friendly, plant-based survival playground.",
-	"We build together with compassion and respect.",
-	"",
-	"If you're new or returning, we're happy you're here.",
+	"Welcome to the original world of pepelomo and gabo 🌿",
+	"Kid-friendly survival: gather, build and explore with us.",
 	"Read /reglas for full guidelines.",
 }, "\n")
 
@@ -24,12 +20,8 @@ minetest.register_on_joinplayer(function(player)
 	-- S() busca la clave en el idioma del cliente; si no existe, devuelve la clave misma
 	local motd_text = minetest.get_player_information(name).lang_code == "es" and
 		minetest.colorize("#A0A0A0", table.concat({
-			"Bienvenido a Wetlands 🌿 — ¡el mundo más antiguo y especial de este servidor!",
-			"",
-			"Este es un mundo amistoso para niños, basado en plantas, de supervivencia creativa.",
-			"Construimos juntos con compasión y respeto.",
-			"",
-			"Si eres nuevo o regresas, ¡nos alegra que estés aquí!",
+			"¡Bienvenido al mundo original de pepelomo y gabo 🌿",
+			"Supervivencia amistosa para niños: recolecta, construye y explora con nosotros.",
 			"Lee /reglas para las guías completas.",
 		}, "\n")) or
 		minetest.colorize("#A0A0A0", MOTD_EN)
