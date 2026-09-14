@@ -8,6 +8,8 @@ local modname = minetest.get_current_modname()
 local MOTD_EN = table.concat({
 	"Welcome to the original world of pepelomo and gabo 🌿",
 	"Kid-friendly survival: gather, build and explore with us.",
+	"If you found us by chance, you are welcome here.",
+	"Please play with kindness and respect.",
 	"Read /reglas for full guidelines.",
 }, "\n")
 
@@ -22,6 +24,8 @@ minetest.register_on_joinplayer(function(player)
 		minetest.colorize("#A0A0A0", table.concat({
 			"¡Bienvenido al mundo original de pepelomo y gabo 🌿",
 			"Supervivencia amistosa para niños: recolecta, construye y explora con nosotros.",
+			"Si encontraste este mundo por casualidad, eres bienvenido.",
+			"Por favor juega con amabilidad y respeto.",
 			"Lee /reglas para las guías completas.",
 		}, "\n")) or
 		minetest.colorize("#A0A0A0", MOTD_EN)
