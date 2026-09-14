@@ -50,7 +50,7 @@ tiene una entrada explícita** para ese mod:
 **Verificado 2026-06-27** desactivando `mcl_potions_hotfix`: Wetlands
 (`original/world.mt` sin la línea) se apagó con solo el `.conf = false`; GAELSIN
 (`gaelsin/world.mt` con `= true`) siguió cargando el mod hasta editar también su
-`world.mt`. Los mundos nuevos (GAELSIN, CTF...) se crearon volcando todos los
+`world.mt`. Los mundos nuevos (GAELSIN, Plano...) se crearon volcando todos los
 `load_mod_*` del `.conf` al `world.mt`, así que casi todos los mods tienen
 entrada explícita ahí.
 

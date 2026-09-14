@@ -222,29 +222,32 @@ services:
       - luanti-network
 
   # =============================================
-  # CTF - Captura la bandera (juego independiente de rubenwardy)
+  # PLANO - Mundo Mineclonia totalmente plano
   # =============================================
-  # Servidor de Capture The Flag usando el juego `capturetheflag` de rubenwardy
-  # (NO VoxeLibre). Mapa singlenode + backend=dummy gestionado por el juego.
+  # Cuarto mundo (2026-09-13): reemplaza al antiguo CTF (capturetheflag de
+  # rubenwardy, retirado). Mineclonia con mapgen "flat" + bioma unico de
+  # pasto: pasto arriba, tierra, y roca hasta el bedrock. Sin cuevas ni
+  # arboles. Ver docs/04-PLANO-30003/index.md.
   # NOTA: los mods server/mods/wetlands_ctf/ y server/mods/wetlands_flatworld/
-  # son vestigiales de una version anterior basada en VoxeLibre y no estan
-  # habilitados en luanti-ctf.conf — ver docs/04-CTF-30003/index.md.
-  luanti-ctf:
+  # son vestigiales de la version CTF basada en VoxeLibre y NO se cargan.
+  luanti-plano:
     image: linuxserver/luanti:latest
-    container_name: luanti-ctf-server
+    container_name: luanti-plano-server
     restart: unless-stopped
     ports:
       - "30003:30000/udp"
     volumes:
-      - ./server/config/luanti-ctf.conf:/config/.minetest/main-config/minetest.conf
+      - ./server/config/luanti-plano.conf:/config/.minetest/main-config/minetest.conf
       - ./server/mods:/config/.minetest/mods
-      - ./server/worlds/ctf:/config/.minetest/worlds/ctf
+      - ./server/worlds/plano:/config/.minetest/worlds/plano
       - ./server/games:/config/.minetest/games
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Santiago
-      - CLI_ARGS=--worldname ctf
+      # --gameid explicito: Luanti 5.16 NO lee default_game del conf cuando
+      # el world.mt todavia no existe (mismo caso que Mineclonia 30004).
+      - CLI_ARGS=--worldname plano --gameid mineclonia
     healthcheck:
       test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
       interval: 30s
@@ -256,18 +259,18 @@ services:
     networks:
       - luanti-network
 
-  # Discord notifier para CTF
-  discord-notifier-ctf:
+  # Discord notifier para Plano
+  discord-notifier-plano:
     image: alpine:latest
-    container_name: luanti-discord-notifier-ctf
+    container_name: luanti-discord-notifier-plano
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./scripts:/scripts:ro
     environment:
       - TZ=America/Santiago
-      - CONTAINER_NAME=luanti-ctf-server
-      - SERVER_LABEL=CTF ⚔️
+      - CONTAINER_NAME=luanti-plano-server
+      - SERVER_LABEL=Plano 🟩
       - SERVER_PORT=30003
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
@@ -276,7 +279,7 @@ services:
         bash /scripts/discord-notifier.sh
       "
     depends_on:
-      - luanti-ctf
+      - luanti-plano
     networks:
       - luanti-network
 
@@ -287,7 +290,7 @@ services:
   # Game base descargado desde https://codeberg.org/mineclonia/mineclonia
   # y commiteado a server/games/mineclonia/. Modo creativo puro, sin dano,
   # sin mods custom de Wetlands, seed "apple".
-  # Mapeo: 30004 host -> 30000 container (mismo patron que GAELSIN/CTF).
+  # Mapeo: 30004 host -> 30000 container (mismo patron que GAELSIN/Plano).
   # Ver docs/05-MINECLONIA-30004/index.md.
   luanti-mineclonia:
     image: linuxserver/luanti:latest

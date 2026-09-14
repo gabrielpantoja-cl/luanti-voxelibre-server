@@ -26,7 +26,7 @@ Agregado el 2026-08-03 a pedido del admin para construir regalos/sorpresas en Mi
 
 **Por qué existe**: Mineclonia corre con `creative_mode = true`, `enable_damage = false`, `enable_fire = false`, `enable_tnt = false`. No se pueden usar las mecánicas vanilla de Minecraft (TNT + pressure plates + redstone) para trampas. Este mod provee una alternativa kids-friendly.
 
-**Por qué el mod existe en `server/mods/` (no en `worldmods/`)**: para que sea reproducible desde el repo. La activación se hace vía `load_mod_wetlands_mineclonia_trampas = true` en `luanti-mineclonia.conf` + el `world.mt` del VPS. No se carga en Wetlands/Valdivia/GAELSIN/CTF.
+**Por qué el mod existe en `server/mods/` (no en `worldmods/`)**: para que sea reproducible desde el repo. La activación se hace vía `load_mod_wetlands_mineclonia_trampas = true` en `luanti-mineclonia.conf` + el `world.mt` del VPS. No se carga en Wetlands/Valdivia/GAELSIN/Plano.
 
 **Implementación técnica**:
 

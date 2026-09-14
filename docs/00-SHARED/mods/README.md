@@ -8,7 +8,7 @@ Este documento explica el ecosistema de mods del servidor: qué mods existen, de
 > ⚠️ **Alcance.** El directorio `server/mods/` es **compartido por los 5 mundos**, pero cada mundo
 > carga un subconjunto distinto (ver el `load_mod_*` de su `luanti-<mundo>.conf`). La motivación
 > "compasión / no violencia" descrita abajo es el **origen de Wetlands (30000)** y aplica a Wetlands
-> y Valdivia; **GAELSIN (30002)** es survival PvP, **CTF (30003)** usa el juego `capturetheflag`
+> y Valdivia; **GAELSIN (30002)** es survival PvP, **Plano (30003)** usa Mineclonia con mapgen plano
 > de rubenwardy con armas, y **Mineclonia (30004)** es creativo puro sin mods custom de Wetlands —
 > en Mineclonia solo se carga el game base, ningún mod de `server/mods/` se habilita.
 > Los mods **específicos** de cada mundo se documentan en la carpeta de ese mundo.
@@ -167,7 +167,7 @@ Nuestros mods dependen de estas APIs estables de VoxeLibre:
 Algunos mods base de VoxeLibre están deshabilitados o modificados para cumplir nuestra filosofía:
 
 - **Mobs hostiles**: De noche sí spawnean (supervivencia desde 2026-07-31 en Wetlands);
-  Creepers bloqueados por `wetlands_no_creeper`. GAELSIN/Valdivia/CTF各有 su propia config.
+  Creepers bloqueados por `wetlands_no_creeper`. GAELSIN/Valdivia/Plano tienen cada uno su propia config.
 - **Sistema de daño**: Activo en Wetlands (enable_damage=true); gaelsin también.
 - **PvP**: Deshabilitado a nivel engine en Wetlands (enable_pvp=false) +
   arena opt-in retirada el 2026-07-31 (`load_mod_pvp_arena = false`).

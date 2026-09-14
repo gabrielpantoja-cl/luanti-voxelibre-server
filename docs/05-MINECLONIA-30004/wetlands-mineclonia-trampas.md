@@ -3,7 +3,7 @@
 > **Status (2026-08-03):** ✅ habilitado y verificado en juego por `gabo`.
 > Activado en `server/config/luanti-mineclonia.conf` +
 > `server/worlds/mineclonia/world.mt` (vía `load_mod_wetlands_mineclonia_trampas = true`).
-> Único mod custom habilitado en Mineclonia — todos los demás mundos (Wetlands, Valdivia, GAELSIN, CTF) NO lo cargan.
+> Único mod custom habilitado en Mineclonia — todos los demás mundos (Wetlands, Valdivia, GAELSIN, Plano) NO lo cargan.
 
 ## Qué hace
 

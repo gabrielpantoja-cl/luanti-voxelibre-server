@@ -3,10 +3,10 @@
 -- enemiga, llevala a tu base (con tu bandera en casa) y anota un punto.
 -- Todo sobre VoxeLibre. Texto en espanol, apto para ninos 7+.
 --
--- ⚠️ DEPRECATED: el mundo CTF actualmente usa el juego `capturetheflag` de
--- rubenwardy (no VoxeLibre). Este mod YA NO SE CARGA (no aparece en
--- luanti-ctf.conf). Se mantiene solo como referencia historica de la
--- implementacion inicial. Ver docs/04-CTF-30003/index.md y AGENTS.md.
+-- ⚠️ DEPRECATED: el mundo CTF fue retirado el 2026-09-13. El puerto 30003
+-- ahora sirve "Plano", un mundo Mineclonia totalmente plano. Este mod YA NO SE
+-- CARGA en ninguna config. Se mantiene solo como referencia historica de la
+-- implementacion inicial. Ver docs/04-PLANO-30003/index.md y AGENTS.md.
 
 local modname = minetest.get_current_modname()
 

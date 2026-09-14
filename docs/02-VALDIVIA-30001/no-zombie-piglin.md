@@ -27,7 +27,7 @@ y colocaban muchos de una vez, recargando el mapa y afeando la ciudad.
 ## Solución: `valdivia_no_zombie_piglin`
 
 Mod nuevo, **solo cargado en Valdivia** (`load_mod_valdivia_no_zombie_piglin`
-en `luanti-valdivia.conf`; no toca Wetlands/GAELSIN/CTF, donde un piglin
+en `luanti-valdivia.conf`; no toca Wetlands/GAELSIN/Plano, donde un piglin
 zombie puede ser contenido legítimo del Nether):
 
 1. **Oculta el huevo** del inventario creativo (`not_in_creative_inventory`)

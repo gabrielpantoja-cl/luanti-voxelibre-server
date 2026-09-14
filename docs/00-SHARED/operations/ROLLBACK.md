@@ -7,7 +7,7 @@ Estado al 2026-08-31.
 | Wetlands (`original`) | 30000 | `true` (desde 2026-06-07) | en config, **inerte hasta el proximo reinicio** |
 | Valdivia | 30001 | `false` | no |
 | GAELSIN | 30002 | `true` (desde 2026-08-31) | **si** |
-| CTF | 30003 | `false` (mapa efimero) | no |
+| Plano | 30003 | `false` | no |
 | Mineclonia | 30004 | `false` | no |
 
 ## El motor no vuelca a disco solo

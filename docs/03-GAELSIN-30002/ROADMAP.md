@@ -41,7 +41,7 @@ La idea no es acumular contenido: es sostener una experiencia limpia donde lo im
 
 - Evaluar un reset de temporada cuando el mapa se sienta demasiado explorado, documentando los criterios de decisión.
 - Considerar reglas opcionales por evento (torneos PvP con marcadores, ventanas de saqueo, cacerías de Elytra) sin convertirlas en contenido permanente.
-- Explorar integraciones con el mundo CTF (30003) y Mineclonia (30004) si surgen oportunidades de colaboración técnica (por ejemplo, compartir listas de jugadores o marcadores).
+- Explorar integraciones con el mundo Plano (30003) y Mineclonia (30004) si surgen oportunidades de colaboración técnica (por ejemplo, compartir listas de jugadores o marcadores).
 
 ### Largo plazo
 
@@ -65,7 +65,7 @@ GAELSIN se planifica junto con los otros mundos según la arquitectura documenta
 | Wetlands | 30000 | Supervivencia compasiva | Identidad del servidor, plant-based, daño activo, sin PvP |
 | Valdivia | 30001 | Exploración / OSM | Recreación real, contención de mobs selectiva |
 | GAELSIN | 30002 | Supervivencia pura | PvP global, noche peligrosa, progresión dura |
-| CTF | 30003 | Combate por equipos | Round-based, armas, sin vínculo directo con supervivencia |
+| Plano | 30003 | Construcción libre | Mineclonia plano, creativo sin daño, sin vínculo con supervivencia |
 | Mineclonia | 30004 | Creativo | Experiencia Minecraft fiel, sin daño |
 
 Las decisiones de GAELSIN deben coordinarse con las decisiones que afecten el servidor completo: actualizaciones de VoxeLibre, cambios de Luanti, parámetros de seguridad CSM, eventos globales (Halloween, Navidad) y límites de uso del VPS.

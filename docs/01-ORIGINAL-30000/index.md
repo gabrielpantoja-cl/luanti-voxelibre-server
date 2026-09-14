@@ -80,7 +80,7 @@ carpeta de mundo y su servicio en `docker-compose.yml`:
 | **Wetlands (este)** | 30000 | este documento |
 | Valdivia | 30001 | `mundo-2-puerto-30001-valdivia.md` |
 | GAELSIN | 30002 | `mundo-3-puerto-30002-gaelsin.md` |
-| CTF | 30003 | `mundo-4-puerto-30003-ctf.md` |
+| Plano | 30003 | `../../04-PLANO-30003/index.md` |
 | Mineclonia | 30004 | `../../05-MINECLONIA-30004/index.md` |
 
 > Para todos los detalles de arquitectura, pitfalls de VoxeLibre, texturas y comandos, la fuente

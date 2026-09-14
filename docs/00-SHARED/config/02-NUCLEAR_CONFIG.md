@@ -13,7 +13,7 @@
 > creative forzado, kit de inicio, default_privs maximo).
 >
 > **Aplica hoy a:** ninguno por defecto. Historicamente: Wetlands (30000) y Valdivia (30001) — mundos creativos sin mobs hostiles.
-> **NO aplica a:** GAELSIN (30002, survival con mobs de noche) ni CTF (30003). Esta técnica
+> **NO aplica a:** GAELSIN (30002, survival con mobs de noche) ni Plano (30003, Mineclonia). Esta técnica
 > desactiva monstruos; los mundos PvP los quieren activos.
 
 ## ⚠️ CRÍTICO: Modificaciones Fuera del Repositorio

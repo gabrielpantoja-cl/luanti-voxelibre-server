@@ -10,7 +10,7 @@
 > `wetlands_newplayer`); el resto de jugadores esta en supervivencia.
 >
 > **Aplica a:** Valdivia (30001) — mundo creativo hibrido.
-> **NO aplica a:** Wetlands (30000, supervivencia desde 2026-07-31), GAELSIN (30002, survival) ni CTF (30003).
+> **NO aplica a:** Wetlands (30000, supervivencia desde 2026-07-31), GAELSIN (30002, survival) ni Plano (30003, que usa Mineclonia).
 
 **Autor**: Gabriel Pantoja
 **Fecha de Implementación**: 2026-01-16 (Wetlands), re-evaluado 2026-07-31 (Wetlands pasa a survival)

@@ -9,7 +9,7 @@ Documentación técnica del servidor educativo Wetlands, con 5 mundos activos.
 | 30000 | [Wetlands](01-ORIGINAL-30000/) | VoxeLibre | Supervivencia / Educación | No |
 | 30001 | [Valdivia](02-VALDIVIA-30001/) | VoxeLibre | Ciudad OSM / Exploración | Sí |
 | 30002 | [GAELSIN](03-GAELSIN-30002/) | VoxeLibre | Survival / PvP | No |
-| 30003 | [CTF](04-CTF-30003/) | CTF Game | Capture the Flag | No |
+| 30003 | [Plano](04-PLANO-30003/) | Mineclonia (fork de VoxeLibre) | Mundo plano / Construcción | Sí |
 | 30004 | [Mineclonia](05-MINECLONIA-30004/) | Mineclonia (fork de VoxeLibre) | Creativo / Minecraft fiel | Sí |
 
 ## Documentación compartida ([00-SHARED/](00-SHARED/))

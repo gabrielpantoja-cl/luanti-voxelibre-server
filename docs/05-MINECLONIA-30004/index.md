@@ -81,7 +81,7 @@ Ver `server/config/luanti-mineclonia.conf`. Puntos clave:
 
 ## docker-compose
 
-El servicio `luanti-mineclonia` sigue el patron de GAELSIN/CTF:
+El servicio `luanti-mineclonia` sigue el patron de GAELSIN/Plano:
 container escucha en 30000 internamente, host expone 30004. No
 requiere el container-overrides de Valdivia (ese bug solo aplica
 a mundos con `--port <otro>` en CLI_ARGS).
@@ -106,10 +106,10 @@ luanti-mineclonia:
 
 ## Diferencias con otros mundos
 
-| Aspecto | Wetlands | GAELSIN | CTF | Mineclonia |
+| Aspecto | Wetlands | GAELSIN | Plano | Mineclonia |
 |---|---|---|---|---|
 | Game | VoxeLibre | VoxeLibre | capturetheflag | **Mineclonia** |
-| Modo | Supervivencia | Supervivencia | PvP/CTF | **Creativo** |
+| Modo | Supervivencia | Supervivencia | Creativo plano | **Creativo** |
 | Mods custom | Muchos | Minimos | Cero | **Cero** |
 | PvP | No | Si | Si (arma) | **No** |
 | Dano | Si | Si | Si | **No** |

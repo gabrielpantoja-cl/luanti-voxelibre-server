@@ -8,7 +8,7 @@ Comando interno para recordar las direcciones de los mundos del proyecto.
 /mundos
 ```
 
-El comando se registra en Wetlands, GAELSIN, CTF y Mineclonia. Se omite en
+El comando se registra en Wetlands, GAELSIN, Plano y Mineclonia. Se omite en
 Valdivia (`30001`), que es el unico mundo publico anunciado en la lista de
 servidores.
 

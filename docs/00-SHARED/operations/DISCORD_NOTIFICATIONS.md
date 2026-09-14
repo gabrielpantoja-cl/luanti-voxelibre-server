@@ -16,9 +16,9 @@ por mundo, no es un mod del juego.
 │  luanti-voxelibre-server ──┐                                         │
 │  luanti-valdivia-server ───┤ cada uno tiene su sidecar gemelo:      │
 │  luanti-gaelsin-server ────┤   discord-notifier                     │
-│  luanti-ctf-server ───────┘   discord-notifier-valdivia             │
+│  luanti-plano-server ─────┘   discord-notifier-valdivia             │
 │                                discord-notifier-gaelsin              │
-│                                discord-notifier-ctf                  │
+│                                discord-notifier-plano                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -34,7 +34,7 @@ extrae el nombre y publica un `POST` al webhook.
 | `discord-notifier` | `luanti-voxelibre-server` | `Wetlands 🌱 [30000]` |
 | `discord-notifier-valdivia` | `luanti-valdivia-server` | `Valdivia 🏙️ [30001]` |
 | `discord-notifier-gaelsin` | `luanti-gaelsin-server` | `GAELSIN ⚔️ [30002]` |
-| `discord-notifier-ctf` | `luanti-ctf-server` | `CTF ⚔️ [30003]` |
+| `discord-notifier-plano` | `luanti-plano-server` | `Plano 🟩 [30003]` |
 | `discord-notifier-mineclonia` | `luanti-mineclonia-server` | `Mineclonia 🎮 [30004]` |
 
 Los 5 sidecars comparten la **misma variable de entorno `DISCORD_WEBHOOK_URL`**

@@ -11,7 +11,7 @@ local MUNDOS = {
     {port = 30000, host = "luanti.gabrielpantoja.cl", icon = "🌱", name = "Wetlands", purpose = "mundo creativo"},
     {port = 30001, host = "luanti.gabrielpantoja.cl", icon = "🏙️", name = "Valdivia", purpose = "ciudad para explorar"},
     {port = 30002, host = "luanti.gabrielpantoja.cl", icon = "⚔️", name = "GAELSIN", purpose = "mundo de aventura"},
-    {port = 30003, host = "luanti.gabrielpantoja.cl", icon = "🏴", name = "CTF", purpose = "captura la bandera"},
+    {port = 30003, host = "luanti.gabrielpantoja.cl", icon = "🟩", name = "Plano", purpose = "mundo plano para construir"},
     {port = 30004, host = "luanti.gabrielpantoja.cl", icon = "🎮", name = "Mineclonia", purpose = "mundo creativo"},
 }
 

@@ -5,10 +5,10 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 
 > ⚠️ **Qué NO va aquí.** Esto es documentación **agnóstica al mundo**. La filosofía, las reglas y la
 > configuración específicas de cada mundo viven en su carpeta (`01-ORIGINAL-30000/`, `02-VALDIVIA-30001/`,
-> `03-GAELSIN-30002/`, `04-CTF-30003/`, `05-MINECLONIA-30004/`). En particular, **no todos los mundos
+> `03-GAELSIN-30002/`, `04-PLANO-30003/`, `05-MINECLONIA-30004/`). En particular, **no todos los mundos
 > comparten la filosofía "sin violencia / compasión"**: Wetlands (30000) y Valdivia (30001) son
-> relativamente pacíficos, pero **GAELSIN (30002) es survival PvP con mobs hostiles**, **CTF (30003)
-> es captura-la-bandera con armas** y **Mineclonia (30004) es creativo puro sin violencia**.
+> relativamente pacíficos, pero **GAELSIN (30002) es survival PvP con mobs hostiles**, mientras que
+> **Plano (30003)** y **Mineclonia (30004)** son creativos puros sin violencia.
 > Cuando un documento aquí solo aplica a algunos mundos, lo indica en una nota al inicio.
 
 ## Los 5 mundos (documentación específica en su carpeta)
@@ -18,7 +18,7 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 | 30000 | Wetlands | Supervivencia / educativo / pacífico | [`../01-ORIGINAL-30000/`](../01-ORIGINAL-30000/) |
 | 30001 | Valdivia [Chile] | Ciudad OSM / exploración / pacífico | [`../02-VALDIVIA-30001/`](../02-VALDIVIA-30001/) |
 | 30002 | GAELSIN | Survival / **PvP** / mobs hostiles | [`../03-GAELSIN-30002/`](../03-GAELSIN-30002/) |
-| 30003 | CTF | Captura la bandera / **armas** | [`../04-CTF-30003/`](../04-CTF-30003/) |
+| 30003 | Plano | Mundo Mineclonia plano / construir | [`../04-PLANO-30003/`](../04-PLANO-30003/) |
 | 30004 | Mineclonia | Creativo puro / Minecraft fiel (fork de VoxeLibre) | [`../05-MINECLONIA-30004/`](../05-MINECLONIA-30004/) |
 
 ## Contenido de esta carpeta
@@ -30,7 +30,7 @@ técnicas de configuración, guías de mods reutilizables, operaciones e infraes
 | [02-NUCLEAR_CONFIG.md](config/02-NUCLEAR_CONFIG.md) | Wetlands, Valdivia | Técnica para desactivar mobs hostiles (los mundos PvP NO la usan) |
 | [04-VOXELIBRE_SYSTEM.md](config/04-VOXELIBRE_SYSTEM.md) | **Todos** | Arquitectura interna de VoxeLibre, sistema de mods, rendimiento |
 | [07-CUSTOM_SKINS.md](config/07-CUSTOM_SKINS.md) | **Todos** | Sistema de skins de jugadores (`server/skins/` es compartido) |
-| [08-CREATIVE_NATIVE_MODE.md](config/08-CREATIVE_NATIVE_MODE.md) | Wetlands, Valdivia | Modo creativo nativo VoxeLibre (los mundos survival/CTF NO lo usan) |
+| [08-CREATIVE_NATIVE_MODE.md](config/08-CREATIVE_NATIVE_MODE.md) | Wetlands, Valdivia | Modo creativo nativo VoxeLibre (los mundos survival y los que no usan VoxeLibre NO lo usan) |
 
 > Nota: los números 03, 05 y 06 se movieron a `01-ORIGINAL-30000/config/` por ser específicos de
 > Wetlands (mixed gamemode, protección de bloques, sistema de reglas). Los huecos en la numeración
