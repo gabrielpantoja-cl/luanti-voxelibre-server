@@ -323,7 +323,7 @@ All containers share the same `server/games/` and `server/mods/` directories. Va
 | `server_rules` | `/reglas` command, broadcast announcements |
 | `pvp_arena` | PvP arena system — the only place PvP is allowed |
 | `mcl_custom_world_skins` | Custom player skin selector |
-| `protector` | Protector Redo (TenPlus1, upstream 2026-07-19): place a block to protect a cube (radius 10, area grid shown 15 s), right-click shows the area and adds members; spawn protected within 20 nodes. Replaced the command-based `voxelibre_protection` (disabled) on 2026-09-16 |
+| `protector` | Protector Redo (TenPlus1, upstream 2026-07-19): place a block to protect a cube (radius 15, area grid shown 15 s), right-click shows the area and adds members; spawn protected within 20 nodes. Replaced the command-based `voxelibre_protection` (disabled) on 2026-09-16 |
 | `voxelibre_tv` | In-game TV screens |
 
 ### Third-party mods
