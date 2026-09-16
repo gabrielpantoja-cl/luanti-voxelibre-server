@@ -23,6 +23,10 @@ historial de cada doc).
 - [ ] **Protector con dos cuentas** — un jugador no-admin coloca un protector
       fuera de la Plaza; otra cuenta no puede romper ahí; ninguno puede colocar
       uno dentro de la Plaza. → [`proteccion.md`](proteccion.md)
+- [ ] **Aviso de entrada** — con dos cuentas: al entrar la segunda, la primera ve
+      `<nombre> entrando...` arriba a la izquierda sin tapar el chat; se va a los
+      6 s. Si choca con el chat en celular o PC, ajustar `POSITION.y` en
+      `valdivia_aviso_entrada/init.lua`.
 - [ ] **Texturas de stairs/slabs** tras el remapeo v2 (`mcl_stairs:stair_oak` y
       similares). → [`current.md`](current.md)
 
@@ -97,6 +101,7 @@ historial de cada doc).
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-09-16 | Aviso en pantalla `<nombre> entrando...` para los conectados (`valdivia_aviso_entrada`) |
 | 2026-09-16 | Protector Redo para jugadores, conviviendo con `voxelibre_protection` → [`proteccion.md`](proteccion.md) |
 | 2026-09-16 | Vuelve la música de VoxeLibre; la discoteca la silencia solo adentro → [`discoteca.md`](discoteca.md) |
 | 2026-09-10 | QR y `/discord` retirados del guía; los jugadores contactan al admin con `/gabo` → [`guia-spawn.md`](guia-spawn.md) |

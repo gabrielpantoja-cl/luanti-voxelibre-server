@@ -31,6 +31,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `server_rules` | Comando `/reglas` |
 | `voxelibre_tv` | Televisores decorativos interactivos para hogares y edificios; tres canales animados y luz al encenderse. |
 | `voxelibre_protection` | Protección de áreas para proteger el nuevo spawn y lugares comunitarios. |
+| `valdivia_aviso_entrada` | Desde 2026-09-16: cuando alguien entra, los jugadores conectados ven `<nombre> entrando...` arriba a la izquierda (bajo el chat) durante 6 s; se apilan hasta 5. Constantes `DURATION`, `MAX_LINES` y `POSITION` en `init.lua`. |
 | `protector` | Protector Redo (desde 2026-09-16): los jugadores protegen sus construcciones colocando el bloque protector (cubo de radio 20; clic derecho muestra el área y agrega miembros). Convive con `voxelibre_protection`; `protector_spawn = 0` porque la Plaza ya está cubierta por `spawn_plaza_chile`. |
 | `valdivia_teleporter` | Teletransportador `/ir` — **deshabilitado** (coordenadas desactualizadas post-Arnis v2.9.0) |
 
