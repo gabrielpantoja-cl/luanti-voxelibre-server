@@ -7,6 +7,13 @@ local S = core.get_translator("protector")
 
 local mcl = core.get_modpath("mcl_core")
 
+-- Creative check
+
+local creative_cache = core.settings:get_bool("creative_mode")
+function is_creative(name)
+	return creative_cache or core.check_player_privs(name, {creative = true})
+end
+
 -- Are crafts enabled?
 
 local protector_crafts = core.settings:get_bool("protector_crafts") ~= false
@@ -44,9 +51,7 @@ local function register_door(name, def)
 			end
 
 			local pt = pointed_thing.above
-			local pt2 = {x = pt.x, y = pt.y, z = pt.z}
-
-			pt2.y = pt2.y + 1
+			local pt2 = {x = pt.x, y = pt.y + 1, z = pt.z}
 
 			if not core.registered_nodes[core.get_node(pt).name].buildable_to
 			or not core.registered_nodes[core.get_node(pt2).name].buildable_to
@@ -54,9 +59,10 @@ local function register_door(name, def)
 				return itemstack
 			end
 
-			if core.is_protected(pt, placer:get_player_name())
-			or core.is_protected(pt2, placer:get_player_name()) then
-				core.record_protection_violation(pt, placer:get_player_name())
+			local pname = placer:get_player_name()
+
+			if core.is_protected(pt, pname) or core.is_protected(pt2, pname) then
+				core.record_protection_violation(pt, pname)
 				return itemstack
 			end
 
@@ -80,7 +86,7 @@ local function register_door(name, def)
 				core.get_meta(pt2):set_int("right", 1)
 			end
 
-			if not core.settings:get_bool("creative_mode") then
+			if not is_creative(pname) then
 				itemstack:take_item()
 			end
 

@@ -148,8 +148,8 @@ core.register_node("protector:chest", {
 			.. "listring[current_player;main]"
 		end
 
-		core.sound_play("default_chest_open", {
-			gain = 0.3, pos = pos, max_hear_distance = 10}, true)
+		core.sound_play("default_chest_open",
+				{gain = 0.3, pos = pos, max_hear_distance = 10}, true)
 
 		core.show_formspec(clicker:get_player_name(),
 				"protector:chest_" .. core.pos_to_string(pos), formspec)
@@ -218,6 +218,9 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 				return
 			end
 
+			core.sound_play("default_dig_cracky",
+					{gain = 0.5, pos = pos, max_hear_distance = 3}, true)
+
 			meta:set_string("name", fields.protect_name)
 			meta:set_string("infotext", fields.protect_name)
 		else
@@ -227,8 +230,8 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 
 	elseif fields.quit then
 
-		core.sound_play("default_chest_close", {
-			gain = 0.3, pos = pos, max_hear_distance = 10}, true)
+		core.sound_play("default_chest_close",
+				{gain = 0.3, pos = pos, max_hear_distance = 10}, true)
 	end
 end)
 

@@ -39,7 +39,7 @@ Protection (owned by @1)=Захист території гравця @1
 Protection Logo=Захисний знак
 [MOD] Protector Redo loaded=[МОД] Protector Redo завантажено
 Spawn @1 has been protected up to a @2 block radius.=Спавн @1 захищений у радіусі @2 блока.
-This area is owned by @1=Ця територія належить гравцю @1
+This area is owned by @1.=Ця територія належить гравцю @1.
 
 ### pvp.lua ###
 [Protector] on_punchplayer called with nil objects=[Захист] on_punchplayer викликана із нульовими об'єктами

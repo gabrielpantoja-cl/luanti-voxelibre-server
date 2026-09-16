@@ -42,7 +42,7 @@ Protection (owned by @1)=Protezione (di proprietà di @1)
 Protection Logo=Logo di protezione
 [MOD] Protector Redo loaded=[MOD] Protector Redo caricato
 Spawn @1 has been protected up to a @2 block radius.=Lo spawn @1 è stato protetto fino a un raggio di @2 blocchi.
-This area is owned by @1=Quest'area è di proprietà di @1
+This area is owned by @1.=Quest'area è di proprietà di @1.
 
 ### hud.lua ###
 Owner: @1=Proprietario: @1

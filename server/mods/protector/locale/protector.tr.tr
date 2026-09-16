@@ -42,7 +42,7 @@ Protection (owned by @1)=Koruma (@1 sahibidir)
 Protection Logo=Koruma arması
 [MOD] Protector Redo loaded=[MOD] Protector Redo yüklendi
 Spawn @1 has been protected up to a @2 block radius.=Spawn @1, @2 blok yarıçapa kadar korunur.
-This area is owned by @1=Burasının sahibi @1!
+This area is owned by @1.=Burasının sahibi @1.
 
 ### hud.lua ###
 Owner: @1=Sahip: @1

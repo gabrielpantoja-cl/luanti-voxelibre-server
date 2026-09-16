@@ -1,8 +1,5 @@
 
--- default support (for use with MineClone2/VoxeLibre and other games)
-
--- detect VoxeLibre/MineClone2
-local is_voxelibre = core.get_modpath("mcl_core") ~= nil
+-- default support (for use with MineClone2 and other [games]
 
 if not core.global_exists("default") then
 
@@ -14,20 +11,10 @@ if not core.global_exists("default") then
 	}
 end
 
--- VoxeLibre/MineClone2 specific sound integration
-if is_voxelibre and core.get_modpath("mcl_sounds") then
+if core.get_modpath("mcl_sounds") then
 	default.node_sound_stone_defaults = mcl_sounds.node_sound_stone_defaults
 	default.node_sound_wood_defaults = mcl_sounds.node_sound_wood_defaults
 	default.node_sound_metal_defaults = mcl_sounds.node_sound_metal_defaults
-end
-
--- VoxeLibre formspec integration
-if is_voxelibre and core.get_modpath("mcl_formspec") then
-	if mcl_formspec and mcl_formspec.get_itemslot_bg then
-		default.gui_bg = mcl_formspec.get_itemslot_bg(1, 1)
-		default.gui_bg_img = ""
-		default.gui_slots = mcl_formspec.get_itemslot_bg(1, 1)
-	end
 end
 
 -- modpath, formspec helper and translator
@@ -137,6 +124,7 @@ core.register_lbm({
 		local meta = core.get_meta(pos)
 
 		if meta:get_int("faction_members") == 1 then
+
 			meta:set_string("factions", "*")
 			meta:set_int("faction_members", 0)
 		end
@@ -361,7 +349,7 @@ end
 
 -- Infolevel:
 -- 0 for no info
--- 1 for "This area is owned by <owner> !" if you can't dig
+-- 1 for "This area is owned by <owner>." if you can't dig
 -- 2 for "This area is owned by <owner>.
 -- 3 for checking protector overlaps
 
@@ -370,8 +358,7 @@ function protector.can_dig(r, pos, digger, onlyowner, infolevel)
 	if not digger or not pos then return false end
 
 	-- protector_bypass privileged users can override protection
-	if infolevel == 1
-	and core.check_player_privs(digger, {protection_bypass = true}) then
+	if infolevel == 1 and core.check_player_privs(digger, {protection_bypass = true}) then
 		return true
 	end
 
@@ -407,7 +394,7 @@ function protector.can_dig(r, pos, digger, onlyowner, infolevel)
 			-- and you aren't on the member list
 			if onlyowner or not is_member(meta, digger) then
 
-				show_msg(digger, S("This area is owned by @1", owner) .. "!")
+				show_msg(digger, S("This area is owned by @1.", owner))
 
 				return false
 			end
@@ -417,7 +404,7 @@ function protector.can_dig(r, pos, digger, onlyowner, infolevel)
 		if infolevel == 2 then
 
 			core.chat_send_player(digger,
-					S("This area is owned by @1", owner) .. ".")
+					S("This area is owned by @1.", owner))
 
 			core.chat_send_player(digger,
 					S("Protection located at: @1", core.pos_to_string(pos[n])))
@@ -450,38 +437,40 @@ core.register_on_protection_violation(function(pos, name)
 
 	local player = core.get_player_by_name(name)
 
-	if player and player:is_player() then
+	if not player or not player:is_player() then return end
 
-		-- hurt player if protection violated
-		if protector_hurt > 0 and player:get_hp() > 0 then
+	-- hurt player if protection violated
+	if protector_hurt > 0 and player:get_hp() > 0 then
 
-			-- This delay fixes item duplication bug (thanks luk3yx)
-			core.after(0.1, function(player)
+		-- This delay fixes item duplication bug (thanks luk3yx)
+		core.after(0.1, function(player)
+
+			if player:get_pos() then
 				player:set_hp(player:get_hp() - protector_hurt)
-			end, player)
+			end
+		end, player)
+	end
+
+	-- flip player when protection violated
+	if protector_flip then
+
+		-- yaw + 180°
+		local yaw = player:get_look_horizontal() + math_pi
+
+		if yaw > 2 * math_pi then
+			yaw = yaw - 2 * math_pi
 		end
 
-		-- flip player when protection violated
-		if protector_flip then
+		player:set_look_horizontal(yaw)
 
-			-- yaw + 180°
-			local yaw = player:get_look_horizontal() + math_pi
+		-- invert pitch
+		player:set_look_vertical(-player:get_look_vertical())
 
-			if yaw > 2 * math_pi then
-				yaw = yaw - 2 * math_pi
-			end
+		-- if digging below player, move up to avoid falling through hole
+		local pla_pos = player:get_pos()
 
-			player:set_look_horizontal(yaw)
-
-			-- invert pitch
-			player:set_look_vertical(-player:get_look_vertical())
-
-			-- if digging below player, move up to avoid falling through hole
-			local pla_pos = player:get_pos()
-
-			if pos.y < pla_pos.y then
-				player:set_pos({x = pla_pos.x, y = pla_pos.y + 0.8, z = pla_pos.z})
-			end
+		if pos.y < pla_pos.y then
+			player:set_pos({x = pla_pos.x, y = pla_pos.y + 0.8, z = pla_pos.z})
 		end
 	end
 end)
@@ -494,10 +483,8 @@ local old_is_protected = core.is_protected
 
 function core.is_protected(pos, digger)
 
-	digger = digger or "" -- nil check
-
 	-- is area protected against digger?
-	if not protector.can_dig(protector.radius, pos, digger, false, 1) then
+	if not protector.can_dig(protector.radius, pos, (digger or ""), false, 1) then
 		return true
 	end
 
@@ -527,8 +514,7 @@ local function check_overlap(itemstack, placer, pointed_thing)
 	-- make sure protector doesn't overlap any other player's area
 	if not protector.can_dig(protector.radius * 2, pos, name, true, 3) then
 
-		core.chat_send_player(name,
-				S("Overlaps into above players protected area"))
+		core.chat_send_player(name, S("Overlaps into above players protected area"))
 
 		return itemstack
 	end
@@ -558,10 +544,7 @@ local player_pos = {}
 
 local stone_tex = "default_stone.png"
 
--- VoxeLibre/MineClone2 support
-if core.get_modpath("mcl_core") then
-	stone_tex = "mcl_core_stone.png"
-elseif core.get_modpath("nc_terrain") then
+if core.get_modpath("nc_terrain") then
 	stone_tex = "nc_terrain_stone.png"
 end
 
@@ -578,7 +561,7 @@ local def = {
 	drawtype = "nodebox",
 	node_box = {type = "fixed", fixed = {{-0.499 ,-0.499, -0.499, 0.499, 0.499, 0.499}}},
 	sounds = default.node_sound_stone_defaults(),
-	groups = is_voxelibre and {dig_immediate = 2, unbreakable = 1, creative_breakable = 1, building_block = 1} or {dig_immediate = 2, unbreakable = 1},
+	groups = {dig_immediate = 2, unbreakable = 1},
 	is_ground_content = false,
 	paramtype = "light",
 	light_source = 4,
@@ -638,17 +621,13 @@ local def = {
 
 core.register_node("protector:protect", table.copy(def))
 
--- default recipe and alternative for MineClone2
+-- default recipe and alternative for MineClonia/Voxelibre
 
 if protector_recipe then
 
-	local item_gold = "default:gold_ingot"
-	local item_stone = "default:stone"
-
-	if core.get_modpath("mcl_core") then
-		item_gold = "mcl_core:gold_ingot"
-		item_stone = "mcl_core:stone"
-	end
+	local mcl = core.get_modpath("mcl_core")
+	local item_gold = mcl and "mcl_core:gold_ingot" or "default:gold_ingot"
+	local item_stone = mcl and "mcl_core:stone" or "default:stone"
 
 	core.register_craft({
 		output = "protector:protect",
@@ -682,13 +661,8 @@ core.register_node("protector:protect2", table.copy(def))
 
 -- recipes to switch between protectors
 
-core.register_craft({
-	output = "protector:protect", recipe = {{"protector:protect2"}}
-})
-
-core.register_craft({
-	output = "protector:protect2", recipe = {{"protector:protect"}}
-})
+core.register_craft({ output = "protector:protect", recipe = {{"protector:protect2"}} })
+core.register_craft({ output = "protector:protect2", recipe = {{"protector:protect"}} })
 
 -- check formspec buttons or when name entered
 
@@ -696,40 +670,40 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 
 	if formname ~= "protector:node" then return end
 
-	local name = player:get_player_name()
-	local pos = player_pos[name]
+	local name = player and player:get_player_name()
+	local pos = name and player_pos[name]
 
-	if not name or not pos then return end
+	if not pos then return end
 
 	local add_member_input = fields.protector_add_member
 
 	-- reset formspec until close button pressed
 	if (fields.close_me or fields.quit)
 	and (not add_member_input or add_member_input == "") then
-		player_pos[name] = nil
-		return
+		player_pos[name] = nil ; return
 	end
 
 	-- only owner can add names
-	if not protector.can_dig(1, pos, player:get_player_name(), true, 1) then
-		return
-	end
+	if not protector.can_dig(1, pos, name, true, 1) then return end
 
 	-- are we adding member to a protection node ? (csm protection)
 	local nod = core.get_node(pos).name
 
 	if nod ~= "protector:protect" and nod ~= "protector:protect2" then
-		player_pos[name] = nil
-		return
+		player_pos[name] = nil ; return
 	end
 
-	local meta = core.get_meta(pos) ; if not meta then return end
+	local meta = core.get_meta(pos)
 
-	-- add faction members
+	if not meta then
+		player_pos[name] = nil ; return
+	end
+
 	if factions_available then
 
 		local add_faction_input = fields.protector_add_faction
 
+		-- add faction member [+]
 		if add_faction_input and add_faction_input ~= "" then
 
 			for _, i in pairs(add_faction_input:split(" ")) do
@@ -737,6 +711,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 			end
 		end
 
+		-- remove faction member [x]
 		for field, value in pairs(fields) do
 
 			if string.sub(field, 0,
@@ -781,9 +756,7 @@ core.register_entity("protector:display", {
 		visual_size = {x = 0.67, y = 0.67},
 		textures = {"protector:display_node"},
 		glow = 10
-	},
-
-	timer = 0,
+	},  timer = 0,
 
 	on_step = function(self, dtime)
 
@@ -805,8 +778,7 @@ core.register_node("protector:display_node", {
 	walkable = false,
 	drawtype = "nodebox",
 	node_box = {
-		type = "fixed",
-		fixed = {
+		type = "fixed", fixed = {
 			{-(r+.55), -(r+.55), -(r+.55), -(r+.45), (r+.55), (r+.55)}, -- sides
 			{-(r+.55), -(r+.55), (r+.45), (r+.55), (r+.55), (r+.55)},
 			{(r+.45), -(r+.55), -(r+.55), (r+.55), (r+.55), (r+.55)},
@@ -928,9 +900,5 @@ core.register_chatcommand("protector_del_member", {
 })
 
 
-if is_voxelibre then
-	print ("[MOD] Protector Redo loaded with VoxeLibre/MineClone2 support")
-else
-	print ("[MOD] Protector Redo loaded with Minetest default game support")
-end
+print ("[MOD] Protector Redo loaded")
 

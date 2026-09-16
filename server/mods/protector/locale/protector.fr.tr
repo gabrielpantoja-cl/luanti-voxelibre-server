@@ -41,7 +41,7 @@ Protection (owned by @1)=Protection (détenue par @1)
 Protection Logo=Logo de protection
 [MOD] Protector Redo loaded=[MOD] Protector Redo chargé
 Spawn @1 has been protected up to a @2 block radius.=Le spawn @1 est protégé dans un rayon de @2 blocs.
-This area is owned by @1=Cette zone appartient à @1 !
+This area is owned by @1.=Cette zone appartient à @1.
 Factions: (use * to allow any of your factions)=Factions : (taper * pour autoriser toutes vos factions)
 
 ### hud.lua ###

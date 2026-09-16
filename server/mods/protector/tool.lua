@@ -54,7 +54,7 @@ core.register_craftitem("protector:tool", {
 		pos.z = pos.z + vec.z
 
 		-- does placing a protector overlap existing area
-		if not protector.can_dig(r * 2, pos, user:get_player_name(), true, 3) then
+		if not protector.can_dig(r * 2, pos, name, true, 3) then
 
 			core.chat_send_player(name,
 					S("Overlaps into above players protected area"))
@@ -63,7 +63,7 @@ core.register_craftitem("protector:tool", {
 		end
 
 		-- does a protector already exist ?
-		if #core.find_nodes_in_area(vector.subtract(pos, 1), vector.add(pos, 1),
+		if #core.find_nodes_in_area(pos, pos,
 				{"protector:protect", "protector:protect2",
 						"protector:protect_hidden"}) > 0 then
 
@@ -80,37 +80,9 @@ core.register_craftitem("protector:tool", {
 			return
 		end
 
-		-- do we have protectors to use ?
-		local nod
-		local inv = user:get_inventory()
-
-		if not inv:contains_item("main", "protector:protect")
-		and not inv:contains_item("main", "protector:protect2") then
-
-			core.chat_send_player(name,
-				S("No protectors available to place!"))
-
-			return
-		end
-
-		-- take protector (block first then logo)
-		if inv:contains_item("main", "protector:protect") then
-
-			inv:remove_item("main", "protector:protect")
-
-			nod = "protector:protect"
-
-		elseif inv:contains_item("main", "protector:protect2") then
-
-			inv:remove_item("main", "protector:protect2")
-
-			nod = "protector:protect2"
-		end
-
 		-- do not replace containers with inventory space
-		local inv = core.get_inventory({type = "node", pos = pos})
+		if core.get_inventory({type = "node", pos = pos}) then
 
-		if inv then
 			core.chat_send_player(name,
 					S("Cannot place protector, container at @1",
 					core.pos_to_string(pos)))
@@ -126,11 +98,32 @@ core.register_craftitem("protector:tool", {
 			return
 		end
 
+		local nod
+		local inv = user:get_inventory()
+
+		-- take protector (block first then logo)
+		if inv:contains_item("main", "protector:protect") then
+
+			inv:remove_item("main", "protector:protect")
+
+			nod = "protector:protect"
+
+		elseif inv:contains_item("main", "protector:protect2") then
+
+			inv:remove_item("main", "protector:protect2")
+
+			nod = "protector:protect2"
+		else
+			core.chat_send_player(name, S("No protectors available to place!"))
+
+			return
+		end
+
 		-- place protector
 		core.set_node(pos, {name = nod, param2 = 1})
 
 		-- set protector metadata
-		local meta = core.get_meta(pos)
+		meta = core.get_meta(pos)
 
 		meta:set_string("owner", name)
 		meta:set_string("infotext", "Protection (owned by " .. name .. ")")
@@ -152,11 +145,7 @@ core.register_craftitem("protector:tool", {
 
 -- tool recipe
 
-local df = "default:steel_ingot"
-
-if core.get_modpath("mcl_core") then
-	df = "mcl_core:iron_ingot"
-end
+local df = core.get_modpath("mcl_core") and "mcl_core:iron_ingot" or "default:steel_ingot"
 
 core.register_craft({
 	output = "protector:tool",
