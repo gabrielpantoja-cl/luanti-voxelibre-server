@@ -10,14 +10,20 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 | Spawn actual | `3669.5, -8.5, -3055.5` (Plaza Chile) |
 | Spawn histórico | `3766, -4, -3249` (Plaza de la República; destruido) |
 | Creativo | Sí |
+| Protección | `voxelibre_protection` (Plaza, admin) + `protector` (jugadores) — ver [`proteccion.md`](proteccion.md) |
+| Contacto con el admin | `/gabo <mensaje>` (Telegram, con respuesta) |
 | Vehículos | 10 mods automobiles |
 | Teletransporte | NPC guía del spawn (`valdivia_spawn_npc`) → menú "Lugares". El viejo `valdivia_teleporter` (`/ir`) está deshabilitado (coords stale). |
 | Público | Sí (anunciado en lista de servidores) |
 
 ## Documentos
 
+- [`ROADMAP.md`](ROADMAP.md) — **Pendientes de Valdivia en un solo lugar** (verificaciones, decisiones, deuda técnica, contenido)
 - [`current.md`](current.md) — Mundo nuevo (Arnis v2.9.0, baked lighting, remapeado)
-- [`guia-spawn.md`](guia-spawn.md) — NPC guía del spawn: bienvenida, Discord, reglas y teletransporte (`valdivia_spawn_npc`)
+- [`guia-spawn.md`](guia-spawn.md) — NPC guía del spawn: bienvenida, reglas, aviso de `/gabo` y teletransporte (`valdivia_spawn_npc`)
+- [`proteccion.md`](proteccion.md) — Protección de áreas: `voxelibre_protection` (Plaza, admin) + `protector` (bloque para jugadores), cómo conviven
+- [`discoteca.md`](discoteca.md) — Discoteca del Hotel Dreams (`valdivia_discoteca`) y su convivencia con la música de VoxeLibre
+- [`no-zombie-piglin.md`](no-zombie-piglin.md) — Bloqueo del huevo de Zombie Piglin + limpieza
 - [`anti-explosivos.md`](anti-explosivos.md) — Anti-grief: sin explosiones ni incendios (`mcl_explosions_griefing=false` + `valdivia_no_explosions`)
 - [`respaldos-y-restauracion.md`](respaldos-y-restauracion.md) — Backups a R2, **cuántos días se guardan** (~6), y procedimiento de restauración verificado
 - [`legacy.md`](legacy.md) — Mundo anterior (Arnis PR#808, reemplazado)

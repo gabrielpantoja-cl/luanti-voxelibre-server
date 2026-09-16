@@ -428,7 +428,7 @@ Detailed docs live under `docs/`, organized by world/port. Read these when you n
 
 ### Worlds (by port)
 - `docs/01-ORIGINAL-30000/` — Wetlands main creative world (port 30000)
-- `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001)
+- `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001); pending work lives in `docs/02-VALDIVIA-30001/ROADMAP.md`, area protection (two coexisting mods) in `proteccion.md`
 - `docs/03-GAELSIN-30002/` — GAELSIN survival world (port 30002)
 - `docs/04-PLANO-30003/` — Plano, mundo Mineclonia plano (port 30003) — antes CTF, retirado 2026-09-13
 - `docs/05-MINECLONIA-30004/` — Mineclonia creativo (port 30004) — antes planeado como `05-FUTBOL/`, redefinido 2026-08-01 a Mineclonia (fork de VoxeLibre).

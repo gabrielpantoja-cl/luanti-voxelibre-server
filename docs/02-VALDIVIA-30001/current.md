@@ -67,6 +67,8 @@ Los jugadores que regresan aparecen en la posición donde dejaron su personaje (
 
 ### Pendiente
 
+> Pendientes consolidados en [`ROADMAP.md`](ROADMAP.md) (2026-09-16). Esta lista queda como registro histórico.
+
 - [ ] Verificar y actualizar coordenadas del teletransportador `/ir` para el mundo Arnis v2.9.0 y re-habilitar `valdivia_teleporter`
 - [ ] Investigar más nodos desconocidos que aún puedan existir (el scanner cubre mods faltantes; renombres dentro de mods existentes son más difíciles de detectar)
 
@@ -279,6 +281,8 @@ real (no bloques vacíos), resultando en un archivo más eficiente.
 - [x] **Wetlands deslistado:** `server_announce = false` en `luanti-original.conf` (ya no aparece en lista pública)
 
 ### Pendiente
+
+> Pendientes consolidados en [`ROADMAP.md`](ROADMAP.md) (2026-09-16). Esta lista queda como registro histórico.
 
 - [x] **Remapeo v2 completado:** 18.005 mapblocks remapeados ✅
 - [ ] **Verificar texturas de stairs/slabs:** Tras remapeo v2, confirmar que `mcl_stairs:stair_oak` etc. se ven correctamente

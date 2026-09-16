@@ -84,6 +84,8 @@ lugar a `DEFAULT_LUGARES`. Luego plántalo con `/spawn_guia <tipo>`.
 
 ## Tareas pendientes
 
+> Seguimiento en [`ROADMAP.md`](ROADMAP.md); esta lista conserva el detalle.
+
 - [ ] **Registrar más ubicaciones clave** con `/lugar_guardar` (ya vienen Plaza
       y Parque Catrico). Candidatos (volar a cada uno y registrar la posición
       real post-Arnis): Mercado Fluvial, Costanera, Los Fundadores, Santa Elena,

@@ -34,7 +34,7 @@ puerta y no se corta al saltar. El poll de posición corre cada 0.5 s
 - [x] `zona_max` fijada en `(3751, -3, -2948)`
 - [x] `dj_pos` fijada en `(3748, -7, -2954)` — esquina cabina DJ, Hotel Dreams
 - [x] DJ colocado con `/discoteca dj`
-- [ ] Bailarines — en progreso (`/discoteca bailarin` ×4-6)
+- [ ] Bailarines — en progreso (`/discoteca bailarin` ×4-6) — seguimiento en [`ROADMAP.md`](ROADMAP.md)
 
 ---
 
