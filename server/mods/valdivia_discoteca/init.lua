@@ -8,6 +8,9 @@
 --
 -- El modelo humano y los skins provienen de wetlands_npcs; los tracks de
 -- wetlands-music. Ambos estan activos en Valdivia (ver luanti-valdivia.conf).
+--
+-- La musica de fondo de VoxeLibre (mcl_music) sigue activa en toda la ciudad;
+-- solo se silencia para quien esta dentro de la discoteca y vuelve al salir.
 
 local modname = minetest.get_current_modname()
 local storage = minetest.get_mod_storage()
@@ -357,6 +360,53 @@ local function stop_music_for(name)
 end
 
 -- ===========================================================================
+-- MUSICA DE VOXELIBRE (mcl_music): silenciada solo dentro de la discoteca
+-- ===========================================================================
+-- mcl_music no expone API para detener su stream. La unica via es su comando
+-- /music, que corta la cancion en curso y guarda "mcl_music:disable" en la
+-- meta del jugador. Lo invocamos sin eco al chat y con un fade de ~1 s (el
+-- suyo, -0.025/s, dejaria la cancion sonando 40 s bajo la discoteca).
+-- META_MUTED marca que fuimos NOSOTROS quienes la apagamos: asi no pisamos a
+-- quien la apago a proposito con /music off, y si el servidor muere con alguien
+-- adentro (docker stop acaba en SIGKILL) se restaura al reconectar.
+
+local META_MUTED = modname .. ":muted_mcl_music"
+local MCL_MUSIC_META = "mcl_music:disable"
+-- mcl_music programa cada cancion con core.after(15) sin revisar la meta: si
+-- el jugador entra en esa ventana, la cancion arrancaria igual. Re-silenciar
+-- periodicamente mientras esta adentro la corta.
+local MCL_MUSIC_REASSERT = 5
+
+local function silent_music_off(name)
+    local cmd = minetest.registered_chatcommands["music"]
+    if not cmd then return end
+    local send, fade = minetest.chat_send_player, minetest.sound_fade
+    minetest.chat_send_player = function() end
+    minetest.sound_fade = function(handle, _, gain) return fade(handle, 1.0, gain) end
+    local ok, err = pcall(cmd.func, name, "off")
+    minetest.chat_send_player, minetest.sound_fade = send, fade
+    if not ok then
+        minetest.log("warning", "[" .. modname .. "] /music off fallo: " .. tostring(err))
+    end
+end
+
+local function mute_mcl_music(player)
+    local meta = player:get_meta()
+    if meta:get(MCL_MUSIC_META) and meta:get_int(META_MUTED) == 0 then
+        return  -- el jugador ya la tenia apagada por su cuenta
+    end
+    meta:set_int(META_MUTED, 1)
+    silent_music_off(player:get_player_name())
+end
+
+local function restore_mcl_music(player)
+    local meta = player:get_meta()
+    if meta:get_int(META_MUTED) == 0 then return end
+    meta:set_string(META_MUTED, "")      -- "" borra la clave
+    meta:set_string(MCL_MUSIC_META, "")  -- equivale a /music on
+end
+
+-- ===========================================================================
 -- LUCES DE DISCOTECA (particulas con glow, ciclando colores)
 -- ===========================================================================
 
@@ -427,17 +477,17 @@ end
 -- ENTRAR / SALIR DE LA ZONA
 -- ===========================================================================
 
-local function on_enter(name)
-    if valdivia_music then valdivia_music.pause(name) end
+local function on_enter(player, name)
+    mute_mcl_music(player)
     start_music_for(name)
     start_lights()
     minetest.chat_send_player(name, minetest.colorize("#FF66CC",
         "\u{266A} Bienvenido a la Discoteca de Valdivia \u{266A}"))
 end
 
-local function on_exit(name)
+local function on_exit(player, name)
     stop_music_for(name)
-    if valdivia_music then valdivia_music.resume(name) end
+    restore_mcl_music(player)
     -- Las luces se auto-detienen en el proximo cycle_lights cuando has_players()==false
 end
 
@@ -446,11 +496,15 @@ end
 -- ===========================================================================
 
 local poll_timer = 0
+local reassert_timer = 0
 minetest.register_globalstep(function(dtime)
     poll_timer = poll_timer + dtime
+    reassert_timer = reassert_timer + dtime
     if poll_timer < POLL_INTERVAL then return end
     poll_timer = 0
     if not zone_ready() then return end
+    local reassert = reassert_timer >= MCL_MUSIC_REASSERT
+    if reassert then reassert_timer = 0 end
 
     for _, p in ipairs(minetest.get_connected_players()) do
         local name = p:get_player_name()
@@ -463,10 +517,12 @@ minetest.register_globalstep(function(dtime)
         local was = players_in_disco[name]
         if inside and not was then
             players_in_disco[name] = true
-            on_enter(name)
+            on_enter(p, name)
         elseif not inside and was then
             players_in_disco[name] = nil
-            on_exit(name)
+            on_exit(p, name)
+        elseif inside and reassert and p:get_meta():get_int(META_MUTED) == 1 then
+            silent_music_off(name)
         end
     end
 end)
@@ -475,10 +531,14 @@ end)
 minetest.register_on_leaveplayer(function(player)
     local name = player:get_player_name()
     stop_music_for(name)  -- siempre detiene, sea o no que estaba en la disco
-    if players_in_disco[name] then
-        players_in_disco[name] = nil
-        if valdivia_music then valdivia_music.resume(name) end
-    end
+    players_in_disco[name] = nil
+    restore_mcl_music(player)
+end)
+
+-- Si el servidor murio con el jugador adentro, on_leaveplayer no corrio:
+-- devolverle la musica de VoxeLibre al reconectar.
+minetest.register_on_joinplayer(function(player)
+    restore_mcl_music(player)
 end)
 
 -- ===========================================================================

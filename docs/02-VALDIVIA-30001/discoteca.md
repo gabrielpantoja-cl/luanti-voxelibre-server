@@ -106,3 +106,4 @@ Para reemplazarlo por música rave 8-bit real:
 | 2026-07-03 | Skins de bailarines ampliados a 12 (rave, festivos, hipster, clásicos) |
 | 2026-07-04 | Fix detección de zona: colchón vertical (−2/+3) — la música ya no exige saltar ni subirse a la mesa del DJ; poll a 0.5 s |
 | 2026-07-04 | Coreografías de baile: 5 rutinas con pasos laterales, saltos, agachadas y brazos arriba; `/discoteca bailarin [estilo]` |
+| 2026-09-16 | Vuelve la música de fondo de VoxeLibre (`mcl_game_music = true`) en toda la ciudad. La discoteca la silencia solo para quien entra (vía `/music off` silencioso, fade ~1 s, re-aplicado cada 5 s) y la devuelve al salir o reconectar; respeta a quien la apagó con `/music off`. `load_mod_mcl_music` no sirve: es mod del juego. |
