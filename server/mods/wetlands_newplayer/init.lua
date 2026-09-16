@@ -2,8 +2,7 @@
 -- VoxeLibre ignora default_privs de minetest.conf, asi que los otorgamos via mod
 --
 -- Supervivencia dura (2026-07-31): jugadores nuevos reciben solo lo basico
--- (interact, shout, teleport). El admin "gabo" recibe ademas fly/fast/noclip/
--- give/creative/worldedit/debug para mantener operacion administrativa.
+-- (interact, shout, teleport). El admin "gabo" recibe todos los privilegios.
 --
 -- Ademas (2026-07-24): bienvenida plant-based en CADA join + comando /veganinfo
 -- para que los jugadores vean que mods veganos estan activos.
@@ -16,20 +15,18 @@ local DEFAULT_PRIVS = {
 	teleport = true,
 }
 
-local ADMIN_PRIVS = {
-	fly = true,
-	fast = true,
-	noclip = true,
-	give = true,
-	creative = true,
-	interact = true,
-	shout = true,
-	teleport = true,
-	worldedit = true,
-	debug = true,
-}
+-- El admin recibe TODOS los privilegios registrados (motor + mods). No basta
+-- con que sea el `name` del servidor: el motor solo le da los que tienen
+-- give_to_admin, y settime/rollback/protection_bypass/bring/fly/give no lo tienen.
+local function admin_privs()
+	local privs = {}
+	for priv in pairs(minetest.registered_privileges) do
+		privs[priv] = true
+	end
+	return privs
+end
 
--- Jugadores que reciben el set completo de admin al unirse.
+-- Jugadores que reciben todos los privilegios al unirse.
 local ADMIN_NAMES = {
 	["gabo"] = true,
 }
@@ -48,7 +45,7 @@ local VEGAN_MODS = {
 -- Mensaje de bienvenida + privs para jugadores NUEVOS
 minetest.register_on_newplayer(function(player)
 	local name = player:get_player_name()
-	local target = ADMIN_NAMES[name] and ADMIN_PRIVS or DEFAULT_PRIVS
+	local target = ADMIN_NAMES[name] and admin_privs() or DEFAULT_PRIVS
 
 	minetest.set_player_privs(name, target)
 	minetest.log("action", "[" .. modname .. "] Privilegios otorgados a nuevo jugador: " .. name
@@ -69,7 +66,7 @@ end)
 -- de cualquier callback de otro mod en este mismo join.
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
-	local target = ADMIN_NAMES[name] and ADMIN_PRIVS or DEFAULT_PRIVS
+	local target = ADMIN_NAMES[name] and admin_privs() or DEFAULT_PRIVS
 	local current = minetest.get_player_privs(name)
 	local changed = false
 
@@ -133,5 +130,5 @@ minetest.register_chatcommand("veganinfo", {
 })
 
 minetest.log("action", "[" .. modname .. "] Mod cargado - privilegios nuevos jugadores: interact, shout, teleport")
-minetest.log("action", "[" .. modname .. "] Admin preserva creative/fly/noclip/worldedit/debug via whitelist")
+minetest.log("action", "[" .. modname .. "] Admin recibe todos los privilegios registrados en cada join")
 minetest.log("action", "[" .. modname .. "] Mensaje plant-based + comando /veganinfo activos")
