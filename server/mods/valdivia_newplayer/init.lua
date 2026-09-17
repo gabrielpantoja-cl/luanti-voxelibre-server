@@ -4,11 +4,12 @@ local modname = minetest.get_current_modname()
 local ADMIN = "gabo"
 
 -- Set de privilegios para TODOS los jugadores no-admin en Valdivia.
--- Sin fly, sin noclip, sin give. Con fast e inventario creativo.
+-- Sin fly, sin noclip, sin give. Con fast. Sin creative (supervivencia).
+-- El privilege 'creative' solo se concede al admin 'gabo'.
 local PRIVS = {
 	interact  = true,
 	shout     = true,
-	creative  = true,
+	-- creative  = true,   ← quitado: modo supervivencia para jugadores normales
 	fast      = true,
 	spawn     = true,
 	teleport  = true,
@@ -31,15 +32,22 @@ local function enforce_state(name)
 	if not meta_player then return end
 	local meta = meta_player:get_meta()
 
-	-- Inventario creativo por jugador (VoxeLibre lo lee de esta metadata, no del priv creative).
-	meta:set_string("gamemode", "creative")
-	-- Marca el fly como "gestionado manualmente" para que mcl_privs no lo auto-otorgue.
+	if name == ADMIN then
+		-- Admin: inventario creativo + fly gestionado manualmente.
+		meta:set_string("gamemode", "creative")
+		meta:set_int("mcl_privs:fly_changed", 1)
+		minetest.set_player_privs(name, {interact=true, shout=true, fast=true, creative=true, fly=true, spawn=true, teleport=true})
+		minetest.log("action", "[" .. modname .. "] Privilegios completos para admin " .. name)
+		return
+	end
+
+	-- Jugadores normales: modo supervivencia, sin creative, sin fly.
+	-- No se setea gamemode (queda en survival por defecto en VoxeLibre).
+	-- Marca fly como "gestionado manualmente" por si acaso.
 	meta:set_int("mcl_privs:fly_changed", 1)
 
-	if name == ADMIN then return end  -- gabo conserva todos sus privilegios (incluido fly)
-
 	minetest.set_player_privs(name, PRIVS)
-	minetest.log("action", "[" .. modname .. "] Privilegios impuestos a " .. name .. " (sin fly)")
+	minetest.log("action", "[" .. modname .. "] Privilegios impostos a " .. name .. " (modo supervivencia, sin fly)")
 end
 
 minetest.register_on_joinplayer(function(player)
