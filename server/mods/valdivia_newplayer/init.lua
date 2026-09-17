@@ -47,6 +47,16 @@ local function enforce_state(name)
 	meta:set_int("mcl_privs:fly_changed", 1)
 
 	minetest.set_player_privs(name, PRIVS)
+	-- 1. Quitar privilegio creativo directamente de su perfil guardado
+	local player_privs = minetest.get_player_privs(name)
+	if player_privs.creative then
+		player_privs.creative = nil
+		minetest.set_player_privs(name, player_privs)
+	end
+	-- 2. Forzar la interfaz de supervivencia usando la API de VoxeLibre
+	if mcl_gamemode then
+		mcl_gamemode.set_gamemode(name, "survival")
+	end
 	minetest.log("action", "[" .. modname .. "] Privilegios impostos a " .. name .. " (modo supervivencia, sin fly)")
 end
 
