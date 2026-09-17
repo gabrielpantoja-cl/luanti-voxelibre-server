@@ -55,7 +55,8 @@ local function enforce_state(name)
 	end
 	-- 2. Forzar la interfaz de supervivencia usando la API de VoxeLibre
 	if mcl_gamemode then
-		mcl_gamemode.set_gamemode(name, "survival")
+		-- 'meta_player' es el ObjectRef obtenido via minetest.get_player_by_name(name)
+		mcl_gamemode.set_gamemode(meta_player, "survival")
 	end
 	minetest.log("action", "[" .. modname .. "] Privilegios impostos a " .. name .. " (modo supervivencia, sin fly)")
 end
