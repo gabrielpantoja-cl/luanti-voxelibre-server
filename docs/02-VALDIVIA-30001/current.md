@@ -25,7 +25,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 
 | Mod | Propósito |
 |-----|-----------|
-| `valdivia_newplayer` | Privilegios de nuevos jugadores: interact, shout, creative, fast, spawn, teleport (sin fly). También setea `gamemode=creative` en metadata por jugador para que VoxeLibre dé inventario creativo. |
+| `valdivia_newplayer` | Privilegios de nuevos jugadores: interact, shout, fast, spawn, teleport (sin fly, sin creative). **Fix ModError 2026-09-17**: `mcl_gamemode.set_gamemode(meta_player, "survival")` en lugar de `mcl_gamemode.set_gamemode(name, "survival")` para evitar crash instantáneo en join. Admin `gabo` conserva `creative` + fly. Mod auto-quita `creative` y fuerza supervivencia en cada join. |
 | `valdivia_aliases` | Aliases de nodos viejos generados por Arnis → nombres actuales VoxeLibre |
 | `wetlands_lastpos` | Jugadores vuelven a su última posición al reconectarse |
 | `server_rules` | Comando `/reglas` |
@@ -50,13 +50,13 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 
 ### Privilegios e inventario creativo
 
-- **Jugadores nuevos**: `interact, shout, creative, fast, spawn, teleport` — sin `fly` ni `noclip`
-- **ADMIN_A**: todos los privilegios incluido `fly`
-- **Inventario creativo**: todos los jugadores tienen acceso al inventario creativo completo de VoxeLibre
+- **Jugadores nuevos**: `interact, shout, fast, spawn, teleport` — modo supervivencia, sin `creative`, sin `fly`
+- **ADMIN_A** (`gabo`): todos los privilegios incluido `fly` e `creative`
+- **Inventario creativo**: Solo el admin `gabo` tiene acceso al inventario creativo completo de VoxeLibre. Los jugadores normales tienen modo supervivencia con recetas de crafting normales.
 
-> ⚠️ **Pitfall VoxeLibre (documentado 30-jun-2026):** con `creative_mode = false`, el privilegio `creative` de Luanti no activa el inventario creativo de VoxeLibre. VoxeLibre sobreescribe `minetest.is_creative_enabled()` en `mcl_inventory/init.lua` y con el modo global apagado solo devuelve `true` si el jugador tiene la metadata `gamemode = "creative"`. El mod `valdivia_newplayer` setea esta metadata en `register_on_joinplayer` para todos los jugadores al conectarse.
->
-> **Resumen**: `creative_mode = false` → sin vuelo global. Metadata `gamemode = "creative"` por jugador → inventario creativo por jugador. Los dos se combinan para dar el comportamiento deseado. Ver detalles en `operations/PRIVILEGIOS.md`.
+> ⚠️ **Modo supervivencia:** Con `mcl_enable_creative_mode = false`, el privilegio `creative` de Luanti no activa el inventario creativo de VoxeLibre para jugadores normales. El mod `valdivia_newplayer` setea metadata `gamemode = "creative"` solo para el admin `gabo`. Para jugadores normales, se fuerza `gamemode = "survival"` vía `mcl_gamemode.set_gamemode(meta_player, "survival")` en cada join, lo que elimina el `creative` y otorga recetas de supervivencia completas.
+
+> **Resumen:** `creative_mode = false` → sin vuelo global. Admin `gabo` tiene metadata `gamemode = "creative"` → inventario creativo. Jugadores normales tienen `gamemode = "survival"` → inventario de supervivencia, recetas crafting normales. Ver detalles en el fix del ModError 2026-09-17.
 
 ### Reconexión a la última posición
 
@@ -1045,9 +1045,10 @@ Y = probar entre -30 y -55 (depende de la elevacion del terreno)
 
 ### Historial de sesiones
 
+- **17 septiembre 2026:** **Diagnóstico y fix del ModError** en `valdivia_newplayer/init.lua`. Error: `mcl_gamemode.set_gamemode(name, "survival")` pasaba `name` (string) en lugar de `meta_player` (ObjectRef), causando crash instantáneo y ModError en el arranque del servidor. **Solución:** Cambiar a `mcl_gamemode.set_gamemode(meta_player, "survival")`. Restaurar archivo desde Git commit `e72ee82b`. Reiniciar container Valdivia. Servidor operativo en puerto 30001/UDP. Conexión exitosa verificada.
 - **30 junio 2026:** Corrección de nodos desconocidos (daylight_detector, noteblock, redstone_torch, banners, vegetación acuática del río). Nuevo mod `valdivia_newplayer` — privilegios sin fly. Desactivado `creative_mode` global para bloquear vuelo universal. Habilitado `wetlands_lastpos` (última posición al reconectarse). Nombre del servidor corregido: "Valdivia 2.0" → "Valdivia". Fix inventario creativo admin: VoxeLibre ignora privilegio `creative` con `creative_mode=false` — se resolvió seteando metadata `gamemode=creative` por jugador en `register_on_joinplayer`. Documentación completa en `operations/PRIVILEGIOS.md`.
 - **30 junio 2026 (fix definitivo fly):** `mcl_privs` de VoxeLibre auto-otorgaba `fly` a todos los jugadores creativos (carrera de callbacks de join). `valdivia_newplayer` reescrito para imponer privilegios en **cada join** con `minetest.after(0)` (corre después de mcl_privs → gana siempre) + metadata `mcl_privs:fly_changed=1`. Auto-reparable. Ahora **solo `ADMIN_A` puede volar**; todos tienen `fast` e inventario creativo completo. Reconexión a última posición sigue activa vía `wetlands_lastpos`.
-- **30 junio 2026 (fix reconexión a última posición):** el worldmod `arnis_mapgen` (VPS-only) forzaba el spawn en cada join y otorgaba fly a todos, pisando a `wetlands_lastpos` (bug "siempre aparecen en spawn"). Corregido su `register_on_joinplayer`: solo fuerza spawn a jugadores nuevos (sin `wetlands_lastpos:pos`) y ya no toca privilegios. Backup en VPS: `worldmods/arnis_mapgen/init.lua.bak-*`. **Reaplicar si se regenera Valdivia con Arnis.**
-- **29 junio 2026 (sesión 2):** Fix spawn Y=-4 (emerge_area + world.mt). Fix Wetlands server_announce=false (deslistado). Fix Valdivia server_url=https://luanti.gabrielpantoja.cl. Remapeo v2 corriendo en VPS. Docs actualizados.
+- **30 junio 2026 (fix reconexión a última posición):** el worldmod `arnis_mapgen` (VPS-only) forcaba el spawn en cada join y otorgaba fly a todos, pisando a `wetlands_lastpos` (bug "siempre aparecen en spawn"). Corregido su `register_on_joinplayer`: solo fuerza spawn a jugadores nuevos (sin `wetlands_lastpos:pos`) y ya no toca privilegios. Backup en VPS: `worldmods/arnis_mapgen/init.lua.bak-*`. **Reaplicar si se regenera Valdivia con Arnis.**
+- **29 junio 2026 (sesión 2):** Fix spawn Y=-4 (emerge_area + world.mt). Fix Valdivia server_announce=false (deslistado). Fix Valdivia server_url=https://luanti.gabrielpantoja.cl. Remapeo v2 corriendo en VPS. Docs actualizados.
 - **22 marzo 2026:** Remap de 9,290 mapblocks (texturas rojas), 10 vehiculos habilitados, notificaciones Discord para Valdivia, landing page actualizada con ambos mundos. Ver `docs/02-VALDIVIA-30001/operations/VALDIVIA_REMAP_Y_VEHICULOS_2026-03-22.md`
 - **21 marzo 2026:** Servidor Valdivia v3 en produccion (puerto 30001), generacion con Arnis PR #808

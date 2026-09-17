@@ -9,9 +9,10 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 | Mapgen | singlenode (mundo pre-generado) |
 | Spawn actual | `3669.5, -8.5, -3055.5` (Plaza Chile) |
 | Spawn histórico | `3766, -4, -3249` (Plaza de la República; destruido) |
-| Creativo | Sí |
+| Creativo | Modo supervivencia para jugadores normales; `creative` solo para admin `gabo` |
 | Protección | `voxelibre_protection` (Plaza, admin) + `protector` (jugadores) — ver [`proteccion.md`](proteccion.md) |
 | Contacto con el admin | `/gabo <mensaje>` (Telegram, con respuesta) |
+| Modo juego | Modo supervivencia para jugadores normales; `creative` solo para admin `gabo`. Sin fly global. Inventario creativo via metadata `gamemode=creative` set por `valdivia_newplayer` mod. |
 | Vehículos | 10 mods automobiles |
 | Teletransporte | NPC guía del spawn (`valdivia_spawn_npc`) → menú "Lugares". El viejo `valdivia_teleporter` (`/ir`) está deshabilitado (coords stale). |
 | Público | Sí (anunciado en lista de servidores) |
