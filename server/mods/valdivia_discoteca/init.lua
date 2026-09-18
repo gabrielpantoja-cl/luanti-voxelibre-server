@@ -478,6 +478,9 @@ end
 -- ===========================================================================
 
 local function on_enter(player, name)
+    -- Validar que el jugador existe y está conectado ANTES de hacer cualquier cosa
+    if not player or not name then return end
+    
     mute_mcl_music(player)
     start_music_for(name)
     start_lights()
@@ -497,10 +500,11 @@ local function on_enter(player, name)
     })
 
     -- Limpiar el texto de la pantalla después de 5 segundos
+    -- Usamos el ObjectRef 'player' directo en lugar de get_player_by_name para evitar
+    -- el error "is_player_connected (a nil value)" si el jugador se desconecta.
     minetest.after(5, function()
-        local p = minetest.get_player_by_name(name)
-        if p and p:is_player_connected() then
-            p:hud_remove(hud_id)
+        if player and player:is_player_connected() then
+            player:hud_remove(hud_id)
         end
     end)
 end
