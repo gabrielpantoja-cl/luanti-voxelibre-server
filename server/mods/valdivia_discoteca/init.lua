@@ -500,13 +500,13 @@ local function on_enter(player, name)
     })
 
     -- Limpiar el texto de la pantalla después de 5 segundos
-    -- Usamos el ObjectRef 'player' directo en lugar de get_player_by_name para evitar
-    -- el error "is_player_connected (a nil value)" si el jugador se desconecta.
-    minetest.after(5, function()
-        if player and player:is_player_connected() then
-            player:hud_remove(hud_id)
-        end
-    end)
+-- Pasamos name y hud_id como argumentos directos para evitar problemas de closures
+minetest.after(5, function(player_name, hud_id_to_remove)
+    local p = minetest.get_player_by_name(player_name)
+    if p then -- Si devuelve el objeto, el jugador sigue conectado. NO USAR is_player_connected
+        p:hud_remove(hud_id_to_remove)
+    end
+end, name, hud_id)
 end
 
 local function on_exit(player, name)
