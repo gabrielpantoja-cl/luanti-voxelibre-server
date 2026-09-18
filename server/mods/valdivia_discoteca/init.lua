@@ -22,7 +22,7 @@ local storage = minetest.get_mod_storage()
 -- Track que suena en la discoteca. Es el nombre del .ogg SIN extension,
 -- servido por wetlands-music. Para usar un rave 8-bit propio: dejar el .ogg en
 -- valdivia_discoteca/sounds/ y cambiar esta constante.
-local MUSIC_TRACK = "wetlands_music_groovy_goblins"
+local MUSIC_TRACK = "discoteca_shakari"
 local MUSIC_GAIN = 0.9
 local POLL_INTERVAL = 0.5         -- cada cuanto se revisa la posicion del jugador
 local LIGHT_INTERVAL = 2.0        -- cada cuanto cambian de color las luces
@@ -481,8 +481,28 @@ local function on_enter(player, name)
     mute_mcl_music(player)
     start_music_for(name)
     start_lights()
+    
     minetest.chat_send_player(name, minetest.colorize("#FF66CC",
         "\u{266A} Bienvenido a la Discoteca de Valdivia \u{266A}"))
+
+    -- Mostrar créditos de Star Wars en pantalla (HUD) en color amarillo
+    local hud_id = player:hud_add({
+        hud_elem_type = "text",
+        position = {x = 0.5, y = 0.75},
+        offset = {x = 0, y = 0},
+        text = "Música: Ludwig Göransson - Shakari (Star Wars: The Mandalorian)",
+        alignment = {x = 0, y = 0},
+        scale = {x = 100, y = 100},
+        number = 0xFFFF00,
+    })
+
+    -- Limpiar el texto de la pantalla después de 5 segundos
+    minetest.after(5, function()
+        local p = minetest.get_player_by_name(name)
+        if p and p:is_player_connected() then
+            p:hud_remove(hud_id)
+        end
+    end)
 end
 
 local function on_exit(player, name)
