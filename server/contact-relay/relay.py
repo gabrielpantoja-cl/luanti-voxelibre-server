@@ -25,7 +25,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 HOST = "0.0.0.0"
 PORT = 8788
 DB_PATH = "/data/relay.sqlite3"
-ALLOWED_WORLDS = frozenset({"original", "valdivia"})
+ALLOWED_WORLDS = frozenset({"original", "valdivia", "gaelsin"})
 POLL_TIMEOUT = 25
 HTTP_TIMEOUT = POLL_TIMEOUT + 10
 HEALTH_STARTUP_GRACE = HTTP_TIMEOUT + 60
@@ -39,7 +39,7 @@ MAX_PLAYER_BYTES = 64
 API_LIMIT = 20
 KEY_CONTEXT = "wetlands-contact-relay-v1"
 MARKER_RE = re.compile(
-    r"(?m)^\[\[wetlands_contact:v1;world=(original|valdivia);"
+    r"(?m)^\[\[wetlands_contact:v1;world=(original|valdivia|gaelsin);"
     r"player_hex=([0-9a-f]{2,128});request=([0-9a-f]{64})\]\]$"
 )
 
@@ -87,7 +87,7 @@ def initialize_database() -> None:
             );
             CREATE TABLE IF NOT EXISTS reply_queue (
                 update_id INTEGER PRIMARY KEY,
-                world_id TEXT NOT NULL CHECK (world_id IN ('original', 'valdivia')),
+                world_id TEXT NOT NULL CHECK (world_id IN ('original', 'valdivia', 'gaelsin')),
                 player TEXT NOT NULL,
                 request_id TEXT NOT NULL,
                 text TEXT NOT NULL,
