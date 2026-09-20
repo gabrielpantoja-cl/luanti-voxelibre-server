@@ -45,6 +45,7 @@ local RELAY_KEY_CONTEXT = "wetlands-contact-relay-v1"
 local WORLD_IDS_BY_PORT = {
 	["30000"] = "original",
 	["30001"] = "valdivia",
+	["30002"] = "gaelsin",
 }
 
 -- Anuncio en el HUD (esquina inferior derecha) al entrar al mundo.
@@ -110,8 +111,12 @@ local function world_id()
 	local expected = WORLD_IDS_BY_PORT[minetest.settings:get("port") or ""]
 	local conf = read_conf()
 	local configured = conf and conf:get("world_id")
-	if configured == "original" or configured == "valdivia" then
-		if expected and configured ~= expected then
+	if configured and configured ~= "" then
+		-- Para mundos cuyo puerto interno coincide con el externo (original,
+		-- valdivia), validamos consistencia. Para mundos como GAELSIN (puerto
+		-- interno 30000 = mismo que Wetlands), el conf es la fuente de verdad.
+		if (configured == "original" or configured == "valdivia") and
+				expected and configured ~= expected then
 			minetest.log("error", "[" .. modname .. "] world_id no coincide con el puerto")
 			return nil
 		end
