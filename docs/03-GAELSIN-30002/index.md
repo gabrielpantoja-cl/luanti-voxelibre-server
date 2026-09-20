@@ -72,6 +72,30 @@ que escribe `scripts/setup-gaelsin-world.sh`:
 Todo lo demás (NPCs, música, vehículos, CTF guns, arena PvP, decoración,
 Halloween) está explícitamente en `= false` como kill-switch en la config.
 
+### Arquitectura del relay (wetlands_contact)
+
+GAELSIN comparte el bot de Telegram `@wetlands_contact_bot` con Wetlands y Valdivia.
+El sidecar `wetlands-contact-relay` (Python, Docker) enruta mensajes bidireccionales:
+
+```
+Jugador GAELSIN ──/gabo msg──▶ relay ──POST──▶ Telegram API ──▶ Admin (gabo)
+                                    │
+                                    ▼
+                            reply_queue (SQLite)
+                                    │
+Jugador GAELSIN ◀──polling── relay ◀──getUpdates── Telegram API ◀── Admin responde
+```
+
+- **Cola por mundo**: cada mundo tiene su `world_id` (`original`, `valdivia`, `gaelsin`);
+  el relay aísla colas dentro de la misma base de datos SQLite.
+- **Autenticación**: relay key = `SHA256(contexto + token + world_id)` — validada en
+  cada request HTTP del contenedor Luanti al relay.
+- **Config del mundo**: `server/worlds/gaelsin/wetlands_contact.conf` (fuera de git)
+  contiene `world_id = gaelsin`, el token del bot y el chat_id del admin.
+- **Migración de schema**: al agregar GAELSIN al relay (2026-09-20), se migró el
+  `CHECK` constraint de `reply_queue` de `('original', 'valdivia')` a
+  `('original', 'valdivia', 'gaelsin')`.
+
 ## Privilegios de nuevos jugadores
 
 VoxeLibre ignora `default_privs`. Los privilegios los otorga el mod

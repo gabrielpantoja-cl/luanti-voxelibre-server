@@ -131,6 +131,30 @@ Los jugadores deben dormir en una cama para establecer su spawn personal.
 /lay
 ```
 
+### Sistema de Contacto con el Admin (wetlands_contact)
+
+El mod `wetlands_contact` permite a los jugadores enviar mensajes al admin por Telegram
+(`/gabo`) y recibir respuestas privadas. Disponible en Wetlands (30000), Valdivia (30001)
+y GAELSIN (30002).
+
+#### Comandos de Jugador
+```
+/gabo <mensaje>          -- Enviar mensaje al admin por Telegram (max 300 chars)
+```
+
+#### Comandos de Admin
+```
+/gabo_admin estado       -- Ver estado del sistema (modo, http, destino, mensajes/hora)
+/gabo_admin abierto      -- Abrir el sistema para recibir mensajes
+/gabo_admin pausa        -- Pausar el sistema (los jugadores no pueden enviar)
+/gabo_admin anuncio on   -- Mostrar anuncio HUD al entrar al mundo
+/gabo_admin anuncio off  -- Ocultar anuncio HUD
+```
+
+**Nota**: Los mensajes se envían al bot de Telegram `@wetlands_contact_bot`. El admin
+responde desde Telegram usando "Responder" sobre el mensaje del jugador. La respuesta
+llega al jugador en el mundo correcto via el relay (puerto 8788).
+
 ## 🏗️ Comandos de WorldEdit
 
 **Requiere**: privilegio `worldedit`

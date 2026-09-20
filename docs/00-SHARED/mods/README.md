@@ -185,7 +185,9 @@ Estos mods fueron creados específicamente para el servidor Wetlands y reflejan 
 |-----|---------|-------|-----------|---------------|
 | **`server_rules`** | 2.0 | gabo | Sistema de reglas, bienvenida y filosofía | [Ver README](../../server/mods/server_rules/README.md) |
 | **`education_blocks`** | 1.0 | Wetlands Team | Bloques educativos interactivos | [Ver README](../../server/mods/education_blocks/README.md) |
-| **`voxelibre_protection`** | 1.1.0 | Gabriel Pantoja | Sistema de protección de áreas | [Ver README](../../server/mods/voxelibre_protection/README.md) |
+| **`wetlands_contact`** | 1.0 | gabo | `/gabo <mensaje>` → Telegram (bot bidireccional) | [Ver README](../../server/mods/wetlands_contact/README.md) |
+| **`protector`** | 2.0 | TenPlus1 (adaptado) | Protector de bloques (radio 20 nodos) | Ver README del mod |
+| **`voxelibre_protection`** | 1.1.0 | Gabriel Pantoja | Sistema de protección de áreas (**obsoleto** — reemplazado por `protector`) | [Ver README](../../server/mods/voxelibre_protection/README.md) |
 | **`auto_road_builder`** | 1.2.0 | Gabriel Pantoja | Construcción automática de carreteras | [Ver README](../../server/mods/auto_road_builder/README.md) |
 | **`wetlands-music`** | 2.1.0 | Gabriel Pantoja | Discos de música personalizados | [Ver README](../../server/mods/wetlands-music/README.md) |
 | **`broom_racing`** | 1.0.0 | Wetlands Team | Sistema de carreras de escobas | [Ver README](../../server/mods/broom_racing/README.md) |
