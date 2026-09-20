@@ -23,7 +23,7 @@ Dirección pública: `luanti.gabrielpantoja.cl:30002`.
 | Daño / mobs | Daño on; mobs hostiles de noche (`only_peaceful_mobs = false`) |
 | Creepers | **Bloqueados** (mod `wetlands_no_creeper`) |
 | Ayuda de minería | Oretracker — `orehud` + `xray` (opt-in, ambos) — ver [`oretracker.md`](oretracker.md) |
-| Protección de áreas | **Sin** (`voxelibre_protection` off) |
+| Protección de áreas | **Protector Redo** (`protector`, radio 20 nodos) — desde 2026-09-20 |
 | Fuego / TNT | Activos (supervivencia estándar) |
 | Discord label | `GAELSIN ⚔️` |
 
@@ -60,8 +60,16 @@ que escribe `scripts/setup-gaelsin-world.sh`:
   pitfalls y cosas a observar.
 - `_world_folder_media`, `mcl_custom_world_skins` — skins. Ver [`skins.md`](skins.md) para el set actual, recetas de alta/baja y pitfalls.
 - `worldedit` (+ `_commands` / `_shortcommands`) — herramientas de admin.
+- `protector` (Protector Redo, TenPlus1) — protección de áreas. Coloca un bloque
+  protector (radio 20 nodos); click derecho muestra el área y permite agregar miembros.
+  Reemplazó a `voxelibre_protection` (obsoleto) el 2026-09-16. Requiere privilegio
+  `interact` (lo tienen todos los jugadores).
+- `wetlands_contact` — `/gabo <mensaje>` envía un mensaje breve al admin por Telegram.
+  El archivo `wetlands_contact.conf` del mundo (fuera de git) contiene el token del bot
+  y el chat_id. Modo `abierto` por defecto; el admin lo pausa con `/gabo_admin pausa`.
+  Ver README.md del mod para detalles del relay y respuestas.
 
-Todo lo demás (NPCs, música, vehículos, CTF guns, protección, arena PvP, decoración,
+Todo lo demás (NPCs, música, vehículos, CTF guns, arena PvP, decoración,
 Halloween) está explícitamente en `= false` como kill-switch en la config.
 
 ## Privilegios de nuevos jugadores
@@ -133,7 +141,7 @@ sudo netfilter-persistent save
 ## Verificación post-deploy
 
 ```bash
-docker logs --since=2m luanti-gaelsin-server 2>&1 | grep -iE 'error|listening|seed|orehud|xray'
+docker logs --since=2m luanti-gaelsin-server 2>&1 | grep -iE 'error|listening|seed|orehud|xray|protector|wetlands_contact'
 ```
 
 En el juego (`luanti.gabrielpantoja.cl:30002`):
@@ -144,6 +152,10 @@ En el juego (`luanti.gabrielpantoja.cl:30002`):
 - Tras recibir el privilegio `xray`, `/xray` vuelve invisible la piedra y similares
   en un radio de 6 nodos.
 - PvP activo; creepers ausentes; mobs hostiles de noche.
+- `/gabo <mensaje>` envía un mensaje al admin por Telegram (si `wetlands_contact.conf`
+  está configurado con token real).
+- Protección de áreas: colocar bloque protector con `/protector place` (requiere
+  `interact`). Click derecho sobre el bloque muestra el área y permite agregar miembros.
 - Notificación Discord con label `GAELSIN ⚔️`.
 
 ## Coordenadas importantes

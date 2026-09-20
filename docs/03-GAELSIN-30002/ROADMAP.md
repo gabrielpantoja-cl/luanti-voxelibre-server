@@ -14,7 +14,7 @@ La idea no es acumular contenido: es sostener una experiencia limpia donde lo im
 - **Diferenciación respetada**: GAELSIN no es Wetlands ni Valdivia. La identidad compasiva y plant-based no se aplica aquí.
 - **Decisiones reales**: PvP activo en todo el mundo, sin arena opt-in. La presión PvP forma parte del diseño.
 - **Cero creepers por seguridad**: política vigente del servidor para todos los mundos, mantenida aquí.
-- **Mínima intervención técnica**: pocos mods, todos con propósito claro (PvP, lastpos, ayuda minera, skins).
+- **Mínima intervención técnica**: pocos mods, todos con propósito claro (PvP, lastpos, ayuda minera, skins, protección, contacto admin).
 
 ## Estado de hoy (referencia, no fuente de verdad)
 
@@ -25,7 +25,8 @@ La idea no es acumular contenido: es sostener una experiencia limpia donde lo im
 - **PvP**: activo, sin arena.
 - **Mobs**: hostiles de noche, creepers bloqueados.
 - **Ayuda minera**: Oretracker (`orehud` + `xray`) como herramienta opt-in.
-- **Protección de áreas**: desactivada.
+- **Protección de áreas**: Protector Redo (`protector`, radio 20 nodos) — activado 2026-09-20.
+- **Contacto admin**: `/gabo <mensaje>` → Telegram (`wetlands_contact`) — activado 2026-09-20.
 - **Sidecar Discord**: `luanti-discord-notifier-gaelsin` con label `GAELSIN ⚔️ (:30002)`.
 
 ## Iniciativas en consideración
@@ -55,6 +56,7 @@ La idea no es acumular contenido: es sostener una experiencia limpia donde lo im
 - **No** añadir NPCs ni vehículos temáticos. El mundo es supervivencia, no ambientación.
 - **No** mover a los jugadores a otro mundo automáticamente. La salida de GAELSIN debe ser decisión del jugador.
 - **No** superponer las reglas de Wetlands (compasivo, plant-based, sin daño) sobre GAELSIN.
+- **No** usar `voxelibre_protection` (obsoleto). Se usa `protector` (Protector Redo, TenPlus1).
 
 ## Alineación con el resto del servidor
 
