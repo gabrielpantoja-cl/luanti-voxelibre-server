@@ -48,7 +48,7 @@ local C_OK     = "#7CFC7C"
 -- El admin puede agregar mas destinos en vivo con /lugar_guardar (persisten en
 -- valdivia_lugares.json).
 local DEFAULT_LUGARES = {
-    {id = "plaza",          nombre = "Plaza de la Republica (spawn)", pos = {x = 3766,   y = -4,    z = -3249}},
+    {id = "plaza",          nombre = "Plaza de Chile (spawn)", pos = {x = 3669.5, y = -8.5,    z = -3055.5}},
     {id = "catrico",        nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
     {id = "santa_elena",    nombre = "Santa Elena",                  pos = {x = 6323.1, y = -15.5, z = -7270}},
     {id = "huachocopihue",  nombre = "Huachocopihue (Plaza Londres)", pos = {x = 4195.5, y = -5.6,  z = -5943.8}},
