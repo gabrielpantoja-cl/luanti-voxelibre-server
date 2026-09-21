@@ -1,6 +1,7 @@
 # Directorios de datos del servidor
 server/worlds/*
 !server/worlds/*/auth.txt
+!server/worlds/*/world.mt
 server/backups/*
 server/config/ban.txt
 
