@@ -70,6 +70,30 @@ historial de cada doc).
 
 ## 5. Contenido y experiencia
 
+### 5.0 Minas subterráneas (plan futuro — no prioridad actual)
+
+- [ ] **Mod `valdivia_utils`** con comando `/generar_mina <radio> <profundidad>`:
+  - **Objetivo**: rellenar el subsuelo vacío (air/void) bajo la ciudad pre-generada
+    con vetas realistas de Deepslate y minerales para modo supervivencia.
+  - **Carpeta**: `server/mods/valdivia_utils/`
+  - **Archivos**: `mod.conf` (depends = mcl_core) + `init.lua`
+  - **Comando**: `minetest.register_chatcommand("/generar_mina")`
+    - Requiere privilegio `server` o `give`.
+    - Toma posición del jugador, itera caja (pos.x ± radio, pos.y - 1 hasta
+      pos.y - profundidad).
+    - Solo reemplaza bloques `air` o `mcl_core:void`.
+  - **Distribución de minerales** (1000 muestras):
+    - 940/1000 → `mcl_core:deepslate`
+    - 30/1000 → `mcl_core:deepslate_coal_ore`
+    - 20/1000 → `mcl_core:deepslate_iron_ore`
+    - 8/1000 → `mcl_core:deepslate_gold_ore`
+    - 2/1000 → `mcl_core:deepslate_diamond_ore`
+  - **Activar**: `load_mod_valdivia_utils = true` en `world.mt`
+  - **Uso**: pararse en el subsuelo → `/generar_mina 10 5`
+  - **Estado**: plan documentado, NO implementar hasta que haya tiempo.
+    Prioridad baja — el servidor actualmente es exploración urbana, no mineração.
+    → [`current.md`](current.md)
+
 - [~] **Bailarines de la discoteca** (`/discoteca bailarin`, meta 4–6).
       → [`discoteca.md`](discoteca.md)
 - [ ] **Voz del NPC guía**: reutilizar `play_npc_voice` de `wetlands_npcs`.
