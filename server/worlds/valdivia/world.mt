@@ -59,3 +59,6 @@ load_mod_voxelibre_tv = true
 load_mod_worldedit = true
 load_mod_worldedit_commands = true
 load_mod_worldedit_shortcommands = true
+
+# Override de luz para monstruos hostiles en calles iluminadas
+load_mod_valdivia_mobs_override = true
