@@ -60,5 +60,9 @@ load_mod_worldedit = true
 load_mod_worldedit_commands = true
 load_mod_worldedit_shortcommands = true
 
-# Override de luz para monstruos hostiles en calles iluminadas
-load_mod_valdivia_mobs_override = true
+# Debug (spawning fix activo desde 2026-09-21)
+load_mod_valdivia_mob_debug = true
+load_mod_valdivia_spawn_fix = true
+
+# Utilidades subterraneas
+load_mod_valdivia_utils = true
