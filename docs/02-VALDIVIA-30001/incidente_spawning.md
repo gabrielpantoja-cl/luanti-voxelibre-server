@@ -49,21 +49,51 @@ Los monstruos hostiles no aparecen en Valdivia a pesar de que todas las configur
 | `1fbb0fd3` | `valdivia_mobs_override` | Override de `mob_light_lvl()` (INEFECTIVO — no se usa en spawn real) |
 | `702200bf` | Hotfix crash diagnóstico | `/diagnosticar_spawn` ahora no crashea |
 
+## Solución Aplicada
+
+**Commit:** `e348bd2c` — `fix(spawning): corregir sintaxis de metodo - usar : en vez de .`
+
+**Mod `valdivia_spawn_fix`:** Re-registra los 5 monstruos principales SIN restricción de biomas:
+- `mobs_mc:zombie` (chance=1500)
+- `mobs_mc:baby_zombie` (chance=50)
+- `mobs_mc:skeleton` (chance=800)
+- `mobs_mc:spider` (chance=1000)
+- `mobs_mc:stalker` (creeper, chance=400)
+
+**Mecanismo técnico:** El chequeo en `spawning.lua:583` es:
+```lua
+if spawn_def.biomes and not spawn_def.biomes_lookup[state.biome] then return false end
+```
+Si `biomes` es `nil`, el chequeo se salta completamente. El mod llama `mcl_mobs:spawn_setup()` sin el campo `biomes`, creando entradas adicionales en `spawn_dictionary` que aceptan cualquier bioma.
+
+**Resultado en logs:**
+```
+[valdivia_spawn_fix] Registrado mobs_mc:zombie sin restriccion de bioma (chance=1500)
+[valdivia_spawn_fix] Registrado mobs_mc:baby_zombie sin restriccion de bioma (chance=50)
+[valdivia_spawn_fix] Registrado mobs_mc:skeleton sin restriccion de bioma (chance=800)
+[valdivia_spawn_fix] Registrado mobs_mc:spider sin restriccion de bioma (chance=1000)
+[valdivia_spawn_fix] Registrado mobs_mc:stalker sin restriccion de bioma (chance=400)
+[valdivia_spawn_fix] Completado: 5 registrados, 0 omitidos
+```
+
 ## Próximos Pasos
 
-1. **Inmediato:** Actualizar `/diagnosticar_spawn` para reportar bioma y conteo de entidades
-2. **Corto plazo:** Ejecutar diagnóstico mejorado y analizar resultados
-3. **Medio plazo:** Si bioma es el problema, crear mod compat que registre `valdivia_city` como bioma válido para hostile spawns
-4. **Largo plazo:** Re-evaluar si `valdivia_mobs_override` debe ser eliminado (ya no tiene efecto)
+1. **Inmediato:** Probar en-game — encontrar monstruos a medianoche en las calles de Valdivia
+2.<think>**Corto plazo:** Si el spawning funciona, actualizar `valdivia_mob_debug` con `/diagnosticar_spawn` v2 para confirmar bioma y entidades
+3. **Medio plazo:** Evaluar si la tasa de spawning es adecuada (chance values son los mismos que el juego base)
+4. **Largo plazo:** Considerar eliminar `valdivia_mobs_override` (ya no tiene efecto útil)
 
 ## Log del Incidente
 
-### 2026-09-21 — FASE INICIAL
-- [21:30] Investigación inicial: configuraciones revisadas, todas OK
-- [22:00] Desplegado `valdivia_mob_debug` con `/diagnosticar_spawn`
-- [22:09] **CRASH** — Error Lua: `get_artificial_light()` recibió tabla en vez de número
-- [22:14] Hotfix deployed: `pcall()` + `param1` correcto
-- [22:15] **Siguiente:** Ejecutar diagnóstico mejorado (bioma + mob cap)
+### 2026-09-21 — RESOLUCIÓN
+- [22:14] Hotfix crash diagnóstico: `get_artificial_light(node_here.param1)` (commit `702200bf`)
+- [22:29] Sonda v2 desplegada: bioma + conteo entidades (commit `005787b7`)
+- [22:46] **H1 CONFIRMADA**: Bioma de Valdivia (singlenode/Arnis) no coincide con `spawn_biomes` de mobs
+- [22:48] Creado `valdivia_spawn_fix` — re-registra mobs sin biomes (commit `8717f517`)
+- [22:48] **ERROR**: `mcl_mobs.spawn_setup()` con `.` en vez de `:` — Missing spawn definition
+- [22:49] **FIX**: Corregido a `mcl_mobs:spawn_setup()` (commit `e348bd2c`)
+- [22:49] **ÉXITO**: 5/5 monstruos registrados sin restricción de bioma
+- [22:50] **Servidor listo para prueba en-game**
 
 ---
-*Documento mantenido por SRE — Última actualización: 2026-09-21 22:15*
+*Documento mantenido por SRE — Última actualización: 2026-09-21 22:50*
