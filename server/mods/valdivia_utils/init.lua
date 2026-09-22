@@ -8,12 +8,13 @@ local MOD_NAME = "valdivia_utils"
 
 -- Distribucion de bloques (por 1000)
 -- 940 deepslate, 30 carbono, 20 hierro, 8 oro, 2 diamante
+-- ⚠️ Nombres correctos de VoxeLibre: mcl_deepslate:deepslate_with_X (NO mcl_core:deepslate_X_ore)
 local ORE_TABLE = {
-    { node = "mcl_core:deepslate",             weight = 940 },
-    { node = "mcl_core:deepslate_coal_ore",    weight = 30  },
-    { node = "mcl_core:deepslate_iron_ore",    weight = 20  },
-    { node = "mcl_core:deepslate_gold_ore",    weight = 8   },
-    { node = "mcl_core:deepslate_diamond_ore", weight = 2   },
+    { node = "mcl_deepslate:deepslate",              weight = 940 },
+    { node = "mcl_deepslate:deepslate_with_coal",    weight = 30  },
+    { node = "mcl_deepslate:deepslate_with_iron",    weight = 20  },
+    { node = "mcl_deepslate:deepslate_with_gold",    weight = 8   },
+    { node = "mcl_deepslate:deepslate_with_diamond", weight = 2   },
 }
 
 -- nodos que consideramos "vacio"
@@ -87,7 +88,7 @@ minetest.register_chatcommand("generar_mina", {
                             local block = pick_ore()
                             minetest.set_node(p, { name = block })
                             filled = filled + 1
-                            if block ~= "mcl_core:deepslate" then
+                            if block ~= "mcl_deepslate:deepslate" then
                                 ores = ores + 1
                             end
                         end
