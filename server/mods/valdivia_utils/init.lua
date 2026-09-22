@@ -17,9 +17,10 @@ local ORE_TABLE = {
 }
 
 -- nodos que consideramos "vacio"
+-- ⚠️ CRÍTICO: NUNCA incluir "ignore" — el motor prohíbe set_node sobre chunks no cargados
+-- "ignore" = áreas del mapa aún no generadas; escribir sobre ellas causa crash C++
 local AIR_NODES = {
     ["air"] = true,
-    ["ignore"] = true,
     ["mcl_core:void"] = true,
 }
 
@@ -44,68 +45,78 @@ minetest.register_chatcommand("generar_mina", {
     description = "Genera mina subterranea: rellena vacio con deepslate y vetas de minerales",
     privs = { server = true, give = true },
     func = function(name, param)
-        -- Parsear parametros
-        local radio, prof = string.match(param, "^(%d+)%s+(%d+)$")
-        if not radio then
-            return false, "Uso: /generar_mina <radio> <profundidad>\n"
-                .. "Ejemplo: /generar_mina 10 5"
-        end
-        radio = tonumber(radio)
-        prof = tonumber(prof)
+        -- Blindaje pcall: cualquier error futuro retorna mensaje al chat en vez de crashear
+        local ok, result = pcall(function()
+            -- Parsear parametros
+            local radio, prof = string.match(param, "^(%d+)%s+(%d+)$")
+            if not radio then
+                return false, "Uso: /generar_mina <radio> <profundidad>\n"
+                    .. "Ejemplo: /generar_mina 10 5"
+            end
+            radio = tonumber(radio)
+            prof = tonumber(prof)
 
-        -- Limites de seguridad
-        if radio < 1 or radio > 100 then
-            return false, "Radio debe ser entre 1 y 100 nodos"
-        end
-        if prof < 1 or prof > 50 then
-            return false, "Profundidad debe ser entre 1 y 50 nodos"
-        end
+            -- Limites de seguridad
+            if radio < 1 or radio > 100 then
+                return false, "Radio debe ser entre 1 y 100 nodos"
+            end
+            if prof < 1 or prof > 50 then
+                return false, "Profundidad debe ser entre 1 y 50 nodos"
+            end
 
-        local player = minetest.get_player_by_name(name)
-        if not player then
-            return false, "Jugador no encontrado"
-        end
+            local player = minetest.get_player_by_name(name)
+            if not player then
+                return false, "Jugador no encontrado"
+            end
 
-        local pos = player:get_pos()
-        local px = math.floor(pos.x)
-        local py = math.floor(pos.y)
-        local pz = math.floor(pos.z)
+            local pos = player:get_pos()
+            local px = math.floor(pos.x)
+            local py = math.floor(pos.y)
+            local pz = math.floor(pos.z)
 
-        local filled = 0
-        local ores = 0
+            local filled = 0
+            local ores = 0
 
-        -- Triple bucle: x, y, z
-        for x = px - radio, px + radio do
-            for y = py - 1, py - prof, -1 do
-                for z = pz - radio, pz + radio do
-                    local p = { x = x, y = y, z = z }
-                    local node = minetest.get_node(p)
-                    if AIR_NODES[node.name] then
-                        local block = pick_ore()
-                        minetest.set_node(p, { name = block })
-                        filled = filled + 1
-                        if block ~= "mcl_core:deepslate" then
-                            ores = ores + 1
+            -- Triple bucle: x, y, z
+            for x = px - radio, px + radio do
+                for y = py - 1, py - prof, -1 do
+                    for z = pz - radio, pz + radio do
+                        local p = { x = x, y = y, z = z }
+                        local node = minetest.get_node_or_nil(p)
+                        if node and AIR_NODES[node.name] then
+                            local block = pick_ore()
+                            minetest.set_node(p, { name = block })
+                            filled = filled + 1
+                            if block ~= "mcl_core:deepslate" then
+                                ores = ores + 1
+                            end
                         end
                     end
                 end
             end
+
+            local msg = string.format(
+                "[Valdivia Utils] Mina generada: %d bloques rellenados, %d vetas "
+                .. "(%d deepslate, %d minerales)",
+                filled, ores, filled - ores, ores
+            )
+            minetest.log("action", msg)
+
+            return true, string.format(
+                "Mina generada!\n"
+                .. "Radio: %d nodos | Profundidad: %d nodos\n"
+                .. "Total: %d bloques rellenados\n"
+                .. "Vetas: %d minerales (carbono, hierro, oro, diamante)",
+                radio, prof, filled, ores
+            )
+        end)
+
+        if not ok then
+            minetest.log("error", "[" .. MOD_NAME .. "] Error en /generar_mina: " .. tostring(result))
+            return false, "Error interno: " .. tostring(result)
         end
 
-        local msg = string.format(
-            "[Valdivia Utils] Mina generada: %d bloques rellenados, %d vetas "
-            .. "(%d deepslate, %d minerales)",
-            filled, ores, filled - ores, ores
-        )
-        minetest.log("action", msg)
-
-        return true, string.format(
-            "Mina generada!\n"
-            .. "Radio: %d nodos | Profundidad: %d nodos\n"
-            .. "Total: %d bloques rellenados\n"
-            .. "Vetas: %d minerales (carbono, hierro, oro, diamante)",
-            radio, prof, filled, ores
-        )
+        return result
     end,
 })
 
