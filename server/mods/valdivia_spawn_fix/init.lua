@@ -39,7 +39,7 @@ minetest.register_on_mods_loaded(function()
         -- Verificar que la entidad esta registrada
         if minetest.registered_entities[name] then
             local ok, err = pcall(function()
-                mcl_mobs.spawn_setup({
+                mcl_mobs:spawn_setup({
                     name = name,
                     dimension = "overworld",
                     type_of_spawning = "ground",
