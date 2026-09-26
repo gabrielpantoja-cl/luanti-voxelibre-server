@@ -1,12 +1,31 @@
 # Directorios de datos del servidor
 server/worlds/*
 !server/worlds/*/
+# Re-ocultar TODO el contenido de cada mundo. Sin esta capa, git desciende
+# a los mundos y todo lo no listado abajo queda "untracked" — lo que un
+# `git clean -fd` borraria (mata mundos vivos). Solo se permite lo que
+# tengan las negaciones de abajo. El orden importa: ultima regla que matchea, gana.
+server/worlds/*/*
 !server/worlds/*/auth.txt
 !server/worlds/*/world.mt
 !server/worlds/*/skins.txt
+# Esquemas WorldEdit validos (versionados, ~7KB). Los *.bak de edicion NO.
+!server/worlds/*/schematics/
+server/worlds/*/schematics/*
+!server/worlds/*/schematics/*.mts
+# Media de mundo (texturas de skins custom para mcl_custom_world_skins)
 !server/worlds/*/_world_folder_media/
+server/worlds/*/_world_folder_media/*
 !server/worlds/*/_world_folder_media/textures/
+server/worlds/*/_world_folder_media/textures/*
 !server/worlds/*/_world_folder_media/textures/*.png
+# Mundos generados en el VPS — jamas trackear (el world.mt real de estos
+# vive solo en el VPS; trackear la version local estancada bloquearia el
+# proximo git pull alla con "untracked working tree files would be overwritten")
+server/worlds/mineclonia/
+server/worlds/plano/
+server/worlds/infierno_OLD/
+server/worlds/ctf_OLD-*/
 # Excluir datos pesados de mundo (sqlite, mapas, etc.)
 server/worlds/*/*.sqlite
 server/worlds/*/*.sqlite-*
@@ -17,6 +36,10 @@ server/worlds/*/ipban.txt
 server/worlds/*/mod_storage.sqlite
 server/backups/*
 server/config/ban.txt
+
+# Backups de archivos — nunca a produccion
+*.bak
+*.bak.*
 
 # Logs
 *.log
