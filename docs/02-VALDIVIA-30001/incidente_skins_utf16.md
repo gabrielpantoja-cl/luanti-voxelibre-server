@@ -112,7 +112,7 @@ Contexto: el chain `!server/worlds/*/` necesario para las skins (commit `7b5d4a3
 1. **`*.bak` + `*.bak.*` globales** — ningún backup de archivo vuelve a aparecer como untracked (cubre `.mts.bak` y los `world.mt.bak.<timestamp>` del VPS).
 2. **Capa de re-ocultado `server/worlds/*/*`** tras `!server/worlds/*/` — vuelve a ocultar *todo* el contenido de mundos, dejando pasar solo la lista blanca (`world.mt`, `auth.txt`, `skins.txt`, `schematics/*.mts`, media de skins). Esto además **cierra la landmina de `git clean -fd`**: los mundos dejan de ser *untracked*.
 3. **Exclusiones explícitas de mundos VPS-only**: `mineclonia/`, `plano/`, `infierno_OLD/`, `ctf_OLD-*/` (además de `world/`, `gaelsin/`, `worlds_archive/` que ya existían).
-4. **Esquemas válidos trackeados** (3 × `.mts`, ~7 KB): únicos en el repo, sin riesgo de conflicto en el VPS (el directorio no existe allá → el pull los crea limpio).
+4. **Esquemas válidos trackeados** (3 × `.mts`, ~7 KB): únicos en el repo, sin riesgo de contenido divergente en el VPS. El directorio `original/schematics/` **no existía allá** → el pull debió crearlo (ver complicación de permisos abajo).
 
 ### Comandos ejecutados (solo local, sin VPS)
 
@@ -128,6 +128,32 @@ git status --short                      # limpia: 4 modificados + 3 agregados
 
 - Trackear `server/worlds/original/world.mt` (Wetlands) y `server/worlds/mineclonia/world.mt` (versión real, desde el VPS) — hoy solo `valdivia/world.mt` está bajo git. Sin esto, un `git clean -fd` futuro en el VPS seguiría siendo peligroso para `world.mt` de Wetlands.
 - Decidir el drift de `server/worlds/valdivia/world.mt` en el VPS (línea `load_mod_voxelibre_protection = false` eliminada allí, efecto idéntico al default).
+
+## Complicación en el deploy: dos pulls abortados por permisos (half-applied)
+
+El entrypoint de `linuxserver/luanti` **re-chownea el worldpath a `opc:opc` en cada arranque**, así que los directorios de mundo quedan inmutables para `gabriel` (UID 1002). El pull falló dos veces, cada vez dejando un **half-applied pull** (HEAD sin avanzar pero archivos ya escritos):
+
+| # | Error | Causa |
+|---|-------|-------|
+| 1 | `cannot create directory at 'server/worlds/original/schematics': Permission denied` | `original/` es `opc:opc 755` → gabriel sin write |
+| 2 | `unable to unlink old 'server/worlds/valdivia/skins.txt': Permission denied` | `valdivia/` es `opc:opc 775`; **unlink exige escritura en el directorio**, no en el archivo |
+
+**Recuperación (patrón AGENTS.md, verificado antes de descartar):** para cada artefacto del pull abortado, `diff -q <(git show origin/main:"$f") "$f"` → si es IDÉNTICO: `git restore` (rastreados) + `find -delete` (untracked) → corregir permisos → re-pull. Nunca `git reset --hard` ni `git clean`.
+
+**Fixes de permisos (scope mínimo — la regla dorada "nunca chown sobre worlds" se respetó):**
+
+```bash
+# 1) subdirectorio NUEVO y vacío (artefacto de git, no data de mundo):
+sudo mkdir -p server/worlds/original/schematics
+sudo chown gabriel:gabriel server/worlds/original/schematics
+
+# 2) solo bit de escritura para others, ownership intacto (contenedor = owner sigue con rwx):
+sudo chmod o+w server/worlds/valdivia    # queda 777
+```
+
+**Trade-off aceptado:** `valdivia/` queda `777` — en la VPS solo existen `root`/`opc`/`gabriel`, así que el riesgo es mínimo y permite pulls futuros que toquen archivos del mundo Valdivia. Alternativa más fina (follow-up): `setfacl -m u:gabriel:rwx`.
+
+**Lección para deploys futuros:** AGENTS.md ya exige pre-chown de `server/mods` cuando el incoming toca mods — **el mismo patrón aplica a `server/worlds/valdivia/`** cuando el incoming toque archivos ahí (verificar con `git diff --name-only HEAD..origin/main` antes de pull).
 
 ## Log del Incidente
 
@@ -151,6 +177,15 @@ git status --short                      # limpia: 4 modificados + 3 agregados
 - Nil-guard + `f:close()` + warnings en `mcl_custom_world_skins/init.lua`
 - `.gitignore`: `*.bak` globales, capa `server/worlds/*/*`, exclusiones `mineclonia`/`plano`/`*_OLD`, esquemas `*.mts` trackeados
 - Fix completo vía GitOps (push → pull → restart → verificar logs)
+
+### 2026-09-26 — DEPLOY
+- Push `7b5d4a35..0e861cf2` (3 commits: `fix(skins)` 863c3a8d, `chore(gitignore)` 45ae9aee, `docs` 0e861cf2)
+- Pre-check VPS: incoming toca `server/mods/` → pre-chown `server/mods` a gabriel ✓
+- **Pull intento 1**: abort en `original/schematics` (dir `opc:opc 755`) → half-applied #1 → recuperado (restore + rm verificado + mkdir/chown del subdir)
+- **Pull intento 2**: abort en unlink de `valdivia/skins.txt` (dir `775 opc`) → half-applied #2 → recuperado (restore + rm + `chmod o+w valdivia/`)
+- **Pull OK**: fast-forward → `0e861cf2`; `skins.txt` en VPS = `2d 2d 20 57` (UTF-8 ✓, 591 B LF)
+- `git restore server/worlds/valdivia/world.mt` → drift realign (efecto idéntico: `.conf` línea 202 = `load_mod_voxelibre_protection = false`)
+- Restart `luanti-valdivia` → **`listening on [::]:30001`**, **0 `ModError` en 90 s** (antes: 60/90 s), contenedor `Up` estable, escrituras del contenedor verificadas (`doc.mt` actualizado en el restart), `chmod 777` sobrevivió el arranque
 
 ---
 *Documento mantenido por SRE — Última actualización: 2026-09-26*
