@@ -13,6 +13,7 @@ local DESTINOS = {
 	{id = "spawn_actual",    nombre = "Spawn Actual",    pos = {x = 655.1, y = 18.5, z = 243.9}},
 	{id = "spawn_historico", nombre = "Spawn Histórico", pos = {x = 0, y = 15, z = 0}},
 	{id = "turkish_base",    nombre = "Turkish Base",    pos = {x = 1050, y = -26.5, z = -381.8}},
+	{id = "temple_of_loxos", nombre = "The Temple of Loxos", pos = {x = -673, y = 81.5, z = -68.7}},
 }
 
 local FORMNAME = "wetlands_teleporter:menu"
