@@ -1,7 +1,7 @@
 -- wetlands_teleporter
 -- Teletransportador de ubicaciones clave de Wetlands (puerto 30000).
 -- Un pedestal luminoso (click derecho) y el comando /irt abren un menu para
--- saltar a 2 ubicaciones: spawn actual y spawn histórico.
+-- saltar a las ubicaciones registradas en DESTINOS.
 -- Apropiado para niños 7+. Idioma: español.
 
 local modname = minetest.get_current_modname()
@@ -12,6 +12,7 @@ local modname = minetest.get_current_modname()
 local DESTINOS = {
 	{id = "spawn_actual",    nombre = "Spawn Actual",    pos = {x = 655.1, y = 18.5, z = 243.9}},
 	{id = "spawn_historico", nombre = "Spawn Histórico", pos = {x = 0, y = 15, z = 0}},
+	{id = "turkish_base",    nombre = "Turkish Base",    pos = {x = 1050, y = -26.5, z = -381.8}},
 }
 
 local FORMNAME = "wetlands_teleporter:menu"
