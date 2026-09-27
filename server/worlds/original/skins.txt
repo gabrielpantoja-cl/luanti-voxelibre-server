@@ -1,0 +1,29 @@
+-- Wetlands Server - Custom Skins Configuration
+-- For more details, see: docs/CUSTOM_SKINS_SETUP.md
+-- Last updated: 2026-01-16 (cleaned up by Claude)
+
+return {
+  -- Skins que funcionan correctamente ✅
+  {
+    texture = "zombie",
+    gender = "male"
+  },
+  {
+    texture = "buddhist_monk",
+    gender = "male"
+  },
+  {
+    texture = "ninja_boxy",
+    gender = "male"
+  },
+  {
+    texture = "panda",
+    gender = "male"
+  },
+  {
+    texture = "santa_ho_ho_ho",
+    gender = "male"
+  },
+  { texture = "pepe", gender = "male" },
+  { texture = "lloyd_possesion_suit", gender = "male" },
+}
