@@ -3,9 +3,9 @@
 -- unos segundos. El que entra no lo ve. Si entran varios seguidos, los avisos se
 -- apilan (maximo MAX_LINES; el mas antiguo cede su lugar).
 --
--- Este mod SOLO se carga en Valdivia (load_mod_valdivia_aviso_entrada en
--- luanti-valdivia.conf y world.mt). Complementa el "*** X joined the game" del
--- chat, que se pierde facil entre otros mensajes.
+-- Se carga en los mundos que lo habilitan en su .conf y world.mt.
+-- Complementa el "*** X joined the game" del chat, que se pierde facil entre
+-- otros mensajes. Actualmente se usa en Valdivia y Wetlands.
 
 local modname = minetest.get_current_modname()
 
