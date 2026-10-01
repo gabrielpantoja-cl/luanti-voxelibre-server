@@ -1,14 +1,16 @@
 # 🛡️ Guía Completa: Sistema de Protección de Bloques en Wetlands
 
-> ⚠️ **DEPRECATED 2026-07-31**: este sistema de bloques protectores (`protector`
-> + `voxelibre_protection`) esta **deshabilitado** en Wetlands desde el paso a
-> supervivencia dura. En supervivencia, los jugadores construyen con los recursos
-> que recolectan; los mods de proteccion por bloque quedaron en `false` en
-> `luanti-original.conf` y `world.mt`. La guia queda como referencia historica.
+> **Estado actual (2026-09-30):** `protector` (Protector Redo) está habilitado en
+> Wetlands 30000. `voxelibre_protection` sigue deshabilitado. La protección automática
+> del spawn está apagada (`protector_spawn = 0`); las protecciones se crean colocando
+> bloques físicos de `protector`. El resto de esta guía contiene información histórica
+> que puede no coincidir con la versión instalada; consulta las notas actuales antes de
+> usar comandos o mecánicas que no se hayan verificado.
 >
-> Proteccion contra griefing en supervivencia se logra via `worldedit` (admin)
-> + reporte al equipo de moderadores. Cualquier reactivacion de estos mods debe
-> pasar por editar ambos archivos (per AGENTS.md jerarquia de configuracion).
+> El radio configurado para cada bloque es de 20 nodos (`protector_radius = 20`). No
+> existe un comando global para listar protecciones; golpea el bloque para mostrar su
+> área. Usa el bloque/logo de protector como herramienta apuntando a un nodo protegido
+> para consultar propietario y posición.
 
 ## 📋 Índice
 1. [¿Qué es el Sistema de Protección?](#qué-es-el-sistema-de-protección)
@@ -139,7 +141,7 @@ Simplemente coloca uno en la mesa de crafting para obtener el otro tipo.
 
 **Consideraciones Importantes:**
 - ✅ **Centro del área**: Coloca el protector en el centro de lo que quieres proteger
-- ✅ **Radio de 5 bloques**: El área protegida será de 11x11x11 bloques
+- ⚠️ **Dato histórico**: esta sección se escribió para radio 5; el valor actual es 20.
 - ✅ **No superposición**: No puedes colocar protectores que se solapen
 - ✅ **Distancia de spawn**: Respeta la distancia del área de spawn protegida
 
@@ -232,27 +234,22 @@ Simplemente coloca uno en la mesa de crafting para obtener el otro tipo.
 ### 🎮 Comandos para Usuarios Normales
 
 ```bash
-# Gestión de miembros
-/protector_add_member <usuario>    # Añadir usuario a TU protector
-/protector_del_member <usuario>    # Quitar usuario de TU protector
-
-# Información (si está disponible)
-/protector_show                    # Mostrar información de protecciones cercanas
+# Añadir/quitar miembros de una protección propia cercana
+/protector_add_member <usuario>
+/protector_del_member <usuario>
 ```
+
+La versión instalada no registra `/protector list`, `/protector_show` ni comandos
+administrativos para buscar, eliminar o cambiar el dueño por coordenadas. Para consultar
+una protección, usa el ítem `protector:protect` o `protector:protect2` apuntando a un nodo
+del área; para mostrar el perímetro, golpea el bloque protector físico.
 
 ### 🔧 Comandos de Administrador
 
-Los administradores con privilegios especiales pueden usar:
+La versión instalada no registra comandos administrativos adicionales para protector.
 
 ```bash
-# Gestión avanzada
-/protector_remove <x,y,z>          # Eliminar protector en coordenadas específicas
-/protector_show_area <x,y,z>       # Mostrar área protegida en coordenadas
-/protector_replace <viejo> <nuevo> # Cambiar propietario de protectores
-
-# Ejemplos de uso
-/protector_remove 100,65,200       # Elimina protector en esas coordenadas
-/protector_replace juan_viejo pedro # Cambia propietario de juan_viejo a pedro
+# Comandos registrados: /protector_add_member y /protector_del_member
 ```
 
 ### 🎯 Consejos para Comandos
@@ -268,8 +265,8 @@ Los administradores con privilegios especiales pueden usar:
 
 ### 📐 Dimensiones
 
-**Radio de Protección: 5 bloques**
-- **Área total**: 11x11x11 bloques
+**Radio de Protección actual: 20 bloques** (`protector_radius = 20`)
+- **Área total aproximada**: 41x41x41 bloques
 - **Centro**: El bloque protector
 - **Forma**: Cubo perfecto centrado en el protector
 
@@ -277,7 +274,7 @@ Los administradores con privilegios especiales pueden usar:
 
 **Al Colocar el Protector:**
 - ✅ El área se muestra temporalmente con bloques semi-transparentes
-- ✅ Duración: Aproximadamente 5 segundos
+- ✅ Duración configurada: 20 segundos (`protector_show_interval = 20`)
 - ✅ Color: Generalmente verde o azul claro
 
 **Verificar Área Existente:**
@@ -300,7 +297,7 @@ Si colocas un protector en las coordenadas (100, 65, 200):
 
 **No puedes colocar protectores:**
 - ❌ Que se superpongan con otros protectores existentes
-- ❌ Demasiado cerca del spawn protegido del servidor
+- ❌ Solapamiento con el área protegida de otro bloque
 - ❌ En áreas ya protegidas por otros jugadores
 
 **Mensaje de Error:**
@@ -343,7 +340,9 @@ El mod protector también puede incluir:
 
 ### 🔑 Privilegio `protection_bypass`
 
-**Usuario "gabo" tiene este privilegio**, lo que significa:
+Si un administrador tiene `protection_bypass`, el mod le permite ignorar protecciones al
+romper/colocar nodos. No asumir que el privilegio está concedido a una cuenta concreta:
+verifica la lista de privilegios del servidor.
 
 - ✅ **Acceso total**: Puede modificar cualquier área protegida
 - ✅ **Romper protectores**: Puede eliminar cualquier protector
@@ -352,17 +351,10 @@ El mod protector también puede incluir:
 
 ### 🛠️ Herramientas de Administrador
 
-**Comandos Administrativos:**
-```bash
-# Eliminar protector problemático
-/protector_remove <x,y,z>
-
-# Cambiar propietario (útil si un jugador se va)
-/protector_replace <antiguo_usuario> <nuevo_usuario>
-
-# Mostrar información detallada
-/protector_show_area <x,y,z>
-```
+La versión instalada no registra comandos administrativos de búsqueda, eliminación o
+reasignación de protecciones. Para identificar una protección usa el ítem de protector
+apuntando a un nodo dentro de su área; para modificar el nodo, usa las herramientas
+administrativas habituales y comprueba primero su propietario.
 
 ### 🚨 Uso Responsable
 
@@ -400,7 +392,7 @@ El mod protector también puede incluir:
 **Verificaciones:**
 1. **Mod cargado**: Confirma que el mod está activo
 2. **Propietario correcto**: Verifica que eres el propietario
-3. **Área correcta**: Confirma que estás dentro del radio de 5 bloques
+3. **Área correcta**: Confirma que estás dentro del radio de 20 bloques
 4. **Permisos**: Verifica los privilegios del usuario
 
 ### ❓ Problema: "No puedo añadir miembros"
@@ -425,7 +417,7 @@ El mod protector también puede incluir:
 
 **Antes de colocar protectores:**
 1. **Diseña tu construcción**: Planifica el tamaño total
-2. **Calcula protectores necesarios**: Área 11x11x11 por protector
+2. **Calcula protectores necesarios**: área aproximada 41x41x41 por protector (radio actual 20)
 3. **Considera expansion**: Deja espacio para crecimiento futuro
 4. **Ubicación estratégica**: Coloca en centros de áreas importantes
 
@@ -492,7 +484,7 @@ El mod protector también puede incluir:
 ### ✅ Puntos Clave
 
 1. **Fácil Acceso**: Bloques disponibles directamente en inventario creativo
-2. **Protección Completa**: Área de 11x11x11 bloques protegida totalmente
+2. **Protección Completa**: cada bloque cubre aproximadamente 41x41x41 (radio actual 20)
 3. **Control Granular**: Hasta 12 miembros por protector
 4. **Múltiples Tipos**: Bloque sólido y logo decorativo
 5. **Administración Simple**: Comandos intuitivos y menú gráfico
@@ -518,4 +510,4 @@ El mod protector también puede incluir:
 
 **🌱 ¡Protege tus construcciones y crea espacios seguros para toda la comunidad Wetlands!**
 
-*Documentación actualizada para servidor Wetlands - Septiembre 2025*
+*Guía original: septiembre de 2025. Estado del servidor corregido el 2026-09-30.*

@@ -46,14 +46,23 @@ existentes que los tuvieran del periodo creativo.
 
 ## Mods (lista autoritativa: `server/config/luanti-original.conf`)
 
-Supervivencia dura desactivó mods no aplicables: NPCs, música, navidad, vehículos (`automobiles_*`),
+Supervivencia dura desactivó mods no aplicables: NPCs, música, vehículos (`automobiles_*`),
 muebles (`3dforniture`), decoración (`mcl_decor`), `mypark`, `chess`, `celevator`,
-`auto_road_builder`, `halloween_*`, `broom_racing`, `protector`, `voxelibre_protection`,
-`vegan_food`, `vegan_replacements`, `education_blocks`, `pvp_arena`. Mantiene núcleo de supervivencia.
+`auto_road_builder`, `halloween_*`, `broom_racing`, `voxelibre_protection`, `vegan_food`,
+`vegan_replacements`, `education_blocks`, `pvp_arena`. `wetlands_christmas` fue reactivado
+el 2026-09-30; `protector` está activo para protecciones con bloques físicos. La protección
+automática del spawn está desactivada (`protector_spawn = 0`).
 
 ### Propios de Wetlands (activos)
-`wetlands_newplayer`, `wetlands_no_creeper`, `wetlands_lastpos`, `server_rules`,
-`mcl_custom_world_skins`.
+`wetlands_newplayer`, `wetlands_no_creeper`, `wetlands_lastpos`, `wetlands_christmas`,
+`server_rules`, `protector`, `mcl_custom_world_skins`, `valdivia_aviso_entrada`.
+
+### Aviso de entrada
+
+`valdivia_aviso_entrada` está habilitado también en este mundo. Cuando un jugador se conecta,
+los jugadores que ya están dentro ven durante unos segundos un aviso HUD con el formato
+`<nombre> entrando...`; quien acaba de entrar no ve su propio aviso. El mod solo se activa en
+los mundos que lo habilitan en su configuración y `world.mt`.
 
 ### Terceros (activos)
 `worldedit` (+commands/+shortcuts), `_world_folder_media`.

@@ -13,8 +13,12 @@ Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta par
 | Daño | Sí (mobs hostiles de noche, sin creepers) |
 | PvP | **No** (deshabilitado a nivel engine + arena opt-in retirada 2026-07-31) |
 | Filosofía | 🌱 Compassivo y plant-based (ver [VEGAN_PHILOSOPHY.md](VEGAN_PHILOSOPHY.md)) |
-| Mods clave | `wetlands_no_creeper`, `wetlands_lastpos`, `worldedit`, `mcl_custom_world_skins` |
+| Mods clave | `wetlands_no_creeper`, `wetlands_lastpos`, `valdivia_aviso_entrada`, `wetlands_christmas` (reactivado 2026-09-30), `protector`, `worldedit`, `mcl_custom_world_skins` |
 | Admin (`gabo`) | Conserva inventario creativo + fly/noclip/worldedit/debug vía whitelist en `wetlands_newplayer` |
+
+Al entrar alguien, `valdivia_aviso_entrada` muestra durante unos segundos un aviso HUD
+`<nombre> entrando...` a quienes ya estaban conectados. El jugador que acaba de entrar no ve
+su propio aviso; esto complementa el mensaje de entrada estándar del chat.
 
 ## Documentación de este mundo
 
@@ -22,7 +26,7 @@ Mundo principal: **supervivencia compassiva y plant-based**, educativa, apta par
 - [VEGAN_PHILOSOPHY.md](VEGAN_PHILOSOPHY.md) — 🌱 qué significa "compassivo y plant-based" en Wetlands, mods que lo implementan, qué se mantiene y qué se cambia
 
 ### Configuración (específica de Wetlands)
-- [config/05-BLOCK_PROTECTION.md](config/05-BLOCK_PROTECTION.md) — sistema de bloques protectores anti-griefing (deshabilitado en supervivencia)
+- [config/05-BLOCK_PROTECTION.md](config/05-BLOCK_PROTECTION.md) — bloques `protector` activos; protección automática del spawn deshabilitada (`protector_spawn = 0`)
 - [config/06-RULES_SYSTEM.md](config/06-RULES_SYSTEM.md) — sistema de reglas (`/reglas`, `/veganinfo`) y moderación
 - [WHATSAPP_ADMIN_ALERTS_PLAN.md](WHATSAPP_ADMIN_ALERTS_PLAN.md) — plan del piloto de avisos privados al administrador
 

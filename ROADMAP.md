@@ -1,6 +1,6 @@
 # Roadmap del proyecto Wetlands
 
-Estado del repositorio: **agosto de 2026**.
+Estado del repositorio: **30 de septiembre de 2026**.
 
 Este documento cubre el servidor, sus mundos, mods, operaciones y documentación. El roadmap de la landing page está separado en [`server/landing-page/docs/ROADMAP.md`](server/landing-page/docs/ROADMAP.md).
 
@@ -11,10 +11,28 @@ Este documento cubre el servidor, sus mundos, mods, operaciones y documentación
 | Wetlands | 30000 | VoxeLibre 0.90.1 | Supervivencia dura, sin PvP, identidad compasiva y plant-based |
 | Valdivia | 30001 | VoxeLibre + Arnis/OSM | Recreación explorable de Valdivia |
 | GAELSIN | 30002 | VoxeLibre 0.90.1 | Supervivencia con PvP y hostiles nocturnos |
-| CTF | 30003 | Capture the Flag | Mundo independiente de combate por equipos |
+| Plano | 30003 | Mineclonia | Mundo totalmente plano, creativo y sin daño (reemplazó CTF el 2026-09-13) |
 | Mineclonia | 30004 | Mineclonia 0.123.0 | Creativo puro, sin daño, experiencia fiel a Minecraft |
 
 Los valores operativos deben verificarse primero en `server/config/luanti-<mundo>.conf` y, para mods, en el `world.mt` autoritativo de cada mundo en el VPS.
+
+## Roadmap específico: Wetlands (Original, puerto 30000)
+
+### Completado
+
+- [x] Conversión a supervivencia dura, sin PvP; `gabo` conserva privilegios administrativos mediante whitelist.
+- [x] Desactivación de `pvp_arena` y corrección del otorgamiento indebido de `creative`.
+- [x] Reactivación de `protector` (Protector Redo) para proteger áreas con bloques físicos.
+- [x] Desactivación de la protección matemática automática del spawn (`protector_spawn = 0`); no queda bloque protector físico en el spawn según la inspección anterior.
+- [x] Reactivación de `wetlands_christmas` el 2026-09-30. Backup previo completado; carga confirmada en logs tras reiniciar.
+- [x] Actualización de la documentación de Wetlands 30000 sobre mods y protección de áreas.
+
+### Pendiente / seguimiento
+
+- [ ] Verificar visualmente dentro del juego si la reactivación de Christmas corrige las texturas afectadas; la carga correcta del mod no confirma por sí sola la reparación visual.
+- [ ] Si las texturas siguen corruptas, identificar bloques/texturas concretos antes de cambiar el orden de carga o tocar assets; preservar el backup y evitar cambios de mappings de Docker.
+- [ ] Probar como jugador sin privilegios la colocación/rotura de bloques en el centro del spawn y validar que las protecciones físicas sí bloquean modificaciones fuera del spawn.
+- [ ] Revisar y corregir el resto de la guía histórica de Protector para que cada comando/mecánica coincida con la versión instalada.
 
 ## Prioridad P0: confiabilidad y documentación
 
@@ -34,7 +52,7 @@ Los valores operativos deben verificarse primero en `server/config/luanti-<mundo
 
 ## Prioridad P2: contenido y comunidad
 
-- [ ] Decidir si los NPCs, música, decoración y vehículos regresan a Wetlands; cada reactivación requiere prueba local y revisión de `world.mt`.
+- [ ] Decidir si los NPCs, música, decoración y vehículos regresan a Wetlands; `wetlands_christmas` ya fue reactivado. Cada nueva reactivación requiere prueba local y revisión de `world.mt`.
 - [ ] Definir actividades educativas compatibles con supervivencia, sin asumir modo creativo ni mods actualmente deshabilitados.
 - [ ] Publicar una guía corta por mundo: objetivo, reglas, spawn, comandos disponibles y cómo reportar problemas.
 - [ ] Mejorar la landing page cuando el volumen de imágenes, visitas o jugadores justifique cada iniciativa de su roadmap específico.
