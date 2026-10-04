@@ -15,6 +15,18 @@ local PRIVS = {
 	teleport  = true,
 }
 
+-- El admin recibe TODOS los privilegios registrados (motor + mods). Una lista
+-- fija no sirve: set_player_privs REEMPLAZA el set completo, asi que cualquier
+-- priv fuera de la lista (server, privs, protect, protection_bypass, worldedit,
+-- give, settime...) se borraba en cada join. Mismo fix que wetlands_newplayer.
+local function admin_privs()
+	local privs = {}
+	for priv in pairs(minetest.registered_privileges) do
+		privs[priv] = true
+	end
+	return privs
+end
+
 -- Aplica el estado deseado a un jugador no-admin: gamemode creativo (inventario full)
 -- y el set exacto de privilegios (sin fly). Corre en cada join.
 --
@@ -36,8 +48,12 @@ local function enforce_state(name)
 		-- Admin: inventario creativo + fly gestionado manualmente.
 		meta:set_string("gamemode", "creative")
 		meta:set_int("mcl_privs:fly_changed", 1)
-		minetest.set_player_privs(name, {interact=true, shout=true, fast=true, creative=true, fly=true, spawn=true, teleport=true})
-		minetest.log("action", "[" .. modname .. "] Privilegios completos para admin " .. name)
+		local privs = admin_privs()
+		minetest.set_player_privs(name, privs)
+		local count = 0
+		for _ in pairs(privs) do count = count + 1 end
+		minetest.log("action", "[" .. modname .. "] Admin " .. name ..
+			": todos los privilegios registrados (" .. count .. ")")
 		return
 	end
 

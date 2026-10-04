@@ -1,6 +1,6 @@
 # Privilegios en Valdivia
 
-**Última actualización**: 2026-06-30
+**Última actualización**: 2026-10-04
 
 ---
 
@@ -10,14 +10,14 @@
 |---|---|---|
 | `interact` | ✅ | ✅ |
 | `shout` | ✅ | ✅ |
-| `creative` | ✅ | ✅ |
+| `creative` | ❌ (supervivencia) | ✅ |
 | `fast` | ✅ | ✅ |
 | `spawn` | ✅ | ✅ |
 | `teleport` | ✅ | ✅ |
 | `fly` | ❌ | ✅ |
 | `noclip` | ❌ | ✅ |
 | `give` | ❌ | ✅ |
-| `server`, `privs`, `ban`, … | ❌ | ✅ |
+| `server`, `privs`, `ban`, `protect`, `protection_bypass`, `worldedit`, … | ❌ | ✅ (todos los registrados) |
 
 **Filosofía**: Valdivia es un mundo de exploración urbana. Sin `fly` y sin `noclip` los jugadores recorren las calles a nivel de suelo, lo que es más inmersivo para una recreación de ciudad real. `fast` compensa el tamaño del mapa (9.5 km de largo). El daño está habilitado (`enable_damage = true`).
 
@@ -63,33 +63,11 @@ VoxeLibre **ignora** el setting `default_privs` de `minetest.conf` — no hay qu
 `server/mods/valdivia_newplayer/init.lua` — se carga **solo en Valdivia** (`luanti-valdivia.conf` + `world.mt`).
 
 Impone en **cada join** (vía `register_on_joinplayer` + `minetest.after(0)`):
-- metadata `gamemode = "creative"` → inventario creativo por jugador
 - metadata `mcl_privs:fly_changed = 1` → desactiva el auto-grant de fly de mcl_privs
-- para no-admin: el set exacto de `PRIVS` (sin fly, sin noclip, sin give)
-- para `ADMIN_A`: no toca los privilegios (conserva todo, incluido fly)
+- para no-admin: el set exacto de `PRIVS` (sin `creative`, sin fly, sin noclip, sin give) y gamemode `survival`
+- para `ADMIN_A`: gamemode `creative` y **todos los privilegios registrados** (`minetest.registered_privileges`: motor + mods, incluidos `server`, `privs`, `protect`, `protection_bypass`, `worldedit`, `give`, `fly`)
 
-```lua
-local ADMIN = "ADMIN_A"
-local PRIVS = {
-    interact = true, shout = true, creative = true,
-    fast = true,     spawn = true,  teleport = true,
-}
-
-local function enforce_state(name)
-    local p = minetest.get_player_by_name(name)
-    if not p then return end
-    local meta = p:get_meta()
-    meta:set_string("gamemode", "creative")
-    meta:set_int("mcl_privs:fly_changed", 1)
-    if name == ADMIN then return end
-    minetest.set_player_privs(name, PRIVS)
-end
-
-minetest.register_on_joinplayer(function(player)
-    local name = player:get_player_name()
-    minetest.after(0, function() enforce_state(name) end)
-end)
-```
+> ⚠️ **No usar una lista fija para el admin.** `set_player_privs` **reemplaza** el set completo: hasta 2026-10-04 el admin recibía una lista de 7 privs y en cada join perdía `server`, `privs`, `protect`, `protection_bypass`, `worldedit`, etc. Wetlands tuvo el mismo bug (corregido 2026-09-16 en `wetlands_newplayer`). El código vive en `server/mods/valdivia_newplayer/init.lua` (`admin_privs()` + `enforce_state()`).
 
 > **Por qué `minetest.after(0)`**: difiere la lógica al siguiente game step, ya después de que corrieron todos los callbacks de join síncronos (engine `default_privs`, mcl_privs auto-grant de fly, etc.). Nuestro `set_player_privs` es el último en escribirse y siempre gana.
 
@@ -155,3 +133,4 @@ sudo sqlite3 server/worlds/valdivia/auth.sqlite \
 | 2026-06-30 | Fix: `default_privs` también actualizado para que coincida; `minetest.after(0)` para correr post-engine |
 | 2026-06-30 | Fix inventario creativo: VoxeLibre ignora privilegio `creative` con `creative_mode=false`; usar metadata `gamemode=creative` en `register_on_joinplayer` |
 | 2026-06-30 | Fix definitivo fly: `mcl_privs` auto-otorgaba fly a jugadores creativos (carrera de callbacks). `valdivia_newplayer` ahora impone privs en cada join con `minetest.after(0)` (gana siempre) + `mcl_privs:fly_changed=1`. Solo `ADMIN_A` conserva fly. Auto-reparable. |
+| 2026-10-04 | Fix admin: recibía una lista fija de 7 privs y perdía `server`, `privs`, `protect`, `protection_bypass`, `worldedit`… en cada join. Ahora recibe todos los privilegios registrados (`admin_privs()`), igual que en Wetlands. |
