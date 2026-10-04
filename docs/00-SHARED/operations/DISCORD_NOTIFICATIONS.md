@@ -47,24 +47,37 @@ asignarlas en el bloque `environment` de cada sidecar.
 
 ## Formato del mensaje
 
-El webhook se publica como JSON plano:
+Pensado para leerse en el celular (rediseño 2026-10-04): **tres filas cortas**,
+una por categoría, con un emoji como viñeta. Las filas 2 y 3 usan el *subtext*
+de Discord (`-# `): letra más chica y gris, así el jugador destaca y el resto
+ocupa menos ancho.
 
-```json
-{"content": "🟢 🎮 **PLAYER_A** se ha conectado desde **Santiago, Chile** (IP: 104.28.*.*) | **Servidor:** Wetlands 🌱 [30000]"}
+```
+🟢 **henry** entró
+-# 📍 Barcelona, Spain · `83.51.*.*`
+-# 🌱 Wetlands · :30000
 ```
 
-Eventos:
+| Evento | Fila 1 | Fila 2 | Fila 3 |
+|---|---|---|---|
+| Jugador conecta | `🟢 **<nombre>** entró` | `📍 <ciudad>, <país> · <ip-enmascarada>` | `<emoji> <mundo> · :<puerto>` |
+| Jugador desconecta | `🔴 **<nombre>** salió` | `⏱️ <duración> jugando` | igual |
+| Inicio del notifier | `🤖 **Monitor activo**` | `✅ Aviso cada entrada y salida` | igual |
 
-| Evento | Emoji | Cuerpo |
-|---|---|---|
-| Jugador conecta | `🟢` | `🎮 **<nombre>** se ha conectado desde **<ciudad>, <país>** (IP: <ip-enmascarada>)` |
-| Jugador desconecta | `🔴` | `**Jugador Desconectado:** <nombre> se ha desconectado del servidor 👋` |
-| Inicio del notifier | `🤖` | `**Monitor Iniciado:** Sistema de notificaciones activado correctamente ✅` |
-
-Todos terminan en `| **Servidor:** <LABEL> [<PUERTO>]` para identificar el mundo y recordar su puerto de conexión.
-
-**No** se envía avatar personalizado, ni embed, ni ping `@everyone`/`@here`. Es
-el webhook plano por defecto de Discord.
+- **Fila del mundo**: sale de `SERVER_LABEL`; el último token (el emoji) pasa a
+  ser la viñeta (`Wetlands 🌱` → `🌱 Wetlands`). Sin emoji, usa `🌍`.
+- **Truncado**: Discord no permite truncar por CSS, así que el notifier acorta
+  la ubicación a ~26 caracteres, recortando la ciudad y nunca el país
+  (`Falkenstein an d…, Germany`).
+- **Duración de la sesión**: el notifier guarda en memoria la hora de entrada de
+  cada jugador. Si el monitor se reinició mientras el jugador estaba conectado,
+  la fila dice `Duración desconocida`.
+- **Escapes**: el nombre se escapa para markdown (`mr_cool_guy` no sale en
+  cursiva), la IP va en `código` (antes Discord se comía los `*` y mostraba
+  `83.51..`), y el JSON se arma escapando comillas y saltos de línea.
+- **Sin pings**: se envía `allowed_mentions: {parse: []}`, así un nombre como
+  `everyone` no notifica a nadie. Sin avatar personalizado ni embed (el embed
+  agrega relleno y en el celular ocupa más alto que tres líneas de texto).
 
 ## Geolocalización y privacidad de la IP
 
@@ -85,9 +98,11 @@ Al conectar, el notifier extrae la IP del evento de log
   enmascarada de todas formas.
 - **Fallbacks**: si la API falla o no retorna ciudad/país, el mensaje degrada
   gracefully:
-  - con geo: `🎮 **nick** se ha conectado desde **Ciudad, País** (IP: a.b.*.*)`
-  - sin geo: `🎮 **nick** se ha conectado (IP: a.b.*.*)`
-  - sin IP: `🎮 **nick** se ha conectado al servidor`
+  - con geo: `📍 Ciudad, País · a.b.*.*`
+  - sin geo: `📍 Ubicación desconocida · a.b.*.*`
+  - sin IP: `📍 Ubicación desconocida`
+- **IPv4 vía IPv6**: Luanti loguea las IPv4 como `::ffff:a.b.c.d`; el notifier
+  quita ese prefijo antes de enmascarar (antes salía `::*:*`, visto como `:::`).
 - Las desconexiones no llevan IP ni geolocalización (solo importa el origen
   del ingreso).
 
@@ -121,7 +136,7 @@ environment:
 
 `CONTAINER_NAME`, `SERVER_LABEL` y `SERVER_PORT` se pueden sobreescribir localmente sin
 tocar el compose (definir antes de `docker compose up -d`). `SERVER_PORT` es opcional;
-si falta, el notifier conserva el formato anterior sin puerto.
+si falta, la fila del mundo va sin puerto.
 
 ## Pruebas
 

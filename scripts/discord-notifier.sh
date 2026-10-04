@@ -15,6 +15,10 @@
 
 set -euo pipefail
 
+# UTF-8 para que ${#texto} cuente caracteres y no bytes al truncar
+# ("São Paulo" en el locale C de Alpine se cortaría a mitad de letra).
+export LC_ALL=C.UTF-8
+
 # Colores para output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -62,22 +66,73 @@ if ! docker ps -a --format '{{.Names}}' | grep -q "^${CONTAINER_NAME}$"; then
     exit 1
 fi
 
-# Función para enviar notificación a Discord
-send_discord_notification() {
-    local message="$1"
-    local emoji="$2"  # Emoji para el mensaje (🟢, 🔴, 🤖)
+# --- Formato del mensaje (pensado para celular) ----------------------------
+# Tres filas cortas, una por categoría, con el emoji como viñeta:
+#   🟢 **henry** entró
+#   -# 📍 Barcelona, Spain · `83.51.*.*`
+#   -# 🌱 Wetlands · :30000
+# `-# ` es el "subtext" de Discord: letra más chica y gris, así la fila del
+# jugador destaca y las otras dos ocupan menos ancho. Discord no permite
+# truncar por CSS, así que los textos largos se acortan aquí.
 
-    local server_display="$SERVER_LABEL"
-    if [ -n "$SERVER_PORT" ]; then
-        server_display="${server_display} [${SERVER_PORT}]"
+# Emoji y nombre del mundo a partir de SERVER_LABEL ("Wetlands 🌱"):
+# el emoji pasa a ser la viñeta de la fila del mundo.
+WORLD_EMOJI="${SERVER_LABEL##* }"
+WORLD_NAME="${SERVER_LABEL% *}"
+if [ "$WORLD_EMOJI" = "$SERVER_LABEL" ]; then
+    WORLD_EMOJI="🌍"
+    WORLD_NAME="$SERVER_LABEL"
+fi
+WORLD_ROW="-# ${WORLD_EMOJI} ${WORLD_NAME}"
+if [ -n "$SERVER_PORT" ]; then
+    WORLD_ROW="${WORLD_ROW} · :${SERVER_PORT}"
+fi
+
+# Corta un texto a N caracteres agregando "…".
+truncate_text() {
+    local text="$1" max="$2"
+    if [ "${#text}" -gt "$max" ]; then
+        echo "${text:0:$((max - 1))}…"
+    else
+        echo "$text"
     fi
+}
 
-    local full_message="${emoji} ${message} | **Servidor:** ${server_display}"
+# Escapa el markdown de Discord en un nombre ("mr_cool_guy" saldría en cursiva).
+md_escape() {
+    printf '%s' "$1" | sed 's/[][\\*_~`|>]/\\&/g'
+}
 
-    # Enviar a Discord
+# Escapa un texto (puede tener varias líneas) para un string JSON.
+json_escape() {
+    printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/\t/ /g' \
+        | awk 'NR > 1 { printf "\\n" } { printf "%s", $0 }'
+}
+
+# 3725 -> "1 h 2 min" · 125 -> "2 min" · 40 -> "menos de 1 min"
+format_duration() {
+    local secs="$1"
+    local h=$((secs / 3600)) m=$(((secs % 3600) / 60))
+    if [ "$h" -gt 0 ]; then
+        echo "${h} h ${m} min"
+    elif [ "$m" -gt 0 ]; then
+        echo "${m} min"
+    else
+        echo "menos de 1 min"
+    fi
+}
+
+# Función para enviar notificación a Discord.
+# $1 = filas del mensaje; la fila del mundo se agrega siempre al final.
+send_discord_notification() {
+    local content
+    content=$(json_escape "$1
+${WORLD_ROW}")
+
+    # allowed_mentions vacío: un nombre como "everyone" no notifica a nadie.
     local response=$(curl -s -w "%{http_code}" -o /dev/null \
         -H "Content-Type: application/json" \
-        -d "{\"content\":\"${full_message}\"}" \
+        -d "{\"content\":\"${content}\",\"allowed_mentions\":{\"parse\":[]}}" \
         "$DISCORD_WEBHOOK_URL")
 
     if [ "$response" = "204" ] || [ "$response" = "200" ]; then
@@ -99,7 +154,8 @@ send_discord_notification() {
 #   IPv6: 2001:db8::11aa -> 2001:db8:*:*
 # Sin IP -> "?" (nunca sale vacío ni completo).
 mask_ip() {
-    local ip="$1"
+    local ip
+    ip=$(normalize_ip "$1")
     if [ -z "$ip" ]; then
         echo "?"
         return 0
@@ -123,10 +179,21 @@ mask_ip() {
     return 0
 }
 
+# Luanti escucha en IPv6 y loguea las IPv4 como "::ffff:83.51.10.20".
+# Sin quitar ese prefijo, mask_ip la trataba como IPv6 y publicaba "::*:*",
+# que Discord mostraba como ":::" (leía "*:*" como cursiva).
+normalize_ip() {
+    case "$1" in
+        ::ffff:*.*) echo "${1#::ffff:}" ;;
+        *) echo "$1" ;;
+    esac
+}
+
 # ¿Es una IP pública consultable? Rangos privados/reservados no se consultan
 # (la API los rechaza igual, así que evitamos la llamada).
 is_public_ip() {
-    local ip="$1"
+    local ip
+    ip=$(normalize_ip "$1")
     if [ -z "$ip" ]; then
         return 1
     fi
@@ -166,6 +233,9 @@ geo_lookup() {
     return 0
 }
 
+# Hora de entrada de cada jugador, para mostrar la duración al salir.
+declare -A JOINED_AT=()
+
 # Función para procesar líneas de log
 process_log_line() {
     local line="$1"
@@ -198,24 +268,31 @@ process_log_line() {
             local city="${geo%%|*}"
             local country="${geo##*|}"
             if [ -n "$city" ] && [ -n "$country" ]; then
-                where="**${city}, ${country}**"
+                # Se acorta la ciudad, nunca el país.
+                local room=$(( 26 - ${#country} - 2 ))
+                [ "$room" -lt 8 ] && room=8
+                where="$(truncate_text "$city" "$room"), ${country}"
             elif [ -n "$country" ]; then
-                where="**${country}**"
+                where="${country}"
             fi
         fi
 
-        # Cuerpo del mensaje según lo disponible
-        local body
+        # Fila de ubicación con lo disponible, acortada para celular.
+        # La IP va en `código` para que Discord no se coma los "*".
+        local place_row="-# 📍 "
         if [ -n "$where" ]; then
-            body="🎮 **${player_name}** se ha conectado desde ${where} (IP: ${masked})"
-        elif [ -n "$masked" ]; then
-            body="🎮 **${player_name}** se ha conectado (IP: ${masked})"
+            place_row+=$(truncate_text "$where" 26)
         else
-            body="🎮 **${player_name}** se ha conectado al servidor"
+            place_row+="Ubicación desconocida"
+        fi
+        if [ -n "$masked" ]; then
+            place_row+=" · \`${masked}\`"
         fi
 
+        JOINED_AT["$player_name"]=$(date +%s)
         log "Jugador conectado: ${player_name} (${player_ip:-sin IP})"
-        send_discord_notification "$body" "🟢"
+        send_discord_notification "🟢 **$(md_escape "$player_name")** entró
+${place_row}"
     fi
 
     # Detectar desconexión de jugador
@@ -228,18 +305,24 @@ process_log_line() {
             player_name="Jugador desconocido"
         fi
 
+        # Fila de sesión: cuánto jugó, si este monitor vio su entrada.
+        local session_row="-# ⏱️ Duración desconocida"
+        local joined="${JOINED_AT[$player_name]:-}"
+        if [ -n "$joined" ]; then
+            session_row="-# ⏱️ $(format_duration $(( $(date +%s) - joined ))) jugando"
+            unset 'JOINED_AT[$player_name]'
+        fi
+
         log "Jugador desconectado: $player_name"
-        send_discord_notification \
-            "**Jugador Desconectado:** $player_name se ha desconectado del servidor 👋" \
-            "🔴"
+        send_discord_notification "🔴 **$(md_escape "$player_name")** salió
+${session_row}"
     fi
 }
 
 # Enviar notificación de inicio
 log "Iniciando monitor de conexiones de Luanti..."
-send_discord_notification \
-    "**Monitor Iniciado:** Sistema de notificaciones activado correctamente ✅" \
-    "🤖"
+send_discord_notification "🤖 **Monitor activo**
+-# ✅ Aviso cada entrada y salida"
 
 # Monitorear logs en tiempo real
 log "Monitoreando logs de $CONTAINER_NAME..."
