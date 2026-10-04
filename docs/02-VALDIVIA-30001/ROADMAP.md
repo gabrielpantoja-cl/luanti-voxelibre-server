@@ -2,7 +2,8 @@
 
 Lista **única** de pendientes de Valdivia. Los demás documentos de esta carpeta
 describen cómo funciona cada pieza; lo que falta hacer se anota **aquí** (y se
-enlaza desde el documento de origen, no se duplica).
+enlaza desde el documento de origen, no se duplica). Las prioridades transversales
+viven en el [`ROADMAP.md`](../../ROADMAP.md) de la raíz.
 
 Última revisión: **2026-09-16**.
 

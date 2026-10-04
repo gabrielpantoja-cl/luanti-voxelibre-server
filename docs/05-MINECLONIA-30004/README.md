@@ -16,7 +16,7 @@ independiente de Luanti.
 | Mods custom | `wetlands_mineclonia_trampas` (única excepción — bloque trampa amistosa) |
 | Mobs | Sí — hostiles de noche, pacíficos de día |
 
-Documentación completa: [`index.md`](index.md). Instalación del game: [`install.md`](install.md).
+Documentación completa: [`index.md`](index.md). Pendientes: [`ROADMAP.md`](ROADMAP.md). Instalación del game: [`install.md`](install.md).
 
 ## Mod custom habilitado: `wetlands_mineclonia_trampas`
 

@@ -1,84 +1,67 @@
-# Roadmap GAELSIN
+# Roadmap — GAELSIN (puerto 30002)
 
-Estado del mundo: **agosto de 2026**, supervivencia pura, seed `GAELSIN`, puerto 30002. Documento de planificación — no describe cambios ya ejecutados ni configuración vigente (la fuente real es `server/config/luanti-gaelsin.conf`).
+Lista **única** de pendientes de GAELSIN, el mundo de supervivencia pura (seed
+`GAELSIN`, mapgen v7). Cómo funciona el mundo está en [`index.md`](index.md) y la
+configuración real en `server/config/luanti-gaelsin.conf`; lo que falta hacer se
+anota **aquí**. Las prioridades transversales viven en el
+[`ROADMAP.md`](../../ROADMAP.md) de la raíz.
 
-## Visión
+Última revisión: **2026-10-04**.
 
-GAELSIN es el mundo de supervivencia "adulto" del servidor. Comparte base con los demás mundos (VoxeLibre, puerto dedicado, sidecar Discord), pero su objetivo es ofrecer la experiencia canónica del modo supervivencia: noche peligrosa, decisiones de combate con peso, progresión por mérito y PvP global sin arenas separadas.
+Convención: `[ ]` pendiente · `[~]` en curso · `[x]` hecho (se mueve a
+«Hecho recientemente» y luego se borra; el detalle queda en git).
 
-La idea no es acumular contenido: es sostener una experiencia limpia donde lo importante sea la semilla, el mapa generado y las decisiones de los jugadores.
+Principios: supervivencia canónica (noche peligrosa, hambre, fuego), PvP en todo
+el mundo sin arena, cero creepers, y **pocos mods**, cada uno con propósito claro.
+GAELSIN no es Wetlands ni Valdivia: la identidad compasiva y plant-based no aplica.
 
-## Principios
+---
 
-- **Supervivencia canónica**: `creative_mode = false`, daño y fuego activos, hunger, mobs hostiles de noche.
-- **Diferenciación respetada**: GAELSIN no es Wetlands ni Valdivia. La identidad compasiva y plant-based no se aplica aquí.
-- **Decisiones reales**: PvP activo en todo el mundo, sin arena opt-in. La presión PvP forma parte del diseño.
-- **Cero creepers por seguridad**: política vigente del servidor para todos los mundos, mantenida aquí.
-- **Mínima intervención técnica**: pocos mods, todos con propósito claro (PvP, lastpos, ayuda minera, skins, protección, contacto admin).
+## 1. Verificar en el juego
 
-## Estado de hoy (referencia, no fuente de verdad)
+- [ ] **Protector con dos cuentas** — un jugador coloca un protector; otra cuenta
+      no puede romper ni construir dentro del área (radio 20).
+- [ ] **`/gabo`** llega al admin por Telegram desde GAELSIN.
 
-- **Puerto y contenedor**: 30002/UDP, `luanti-gaelsin-server`.
-- **Modo**: supervivencia dura.
-- **Seed**: `GAELSIN`, mapgen `v7`.
-- **Jugadores nuevos**: privilegios mínimos (`interact`, `shout`) vía `wetlands_gaelsin_newplayer`.
-- **PvP**: activo, sin arena.
-- **Mobs**: hostiles de noche, creepers bloqueados.
-- **Ayuda minera**: Oretracker (`orehud` + `xray`) como herramienta opt-in.
-- **Protección de áreas**: Protector Redo (`protector`, radio 20 nodos) — activado 2026-09-20.
-- **Contacto admin**: `/gabo <mensaje>` → Telegram (`wetlands_contact`) — activado 2026-09-20.
-- **Sidecar Discord**: `luanti-discord-notifier-gaelsin` con label `GAELSIN ⚔️ (:30002)`.
+## 2. Decisiones pendientes
 
-## Iniciativas en consideración
+- [ ] **Reset de temporada**: definir criterios (mapa demasiado explorado, pocos
+      jugadores activos) antes de que haga falta.
+- [ ] **Futuro del mundo**: supervivencia indefinida o rotación con otros seeds /
+      mapgens.
+- [ ] **Eventos opcionales** (torneos PvP con marcadores, cacerías de Elytra) sin
+      convertirlos en contenido permanente.
 
-### Corto plazo
+## 3. Deuda técnica y limpieza
 
-- Documentar experiencias de juego reales (encuentros PvP, expediciones al Nether, progresión de armaduras) para detectar fricciones de diseño.
-- Revisar periódicamente los logs del contenedor para detectar exploits, lag y desbalances de mobs.
-- Ajustar parámetros de spawn de mobs y densidades de minerales si los jugadores detectan escasez o exceso.
-- Mantener Oretracker como ayuda opt-in, con seguimiento cercano de sus pitfalls conocidos.
+- [ ] **Revisión periódica de logs** del contenedor: exploits, lag, desbalance de
+      mobs.
+- [ ] **Oretracker** (`orehud` + `xray`): seguir sus pitfalls conocidos →
+      [`oretracker.md`](oretracker.md).
+- [ ] **Spawn de mobs y densidad de minerales**: ajustar solo si los jugadores
+      reportan escasez o exceso.
 
-### Mediano plazo
+## 4. Contenido y experiencia (ideas, no comprometidas)
 
-- Evaluar un reset de temporada cuando el mapa se sienta demasiado explorado, documentando los criterios de decisión.
-- Considerar reglas opcionales por evento (torneos PvP con marcadores, ventanas de saqueo, cacerías de Elytra) sin convertirlas en contenido permanente.
-- Explorar integraciones con el mundo Plano (30003) y Mineclonia (30004) si surgen oportunidades de colaboración técnica (por ejemplo, compartir listas de jugadores o marcadores).
+- [ ] Registrar experiencias de juego reales (PvP, Nether, progresión de
+      armaduras) para detectar fricciones de diseño.
+- [ ] Mod de temporadas o climas que cambie el ritmo sin tocar reglas duras.
+- [ ] Estadísticas agregadas (muertes, jugadores únicos por mes) si el volumen lo
+      justifica.
 
-### Largo plazo
+## Lo que no se va a hacer
 
-- Decidir si GAELSIN se mantiene como supervivencia indefinida, o si entra en una rotación con otros seeds / mapgens.
-- Evaluar la introducción de un mod de temporadas o climas que cambie el ritmo del mundo sin tocar reglas duras.
-- Considerar la publicación de estadísticas agregadas (kills, muertes, jugadores únicos por mes) si el volumen de jugadores lo justifica.
+- **No** modo creativo ni inventario creativo global.
+- **No** NPCs ni vehículos temáticos.
+- **No** mover jugadores a otro mundo automáticamente.
+- **No** aplicar las reglas de Wetlands (compasivo, plant-based) sobre GAELSIN.
+- **No** `voxelibre_protection` (obsoleto); se usa `protector` (Protector Redo).
 
-## Decisiones explícitas que no se van a tomar
+---
 
-- **No** reintroducir modos creativos ni inventario creativo global. Sería un cambio de identidad.
-- **No** añadir NPCs ni vehículos temáticos. El mundo es supervivencia, no ambientación.
-- **No** mover a los jugadores a otro mundo automáticamente. La salida de GAELSIN debe ser decisión del jugador.
-- **No** superponer las reglas de Wetlands (compasivo, plant-based, sin daño) sobre GAELSIN.
-- **No** usar `voxelibre_protection` (obsoleto). Se usa `protector` (Protector Redo, TenPlus1).
+## Hecho recientemente
 
-## Alineación con el resto del servidor
-
-GAELSIN se planifica junto con los otros mundos según la arquitectura documentada en `AGENTS.md` y los principios del roadmap general (`ROADMAP.md` en la raíz):
-
-| Mundo | Puerto | Modo | Rol |
-|---|---:|---|---|
-| Wetlands | 30000 | Supervivencia compasiva | Identidad del servidor, plant-based, daño activo, sin PvP |
-| Valdivia | 30001 | Exploración / OSM | Recreación real, contención de mobs selectiva |
-| GAELSIN | 30002 | Supervivencia pura | PvP global, noche peligrosa, progresión dura |
-| Plano | 30003 | Construcción libre | Mineclonia plano, creativo sin daño, sin vínculo con supervivencia |
-| Mineclonia | 30004 | Creativo | Experiencia Minecraft fiel, sin daño |
-
-Las decisiones de GAELSIN deben coordinarse con las decisiones que afecten el servidor completo: actualizaciones de VoxeLibre, cambios de Luanti, parámetros de seguridad CSM, eventos globales (Halloween, Navidad) y límites de uso del VPS.
-
-## Criterios de finalización
-
-Una iniciativa se considera lista cuando:
-
-- está documentada en `docs/03-GAELSIN-30002/` o en este roadmap;
-- es verificable in-game (qué comando, qué lugar, qué regla);
-- no rompe la separación con Wetlands ni con Valdivia;
-- si requiere cambios de configuración, primero el `.conf` local y luego el `world.mt` autoritativo del VPS.
-
-> Este documento no es un plan operativo: registrar cambios reales en `docs/03-GAELSIN-30002/index.md` y mantener `server/config/luanti-gaelsin.conf` como fuente de verdad.
+| Fecha | Qué |
+|-------|-----|
+| 2026-09-20 | Protector Redo (`protector`, radio 20) activo |
+| 2026-09-20 | `/gabo <mensaje>` → Telegram (`wetlands_contact`) activo |

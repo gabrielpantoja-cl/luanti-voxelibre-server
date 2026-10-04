@@ -14,7 +14,7 @@ fork de VoxeLibre enfocado en clonar fielmente Minecraft vanilla.
 | Container | `luanti-mineclonia-server` |
 | Game base | Mineclonia 0.123.0 (NO VoxeLibre) |
 | Modo | Supervivencia, dano activo, sin PvP |
-| Mods custom | **Ninguno** — solo el game base |
+| Mods custom | `wetlands_mundos` (lista de mundos) + `wetlands_mineclonia_trampas` (bloque sorpresa) |
 | Seed | `mineclonia` |
 | Spawn | `-14,4.5,240` |
 | Max jugadores | 15 |
@@ -50,13 +50,14 @@ posible. Diferencias con VoxeLibre:
 Pedido explícito del usuario: *"la experiencia mas fiel al juego
 original de minecraft"*. Por eso:
 
-- **Cero mods custom** de Wetlands. Ni `wetlands_newplayer`, ni
-  WorldEdit, ni NPCs, ni nada. El game base Mineclonia provee todo.
+- **Mínimos mods custom**: solo `wetlands_mundos` y
+  `wetlands_mineclonia_trampas`. Ni `wetlands_newplayer`, ni WorldEdit,
+  ni NPCs. El game base Mineclonia provee el resto.
 - **Modo supervivencia** — mobs, hambre, crafting, muerte con drop.
   Fiel a Minecraft vanilla.
 - **Sin PvP, sin fire, sin TNT** — anti-grief en un servidor para ninos.
-- **Cero contenido de Wetlands** — este mundo no comparte mods ni
-  assets con los otros mundos. Es una "isla" dentro del servidor.
+- **Casi sin contenido de Wetlands** — solo comparte `wetlands_mundos`
+  (lista de mundos); ni assets ni reglas de los otros mundos.
 
 ## Instalacion del game base
 
@@ -127,14 +128,7 @@ luanti-mineclonia:
 
 ## Roadmap
 
-v0 (2026-08-01): creativo puro, sin mods, seed `mineclonia`.
-v1 (2026-09-13): supervivencia — mobs activos, dano, hambre.
-
-Cosas que se podrian agregar en el futuro (no estan):
-
-- WorldEdit para admins
-- Mas mods de calidad de vida (mapas, waypoints)
-- Coordenadas de "showcase" con builds destacados de la comunidad
+Pendientes, ideas e historial de versiones: [`ROADMAP.md`](./ROADMAP.md).
 
 ## Ver tambien
 

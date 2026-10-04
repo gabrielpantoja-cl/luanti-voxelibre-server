@@ -164,10 +164,13 @@ Edit `server/config/luanti-original.conf` in this repo. Push, pull on VPS, resta
 
 ## Current server settings (from `server/config/luanti-original.conf`)
 
-- `creative_mode = true`
-- `enable_damage = true` — damage is on globally. This is intentional: hostile mobs can hurt players at night, and the PvP arena relies on it. Non-arena PvP is prevented by mod logic (`pvp_arena`), not by this flag.
-- `only_peaceful_mobs = false` — hostile mobs spawn at night. Creepers are blocked separately by the `wetlands_no_creeper` mod. The landing page and README describe the overworld as "daytime safe, nighttime dangerous except Creepers".
-- `static_spawnpoint = 0,15,0`
+Wetlands is **hard survival** since 2026-07-31 (admin `gabo` keeps privileges via whitelist):
+
+- `creative_mode = false` (and `mcl_enable_creative_mode = false`)
+- `enable_damage = true`
+- `enable_pvp = false` — no PvP anywhere; the `pvp_arena` opt-in arena was retired.
+- `only_peaceful_mobs = false` — hostile mobs spawn at night. Creepers are blocked separately by the `wetlands_no_creeper` mod.
+- `static_spawnpoint = 655.1,18.5,243.9`
 - `max_users = 20`
 
 ## New player privileges
@@ -284,7 +287,7 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 
 | World | Container | Port | Config | Purpose |
 |-------|-----------|------|--------|---------|
-| Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main creative world — NPCs, mods, PvP arena |
+| Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main world — hard survival, no PvP, compassionate / plant-based identity |
 | Valdivia | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
 | GAELSIN | `luanti-gaelsin-server` | 30002/UDP | `luanti-gaelsin.conf` | Pure VoxeLibre survival world generated from seed `GAELSIN` (mapgen v7) — PvP on, hostile mobs at night, creepers blocked, no area protection; minimal mod set |
 | Plano | `luanti-plano-server` | 30003/UDP | `luanti-plano.conf` | Mundo Mineclonia **totalmente plano** — mapgen `flat` + bioma unico `Plains` (pasto / tierra / roca hasta bedrock), sin cuevas ni arboles, creativo sin dano. Reemplazo del retirado CTF (2026-09-13) |
@@ -427,11 +430,12 @@ Credentialed servers (`github`, `google-analytics`) intentionally stay in local 
 Detailed docs live under `docs/`, organized by world/port. Read these when you need specifics.
 
 ### Worlds (by port)
-- `docs/01-ORIGINAL-30000/` — Wetlands main creative world (port 30000)
+Each world folder has a `ROADMAP.md` (single list of pending work, same checklist format); cross-world priorities live in the root `ROADMAP.md`.
+- `docs/01-ORIGINAL-30000/` — Wetlands main world, hard survival without PvP (port 30000)
 - `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001); pending work lives in `docs/02-VALDIVIA-30001/ROADMAP.md`, area protection (two coexisting mods) in `proteccion.md`
 - `docs/03-GAELSIN-30002/` — GAELSIN survival world (port 30002)
 - `docs/04-PLANO-30003/` — Plano, mundo Mineclonia plano (port 30003) — antes CTF, retirado 2026-09-13
-- `docs/05-MINECLONIA-30004/` — Mineclonia creativo (port 30004) — antes planeado como `05-FUTBOL/`, redefinido 2026-08-01 a Mineclonia (fork de VoxeLibre).
+- `docs/05-MINECLONIA-30004/` — Mineclonia supervivencia (port 30004) — antes planeado como `05-FUTBOL/`, redefinido 2026-08-01 a Mineclonia (fork de VoxeLibre).
 
 ### Shared Configuration
 - `docs/00-SHARED/config/01-CONFIGURATION_HIERARCHY.md` — luanti-original.conf vs world.mt

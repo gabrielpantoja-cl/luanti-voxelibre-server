@@ -16,3 +16,5 @@ Mundo survival puro con VoxeLibre, generado con seed `GAELSIN` y mapgen v7.
 | Protección | Protector Redo (`protector`) — radio 20 nodos |
 | Contacto admin | `/gabo <mensaje>` → Telegram (`wetlands_contact`) |
 | Skins custom | 8 skins (ver [`skins.md`](skins.md)) |
+
+Pendientes e ideas: [`ROADMAP.md`](ROADMAP.md).

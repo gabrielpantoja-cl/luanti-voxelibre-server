@@ -22,6 +22,8 @@ su propio aviso; esto complementa el mensaje de entrada estándar del chat.
 
 ## Documentación de este mundo
 
+- [ROADMAP.md](ROADMAP.md) — **pendientes de Wetlands en un solo lugar** (verificaciones, decisiones, deuda técnica, contenido)
+
 ### Filosofía del servidor
 - [VEGAN_PHILOSOPHY.md](VEGAN_PHILOSOPHY.md) — 🌱 qué significa "compassivo y plant-based" en Wetlands, mods que lo implementan, qué se mantiene y qué se cambia
 

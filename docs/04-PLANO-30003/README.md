@@ -17,3 +17,4 @@ Reemplaza al antiguo mundo **CTF** (`capturetheflag` de rubenwardy), retirado el
 | Mods custom | Solo `wetlands_mundos` (`/mundos`) |
 
 Detalles completos del mapgen, deploy y troubleshooting: [`index.md`](./index.md).
+Pendientes e ideas: [`ROADMAP.md`](./ROADMAP.md).
