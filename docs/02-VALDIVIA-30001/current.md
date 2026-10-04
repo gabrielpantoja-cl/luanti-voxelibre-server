@@ -31,6 +31,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `server_rules` | Comando `/reglas` |
 | `voxelibre_tv` | Televisores decorativos interactivos para hogares y edificios; tres canales animados y luz al encenderse. |
 | `voxelibre_protection` | Protección de áreas para proteger el nuevo spawn y lugares comunitarios. |
+| `valdivia_home` | Desde 2026-10-04: pestaña **Mi casa** en el inventario de supervivencia (icono cama) con *Ir a mi casa*, *Ir al spawn (Plaza Chile)* y *Fijar mi casa aquí*; también `/sethome`, `/home`, `/spawn`. Viajar exige 3 s quieto (moverse o recibir daño cancela) y 30 s entre viajes; el admin (`server`) no tiene espera. No deja fijar la casa dentro del área protegida de otro jugador. La casa vive en la metadata del jugador. |
 | `valdivia_aviso_entrada` | Desde 2026-09-16: cuando alguien entra, los jugadores conectados ven `<nombre> entrando...` arriba a la izquierda (bajo el chat) durante 6 s; se apilan hasta 5. Constantes `DURATION`, `MAX_LINES` y `POSITION` en `init.lua`. |
 | `protector` | Protector Redo (desde 2026-09-16): los jugadores protegen sus construcciones colocando el bloque protector (cubo de radio 20; clic derecho muestra el área y agrega miembros). Convive con `voxelibre_protection`; `protector_spawn = 0` porque la Plaza ya está cubierta por `spawn_plaza_chile`. |
 | `valdivia_teleporter` | Teletransportador `/ir` — **deshabilitado** (coordenadas desactualizadas post-Arnis v2.9.0) |

@@ -28,10 +28,21 @@ historial de cada doc).
       `<nombre> entrando...` arriba a la izquierda sin tapar el chat; se va a los
       6 s. Si choca con el chat en celular o PC, ajustar `POSITION.y` en
       `valdivia_aviso_entrada/init.lua`.
+- [ ] **Pestaña «Mi casa»** (`valdivia_home`) — con una cuenta no-admin: abrir
+      el inventario, pestaña de la cama: fijar casa, ir a casa (3 s quieto; moverse
+      cancela), ir al spawn; pausa de 30 s entre viajes; no deja fijar casa en el
+      área protegida de otro.
 - [ ] **Texturas de stairs/slabs** tras el remapeo v2 (`mcl_stairs:stair_oak` y
       similares). → [`current.md`](current.md)
 
 ## 2. Decisiones pendientes
+
+- [ ] **Quitar el priv `teleport` a los jugadores.** Con él pueden `/teleport` a
+      cualquier coordenada o junto a otro jugador al instante, lo que anula la
+      espera/pausa de `/home` en supervivencia y deja aparecerse junto a
+      cualquiera sin invitación. Los viajes quedan cubiertos por «Mi casa» y el
+      menú «Lugares» del guía. Cambio: quitar `teleport` de `PRIVS` en
+      `valdivia_newplayer/init.lua`.
 
 - [ ] **Radio de Protector para una ciudad pública.** Hoy 20 (cubo de 41). Con
       ese radio un jugador puede bloquear un edificio emblemático o una calle.
@@ -126,6 +137,8 @@ historial de cada doc).
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-04 | Pestaña «Mi casa» en el inventario (`valdivia_home`): ir a mi casa, ir al spawn, fijar mi casa; `/sethome`, `/home`, `/spawn` |
+| 2026-10-04 | Fix: el admin `gabo` recibe todos los privilegios registrados al entrar (`valdivia_newplayer`) |
 | 2026-09-16 | Aviso en pantalla `<nombre> entrando...` para los conectados (`valdivia_aviso_entrada`) |
 | 2026-09-16 | Protector Redo para jugadores, conviviendo con `voxelibre_protection` → [`proteccion.md`](proteccion.md) |
 | 2026-09-16 | Vuelve la música de VoxeLibre; la discoteca la silencia solo adentro → [`discoteca.md`](discoteca.md) |
