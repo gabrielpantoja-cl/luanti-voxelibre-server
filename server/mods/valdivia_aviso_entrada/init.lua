@@ -5,9 +5,11 @@
 --
 -- Se carga en los mundos que lo habilitan en su .conf y world.mt.
 -- Complementa el "*** X joined the game" del chat, que se pierde facil entre
--- otros mensajes. Actualmente se usa en Valdivia y Wetlands.
+-- otros mensajes. Actualmente se usa en Valdivia, Wetlands y Mineclonia.
+-- Texto base en ingles; locale/*.es.tr lo traduce para clientes en espanol.
 
 local modname = minetest.get_current_modname()
+local S = minetest.get_translator(modname)
 
 local DURATION = 6          -- segundos que dura cada aviso
 local MAX_LINES = 5         -- avisos simultaneos por jugador
@@ -69,7 +71,7 @@ end
 
 minetest.register_on_joinplayer(function(player)
     local joiner = player:get_player_name()
-    local texto = joiner .. " entrando..."
+    local texto = S("@1 joining...", joiner)
     for _, other in ipairs(minetest.get_connected_players()) do
         if other:get_player_name() ~= joiner then
             mostrar(other, texto)

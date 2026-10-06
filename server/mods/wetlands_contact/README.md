@@ -1,6 +1,6 @@
 # wetlands_contact
 
-`/gabo <mensaje>` para Wetlands (puerto 30000) y Valdivia (puerto 30001): el
+`/gabo <mensaje>` para Wetlands (30000), Valdivia (30001), GAELSIN (30002) y Mineclonia (30004): el
 jugador escribe hasta 300 caracteres y el mod lo envía con un `POST` HTTPS
 asíncrono directo a Telegram o Discord. Wetlands y Valdivia usan **un solo bot
 Telegram**. El sidecar interno `wetlands-contact-relay` es el único consumidor
@@ -121,7 +121,8 @@ ACK elimina la cola; una deduplicación local evita repetirla si el ACK falla.
 
 El offset de `getUpdates` avanza en la misma transacción SQLite que guarda o
 descarta el update, y `update_id` es la clave de deduplicación. La cola acepta
-solo `original` y `valdivia`, respuestas de hasta 500 caracteres y resultados
+solo los mundos de `ALLOWED_WORLDS` (`original`, `valdivia`, `gaelsin`, `mineclonia`;
+al sumar uno, el relay reconstruye solo el `CHECK` de su SQLite al arrancar), respuestas de hasta 500 caracteres y resultados
 HTTP acotados. Al iniciar, el relay valida `getMe`, la identidad del bot y que
 no exista un webhook. La identidad queda ligada a la SQLite: cambiar a otro bot
 falla de forma segura y conserva las respuestas en cola. `/health` comprueba

@@ -14,7 +14,7 @@ fork de VoxeLibre enfocado en clonar fielmente Minecraft vanilla.
 | Container | `luanti-mineclonia-server` |
 | Game base | Mineclonia 0.123.0 (NO VoxeLibre) |
 | Modo | Supervivencia, dano activo, sin PvP |
-| Mods custom | `wetlands_mundos` (lista de mundos) + `wetlands_mineclonia_trampas` (bloque sorpresa) |
+| Mods custom | `wetlands_mundos` (lista de mundos) + `wetlands_mineclonia_trampas` (bloque sorpresa) + `wetlands_contact` (`/gabo`) + `valdivia_aviso_entrada` (aviso de entrada) |
 | Seed | `mineclonia` |
 | Spawn | `-14,4.5,240` |
 | Max jugadores | 15 |
@@ -111,7 +111,7 @@ luanti-mineclonia:
 |---|---|---|---|---|
 | Game | VoxeLibre | VoxeLibre | capturetheflag | **Mineclonia** |
 | Modo | Supervivencia | Supervivencia | Creativo plano | **Supervivencia** |
-| Mods custom | Muchos | Minimos | Cero | **Cero** |
+| Mods custom | Muchos | Minimos | Cero | **Pocos** |
 | PvP | No | Si | Si (arma) | **No** |
 | Dano | Si | Si | Si | **Si** |
 | Seed | Numerico | `GAELSIN` | Auto | **`mineclonia`** |

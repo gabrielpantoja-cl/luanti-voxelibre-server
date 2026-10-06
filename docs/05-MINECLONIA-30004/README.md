@@ -13,7 +13,7 @@ independiente de Luanti.
 | Creativo | No |
 | Daño | Sí |
 | PvP | No (desactivado, anti-grief) |
-| Mods custom | `wetlands_mineclonia_trampas` (única excepción — bloque trampa amistosa) |
+| Mods custom | `wetlands_mineclonia_trampas` (bloque trampa amistosa), `wetlands_contact` (`/gabo` → Telegram del admin, con respuestas), `valdivia_aviso_entrada` (aviso "X joining..."), `wetlands_mundos` |
 | Mobs | Sí — hostiles de noche, pacíficos de día |
 
 Documentación completa: [`index.md`](index.md). Pendientes: [`ROADMAP.md`](ROADMAP.md). Instalación del game: [`install.md`](install.md).

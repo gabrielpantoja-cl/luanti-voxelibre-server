@@ -25,7 +25,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 HOST = "0.0.0.0"
 PORT = 8788
 DB_PATH = "/data/relay.sqlite3"
-ALLOWED_WORLDS = frozenset({"original", "valdivia", "gaelsin"})
+ALLOWED_WORLDS = frozenset({"original", "valdivia", "gaelsin", "mineclonia"})
 POLL_TIMEOUT = 25
 HTTP_TIMEOUT = POLL_TIMEOUT + 10
 HEALTH_STARTUP_GRACE = HTTP_TIMEOUT + 60
@@ -39,7 +39,7 @@ MAX_PLAYER_BYTES = 64
 API_LIMIT = 20
 KEY_CONTEXT = "wetlands-contact-relay-v1"
 MARKER_RE = re.compile(
-    r"(?m)^\[\[wetlands_contact:v1;world=(original|valdivia|gaelsin);"
+    r"(?m)^\[\[wetlands_contact:v1;world=(" + "|".join(sorted(ALLOWED_WORLDS)) + r");"
     r"player_hex=([0-9a-f]{2,128});request=([0-9a-f]{64})\]\]$"
 )
 
@@ -85,19 +85,55 @@ def initialize_database() -> None:
                 processed_at INTEGER NOT NULL,
                 outcome TEXT NOT NULL
             );
-            CREATE TABLE IF NOT EXISTS reply_queue (
-                update_id INTEGER PRIMARY KEY,
-                world_id TEXT NOT NULL CHECK (world_id IN ('original', 'valdivia', 'gaelsin')),
-                player TEXT NOT NULL,
-                request_id TEXT NOT NULL,
-                text TEXT NOT NULL,
-                created_at INTEGER NOT NULL,
-                expires_at INTEGER NOT NULL
-            );
-            CREATE INDEX IF NOT EXISTS reply_queue_target
-                ON reply_queue(world_id, player, created_at);
             """
         )
+        ensure_reply_queue(conn)
+        conn.execute(
+            """CREATE INDEX IF NOT EXISTS reply_queue_target
+               ON reply_queue(world_id, player, created_at)"""
+        )
+
+
+def reply_queue_sql(table: str) -> str:
+    worlds = ", ".join(f"'{world}'" for world in sorted(ALLOWED_WORLDS))
+    return f"""CREATE TABLE {table} (
+        update_id INTEGER PRIMARY KEY,
+        world_id TEXT NOT NULL CHECK (world_id IN ({worlds})),
+        player TEXT NOT NULL,
+        request_id TEXT NOT NULL,
+        text TEXT NOT NULL,
+        created_at INTEGER NOT NULL,
+        expires_at INTEGER NOT NULL
+    )"""
+
+
+def ensure_reply_queue(conn: sqlite3.Connection) -> None:
+    """Create reply_queue, or rebuild it when its CHECK lacks an allowed world.
+
+    CREATE TABLE IF NOT EXISTS never alters an existing table, so adding a world
+    to ALLOWED_WORLDS needs this rebuild; queued replies are copied over.
+    """
+    row = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'reply_queue'"
+    ).fetchone()
+    if row is None:
+        conn.execute(reply_queue_sql("reply_queue"))
+        return
+    current = row[0]
+    if all(f"'{w}'" in current or f'"{w}"' in current for w in ALLOWED_WORLDS):
+        return
+    conn.commit()
+    conn.executescript(
+        "BEGIN IMMEDIATE;"
+        "DROP TABLE IF EXISTS reply_queue_new;"
+        + reply_queue_sql("reply_queue_new") + ";"
+        "INSERT INTO reply_queue_new (update_id, world_id, player, request_id, text,"
+        " created_at, expires_at) SELECT update_id, world_id, player, request_id, text,"
+        " created_at, expires_at FROM reply_queue;"
+        "DROP TABLE reply_queue;"
+        "ALTER TABLE reply_queue_new RENAME TO reply_queue;"
+        "COMMIT;"
+    )
 
 
 def validate_bot_identity() -> None:
