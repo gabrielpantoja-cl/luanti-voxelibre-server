@@ -142,6 +142,7 @@ historial de cada doc).
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-07 | Cabinas (y el pedestal de Wetlands) realmente indestructibles: VoxeLibre ignoraba `diggable = false`; dos jugadores rompieron cabinas |
 | 2026-10-07 | Limpieza: los destinos son solo cabinas (sin lugares fijos ni duplicados, sin prefijo `[TP]`); el NPC guía solo conversa |
 | 2026-10-07 | Cabina TP (diseño de Gaspi) + núcleo de viajes compartido por cabinas, guías y «Mi casa» (`valdivia_cabina`); `valdivia_teleporter` eliminado → [`cabina-tp.md`](cabina-tp.md) |
 | 2026-10-04 | Pestaña «Mi casa» en el inventario (`valdivia_home`): ir a mi casa, ir al spawn, fijar mi casa; `/sethome`, `/home`, `/spawn` |

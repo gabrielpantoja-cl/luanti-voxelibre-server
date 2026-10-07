@@ -12,7 +12,7 @@ Estado: **implementado 2026-10-07**.
 
 | Elemento | Detalle |
 |---|---|
-| Cabina | Dos nodos (`valdivia_cabina:cabina` abajo + `cabina_arriba`, que se crea sola). Brilla un poco (luz 5) para encontrarla de noche. Indestructible: no se rompe a golpes, con pistones ni con explosiones. |
+| Cabina | Dos nodos (`valdivia_cabina:cabina` abajo + `cabina_arriba`, que se crea sola). Brilla un poco (luz 5) para encontrarla de noche. Indestructible: no se rompe a golpes, con pistones ni con explosiones (grupos `unbreakable`/`indestructible` + `can_dig = false`; `diggable = false` solo **no** basta en VoxeLibre, ver `AGENTS.md`). |
 | Clic derecho | Abre el menú **«Cabina TP <nombre>: ¿a dónde vamos?»** con **las demás cabinas** por su nombre, en orden alfabético y en varias columnas si son muchas. La cabina donde estás no aparece. |
 | Viaje | Igual que «Mi casa»: **3 s quieto** (moverse o recibir daño cancela) y **30 s** entre viajes; el admin (`server`) viaja al instante. Se llega **frente a la puerta**, mirando la cabina. |
 | Destinos | **Solo cabinas.** Cada cabina que coloca el admin se registra sola como destino; quitarla la saca del menú. Para agregar un lugar a la red, se pone una cabina ahí. |

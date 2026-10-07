@@ -95,8 +95,12 @@ minetest.register_node("wetlands_teleporter:pad", {
 	light_source = 14,
 	walkable = true,
 	is_ground_content = false,
-	groups = {immovable = 1},
+	-- VoxeLibre (_mcl_autogroup) fuerza diggable = true salvo en nodos del
+	-- grupo unbreakable/indestructible: sin estos grupos se podia romper.
+	groups = {immovable = 1, unmovable_by_piston = 1, unbreakable = 1, indestructible = 1},
 	diggable = false,
+	can_dig = function() return false end,
+	on_blast = function() end,
 	on_rightclick = function(pos, node, clicker)
 		if clicker and clicker:is_player() then
 			mostrar_menu(clicker:get_player_name())

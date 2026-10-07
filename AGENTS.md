@@ -202,6 +202,16 @@ In `mod.conf`, use `optional_depends = mcl_core, mcl_farming`. Never depend on `
   end,
   ```
 
+### `diggable = false` is silently ignored in VoxeLibre
+VoxeLibre's `_mcl_autogroup` rewrites **every** node on load and sets `diggable = true` unless the node is in group `unbreakable` or `indestructible` (or is a liquid). A node with only `diggable = false` **can be dug by any player** — found 2026-10-07 when players broke `valdivia_cabina` cabins. For a truly indestructible node use:
+```lua
+groups = {unbreakable = 1, indestructible = 1, unmovable_by_piston = 1},
+diggable = false,
+can_dig = function() return false end,   -- second barrier
+on_blast = function() end,
+```
+Remove such nodes with a command/`minetest.remove_node`, not by digging.
+
 ### Entity migration when renaming / removing a mod
 When a mod that registered entities is renamed or deleted, already-spawned entities still reference the old namespace. The server then logs `LuaEntity name "old_mod:entity" not defined` and the entities sit as broken objects.
 

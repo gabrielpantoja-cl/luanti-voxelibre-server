@@ -8,6 +8,10 @@
 -- Reglas:
 --   * Solo el admin (priv server) coloca y quita cabinas (/cabina, /cabina quitar).
 --     Nadie las rompe a golpes, ni pistones ni explosiones.
+--   * OJO VoxeLibre: _mcl_autogroup pone diggable = true en TODOS los nodos al
+--     cargar, salvo los del grupo unbreakable/indestructible. Por eso
+--     "diggable = false" solo no basta (2026-10-07 dos jugadores rompieron
+--     cabinas). Se usan esos grupos + can_dig = false como segunda barrera.
 --   * Al colocarla, el admin le pone nombre y queda registrada como destino;
 --     se llega parado frente a la puerta, mirando la cabina.
 --   * Clic derecho (en cualquiera de las dos mitades) abre el menu con las
@@ -119,6 +123,7 @@ local comun = {
     is_ground_content = false,
     sunlight_propagates = false,
     diggable = false,
+    can_dig = function() return false end,
     drop = "",
     sounds = sounds,
     on_blast = function() end,
@@ -145,7 +150,8 @@ minetest.register_node(CABINA, def({
         {-0.5, -0.5, -0.5, 0.5, -0.375, 0.5},            -- zocalo
         {-0.4375, -0.375, -0.4375, 0.4375, 0.5, 0.4375}, -- cuerpo
     }},
-    groups = {not_in_creative_inventory = 1, unmovable_by_piston = 1},
+    groups = {not_in_creative_inventory = 1, unmovable_by_piston = 1,
+        unbreakable = 1, indestructible = 1},
     on_place = function(itemstack, placer, pointed_thing)
         local name = placer and placer:get_player_name() or ""
         if not is_admin(name) then
@@ -198,7 +204,8 @@ minetest.register_node(ARRIBA, def({
         {-0.5, 0.25, -0.5, 0.5, 0.5, 0.5},              -- cornisa
     }},
     light_source = 5,  -- brilla un poco: se encuentra de noche
-    groups = {not_in_creative_inventory = 1, unmovable_by_piston = 1},
+    groups = {not_in_creative_inventory = 1, unmovable_by_piston = 1,
+        unbreakable = 1, indestructible = 1},
     on_rightclick = function(pos, node, clicker)
         abrir_menu({x = pos.x, y = pos.y - 1, z = pos.z}, clicker)
     end,
