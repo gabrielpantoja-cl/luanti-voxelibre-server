@@ -85,9 +85,9 @@ end)
 minetest.register_node("wetlands_teleporter:pad", {
 	description = "Teletransportador de Wetlands",
 	tiles = {
-		"valdivia_teleporter_top.png",
-		"valdivia_teleporter_top.png",
-		"valdivia_teleporter_side.png",
+		"wetlands_teleporter_top.png",
+		"wetlands_teleporter_top.png",
+		"wetlands_teleporter_side.png",
 	},
 	drawtype = "nodebox",
 	node_box = {type = "fixed", fixed = {-0.5, -0.5, -0.5, 0.5, -0.1, 0.5}},
