@@ -107,6 +107,20 @@ la próxima fiesta parte desde la primera canción.
 | 1 | `discoteca_shakari.ogg` | 1:26,6 de 1:33 | Completa; el archivo termina con 6,9 s de silencio, que se salta |
 | 2 | `discoteca_billie_jean.ogg` | 4:50 de 4:54 | Completa; termina con 4,5 s de silencio. **Fuera de git** (ver abajo) |
 
+### Pedirle un tema al DJ
+
+**Clic derecho en el DJ** abre «DJ del Dreams: ¿qué tema quieres?» con todo el
+repertorio (el que suena aparece marcado). Al elegir uno:
+
+- Suena **para todos** los que están en la pista, desde el inicio, y la lista
+  sigue desde ese tema. En el chat de la pista aparece quién lo pidió.
+- Solo se pide **desde dentro** de la discoteca.
+- Pausa común de **30 s** entre pedidos (`PEDIDO_COOLDOWN`), para que nadie
+  acapare al DJ. Pedir el tema que ya suena no cuenta.
+
+Funciona moviendo el reloj común del DJ (`dj_epoch`) al inicio de la pista
+pedida y relanzando la música de cada jugador en la pista.
+
 ### Agregar una canción
 
 1. Convertir a mono 48 kHz Vorbis 96k, con la sonoridad igualada al resto:
@@ -142,4 +156,5 @@ volver a convertirlos desde el original.
 | 2026-07-04 | Fix detección de zona: colchón vertical (−2/+3) — la música ya no exige saltar ni subirse a la mesa del DJ; poll a 0.5 s |
 | 2026-07-04 | Coreografías de baile: 5 rutinas con pasos laterales, saltos, agachadas y brazos arriba; `/discoteca bailarin [estilo]` |
 | 2026-10-07 | Repertorio del DJ: lista de canciones con reloj común; se agrega Billie Jean (4:54, fuera de git) y se salta el silencio final de Shakari |
+| 2026-10-07 | Pedidos al DJ: clic derecho en el DJ para elegir el tema; suena para toda la pista (pausa de 30 s entre pedidos) |
 | 2026-09-16 | Vuelve la música de fondo de VoxeLibre (`mcl_game_music = true`) en toda la ciudad. La discoteca la silencia solo para quien entra (vía `/music off` silencioso, fade ~1 s, re-aplicado cada 5 s) y la devuelve al salir o reconectar; respeta a quien la apagó con `/music off`. `load_mod_mcl_music` no sirve: es mod del juego. |

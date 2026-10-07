@@ -199,6 +199,8 @@ end
 -- IMPORTANTE: la animacion se fija UNA sola vez en on_activate. Re-fijarla en
 -- on_step la reiniciaria al primer frame cada tick (modelo congelado).
 
+local abrir_pedidos  -- definida mas abajo (seccion PEDIDOS AL DJ)
+
 minetest.register_entity(modname .. ":dj", {
     initial_properties = {
         visual = "mesh",
@@ -223,6 +225,11 @@ minetest.register_entity(modname .. ":dj", {
         return minetest.serialize({yaw = self._yaw})
     end,
     on_punch = function() return true end,  -- indestructible (anti-grief)
+    on_rightclick = function(self, clicker)
+        if clicker and clicker:is_player() and abrir_pedidos then
+            abrir_pedidos(clicker:get_player_name())
+        end
+    end,
 })
 
 -- Aplica las poses de hueso de un paso (agachado / brazos arriba).
@@ -571,6 +578,94 @@ local function on_exit(player, name)
     if not has_players() then dj_epoch = nil end  -- proxima fiesta: desde la 1a pista
     -- Las luces se auto-detienen en el proximo cycle_lights cuando has_players()==false
 end
+
+-- ===========================================================================
+-- PEDIDOS AL DJ: clic derecho en el DJ -> elegir tema -> suena para TODOS
+-- ===========================================================================
+-- Pedir un tema mueve el reloj comun del DJ (dj_epoch) al inicio de esa pista
+-- y relanza la musica de todos los que estan en la pista: como cada uno sigue
+-- el mismo reloj, quedan sincronizados en el tema nuevo y la lista continua
+-- desde ahi. Solo se pide desde dentro de la discoteca, con una pausa comun
+-- entre pedidos para que nadie acapare al DJ.
+
+local FORM_PEDIDO = modname .. ":pedido"
+local PEDIDO_COOLDOWN = 30  -- segundos entre pedidos (para toda la pista)
+local ultimo_pedido = nil   -- minetest.get_us_time() del ultimo pedido
+
+-- Segundos del reloj del DJ en que empieza la pista i.
+local function inicio_pista(i)
+    local t = 0
+    for k = 1, i - 1 do t = t + PLAYLIST[k].dur end
+    return t
+end
+
+local function pedido_espera()
+    if not ultimo_pedido then return 0 end
+    local pasados = (minetest.get_us_time() - ultimo_pedido) / 1e6
+    return math.max(0, math.ceil(PEDIDO_COOLDOWN - pasados))
+end
+
+abrir_pedidos = function(name)
+    local sonando = has_players() and dj_now() or nil
+    local alto = 2.9 + #PLAYLIST * 1.0
+    local fs = {
+        "formspec_version[4]",
+        "size[9,", alto, "]",
+        "label[0.5,0.6;", minetest.colorize("#FF66CC",
+            minetest.formspec_escape("DJ del Dreams: ¿que tema quieres?")), "]",
+    }
+    for i, pista in ipairs(PLAYLIST) do
+        local texto = pista.titulo .. (i == sonando and "  (sonando)" or "")
+        table.insert(fs, ("button_exit[0.5,%s;8,0.8;pedir_%d;%s]"):format(
+            1.2 + (i - 1) * 1.0, i, minetest.formspec_escape(texto)))
+    end
+    local y = 1.4 + #PLAYLIST * 1.0
+    table.insert(fs, "label[0.5," .. y .. ";" .. minetest.formspec_escape(
+        "El tema suena para todos en la pista. Un pedido cada " ..
+        PEDIDO_COOLDOWN .. " s.") .. "]")
+    table.insert(fs, "button_exit[0.5," .. (y + 0.5) .. ";8,0.8;cerrar;" ..
+        minetest.formspec_escape("Cerrar") .. "]")
+    minetest.show_formspec(name, FORM_PEDIDO, table.concat(fs))
+end
+
+local function pedir_tema(name, i)
+    local pista = PLAYLIST[i]
+    if not pista then return end
+    if not players_in_disco[name] then
+        minetest.chat_send_player(name, "Entra a la pista de baile para pedirle un tema al DJ.")
+        return
+    end
+    if dj_now() == i then
+        minetest.chat_send_player(name, "Ese tema ya esta sonando.")
+        return
+    end
+    local espera = pedido_espera()
+    if espera > 0 then
+        minetest.chat_send_player(name, "El DJ esta ocupado: espera " .. espera ..
+            " s para pedir otro tema.")
+        return
+    end
+    ultimo_pedido = minetest.get_us_time()
+    dj_epoch = minetest.get_us_time() - inicio_pista(i) * 1e6
+    for jugador in pairs(players_in_disco) do
+        stop_music_for(jugador)
+        start_music_for(jugador)
+        minetest.chat_send_player(jugador, minetest.colorize("#FF66CC",
+            "\u{266A} " .. name .. " le pidio al DJ: " .. pista.titulo))
+    end
+    minetest.log("action", "[" .. modname .. "] " .. name .. " pidio " .. pista.sound)
+end
+
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+    if formname ~= FORM_PEDIDO then return end
+    for i = 1, #PLAYLIST do
+        if fields["pedir_" .. i] then
+            pedir_tema(player:get_player_name(), i)
+            break
+        end
+    end
+    return true
+end)
 
 -- ===========================================================================
 -- GLOBALSTEP: deteccion de zona (patron reutilizado de pvp_arena)

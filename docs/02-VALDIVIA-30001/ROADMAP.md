@@ -40,6 +40,10 @@ historial de cada doc).
       texturas se vean como el dibujo de Gaspi. → [`cabina-tp.md`](cabina-tp.md)
 - [ ] **Colocar la red de cabinas** en los puntos clave (Plaza, Catrico, Santa
       Elena, Huachocopihue, Costanera…).
+- [ ] **DJ del Dreams** — entrar a la pista: suena el repertorio y sale el
+      crédito; clic derecho al DJ → pedir Billie Jean → cambia para todos (probar
+      con dos cuentas que queden sincronizadas); segundo pedido antes de 30 s se
+      rechaza. → [`discoteca.md`](discoteca.md)
 - [ ] **Texturas de stairs/slabs** tras el remapeo v2 (`mcl_stairs:stair_oak` y
       similares). → [`current.md`](current.md)
 
@@ -142,6 +146,7 @@ historial de cada doc).
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-07 | DJ del Dreams: repertorio con reloj común, Billie Jean (fuera de git) y pedidos de temas que suenan para toda la pista → [`discoteca.md`](discoteca.md) |
 | 2026-10-07 | Cabinas (y el pedestal de Wetlands) realmente indestructibles: VoxeLibre ignoraba `diggable = false`; dos jugadores rompieron cabinas |
 | 2026-10-07 | Limpieza: los destinos son solo cabinas (sin lugares fijos ni duplicados, sin prefijo `[TP]`); el NPC guía solo conversa |
 | 2026-10-07 | Cabina TP (diseño de Gaspi) + núcleo de viajes compartido por cabinas, guías y «Mi casa» (`valdivia_cabina`); `valdivia_teleporter` eliminado → [`cabina-tp.md`](cabina-tp.md) |
