@@ -8,9 +8,10 @@
 -- Reglas:
 --   * Solo el admin (priv server) coloca y quita cabinas (/cabina, /cabina quitar).
 --     Nadie las rompe a golpes, ni pistones ni explosiones.
---   * Al colocarla, el admin le pone nombre y queda registrada como destino
---     "[TP] <nombre>"; se llega parado frente a la puerta, mirando la cabina.
---   * Clic derecho (en cualquiera de las dos mitades) abre el menu de destinos.
+--   * Al colocarla, el admin le pone nombre y queda registrada como destino;
+--     se llega parado frente a la puerta, mirando la cabina.
+--   * Clic derecho (en cualquiera de las dos mitades) abre el menu con las
+--     demas cabinas.
 
 local modname = minetest.get_current_modname()
 local F = minetest.formspec_escape
@@ -54,8 +55,8 @@ local function registrar(pos, nombre)
     local meta = minetest.get_meta(pos)
     meta:set_string("nombre", nombre)
     meta:set_string("infotext", "Cabina TP: " .. nombre .. "\n(clic derecho para viajar)")
-    valdivia_cabina.set_lugar(cabina_id(pos), "Cabina " .. nombre, dest,
-        {yaw = yaw, cabina = minetest.pos_to_string(pos)})
+    valdivia_cabina.set_lugar(cabina_id(pos), nombre, dest,
+        {yaw = yaw, cabina = minetest.pos_to_string(pos), v = 2})
 end
 
 local function contar_cabinas()
@@ -71,6 +72,7 @@ local function abrir_menu(pos, clicker)
     local nombre = minetest.get_meta(pos):get_string("nombre")
     valdivia_cabina.show_menu(clicker:get_player_name(), {
         titulo = "Cabina TP" .. (nombre ~= "" and (" " .. nombre) or "") .. ": ¿a donde vamos?",
+        excluir = cabina_id(pos),
     })
 end
 
@@ -171,7 +173,7 @@ minetest.register_node(CABINA, def({
                 "los viajeros llegaran ahi.")
         end
         -- Nombre provisorio ("Cabina 3") hasta que el admin escriba uno.
-        registrar(pos, tostring(contar_cabinas() + 1))
+        registrar(pos, "Cabina " .. (contar_cabinas() + 1))
         pedir_nombre(name, pos, "")
         return false
     end,

@@ -2,8 +2,8 @@
 -- valdivia_spawn_npc
 -- ============================================================================
 -- NPC guia estatico del spawn de Valdivia (puerto 30001).
--- Al hacerle click derecho abre un panel con: reglas del servidor,
--- teletransporte a lugares de la ciudad y el aviso de /gabo para pedir ayuda.
+-- Al hacerle click derecho abre un panel para conversar: reglas del servidor,
+-- como viajar (cabinas TP) y el aviso de /gabo para pedir ayuda.
 -- Ademas: mensaje de bienvenida al entrar.
 -- Apropiado para ninos 7+. Idioma: espanol.
 --
@@ -11,9 +11,8 @@
 -- solo para el admin (log de conexiones); los jugadores piden ayuda con /gabo
 -- (mod wetlands_contact), que llega directo al admin por Telegram.
 --
--- 2026-10-07: los destinos, el menu "Lugares" y el viaje viven en el nucleo
--- compartido valdivia_cabina (lo usan tambien las cabinas TP y "Mi casa").
--- Este mod solo abre ese menu; /lugar_guardar y /lugares se movieron alla.
+-- 2026-10-07: el guia ya NO teletransporta. Los viajes son solo con las
+-- Cabinas TP rojas (mod valdivia_cabina); el guia solo conversa y las explica.
 
 local modname = minetest.get_current_modname()
 
@@ -70,32 +69,22 @@ local F = minetest.formspec_escape
 local function show_guia(name)
     if not name then return end
     local fs = "formspec_version[4]" ..
-        "size[8.8,5.9]" ..
+        "size[8.8,6.1]" ..
         "label[0.5,0.6;" .. minetest.colorize(C_TITULO, F("Guia de Valdivia")) .. "]" ..
         "label[0.5,1.2;" .. F("Bienvenid@ a la ciudad. Yo te oriento:") .. "]" ..
         "button[0.5,1.8;7.8,0.8;btn_reglas;" .. F("Reglas del servidor") .. "]" ..
-        "button[0.5,2.8;7.8,0.8;btn_lugares;" .. F("Lugares de Valdivia") .. "]" ..
-        "label[0.5,4.0;" .. minetest.colorize(C_INFO,
+        "label[0.5,3.0;" .. F("Para viajar por la ciudad, busca las") .. "]" ..
+        "label[0.5,3.45;" .. F("cabinas TP rojas y haz clic derecho.") .. "]" ..
+        "label[0.5,4.2;" .. minetest.colorize(C_INFO,
             F("¿Necesitas ayuda? Escribe /gabo <mensaje>")) .. "]" ..
-        "button_exit[0.5,4.6;7.8,0.8;btn_cerrar;" .. F("Cerrar") .. "]"
+        "button_exit[0.5,4.8;7.8,0.8;btn_cerrar;" .. F("Cerrar") .. "]"
     minetest.show_formspec(name, FORM_GUIA, fs)
-end
-
-local function show_lugares(name)
-    if valdivia_cabina then
-        valdivia_cabina.show_menu(name, {on_back = show_guia})
-    else
-        minetest.chat_send_player(name, "Los viajes no estan disponibles ahora.")
-    end
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
     if formname ~= FORM_GUIA or not player or not player:is_player() then return end
-    local name = player:get_player_name()
     if fields.btn_reglas then
-        enviar_reglas(name)
-    elseif fields.btn_lugares then
-        show_lugares(name)
+        enviar_reglas(player:get_player_name())
     end
     return true
 end)

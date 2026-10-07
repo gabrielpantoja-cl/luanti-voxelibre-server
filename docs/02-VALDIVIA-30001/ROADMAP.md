@@ -34,8 +34,9 @@ historial de cada doc).
       área protegida de otro.
 - [ ] **Cabina TP** (`valdivia_cabina`) — como admin: `/cabina`, colocar mirando
       hacia la puerta, ponerle nombre; con una cuenta no-admin: clic derecho →
-      menú → viajar (3 s quieto) y llegar frente a la puerta mirando la cabina; el
-      guía y «Mi casa» siguen funcionando con la misma espera. Revisar que las
+      menú (solo las demás cabinas, sin duplicados ni `[TP]`) → viajar (3 s
+      quieto) y llegar frente a la puerta mirando la cabina; el guía ya no
+      ofrece viajes, solo conversa. Revisar que las
       texturas se vean como el dibujo de Gaspi. → [`cabina-tp.md`](cabina-tp.md)
 - [ ] **Colocar la red de cabinas** en los puntos clave (Plaza, Catrico, Santa
       Elena, Huachocopihue, Costanera…).
@@ -79,7 +80,7 @@ historial de cada doc).
 - [ ] **Mod `valdivia_borders`**: los bordes del área generada son vacío y los
       jugadores pueden caer. Detectar la cercanía al límite y devolverlos con un
       mensaje. → [`current.md`](current.md) (Fase 4.1)
-- [ ] **Más destinos en «Lugares»** (cabinas TP o `/lugar_guardar`): Mercado Fluvial,
+- [ ] **Más cabinas TP** en puntos clave: Mercado Fluvial,
       Costanera, Los Fundadores, Feria Fluvial, Universidad Austral, Puente Pedro
       de Valdivia. → [`guia-spawn.md`](guia-spawn.md)
 - [ ] **Señalética de calles** (nombres OSM) y mapa con puntos de interés.
@@ -141,6 +142,7 @@ historial de cada doc).
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-07 | Limpieza: los destinos son solo cabinas (sin lugares fijos ni duplicados, sin prefijo `[TP]`); el NPC guía solo conversa |
 | 2026-10-07 | Cabina TP (diseño de Gaspi) + núcleo de viajes compartido por cabinas, guías y «Mi casa» (`valdivia_cabina`); `valdivia_teleporter` eliminado → [`cabina-tp.md`](cabina-tp.md) |
 | 2026-10-04 | Pestaña «Mi casa» en el inventario (`valdivia_home`): ir a mi casa, ir al spawn, fijar mi casa; `/sethome`, `/home`, `/spawn` |
 | 2026-10-04 | Fix: el admin `gabo` recibe todos los privilegios registrados al entrar (`valdivia_newplayer`) |

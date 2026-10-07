@@ -12,7 +12,7 @@ Estado: **en producción** desde 2026-07-05.
 | Elemento | Detalle |
 |----------|---------|
 | NPC guías (uno por lugar) | Estáticos e inmortales (anti-grief), mismo comportamiento pero **skin distinto** cada uno, sobre `mcl_armor_character.b3d`. Definidos en la tabla `GUIAS`: spawn (`:guia`, indie-boy), Parque Catrico (`:guia_parque`, summer-gala), Santa Elena (`:guia_santa_elena`, vegan-activist), Huachocopihue / Plaza Londres (`:guia_huachocopihue`, hipster). |
-| Panel al click derecho | Reglas + menú de Lugares + aviso "¿Necesitas ayuda? Escribe /gabo <mensaje>" + Cerrar. |
+| Panel al click derecho | **Solo conversa** (desde 2026-10-07): Reglas + «Para viajar, busca las cabinas TP rojas» + aviso de `/gabo` + Cerrar. Ya no teletransporta. |
 | Bienvenida | **Un solo** mensaje ~3 s después de entrar: título amarillo + "Explora la capital de Los Ríos y haz amigos en la ciudad más linda de Chile". El MOTD se vació y el aviso "Modo pacífico activo" de `mcl_mobs` se silencia (des-registro de su `on_joinplayer`) para no duplicar saludos ni ensuciar el chat. |
 | Discord | **Retirado para jugadores (2026-09-10).** El QR/enlace llevaba meses sin uso; Discord queda solo para el admin (notificador de conexiones). Los jugadores contactan al admin con `/gabo` (`wetlands_contact`, llega por Telegram). El mod además des-registra el `/discord` de `server_rules` en Valdivia. |
 
@@ -21,7 +21,7 @@ Estado: **en producción** desde 2026-07-05.
 | Comando | Priv | Uso |
 |---------|------|-----|
 | `/spawn_guia [spawn\|parque\|santa_elena\|huachocopihue]` | `server` | Coloca un guía en tu posición con el skin de ese lugar (sin arg = spawn). Elimina cualquier guía duplicado en radio 6. |
-| `/lugar_guardar`, `/lugar_borrar`, `/lugares` | | Se movieron a `valdivia_cabina` (2026-10-07). Ver [`cabina-tp.md`](cabina-tp.md). |
+| `/lugares` | | Ahora en `valdivia_cabina`: lista las cabinas. `/lugar_guardar` se retiró (los destinos son solo cabinas). Ver [`cabina-tp.md`](cabina-tp.md). |
 
 ## Arquitectura
 
@@ -34,11 +34,9 @@ Estado: **en producción** desde 2026-07-05.
   el jugador más cercano dentro de `FACE_RANGE` (12 nodos), para que nunca lo
   encuentres de espalda. Misma convención de yaw que `wetlands_npcs`
   (`atan2(dir.z, dir.x) - π/2`) para el modelo `mcl_armor_character.b3d`.
-- **Destinos, menú y viaje (desde 2026-10-07)**: viven en el núcleo compartido
-  `valdivia_cabina` ([`cabina-tp.md`](cabina-tp.md)); el guía llama a
-  `valdivia_cabina.show_menu(name, {on_back = show_guia})`. Los viajes ahora
-  tienen la misma espera (3 s quieto) y pausa (30 s) que las cabinas y «Mi casa».
-  Lo que sigue describe el diseño original del menú, que se mantiene.
+- **Sin teletransporte (desde 2026-10-07)**: el menú «Lugares» del guía se
+  retiró; los viajes son solo con las Cabinas TP ([`cabina-tp.md`](cabina-tp.md)).
+  Los dos puntos siguientes describen el diseño anterior, como historia.
 - **Persistencia de lugares**: `worldpath/valdivia_lugares.json`
   (`minetest.write_json`). Los destinos públicos se identifican por nombre, pero
   sus coordenadas operativas se mantienen en el archivo del mundo y en el código

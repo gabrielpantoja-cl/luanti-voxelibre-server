@@ -3,8 +3,8 @@
 Bloque rojo de 1×2 diseñado por **Gaspi** (sobrino del admin) a partir de un
 dibujo en pizarra: cabina roja con techo rayado, letrero blanco **TP**, puerta
 blanca con manilla y pilares rayados. Es el punto físico de la red de transporte
-público de Valdivia (puerto 30001); los NPC guía siguen funcionando con el mismo
-menú.
+público de Valdivia (puerto 30001) y **la única forma de viajar** entre lugares:
+los NPC guía solo conversan (explican las reglas y que se viaja en cabina).
 
 Estado: **implementado 2026-10-07**.
 
@@ -13,9 +13,9 @@ Estado: **implementado 2026-10-07**.
 | Elemento | Detalle |
 |---|---|
 | Cabina | Dos nodos (`valdivia_cabina:cabina` abajo + `cabina_arriba`, que se crea sola). Brilla un poco (luz 5) para encontrarla de noche. Indestructible: no se rompe a golpes, con pistones ni con explosiones. |
-| Clic derecho | Abre el menú **«Cabina TP <nombre>: ¿a dónde vamos?»** con **todos** los destinos de la ciudad, en varias columnas si son muchos. Oculta el destino donde ya estás (radio 20). Las cabinas aparecen como `[TP] Cabina <nombre>`. |
+| Clic derecho | Abre el menú **«Cabina TP <nombre>: ¿a dónde vamos?»** con **las demás cabinas** por su nombre, en orden alfabético y en varias columnas si son muchas. La cabina donde estás no aparece. |
 | Viaje | Igual que «Mi casa»: **3 s quieto** (moverse o recibir daño cancela) y **30 s** entre viajes; el admin (`server`) viaja al instante. Se llega **frente a la puerta**, mirando la cabina. |
-| Destinos | Cada cabina que coloca el admin se registra sola como destino. Más los lugares fijos y los guardados con `/lugar_guardar`. |
+| Destinos | **Solo cabinas.** Cada cabina que coloca el admin se registra sola como destino; quitarla la saca del menú. Para agregar un lugar a la red, se pone una cabina ahí. |
 
 ## Comandos (admin, priv `server`)
 
@@ -24,9 +24,7 @@ Estado: **implementado 2026-10-07**.
 | `/cabina` | Te da una cabina. Colócala **mirando hacia donde quieres la puerta**; necesita 2 bloques de alto libres. Al colocarla pide un nombre (ej. «Costanera»). |
 | `/cabina nombre [nuevo]` | Renombra la cabina más cercana (5 bloques); sin texto abre el formulario. |
 | `/cabina quitar` | Quita la cabina más cercana (5 bloques) y la saca del menú. |
-| `/lugar_guardar <id> <nombre>` | Guarda tu posición (y hacia dónde miras) como destino. |
-| `/lugar_borrar <id>` | Quita un destino guardado (no cabinas). |
-| `/lugares` | Lista todos los destinos (cualquiera puede usarlo). |
+| `/lugares` | Lista las cabinas con su posición (cualquiera puede usarlo). |
 
 ## Arquitectura: núcleo compartido
 
@@ -35,20 +33,30 @@ Estado: **implementado 2026-10-07**.
 
 | Función | Para qué |
 |---|---|
-| `get_lugares()`, `get_lugar(id)`, `set_lugar(id, nombre, pos, extra)`, `remove_lugar(id)` | Lista de destinos: `DEFAULT_LUGARES` + `worldpath/valdivia_lugares.json` |
-| `show_menu(name, {titulo, on_back})` | Menú de destinos (el guía pasa `on_back` para su botón «Volver») |
+| `get_lugares()`, `get_lugar(id)`, `set_lugar(id, nombre, pos, extra)`, `remove_lugar(id)` | Lista de cabinas en `worldpath/valdivia_lugares.json` |
+| `show_menu(name, {titulo, excluir})` | Menú de cabinas (`excluir` = id de la cabina desde donde se abre) |
 | `request(player, pos, label, {yaw})` | Viaje con espera y pausa |
 
 Quién lo usa:
 
 - **Cabina TP** (`cabina.lua`).
-- **NPC guía** (`valdivia_spawn_npc`): su botón «Lugares de Valdivia» abre `show_menu`.
-  Antes tenía su propia copia de destinos, menú y `set_pos` sin espera.
 - **«Mi casa»** (`valdivia_home`): ir a casa / ir al spawn usan `request`.
 
-Un destino nuevo aparece en guías y cabinas a la vez, y hay una sola regla de
-espera/pausa para todos los viajes. Ambos mods declaran
-`optional_depends = valdivia_cabina` para cargar después del núcleo.
+`valdivia_home` declara `optional_depends = valdivia_cabina` para cargar después
+del núcleo.
+
+### Limpieza 2026-10-07 (sin duplicados)
+
+La primera versión mezclaba en el menú los 4 lugares fijos heredados del guía
+(Plaza, Catrico, Santa Elena, Huachocopihue) **y** las cabinas puestas en esos
+mismos sitios, con prefijo `[TP]`: cada lugar salía dos veces. Ahora:
+
+- Los destinos son **solo cabinas**; se retiraron `DEFAULT_LUGARES`,
+  `/lugar_guardar` y `/lugar_borrar`.
+- Al cargar, el núcleo descarta del JSON las entradas que no son cabina y quita
+  el prefijo viejo `Cabina ` de los nombres (entradas sin `v = 2`).
+- Los botones muestran solo el nombre (sin `[TP]`).
+- El NPC guía ya no teletransporta: solo conversa.
 
 ## Modelo y texturas
 

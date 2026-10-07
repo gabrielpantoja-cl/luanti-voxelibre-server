@@ -1,18 +1,17 @@
 -- valdivia_cabina: red de transporte publico de Valdivia (puerto 30001).
 --
--- Dos partes:
---   1. NUCLEO compartido (este archivo): la lista de destinos, el menu
---      "Lugares" y el viaje con espera/pausa. Lo usan las cabinas, los NPC
---      guia (valdivia_spawn_npc) y la pestana "Mi casa" (valdivia_home), asi
---      que un destino nuevo aparece en todos lados y hay UNA sola logica de
---      teletransporte. API publica: tabla global `valdivia_cabina`.
---   2. CABINA TP (cabina.lua): bloque rojo de 1x2 disenado por Gaspi. Clic
---      derecho abre el menu; cada cabina que coloca el admin se registra sola
---      como destino.
+-- La UNICA forma de viajar por la ciudad son las Cabinas TP: bloque rojo de
+-- 1x2 disenado por Gaspi (cabina.lua). Clic derecho en una cabina abre el menu
+-- con las DEMAS cabinas; cada cabina que coloca el admin se registra sola como
+-- destino. Los NPC guia solo conversan (2026-10-07).
 --
--- Destinos: DEFAULT_LUGARES + worldpath/valdivia_lugares.json (lugares que el
--- admin guarda con /lugar_guardar y cabinas colocadas). Mismo archivo que usaba
--- valdivia_spawn_npc antes de 2026-10-07.
+-- Este archivo es el nucleo: lista de cabinas, menu y viaje con espera/pausa.
+-- La pestana "Mi casa" (valdivia_home) reutiliza valdivia_cabina.request para
+-- ir a casa con las mismas reglas.
+--
+-- Destinos: worldpath/valdivia_lugares.json (solo cabinas). Los lugares fijos y
+-- /lugar_guardar se retiraron 2026-10-07: duplicaban las cabinas puestas en los
+-- mismos sitios.
 
 local modname = minetest.get_current_modname()
 
@@ -21,7 +20,6 @@ valdivia_cabina = {}
 local WARMUP = 3        -- segundos quieto antes de viajar
 local COOLDOWN = 30     -- segundos entre viajes
 local MOVE_TOL = 0.8    -- nodos que se puede mover durante la espera
-local HIDE_RADIUS = 20  -- el menu oculta el destino donde ya estas
 local PER_COLUMN = 8    -- botones por columna del menu
 
 valdivia_cabina.WARMUP = WARMUP
@@ -35,21 +33,12 @@ local C_WARN = "#FFB347"
 local F = minetest.formspec_escape
 local FORM_MENU = modname .. ":menu"
 
--- Lugares fijos. Los mas cercanos al jugador se ocultan (HIDE_RADIUS), asi un
--- mismo menu sirve de ida y de vuelta.
-local DEFAULT_LUGARES = {
-    {id = "plaza",         nombre = "Plaza de Chile (spawn)",        pos = {x = 3669.5, y = -8.5,  z = -3055.5}},
-    {id = "catrico",       nombre = "Parque Catrico",                pos = {x = 5025.5, y = -17.5, z = -7028.5}},
-    {id = "santa_elena",   nombre = "Santa Elena",                   pos = {x = 6323.1, y = -15.5, z = -7270}},
-    {id = "huachocopihue", nombre = "Huachocopihue (Plaza Londres)", pos = {x = 4195.5, y = -5.6,  z = -5943.8}},
-}
-
 -- ===========================================================================
--- 1. DESTINOS (persistencia en worldpath/valdivia_lugares.json)
+-- 1. DESTINOS = CABINAS (persistencia en worldpath/valdivia_lugares.json)
 -- ===========================================================================
 local STORAGE_FILE = minetest.get_worldpath() .. "/valdivia_lugares.json"
 
-local lugares = {}  -- { {id, nombre, pos, yaw?, cabina?}, ... }
+local lugares = {}  -- { {id, nombre, pos, yaw, cabina = "(x,y,z)"}, ... }
 
 local function index_by_id(id)
     for i, l in ipairs(lugares) do
@@ -62,7 +51,6 @@ local function copy_pos(p)
 end
 
 local function persist()
-    -- Se guarda la lista completa; al cargar, lo guardado pisa a los defaults.
     local f = io.open(STORAGE_FILE, "w")
     if not f then
         minetest.log("error", "[" .. modname .. "] No se pudo escribir " .. STORAGE_FILE)
@@ -99,23 +87,31 @@ function valdivia_cabina.get_lugares()
     return lugares
 end
 
+-- Carga solo cabinas. Migracion 2026-10-07: descarta los lugares fijos que la
+-- version anterior guardaba en el JSON y quita el prefijo "Cabina " del nombre.
 local function load_lugares()
-    for _, l in ipairs(DEFAULT_LUGARES) do
-        table.insert(lugares, {id = l.id, nombre = l.nombre, pos = copy_pos(l.pos)})
-    end
     local f = io.open(STORAGE_FILE, "r")
     if not f then return end
     local data = minetest.parse_json(f:read("*a") or "")
     f:close()
     if type(data) ~= "table" then return end
+    local migrado = false
     for _, l in ipairs(data) do
-        if l.id and l.pos and l.pos.x and l.pos.y and l.pos.z then
-            local entry = {id = l.id, nombre = l.nombre or l.id, pos = copy_pos(l.pos),
-                yaw = l.yaw, cabina = l.cabina}
-            local i = index_by_id(l.id)
-            if i then lugares[i] = entry else table.insert(lugares, entry) end
+        if l.cabina and l.id and l.pos and l.pos.x and l.pos.y and l.pos.z then
+            local nombre = l.nombre or l.id
+            if not l.v then  -- formato viejo: "Cabina <nombre>"
+                nombre = nombre:gsub("^Cabina ", "")
+                migrado = true
+            end
+            if not index_by_id(l.id) then
+                table.insert(lugares, {id = l.id, nombre = nombre, pos = copy_pos(l.pos),
+                    yaw = l.yaw, cabina = l.cabina, v = 2})
+            end
+        else
+            migrado = true
         end
     end
+    if migrado then persist() end
 end
 
 load_lugares()
@@ -197,24 +193,21 @@ end)
 -- ===========================================================================
 -- 3. MENU DE DESTINOS
 -- ===========================================================================
-local menu_ctx = {}  -- name -> {on_back = fn, visibles = {...}}
+local menu_ctx = {}  -- name -> {visibles = {...}}
 
--- opts.titulo: titulo del menu; opts.on_back(name): muestra un boton "Volver".
+-- opts.titulo: titulo; opts.excluir: id de la cabina desde donde se abre.
 function valdivia_cabina.show_menu(name, opts)
     opts = opts or {}
-    local player = minetest.get_player_by_name(name)
-    if not player then return end
-    local ppos = player:get_pos()
+    if not minetest.get_player_by_name(name) then return end
 
     local visibles = {}
     for _, l in ipairs(lugares) do
-        if vector.distance(ppos, l.pos) > HIDE_RADIUS then
-            table.insert(visibles, l)
-        end
+        if l.id ~= opts.excluir then table.insert(visibles, l) end
     end
-    menu_ctx[name] = {on_back = opts.on_back, visibles = visibles}
+    table.sort(visibles, function(a, b) return a.nombre:lower() < b.nombre:lower() end)
+    menu_ctx[name] = {visibles = visibles}
 
-    local titulo = opts.titulo or "Lugares de Valdivia"
+    local titulo = opts.titulo or "Cabinas TP de Valdivia"
     local ncols = math.max(1, math.ceil(#visibles / PER_COLUMN))
     local filas = math.min(math.max(#visibles, 1), PER_COLUMN)
     local ancho = 0.5 + ncols * 7.5
@@ -225,23 +218,18 @@ function valdivia_cabina.show_menu(name, opts)
         "label[0.5,0.6;", minetest.colorize(C_TITULO, F(titulo)), "]",
     }
     if #visibles == 0 then
-        table.insert(fs, "label[0.5,1.6;" .. F("Ya estas en el unico destino disponible.") .. "]")
+        table.insert(fs, "label[0.5,1.6;" .. F("Todavia no hay otras cabinas.") .. "]")
     end
     for i, l in ipairs(visibles) do
         local col = math.floor((i - 1) / PER_COLUMN)
         local fila = (i - 1) % PER_COLUMN
-        local etiqueta = (l.cabina and "[TP] " or "") .. l.nombre
         table.insert(fs, ("button_exit[%s,%s;7,0.8;tp_%d;%s]"):format(
-            0.5 + col * 7.5, 1.2 + fila * 1.0, i, F(etiqueta)))
+            0.5 + col * 7.5, 1.2 + fila * 1.0, i, F(l.nombre)))
     end
     local y = 1.4 + filas * 1.0
     table.insert(fs, "label[0.5," .. y .. ";" .. minetest.colorize(C_INFO,
-        F("Al viajar quedate quieto " .. WARMUP .. " s. [TP] = cabina.")) .. "]")
-    if opts.on_back then
-        table.insert(fs, "button[0.5," .. (y + 0.5) .. ";7,0.8;btn_volver;" .. F("Volver") .. "]")
-    else
-        table.insert(fs, "button_exit[0.5," .. (y + 0.5) .. ";7,0.8;btn_cerrar;" .. F("Cerrar") .. "]")
-    end
+        F("Al viajar quedate quieto " .. WARMUP .. " s.")) .. "]")
+    table.insert(fs, "button_exit[0.5," .. (y + 0.5) .. ";7,0.8;btn_cerrar;" .. F("Cerrar") .. "]")
     minetest.show_formspec(name, FORM_MENU, table.concat(fs))
 end
 
@@ -250,10 +238,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
     local name = player:get_player_name()
     local ctx = menu_ctx[name]
     if not ctx then return true end
-    if fields.btn_volver and ctx.on_back then
-        ctx.on_back(name)
-        return true
-    end
     for i, l in ipairs(ctx.visibles) do
         if fields["tp_" .. i] then
             valdivia_cabina.request(player, l.pos, l.nombre, {yaw = l.yaw})
@@ -272,51 +256,15 @@ minetest.register_on_leaveplayer(function(player)
 end)
 
 -- ===========================================================================
--- 4. COMANDOS DE DESTINOS
+-- 4. COMANDO /lugares (las cabinas se gestionan con /cabina, en cabina.lua)
 -- ===========================================================================
-minetest.register_chatcommand("lugar_guardar", {
-    params = "<id> <nombre visible>",
-    description = "Guarda tu posicion actual como destino del menu de Lugares (admin)",
-    privs = {server = true},
-    func = function(name, param)
-        local player = minetest.get_player_by_name(name)
-        if not player then return false, "Jugador no encontrado" end
-        local id, nombre = (param or ""):match("^(%S+)%s+(.+)$")
-        if not id then
-            id = (param or ""):match("^(%S+)$")
-            nombre = id
-        end
-        if not id then return false, "Uso: /lugar_guardar <id> <nombre visible>" end
-        if not id:match("^[%w_]+$") then
-            return false, "El id solo puede tener letras, numeros y _"
-        end
-        local pos = vector.round(player:get_pos())
-        valdivia_cabina.set_lugar(id, nombre, pos, {yaw = player:get_look_horizontal()})
-        return true, "Lugar '" .. id .. "' (" .. nombre .. ") guardado en " .. minetest.pos_to_string(pos)
-    end,
-})
-
-minetest.register_chatcommand("lugar_borrar", {
-    params = "<id>",
-    description = "Quita un destino del menu de Lugares (admin). Las cabinas se quitan con /cabina quitar",
-    privs = {server = true},
-    func = function(name, param)
-        local l = valdivia_cabina.get_lugar(param or "")
-        if not l then return false, "No existe el lugar '" .. (param or "") .. "'. Mira /lugares." end
-        if l.cabina then return false, "Es una cabina: parate al lado y usa /cabina quitar." end
-        valdivia_cabina.remove_lugar(l.id)
-        return true, "Lugar '" .. l.id .. "' quitado."
-    end,
-})
-
 minetest.register_chatcommand("lugares", {
-    description = "Lista los destinos de la red de Valdivia",
+    description = "Lista las cabinas TP de Valdivia",
     func = function()
-        if #lugares == 0 then return true, "No hay lugares registrados." end
-        local lines = {"== Lugares de Valdivia =="}
+        if #lugares == 0 then return true, "Todavia no hay cabinas TP." end
+        local lines = {"== Cabinas TP de Valdivia =="}
         for _, l in ipairs(lugares) do
-            table.insert(lines, "  " .. (l.cabina and "[TP] " or "") .. l.id .. " - " ..
-                l.nombre .. " " .. minetest.pos_to_string(vector.round(l.pos)))
+            table.insert(lines, "  " .. l.nombre .. " " .. minetest.pos_to_string(vector.round(l.pos)))
         end
         return true, table.concat(lines, "\n")
     end,
@@ -324,4 +272,4 @@ minetest.register_chatcommand("lugares", {
 
 dofile(minetest.get_modpath(modname) .. "/cabina.lua")
 
-minetest.log("action", "[" .. modname .. "] Loaded successfully (" .. #lugares .. " destinos)")
+minetest.log("action", "[" .. modname .. "] Loaded successfully (" .. #lugares .. " cabinas)")
