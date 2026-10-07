@@ -32,6 +32,13 @@ historial de cada doc).
       el inventario, pestaña de la cama: fijar casa, ir a casa (3 s quieto; moverse
       cancela), ir al spawn; pausa de 30 s entre viajes; no deja fijar casa en el
       área protegida de otro.
+- [ ] **Cabina TP** (`valdivia_cabina`) — como admin: `/cabina`, colocar mirando
+      hacia la puerta, ponerle nombre; con una cuenta no-admin: clic derecho →
+      menú → viajar (3 s quieto) y llegar frente a la puerta mirando la cabina; el
+      guía y «Mi casa» siguen funcionando con la misma espera. Revisar que las
+      texturas se vean como el dibujo de Gaspi. → [`cabina-tp.md`](cabina-tp.md)
+- [ ] **Colocar la red de cabinas** en los puntos clave (Plaza, Catrico, Santa
+      Elena, Huachocopihue, Costanera…).
 - [ ] **Texturas de stairs/slabs** tras el remapeo v2 (`mcl_stairs:stair_oak` y
       similares). → [`current.md`](current.md)
 
@@ -48,9 +55,6 @@ historial de cada doc).
       ese radio un jugador puede bloquear un edificio emblemático o una calle.
       Opciones: dejarlo y moderar con `/protector_remove`, o bajarlo a 8–10.
       → [`proteccion.md`](proteccion.md)
-- [ ] **`valdivia_teleporter` (`/ir`)**: está deshabilitado con coordenadas
-      desactualizadas y el menú «Lugares» del guía ya lo reemplaza. Decidir entre
-      borrarlo o marcarlo `DEPRECATED` (ya no tiene sentido «re-habilitarlo»).
 - [ ] **`valdivia_music`**: deshabilitado desde 2026-07-03 y ahora redundante con
       la música de VoxeLibre. Decidir entre borrarlo o marcarlo `DEPRECATED`.
 
@@ -75,7 +79,7 @@ historial de cada doc).
 - [ ] **Mod `valdivia_borders`**: los bordes del área generada son vacío y los
       jugadores pueden caer. Detectar la cercanía al límite y devolverlos con un
       mensaje. → [`current.md`](current.md) (Fase 4.1)
-- [ ] **Más destinos en «Lugares»** con `/lugar_guardar`: Mercado Fluvial,
+- [ ] **Más destinos en «Lugares»** (cabinas TP o `/lugar_guardar`): Mercado Fluvial,
       Costanera, Los Fundadores, Feria Fluvial, Universidad Austral, Puente Pedro
       de Valdivia. → [`guia-spawn.md`](guia-spawn.md)
 - [ ] **Señalética de calles** (nombres OSM) y mapa con puntos de interés.
@@ -137,6 +141,7 @@ historial de cada doc).
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-07 | Cabina TP (diseño de Gaspi) + núcleo de viajes compartido por cabinas, guías y «Mi casa» (`valdivia_cabina`); `valdivia_teleporter` eliminado → [`cabina-tp.md`](cabina-tp.md) |
 | 2026-10-04 | Pestaña «Mi casa» en el inventario (`valdivia_home`): ir a mi casa, ir al spawn, fijar mi casa; `/sethome`, `/home`, `/spawn` |
 | 2026-10-04 | Fix: el admin `gabo` recibe todos los privilegios registrados al entrar (`valdivia_newplayer`) |
 | 2026-09-16 | Aviso en pantalla `<nombre> entrando...` para los conectados (`valdivia_aviso_entrada`) |

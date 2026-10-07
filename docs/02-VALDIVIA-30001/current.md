@@ -34,7 +34,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `valdivia_home` | Desde 2026-10-04: pestaña **Mi casa** en el inventario de supervivencia (icono cama) con *Ir a mi casa*, *Ir al spawn (Plaza Chile)* y *Fijar mi casa aquí*; también `/sethome`, `/home`, `/spawn`. Viajar exige 3 s quieto (moverse o recibir daño cancela) y 30 s entre viajes; el admin (`server`) no tiene espera. No deja fijar la casa dentro del área protegida de otro jugador. La casa vive en la metadata del jugador. |
 | `valdivia_aviso_entrada` | Desde 2026-09-16: cuando alguien entra, los jugadores conectados ven `<nombre> entrando...` arriba a la izquierda (bajo el chat) durante 6 s; se apilan hasta 5. Constantes `DURATION`, `MAX_LINES` y `POSITION` en `init.lua`. |
 | `protector` | Protector Redo (desde 2026-09-16): los jugadores protegen sus construcciones colocando el bloque protector (cubo de radio 20; clic derecho muestra el área y agrega miembros). Convive con `voxelibre_protection`; `protector_spawn = 0` porque la Plaza ya está cubierta por `spawn_plaza_chile`. |
-| `valdivia_teleporter` | Teletransportador `/ir` — **deshabilitado** (coordenadas desactualizadas post-Arnis v2.9.0) |
+| `valdivia_cabina` | Desde 2026-10-07: **Cabinas TP** rojas de 1×2 (diseño de Gaspi) que abren el menú de destinos, más el **núcleo de viajes** compartido con guías y «Mi casa». Reemplaza a `valdivia_teleporter` (eliminado). Ver [`cabina-tp.md`](cabina-tp.md). |
 
 ### Aliases activos (`valdivia_aliases`)
 
@@ -806,7 +806,9 @@ El mundo en produccion cubre:
 -- Mostrar mensaje: "Has llegado al limite de la ciudad. Zona en expansion..."
 ```
 
-#### 4.2 Mod `valdivia_teleporter` -- Navegacion por la ciudad (HECHO -- 7 jun 2026)
+#### 4.2 Mod `valdivia_teleporter` -- Navegacion por la ciudad (HECHO -- 7 jun 2026; ELIMINADO 2026-10-07)
+
+> Reemplazado por las Cabinas TP de [`valdivia_cabina`](cabina-tp.md). Se conserva como historia.
 
 Materializado como **`valdivia_teleporter`** (`server/mods/valdivia_teleporter/`):
 - Comando **`/ir`** y nodo pedestal **`valdivia_teleporter:pad`** (`on_rightclick`) abren un
@@ -987,7 +989,9 @@ Definir un `<VALDIVIA_BBOX>` operativo que cubra el área urbana deseada.
 > Documento vivo: actualizar con cada nueva ubicacion verificada en el juego.
 > El bbox exacto de conversión se mantiene fuera del repositorio público.
 
-### Teletransportador `/ir` (menu del mod `valdivia_teleporter`)
+### Teletransportador `/ir` (menu del mod `valdivia_teleporter`) — eliminado 2026-10-07
+
+> Los destinos actuales viven en `valdivia_cabina` (`/lugares` in-game). Tabla historica:
 
 Destinos actuales (tabla `DESTINOS` en `server/mods/valdivia_teleporter/init.lua`):
 

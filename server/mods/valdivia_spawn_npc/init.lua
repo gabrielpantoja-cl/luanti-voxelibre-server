@@ -10,6 +10,10 @@
 -- 2026-09-10: se quito el QR/enlace de Discord (nadie lo usaba). Discord queda
 -- solo para el admin (log de conexiones); los jugadores piden ayuda con /gabo
 -- (mod wetlands_contact), que llega directo al admin por Telegram.
+--
+-- 2026-10-07: los destinos, el menu "Lugares" y el viaje viven en el nucleo
+-- compartido valdivia_cabina (lo usan tambien las cabinas TP y "Mi casa").
+-- Este mod solo abre ese menu; /lugar_guardar y /lugares se movieron alla.
 
 local modname = minetest.get_current_modname()
 
@@ -35,84 +39,10 @@ local GUIA_ENTITIES = {}
 for _, g in pairs(GUIAS) do GUIA_ENTITIES[g.entity] = true end
 
 local FORM_GUIA    = modname .. ":guia"
-local FORM_LUGARES = modname .. ":lugares"
 
 local C_TITULO = "#FFD966"
 local C_INFO   = "#8EC7FF"
 local C_OK     = "#7CFC7C"
-
--- Lugares por defecto (Plaza + Parque Catrico). El menu de Lugares
--- oculta automaticamente el destino mas cercano al jugador (ver HIDE_RADIUS),
--- asi que un mismo NPC parado en la Plaza NO ofrece "ir a la Plaza", y uno en
--- el Parque Catrico ofrece "volver a la Plaza". Bidireccional con una sola lista.
--- El admin puede agregar mas destinos en vivo con /lugar_guardar (persisten en
--- valdivia_lugares.json).
-local DEFAULT_LUGARES = {
-    {id = "plaza",          nombre = "Plaza de Chile (spawn)", pos = {x = 3669.5, y = -8.5,    z = -3055.5}},
-    {id = "catrico",        nombre = "Parque Catrico",               pos = {x = 5025.5, y = -17.5, z = -7028.5}},
-    {id = "santa_elena",    nombre = "Santa Elena",                  pos = {x = 6323.1, y = -15.5, z = -7270}},
-    {id = "huachocopihue",  nombre = "Huachocopihue (Plaza Londres)", pos = {x = 4195.5, y = -5.6,  z = -5943.8}},
-}
-
--- Radio (nodos) para ocultar en el menu el destino donde el jugador ya esta.
-local HIDE_RADIUS = 20
-
--- ============================================================================
--- 2. PERSISTENCIA DE LUGARES (worldpath/valdivia_lugares.json)
--- ============================================================================
-local STORAGE_FILE = minetest.get_worldpath() .. "/valdivia_lugares.json"
-
-local lugares = {}  -- lista runtime: { {id, nombre, pos}, ... }
-
-local function index_by_id(id)
-    for i, l in ipairs(lugares) do
-        if l.id == id then return i end
-    end
-    return nil
-end
-
-local function set_lugar(id, nombre, pos)
-    local entry = {id = id, nombre = nombre, pos = pos}
-    local i = index_by_id(id)
-    if i then
-        lugares[i] = entry
-    else
-        table.insert(lugares, entry)
-    end
-end
-
-local function persist_lugares()
-    local f = io.open(STORAGE_FILE, "w")
-    if not f then
-        minetest.log("error", "[" .. modname .. "] No se pudo escribir " .. STORAGE_FILE)
-        return false
-    end
-    f:write(minetest.write_json(lugares))
-    f:close()
-    return true
-end
-
-local function load_lugares()
-    -- Sembrar defaults primero.
-    for _, l in ipairs(DEFAULT_LUGARES) do
-        set_lugar(l.id, l.nombre, {x = l.pos.x, y = l.pos.y, z = l.pos.z})
-    end
-    -- Superponer lo persistido.
-    local f = io.open(STORAGE_FILE, "r")
-    if not f then return end
-    local content = f:read("*a")
-    f:close()
-    local data = minetest.parse_json(content or "")
-    if type(data) == "table" then
-        for _, l in ipairs(data) do
-            if l.id and l.pos and l.pos.x and l.pos.y and l.pos.z then
-                set_lugar(l.id, l.nombre or l.id, {x = l.pos.x, y = l.pos.y, z = l.pos.z})
-            end
-        end
-    end
-end
-
-load_lugares()
 
 -- ============================================================================
 -- 3. TEXTOS (chat)
@@ -152,75 +82,22 @@ local function show_guia(name)
 end
 
 local function show_lugares(name)
-    if not name then return end
-
-    -- Ocultar el destino donde el jugador ya esta (dentro de HIDE_RADIUS),
-    -- para no ofrecer "viajar a donde ya estas". Esto hace el sistema
-    -- bidireccional: en la Plaza se ofrece el Parque, en el Parque la Plaza.
-    local player = minetest.get_player_by_name(name)
-    local ppos = player and player:get_pos()
-    local visibles = {}
-    for _, l in ipairs(lugares) do
-        if not (ppos and vector.distance(ppos, l.pos) <= HIDE_RADIUS) then
-            table.insert(visibles, l)
-        end
-    end
-
-    local fs
-    if #visibles == 0 then
-        -- Nada que ofrecer: o no hay destinos, o el unico es donde ya estas.
-        local msg = (#lugares == 0)
-            and F("Todavia no hay lugares para viajar.")
-            or  F("Ya estas en el unico destino disponible.")
-        fs = "formspec_version[4]" ..
-            "size[8,3.2]" ..
-            "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]" ..
-            "label[0.5,1.4;" .. msg .. "]" ..
-            "label[0.5,1.9;" .. F("Un admin puede agregar mas con /lugar_guardar.") .. "]" ..
-            "button[0.5,2.3;7,0.8;btn_volver;" .. F("Volver") .. "]"
+    if valdivia_cabina then
+        valdivia_cabina.show_menu(name, {on_back = show_guia})
     else
-        local alto = 1.5 + (#visibles + 1) * 1.0
-        fs = "formspec_version[4]" ..
-            "size[8," .. alto .. "]" ..
-            "label[0.5,0.7;" .. minetest.colorize(C_TITULO, F("Lugares de Valdivia")) .. "]"
-        local y = 1.4
-        for _, l in ipairs(visibles) do
-            fs = fs .. "button[0.5," .. y .. ";7,0.8;tp_" .. l.id .. ";" .. F(l.nombre) .. "]"
-            y = y + 1.0
-        end
-        fs = fs .. "button[0.5," .. y .. ";7,0.8;btn_volver;" .. F("Volver") .. "]"
+        minetest.chat_send_player(name, "Los viajes no estan disponibles ahora.")
     end
-    minetest.show_formspec(name, FORM_LUGARES, fs)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-    if not player or not player:is_player() then return end
+    if formname ~= FORM_GUIA or not player or not player:is_player() then return end
     local name = player:get_player_name()
-
-    if formname == FORM_GUIA then
-        if fields.btn_reglas then
-            enviar_reglas(name)
-        elseif fields.btn_lugares then
-            show_lugares(name)
-        end
-        return
-
-    elseif formname == FORM_LUGARES then
-        if fields.btn_volver then
-            show_guia(name)
-            return
-        end
-        for _, l in ipairs(lugares) do
-            if fields["tp_" .. l.id] then
-                player:set_pos(l.pos)
-                minetest.chat_send_player(name, minetest.colorize(C_OK,
-                    "Viajando a " .. l.nombre .. "."))
-                minetest.log("action", "[" .. modname .. "] " .. name ..
-                    " -> " .. l.id .. " " .. minetest.pos_to_string(l.pos))
-                return
-            end
-        end
+    if fields.btn_reglas then
+        enviar_reglas(name)
+    elseif fields.btn_lugares then
+        show_lugares(name)
     end
+    return true
 end)
 
 -- ============================================================================
@@ -387,47 +264,6 @@ minetest.register_chatcommand("spawn_guia", {
         if not obj then return false, "Error al colocar el guia" end
         return true, g.label .. " colocado en " .. minetest.pos_to_string(vector.round(pos)) ..
             (quitados > 0 and (" (se quitaron " .. quitados .. " duplicados)") or "")
-    end,
-})
-
-minetest.register_chatcommand("lugar_guardar", {
-    params = "<id> <nombre visible>",
-    description = "Guarda tu posicion actual como destino del menu de Lugares (admin)",
-    privs = {server = true},
-    func = function(name, param)
-        local player = minetest.get_player_by_name(name)
-        if not player then return false, "Jugador no encontrado" end
-        param = param or ""
-        local id, nombre = param:match("^(%S+)%s+(.+)$")
-        if not id then
-            id = param:match("^(%S+)$")
-            nombre = id
-        end
-        if not id or id == "" then
-            return false, "Uso: /lugar_guardar <id> <nombre visible>"
-        end
-        -- id seguro para nombres de campo del formspec.
-        if not id:match("^[%w_]+$") then
-            return false, "El id solo puede tener letras, numeros y _"
-        end
-        local pos = vector.round(player:get_pos())
-        set_lugar(id, nombre, {x = pos.x, y = pos.y, z = pos.z})
-        persist_lugares()
-        return true, "Lugar '" .. id .. "' (" .. nombre .. ") guardado en " ..
-            minetest.pos_to_string(pos)
-    end,
-})
-
-minetest.register_chatcommand("lugares", {
-    description = "Lista los destinos del menu de Lugares de Valdivia",
-    func = function(name)
-        if #lugares == 0 then return true, "No hay lugares registrados." end
-        local lines = {"== Lugares de Valdivia =="}
-        for _, l in ipairs(lugares) do
-            table.insert(lines, "  " .. l.id .. " - " .. l.nombre .. " " ..
-                minetest.pos_to_string(l.pos))
-        end
-        return true, table.concat(lines, "\n")
     end,
 })
 

@@ -21,8 +21,7 @@ Estado: **en producción** desde 2026-07-05.
 | Comando | Priv | Uso |
 |---------|------|-----|
 | `/spawn_guia [spawn\|parque\|santa_elena\|huachocopihue]` | `server` | Coloca un guía en tu posición con el skin de ese lugar (sin arg = spawn). Elimina cualquier guía duplicado en radio 6. |
-| `/lugar_guardar <id> <nombre>` | `server` | Guarda tu posición actual como destino de teletransporte. El `id` sólo admite `[a-zA-Z0-9_]`. |
-| `/lugares` | — | Lista los destinos registrados con sus coordenadas. |
+| `/lugar_guardar`, `/lugar_borrar`, `/lugares` | | Se movieron a `valdivia_cabina` (2026-10-07). Ver [`cabina-tp.md`](cabina-tp.md). |
 
 ## Arquitectura
 
@@ -35,6 +34,11 @@ Estado: **en producción** desde 2026-07-05.
   el jugador más cercano dentro de `FACE_RANGE` (12 nodos), para que nunca lo
   encuentres de espalda. Misma convención de yaw que `wetlands_npcs`
   (`atan2(dir.z, dir.x) - π/2`) para el modelo `mcl_armor_character.b3d`.
+- **Destinos, menú y viaje (desde 2026-10-07)**: viven en el núcleo compartido
+  `valdivia_cabina` ([`cabina-tp.md`](cabina-tp.md)); el guía llama a
+  `valdivia_cabina.show_menu(name, {on_back = show_guia})`. Los viajes ahora
+  tienen la misma espera (3 s quieto) y pausa (30 s) que las cabinas y «Mi casa».
+  Lo que sigue describe el diseño original del menú, que se mantiene.
 - **Persistencia de lugares**: `worldpath/valdivia_lugares.json`
   (`minetest.write_json`). Los destinos públicos se identifican por nombre, pero
   sus coordenadas operativas se mantienen en el archivo del mundo y en el código
@@ -46,8 +50,8 @@ Estado: **en producción** desde 2026-07-05.
   la Plaza el menú ofrece "Parque Catrico"; en el Parque ofrece "Plaza de la
   República". Ambos guías comparten formspec/comportamiento vía
   `register_guia(entity, skin)`; sólo se plantan por separado (ver despliegue).
-- **No toca `valdivia_teleporter`**, que sigue deshabilitado por coordenadas
-  stale. Este guía lo reemplaza como puerta de entrada al teletransporte.
+- `valdivia_teleporter` (el viejo `/ir`) se eliminó el 2026-10-07; lo reemplazan
+  las Cabinas TP.
 
 ### Skins (uno distinto por lugar, a propósito)
 Cada guía usa un skin de jugador **64×32** sobre `mcl_armor_character.b3d`. Los

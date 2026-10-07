@@ -14,7 +14,7 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 | Contacto con el admin | `/gabo <mensaje>` (Telegram, con respuesta) |
 | Modo juego | Modo supervivencia para jugadores normales; `creative` solo para admin `gabo`. Sin fly global. Inventario creativo via metadata `gamemode=creative` set por `valdivia_newplayer` mod. |
 | Vehículos | 10 mods automobiles |
-| Teletransporte | NPC guía del spawn (`valdivia_spawn_npc`) → menú "Lugares". El viejo `valdivia_teleporter` (`/ir`) está deshabilitado (coords stale). |
+| Teletransporte | Cabinas TP rojas (`valdivia_cabina`, diseño de Gaspi) + NPC guía (`valdivia_spawn_npc`) → mismo menú "Lugares"; pestaña «Mi casa» en el inventario. El viejo `valdivia_teleporter` (`/ir`) fue eliminado (2026-10-07) y antes eratá deshabilitado (coords stale). |
 | Público | Sí (anunciado en lista de servidores) |
 
 ## Documentos
@@ -22,6 +22,7 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 - [`ROADMAP.md`](ROADMAP.md) — **Pendientes de Valdivia en un solo lugar** (verificaciones, decisiones, deuda técnica, contenido)
 - [`current.md`](current.md) — Mundo nuevo (Arnis v2.9.0, baked lighting, remapeado)
 - [`guia-spawn.md`](guia-spawn.md) — NPC guía del spawn: bienvenida, reglas, aviso de `/gabo` y teletransporte (`valdivia_spawn_npc`)
+- [`cabina-tp.md`](cabina-tp.md) — Cabina TP roja (diseño de Gaspi) y núcleo de viajes compartido (`valdivia_cabina`)
 - [`proteccion.md`](proteccion.md) — Protección de áreas: `voxelibre_protection` (Plaza, admin) + `protector` (bloque para jugadores), cómo conviven
 - [`discoteca.md`](discoteca.md) — Discoteca del Hotel Dreams (`valdivia_discoteca`) y su convivencia con la música de VoxeLibre
 - [`no-zombie-piglin.md`](no-zombie-piglin.md) — Bloqueo del huevo de Zombie Piglin + limpieza
