@@ -152,3 +152,8 @@ scripts/emergency_unblock.sh
 scripts/deploy-landing.sh
 scripts/deploy-nginx-fix.sh
 .env.example
+
+# Musica comercial: NO va al repo publico. Se copia al VPS con scp
+# (ver docs/02-VALDIVIA-30001/discoteca.md, seccion Repertorio del DJ).
+/*.mp3
+server/mods/valdivia_discoteca/sounds/discoteca_billie_jean.ogg

@@ -19,11 +19,19 @@ local storage = minetest.get_mod_storage()
 -- CONFIGURACION
 -- ===========================================================================
 
--- Track que suena en la discoteca. Es el nombre del .ogg SIN extension,
--- servido por wetlands-music. Para usar un rave 8-bit propio: dejar el .ogg en
--- valdivia_discoteca/sounds/ y cambiar esta constante.
-local MUSIC_TRACK = "discoteca_shakari"
-local MUSIC_GAIN = 0.9
+-- Repertorio del DJ: se toca en orden y en bucle. Cada pista es un .ogg en
+-- valdivia_discoteca/sounds/ (nombre SIN extension), mono 48 kHz Vorbis 96k.
+--   dur    = segundos que se tocan: hasta el ultimo sonido, SIN el silencio del
+--            final (medido con ffmpeg silencedetect), para no dejar huecos.
+--   gain   = volumen; iguala la sonoridad entre pistas (medida con ebur128).
+--   titulo = credito que aparece en pantalla al empezar la pista.
+-- Para agregar una cancion ver docs/02-VALDIVIA-30001/discoteca.md.
+local PLAYLIST = {
+    {sound = "discoteca_shakari",     dur = 86.6,  gain = 0.75,
+     titulo = "Ludwig Göransson - Shakari (Star Wars: The Mandalorian)"},
+    {sound = "discoteca_billie_jean", dur = 290.0, gain = 0.92,
+     titulo = "Michael Jackson - Billie Jean"},
+}
 local POLL_INTERVAL = 0.5         -- cada cuanto se revisa la posicion del jugador
 local LIGHT_INTERVAL = 2.0        -- cada cuanto cambian de color las luces
 local COLLISIONBOX = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3}  -- del registry humano
@@ -336,27 +344,94 @@ minetest.register_entity(modname .. ":dancer", {
 -- ===========================================================================
 -- MUSICA POR JUGADOR (to_player = volumen constante en toda la zona)
 -- ===========================================================================
--- Cada jugador que entra recibe su propio stream en bucle a volumen fijo,
--- independientemente de donde este dentro del salon. No hay atenuacion por
--- distancia. Al salir, el stream hace fade-out y se detiene.
+-- Cada jugador que entra recibe su propio stream a volumen fijo, sin
+-- atenuacion por distancia. El DJ lleva un RELOJ comun (dj_epoch): quien entra
+-- escucha la misma cancion y en el mismo punto que los que ya estaban
+-- (sound_play start_time). Al terminar una pista se encadena la siguiente.
+-- Cuando la disco queda vacia el reloj se reinicia: la proxima fiesta parte
+-- desde la primera cancion. Al salir, el stream hace fade-out y se detiene.
 
 local player_handles = {}  -- name -> sound handle activo
+local player_token = {}    -- name -> numero; invalida los minetest.after viejos
+local dj_epoch = nil       -- minetest.get_us_time() del inicio de la fiesta
+
+local PLAYLIST_TOTAL = 0
+for _, pista in ipairs(PLAYLIST) do PLAYLIST_TOTAL = PLAYLIST_TOTAL + pista.dur end
+
+-- Pista y segundo que "esta tocando el DJ" ahora.
+local function dj_now()
+    if not dj_epoch then dj_epoch = minetest.get_us_time() end
+    local t = ((minetest.get_us_time() - dj_epoch) / 1e6) % PLAYLIST_TOTAL
+    for i, pista in ipairs(PLAYLIST) do
+        if t < pista.dur then return i, t end
+        t = t - pista.dur
+    end
+    return 1, 0
+end
+
+local function show_credit(name, titulo)
+    local player = minetest.get_player_by_name(name)
+    if not player then return end
+    local hud_id = player:hud_add({
+        type = "text",
+        position = {x = 0.5, y = 0.75},
+        offset = {x = 0, y = 0},
+        text = "Música: " .. titulo,
+        alignment = {x = 0, y = 0},
+        scale = {x = 100, y = 100},
+        number = 0xFFFF00,
+    })
+    -- name y hud_id van como argumentos (no closure) para no tocar un jugador
+    -- que ya se fue.
+    minetest.after(5, function(player_name, id)
+        local p = minetest.get_player_by_name(player_name)
+        if p then p:hud_remove(id) end
+    end, name, hud_id)
+end
+
+local function fade_out(handle)
+    minetest.sound_fade(handle, 0.8, 0.0)
+    minetest.after(1.5, function() minetest.sound_stop(handle) end)
+end
+
+local function play_track_for(name, i, offset, token)
+    if player_token[name] ~= token or not minetest.get_player_by_name(name) then return end
+    local pista = PLAYLIST[i]
+    if player_handles[name] then fade_out(player_handles[name]) end
+    player_handles[name] = minetest.sound_play(pista.sound, {
+        to_player = name,
+        gain = pista.gain,
+        start_time = offset,
+    })
+    if offset < 1 then show_credit(name, pista.titulo) end
+    minetest.after(pista.dur - offset, function()
+        if player_token[name] ~= token then return end
+        -- Re-sincronizar con el reloj del DJ; si aun marca el final de esta
+        -- misma pista (timers imprecisos), pasar a la siguiente.
+        local j, off = dj_now()
+        if j == i and off > pista.dur - 1 then
+            j, off = i % #PLAYLIST + 1, 0
+        end
+        play_track_for(name, j, off, token)
+    end)
+end
 
 local function start_music_for(name)
-    if player_handles[name] then return end
-    player_handles[name] = minetest.sound_play(MUSIC_TRACK, {
-        to_player = name,
-        loop = true,
-        gain = MUSIC_GAIN,
-    })
+    if player_token[name] then return end
+    local token = minetest.get_us_time()
+    player_token[name] = token
+    local i, offset = dj_now()
+    play_track_for(name, i, offset, token)
+    -- Al entrar a media cancion igual se muestra que esta sonando.
+    if offset >= 1 then show_credit(name, PLAYLIST[i].titulo) end
 end
 
 local function stop_music_for(name)
-    if not player_handles[name] then return end
+    player_token[name] = nil  -- corta la cadena de pistas
     local h = player_handles[name]
+    if not h then return end
     player_handles[name] = nil
-    minetest.sound_fade(h, -0.8, 0.0)
-    minetest.after(1.5, function() minetest.sound_stop(h) end)
+    fade_out(h)
 end
 
 -- ===========================================================================
@@ -488,30 +563,12 @@ local function on_enter(player, name)
     minetest.chat_send_player(name, minetest.colorize("#FF66CC",
         "\u{266A} Bienvenido a la Discoteca de Valdivia \u{266A}"))
 
-    -- Mostrar créditos de Star Wars en pantalla (HUD) en color amarillo
-    local hud_id = player:hud_add({
-        hud_elem_type = "text",
-        position = {x = 0.5, y = 0.75},
-        offset = {x = 0, y = 0},
-        text = "Música: Ludwig Göransson - Shakari (Star Wars: The Mandalorian)",
-        alignment = {x = 0, y = 0},
-        scale = {x = 100, y = 100},
-        number = 0xFFFF00,
-    })
-
-    -- Limpiar el texto de la pantalla después de 5 segundos
--- Pasamos name y hud_id como argumentos directos para evitar problemas de closures
-minetest.after(5, function(player_name, hud_id_to_remove)
-    local p = minetest.get_player_by_name(player_name)
-    if p then -- Si devuelve el objeto, el jugador sigue conectado. NO USAR is_player_connected
-        p:hud_remove(hud_id_to_remove)
-    end
-end, name, hud_id)
 end
 
 local function on_exit(player, name)
     stop_music_for(name)
     restore_mcl_music(player)
+    if not has_players() then dj_epoch = nil end  -- proxima fiesta: desde la 1a pista
     -- Las luces se auto-detienen en el proximo cycle_lights cuando has_players()==false
 end
 
@@ -557,6 +614,7 @@ minetest.register_on_leaveplayer(function(player)
     stop_music_for(name)  -- siempre detiene, sea o no que estaba en la disco
     players_in_disco[name] = nil
     restore_mcl_music(player)
+    if not has_players() then dj_epoch = nil end
 end)
 
 -- Si el servidor murio con el jugador adentro, on_leaveplayer no corrio:

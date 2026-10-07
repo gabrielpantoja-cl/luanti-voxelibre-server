@@ -94,6 +94,41 @@ Para reemplazarlo por música rave 8-bit real:
 
 ---
 
+## Repertorio del DJ
+
+Desde 2026-10-07 el DJ toca una **lista de canciones en orden y en bucle**
+(tabla `PLAYLIST` en `init.lua`), con un **reloj común**: quien entra escucha la
+misma canción y en el mismo punto que los demás (`sound_play` con `start_time`).
+Al empezar cada canción aparece su crédito en amarillo. Si la disco queda vacía,
+la próxima fiesta parte desde la primera canción.
+
+| # | Pista (`sounds/`) | Se toca | Nota |
+|---|---|---|---|
+| 1 | `discoteca_shakari.ogg` | 1:26,6 de 1:33 | Completa; el archivo termina con 6,9 s de silencio, que se salta |
+| 2 | `discoteca_billie_jean.ogg` | 4:50 de 4:54 | Completa; termina con 4,5 s de silencio. **Fuera de git** (ver abajo) |
+
+### Agregar una canción
+
+1. Convertir a mono 48 kHz Vorbis 96k, con la sonoridad igualada al resto:
+   ```bash
+   ffmpeg -i entrada.mp3 -map_metadata -1 -vn      -af "loudnorm=I=-16:TP=-3.5:LRA=11,alimiter=limit=0.6:level=false"      -ac 1 -ar 48000 -c:a libvorbis -b:a 96k      server/mods/valdivia_discoteca/sounds/discoteca_<nombre>.ogg
+   ```
+2. Medir dónde termina el sonido (para `dur`) y la sonoridad (para `gain`):
+   ```bash
+   ffmpeg -i discoteca_<nombre>.ogg -af silencedetect=n=-45dB:d=0.5 -f null -
+   ffmpeg -i discoteca_<nombre>.ogg -af ebur128 -f null -
+   ```
+3. Agregar la fila a `PLAYLIST` (`sound`, `dur`, `gain`, `titulo`) y reiniciar Valdivia.
+
+**Música comercial = fuera del repo público.** Una grabación comercial completa
+no se commitea (el repo es público: sería redistribuirla). Se agrega a
+`.gitignore` y se copia al VPS:
+```bash
+scp server/mods/valdivia_discoteca/sounds/discoteca_<nombre>.ogg   $VPS_USER@$VPS_HOST:~/luanti-voxelibre-server/server/mods/valdivia_discoteca/sounds/
+```
+El VPS es la única copia en servidor de esos archivos: si se pierde, hay que
+volver a convertirlos desde el original.
+
 ## Historial
 
 | Fecha | Evento |
@@ -106,4 +141,5 @@ Para reemplazarlo por música rave 8-bit real:
 | 2026-07-03 | Skins de bailarines ampliados a 12 (rave, festivos, hipster, clásicos) |
 | 2026-07-04 | Fix detección de zona: colchón vertical (−2/+3) — la música ya no exige saltar ni subirse a la mesa del DJ; poll a 0.5 s |
 | 2026-07-04 | Coreografías de baile: 5 rutinas con pasos laterales, saltos, agachadas y brazos arriba; `/discoteca bailarin [estilo]` |
+| 2026-10-07 | Repertorio del DJ: lista de canciones con reloj común; se agrega Billie Jean (4:54, fuera de git) y se salta el silencio final de Shakari |
 | 2026-09-16 | Vuelve la música de fondo de VoxeLibre (`mcl_game_music = true`) en toda la ciudad. La discoteca la silencia solo para quien entra (vía `/music off` silencioso, fade ~1 s, re-aplicado cada 5 s) y la devuelve al salir o reconectar; respeta a quien la apagó con `/music off`. `load_mod_mcl_music` no sirve: es mod del juego. |
