@@ -17,7 +17,7 @@ sobre **Cloudflare R2** en vez de Drive. La sección histórica está al final.
 │    ├─ Monta ./server/worlds  -> /worlds  (ro)
 │    ├─ Monta ./server/backups -> /backups
 │    ├─ Cron cada 12h (00:00 y 12:00) -> scripts/backup.sh
-│    │     · sqlite3 .backup (snapshot consistente) de map/auth de los 3 mundos
+│    │     · sqlite3 .backup (snapshot consistente) de map/auth de los 4 mundos respaldados
 │    │     · rsync del resto excluyendo copias .sqlite.* y artefactos -wal/-shm
 │    │     · tar.gz -> server/backups/luanti_worlds_backup_<fecha>.tar.gz  (~1.7 GB)
 │    │     · rotación local inline: conserva los últimos 8 (≈4 días)
@@ -32,8 +32,9 @@ sobre **Cloudflare R2** en vez de Drive. La sección histórica está al final.
        · logs en ~/backups/luanti/  (cron.log + offsite-<fecha>.log)
 ```
 
-**Mundos incluidos:** `original` (Wetlands), `valdivia` y `gaelsin`, todos en el
-mismo tarball. Valdivia entra como `./valdivia/map.sqlite` + `auth.sqlite`.
+**Mundos incluidos:** `original` (Wetlands), `valdivia`, `gaelsin` y `mineclonia`
+(agregado 2026-10-08), todos en el mismo tarball. `plano` queda fuera a proposito
+(poco visitado). Valdivia entra como `./valdivia/map.sqlite` + `auth.sqlite`.
 
 ## Qué se implementó (vs. el plan de marzo)
 

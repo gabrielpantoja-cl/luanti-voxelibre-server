@@ -1,5 +1,6 @@
 #!/bin/bash
-# Backup de los 3 mundos Luanti: original (Wetlands, ex "world"), valdivia, gaelsin.
+# Backup de 4 mundos Luanti: original (Wetlands, ex "world"), valdivia, gaelsin, mineclonia.
+# "plano" (30003) queda fuera a proposito: poco visitado, no justifica el espacio offsite (2026-10-08).
 # Hace snapshot consistente de SQLite con `sqlite3 .backup`, copia el resto
 # con rsync excluyendo basura, y comprime el staging a tar.gz.
 # Corre dentro del contenedor luanti-voxelibre-backup (Alpine + dcron).
@@ -9,7 +10,7 @@ BACKUP_DIR="/backups"
 WORLD_DIR="/worlds"
 DATE=$(date +%Y%m%d-%H%M%S)
 BACKUP_NAME="luanti_worlds_backup_${DATE}"
-WORLDS="original valdivia gaelsin"
+WORLDS="original valdivia gaelsin mineclonia"
 MAX_BACKUPS=8
 
 mkdir -p "$BACKUP_DIR"
