@@ -31,7 +31,6 @@ load_mod_valdivia_spawn_npc = true
 load_mod_valdivia_aviso_entrada = true
 
 # Proteccion (solo protector, NO voxelibre_protection)
-load_mod_voxelibre_protection = false
 load_mod_protector = true
 
 # Anti-grief
