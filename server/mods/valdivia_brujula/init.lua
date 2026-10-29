@@ -54,7 +54,7 @@ local function update_hud(player)
 
     if not hud_ids[name] then
         hud_ids[name] = player:hud_add({
-            hud_elem_type = "text",
+            type = "text",
             position   = {x = 0.82, y = 0.06},
             offset     = {x = 0,    y = 0},
             alignment  = {x = 0,    y = 0},
