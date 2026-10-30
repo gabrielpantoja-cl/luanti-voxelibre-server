@@ -136,7 +136,7 @@
     },
     "transeunte_gonzalo": {
       "original": "transeunte_gonzalo.png",
-      "fuente": "mcs:classic-gray-trenchcoat-suit-3fa124",
+      "fuente": "mcs:bulgarian-trench-coat-2-1493a0",
       "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_gonzalo.png",
       "usa": "valdivia_transeuntes · Gonzalo (oficinista)"
     },
