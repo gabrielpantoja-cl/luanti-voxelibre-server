@@ -101,11 +101,21 @@ end
 
 -- Aplica danio al infractor.
 --
--- Dos capas a proposito: primero el punch normal (anima, suena y respeta la
--- armadura) y, si no bajo nada, se descuenta a mano. En Valdivia los jugadores
--- no-admin estan en gamemode creativo (valdivia_newplayer, para el inventario
--- completo) y VoxeLibre les anula el danio del punch: verificado en produccion
--- el 2026-10-30, hp = 20 durante dos persecuciones enteras.
+-- Dos capas a proposito:
+--  1. El punch normal: anima, suena, empuja y gasta durabilidad de armadura.
+--  2. El complemento a mano, porque el punch solo casi nunca entrega el danio
+--     pedido. Dos razones comprobadas en produccion el 2026-10-30:
+--     los jugadores no-admin estan en gamemode creativo (valdivia_newplayer,
+--     para el inventario completo) y VoxeLibre les anula el punch; y con
+--     armadura puesta el golpe de 6 llegaba como 1-2. Se completa hasta el
+--     danio pedido con set_hp.
+--
+-- ⚠️ El motivo del set_hp NO puede ser `punch`: mcl_damage.from_punch hace
+-- `mcl_reason.direct = object` y enseguida `direct:get_luaentity()`, asi que un
+-- motivo `punch` sin `object` tumba el servidor entero
+-- (mcl_damage/init.lua:101, "attempt to index field 'direct'"). Pasa por
+-- AsyncErr y apaga Luanti: nos tiro Valdivia el 2026-10-30 14:36. Con
+-- `type = "set_hp"` mcl_damage cae en su rama `generic` y no indexa nada.
 local function golpear(nombre, danio, fuente, dir)
     local player = minetest.get_player_by_name(nombre)
     if not player then return end
@@ -124,10 +134,16 @@ local function golpear(nombre, danio, fuente, dir)
     minetest.after(0, function()
         local p = minetest.get_player_by_name(nombre)
         if not p then return end
-        if p:get_hp() >= antes then
+
+        local ahora = p:get_hp()
+        if ahora <= 0 then return end
+
+        -- Completar hasta el danio pedido (la armadura o el modo creativo se
+        -- comieron el resto).
+        if (antes - ahora) < danio then
             local nuevo = antes - danio
             if not LETAL then nuevo = math.max(nuevo, 1) end
-            p:set_hp(math.max(nuevo, 0), {type = "punch", from = "mod"})
+            p:set_hp(math.max(nuevo, 0), {type = "set_hp", from = "mod"})
         end
     end)
 end

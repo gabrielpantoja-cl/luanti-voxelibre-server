@@ -58,12 +58,22 @@ Ahora el impacto se calcula al disparar (con `line_of_sight`) y se aplica tras
 el tiempo de vuelo; el dardo solo se ve volar. Es `static_save = false`: jamás
 se guarda en el mapa.
 
-**3. El daño se aplica a mano si el `punch` no surte efecto.** En Valdivia los
+**3. El daño se completa a mano, y el motivo del `set_hp` importa.** En Valdivia los
 jugadores no-admin están en **gamemode creativo** (`valdivia_newplayer`, para
 tener inventario completo en un mundo de supervivencia) y VoxeLibre les anula el
 daño del `punch` — verificado en producción el 2026-10-30: `hp=20` durante toda
-una persecución. Si tras el impacto el HP no bajó, el dardo lo descuenta con
-`set_hp`, con piso de 1 HP cuando el modo no letal está activo.
+una persecución. Con armadura puesta tampoco alcanza: un golpe de 6 llegaba
+como 1-2. Por eso el policía golpea con `punch` (animación, sonido, empujón,
+desgaste de armadura) y después **completa** hasta el daño pedido con `set_hp`,
+con piso de 1 HP en modo no letal.
+
+⚠️ El motivo de ese `set_hp` **no puede ser `punch`**: `mcl_damage.from_punch`
+hace `mcl_reason.direct = object` y enseguida `direct:get_luaentity()`, así que
+un motivo `punch` sin `object` revienta con `attempt to index field 'direct'`
+dentro de `on_player_hpchange` → `AsyncErr` → **el servidor se apaga entero**.
+Nos tiró Valdivia el 2026-10-30 14:36, la primera vez que la armadura absorbió
+un golpe completo. Se usa `{type = "set_hp", from = "mod"}`, que cae en la rama
+`generic` de `mcl_damage` y no indexa nada. Anotado también en `AGENTS.md`.
 
 **4. Anti-huérfanos.** El policía guarda un timestamp `_vence`; en `on_activate`,
 si no hay objetivo vivo o ya venció, **se borra solo**. Acá `docker stop` siempre

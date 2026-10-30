@@ -202,6 +202,11 @@ In `mod.conf`, use `optional_depends = mcl_core, mcl_farming`. Never depend on `
   end,
   ```
 
+### `player:set_hp()` with a faked `punch` reason crashes the whole server
+Applying damage from a mod with `player:set_hp(hp, {type = "punch", ...})` and no `object` field **takes the server down**. VoxeLibre's `mcl_damage.from_mt` routes `type == "punch"` into `from_punch(reason, mt_reason.object)`, which does `mcl_reason.direct = object` and immediately `mcl_reason.direct:get_luaentity()` — with `object` nil that's `attempt to index field 'direct' (a nil value)` at `mcl_damage/init.lua:101`, raised inside `on_player_hpchange`, surfacing as `ServerError: AsyncErr` and a full shutdown. Found 2026-10-30: it killed Valdivia the first time armor fully absorbed a `valdivia_policia` hit, because the mod's top-up path then fired.
+
+Use `{type = "set_hp", from = "<mod>"}` instead — `from_mt` falls through to its `generic` branch and indexes nothing. Related: a plain `object:punch(...)` often delivers **far less** than the `damage_groups` you ask for (armor soaks it, and players in gamemode `creative` take none at all), so a mod that needs a guaranteed amount must punch first and then top up with a `set_hp` carrying a safe reason.
+
 ### `diggable = false` is silently ignored in VoxeLibre
 VoxeLibre's `_mcl_autogroup` rewrites **every** node on load and sets `diggable = true` unless the node is in group `unbreakable` or `indestructible` (or is a liquid). A node with only `diggable = false` **can be dug by any player** — found 2026-10-07 when players broke `valdivia_cabina` cabins. For a truly indestructible node use:
 ```lua
