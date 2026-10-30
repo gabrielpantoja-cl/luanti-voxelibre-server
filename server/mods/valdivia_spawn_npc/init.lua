@@ -24,7 +24,8 @@ local ANCHOR_TOL     = 0.6   -- distancia (nodos) antes de re-anclar al guia
 local FACE_RANGE     = 12    -- distancia (nodos) para girar a mirar al jugador
 
 -- NPCs guia con MISMO comportamiento pero SKINS distintos, uno por lugar. Para
--- agregar otro guia: crea el skin (tools/convert_skin.py) y anade una entrada
+-- agregar otro guia: baja el skin con scripts/fetch-skin.sh (original 64x64 a
+-- server/skins/raw/), anotalo en server/skins/skins.json y anade una entrada
 -- aqui. El del spawn conserva el nombre de entidad ":guia" para no romper la
 -- instancia ya plantada en produccion.
 local GUIAS = {

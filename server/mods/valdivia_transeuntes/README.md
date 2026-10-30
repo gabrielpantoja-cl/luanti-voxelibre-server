@@ -140,11 +140,12 @@ amarra a esa marca. La polera de Hugo lleva una **"H"** dibujada, y una de sus
 frases es justamente explicarla — ese skin es suyo y de nadie más. Lo mismo
 aplica a cualquier skin futuro con inicial, número o nombre visible.
 
-Las skins vienen de mc-skins.net, convertidas a 64×32 con
-`scripts/convert-skin.py` (hornea la capa de overlay antes de recortar, que es
-lo que el recorte simple borra). Detalle y fuentes en
-[`raw_skins/FUENTES.md`](raw_skins/FUENTES.md); de dónde bajar más y con qué
-comando, en `docs/00-SHARED/mods/SKIN_SOURCES.md`.
+Las skins vienen de mc-skins.net. Los originales 64×64 viven en
+`server/skins/raw/` y la procedencia de cada uno en `server/skins/skins.json`
+— la fuente única de todos los skins humanoides de Valdivia. Los 64×32 se
+regeneran con `python scripts/rebuild-skins.py`. Reglas del elenco en
+[`SKINS.md`](SKINS.md); de dónde bajar más, en
+`docs/00-SHARED/mods/SKIN_SOURCES.md`.
 
 ## Ajustes
 

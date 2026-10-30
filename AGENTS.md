@@ -300,10 +300,33 @@ its helmet and `diamond_armor` lost its chestplate until re-processed with
 godly on 2026-07-26. The godlier version of the doc with full recipes lives
 at `docs/03-GAELSIN-30002/skins.md`.
 
-⚠️ `server/mods/valdivia_spawn_npc/tools/convert_skin.py` still uses the lossy
-crop (`JOBS` list, four Valdivia guides). Not fixed yet — if a guide looks like
-it's missing a jacket or hood, re-run those four through
-`scripts/convert-skin.py` instead.
+### Single source of truth for Valdivia's humanoid skins
+
+**`server/skins/skins.json`** is the one place that records where every
+Valdivia NPC skin came from (site + slug), which 64×64 original it maps to,
+and which mod texture it becomes. All originals live together in
+`server/skins/raw/`; **no mod keeps a `raw_skins/` directory any more** — each
+mod holds only its 64×32 `textures/*.png`, which is what Luanti needs there.
+
+```bash
+python scripts/rebuild-skins.py --check   # what's stale
+python scripts/rebuild-skins.py           # regenerate the 64×32 that changed
+```
+
+Covers `valdivia_transeuntes` (60), `valdivia_discoteca` (11),
+`valdivia_spawn_npc` (4 guides) and `valdivia_policia` (1, `fuente: null` —
+never recorded). **`wetlands_npcs` is deliberately NOT in the manifest yet**:
+dual model system (64×32 humanoid + 64×64 villager), 24 originals under older
+conventions, and a `tools/generate_textures.py` that *generates* villager
+textures rather than converting them. Migrating it is separate work.
+
+Why it exists: there was one converter per mod and three used the lossy crop.
+**The 11 discoteca dancers and the 4 guides had silently lost their overlay
+layer** — measured 2026-10-30, all 15 had real overlay (20–300 px each). They
+were regenerated from the originals. Adding a skin without adding its row to
+`skins.json` is how that state was reached; don't.
+
+Details: `docs/00-SHARED/mods/SKIN_SOURCES.md`.
 
 ### NPC dual model system (`wetlands_npcs`)
 | NPC type | Model | Texture | Pose |

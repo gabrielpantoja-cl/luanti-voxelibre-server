@@ -3,8 +3,8 @@
 Resultado de un piloto hecho el **2026-10-30**: se probaron diez sitios, se
 bajaron dos skins desde cada uno de los tres que sirven, y se convirtieron los
 seis a 64×32. Esta página es el resumen operativo; el detalle por archivo de
-los transeúntes de Valdivia vive en
-`server/mods/valdivia_transeuntes/raw_skins/FUENTES.md`.
+cada skin de Valdivia vive en el manifiesto
+`server/skins/skins.json` (ver el final de esta página).
 
 ## El comando
 
@@ -18,7 +18,7 @@ horneando la capa de overlay. Ejemplo real:
 ```bash
 ./scripts/fetch-skin.sh msn:trendyguy \
   server/mods/valdivia_transeuntes/textures/valdivia_transeunte_vecino_3.png \
-  server/mods/valdivia_transeuntes/raw_skins/vecino_3_64x64.png
+  server/skins/raw/transeunte_vecino_3.png
 ```
 
 **Guarda siempre el original 64×64** (tercer argumento). Es lo que permite
@@ -119,3 +119,69 @@ antes de bajar.
 Los skins de `player:` / `uuid:` son el skin real de una cuenta de Minecraft.
 Sirven cuando alguien pide "el skin de fulano", **no** para figurantes
 anónimos.
+
+---
+
+# La fuente única de la verdad: `server/skins/skins.json`
+
+Todo skin humanoide de Valdivia (puerto 30001) tiene **una fila y solo una**
+en `server/skins/skins.json`. La fila dice de dónde salió, cuál es su original
+64×64 y a qué textura de qué mod va:
+
+```json
+"discoteca_rave2": {
+  "original": "discoteca_rave2.png",
+  "fuente":   "skindex:rave-24164935",
+  "destino":  "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_rave2.png",
+  "usa":      "valdivia_discoteca · bailarin rave2"
+}
+```
+
+Los originales 64×64 viven todos juntos en **`server/skins/raw/`**. Ya no hay
+`raw_skins/` por mod: cada mod conserva únicamente su `textures/*.png` de
+64×32, que es lo que Luanti necesita ahí.
+
+```bash
+python scripts/rebuild-skins.py --check   # qué está desactualizado
+python scripts/rebuild-skins.py           # regenera los 64×32 que cambiaron
+python scripts/rebuild-skins.py --force   # reescribe todo
+```
+
+## Qué cubre hoy
+
+| Mod | Skins | Procedencia |
+|---|---|---|
+| `valdivia_transeuntes` | 60 | ✅ sitio + slug de cada uno |
+| `valdivia_discoteca` | 11 | ✅ sitio + slug de cada uno |
+| `valdivia_spawn_npc` (guías) | 4 | ✅ sitio + slug de cada uno |
+| `valdivia_policia` | 1 | ⚠️ `fuente: null` — no se registró al crearlo |
+| **`wetlands_npcs`** | 11 | ❌ **todavía fuera del manifiesto** |
+
+`wetlands_npcs` quedó afuera a propósito: tiene sistema de modelo dual
+(humanoide 64×32 + villager 64×64), 24 originales con convenciones viejas y su
+propio `tools/generate_textures.py` que *genera* texturas de villager en vez de
+convertirlas. Migrarlo es un trabajo aparte.
+
+## Por qué existe esto
+
+Había un convertidor por mod y cada uno distinto. Tres usaban el recorte con
+pérdida, y nadie lo notó: **los 11 bailarines de la discoteca y los 4 guías
+perdieron su capa de overlay** (chaqueta, manga, pantalón) — medido el
+2026-10-30, los 15 tenían overlay real, entre 20 y 300 píxeles cada uno.
+Se regeneraron desde los originales con el conversor bueno.
+
+Tres skins además se reutilizan entre mods, cosa que ninguna doc por mod podía
+mostrar: `indie_boy` es a la vez el guía del spawn y el bailarín `indie`;
+`summer_gala` es el guía del Parque Catrico y la bailarina `summer`; `hipster`
+es el guía de Huachocopihue y el bailarín `hipster2`.
+
+## Agregar un skin
+
+1. `./scripts/fetch-skin.sh <fuente> <destino_64x32.png> server/skins/raw/<nombre>.png`
+2. Agregar la fila en `server/skins/skins.json`.
+3. Registrar el NPC en el `init.lua` del mod que corresponda.
+4. `python scripts/render-skin-front.py <carpeta_textures> lamina.png` y mirarla.
+
+Saltarse el paso 2 significa que ese skin queda fuera de toda re-conversión
+futura y su procedencia se pierde — que es exactamente cómo se llegó al estado
+anterior.

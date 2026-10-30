@@ -111,7 +111,7 @@ overlay de la chaqueta** sobre el torso antes de recortar; la gorra vive en
 (32,0)-(63,15), que el formato 64×32 ya conserva tal cual. Un
 `crop((0,0,64,32))` pelado habría perdido la chaqueta — ver la matriz de
 formatos en `AGENTS.md`. El 64×64 original queda archivado en
-`server/mods/valdivia_policia/raw_skins/`.
+`server/skins/raw/policia.png`, con su fila en `server/skins/skins.json`.
 
 ## Despliegue
 

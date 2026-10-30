@@ -89,7 +89,9 @@ Recordá que `world.mt` manda: activar el mod exige la línea
 
 ## Texturas
 
-- `valdivia_policia_skin.png` — 64×32 para `mcl_armor_character.b3d`, convertida
+- `valdivia_policia_skin.png` — 64×32 para `mcl_armor_character.b3d`. Original
+  64×64 en `server/skins/raw/policia.png`, mapeo en `server/skins/skins.json`
+  (su `fuente` quedó en `null`: no se anotó de dónde se bajó). Convertida
   desde un skin 64×64 horneando la capa overlay de la chaqueta (la gorra vive en
   (32,0)-(63,15), que el formato 64×32 ya conserva).
 - `valdivia_policia_flecha.png` — dardo, 16×16.

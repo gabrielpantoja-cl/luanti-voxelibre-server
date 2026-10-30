@@ -1,0 +1,463 @@
+{
+  "_": "Fuente unica de la verdad de los skins humanoides de Valdivia (30001). Editar aqui y correr `python scripts/rebuild-skins.py` para regenerar los 64x32. Ver docs/00-SHARED/mods/SKIN_SOURCES.md. wetlands_npcs todavia NO esta aca.",
+  "raw_dir": "server/skins/raw",
+  "skins": {
+    "transeunte_agustin": {
+      "original": "transeunte_agustin.png",
+      "fuente": "mcs:simple-boy-ac22e6",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_agustin.png",
+      "usa": "valdivia_transeuntes · Agustin (vecino)"
+    },
+    "transeunte_amanda": {
+      "original": "transeunte_amanda.png",
+      "fuente": "mcs:green-apron-girl-146002",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_amanda.png",
+      "usa": "valdivia_transeuntes · Amanda (feriante)"
+    },
+    "transeunte_antonia": {
+      "original": "transeunte_antonia.png",
+      "fuente": "mcs:brown-haired-baker-42fcfa",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_antonia.png",
+      "usa": "valdivia_transeuntes · Antonia (vecina)"
+    },
+    "transeunte_arturo": {
+      "original": "transeunte_arturo.png",
+      "fuente": "mcs:benjamins-dad-alt-1-3aa8fe",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_arturo.png",
+      "usa": "valdivia_transeuntes · Arturo (jubilado)"
+    },
+    "transeunte_bastian": {
+      "original": "transeunte_bastian.png",
+      "fuente": "mcs:barista-mik-62869d",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_bastian.png",
+      "usa": "valdivia_transeuntes · Bastian (feriante)"
+    },
+    "transeunte_benjamin": {
+      "original": "transeunte_benjamin.png",
+      "fuente": "mcs:black-casual-outfit-045b05",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_benjamin.png",
+      "usa": "valdivia_transeuntes · Benjamin (vecino)"
+    },
+    "transeunte_camila": {
+      "original": "transeunte_camila.png",
+      "fuente": "mcs:female-casual-outfit-7937b5",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_camila.png",
+      "usa": "valdivia_transeuntes · Camila (vecina)"
+    },
+    "transeunte_carmen": {
+      "original": "transeunte_carmen.png",
+      "fuente": "mcs:cute-farmer-boy-167a88",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_carmen.png",
+      "usa": "valdivia_transeuntes · Carmen (jardinera)"
+    },
+    "transeunte_catalina": {
+      "original": "transeunte_catalina.png",
+      "fuente": "mcs:malik-casual-outfit-29391c",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_catalina.png",
+      "usa": "valdivia_transeuntes · Catalina (vecina)"
+    },
+    "transeunte_constanza": {
+      "original": "transeunte_constanza.png",
+      "fuente": "mcs:yellow-raincoat-boy-6f72ef",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_constanza.png",
+      "usa": "valdivia_transeuntes · Constanza (pescadora)"
+    },
+    "transeunte_cristobal": {
+      "original": "transeunte_cristobal.png",
+      "fuente": "mcs:red-tracksuit-outfit-7743d7",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_cristobal.png",
+      "usa": "valdivia_transeuntes · Cristobal (vecino)"
+    },
+    "transeunte_daniela": {
+      "original": "transeunte_daniela.png",
+      "fuente": "mcs:white-lab-coat-doctor-3cdcbe",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_daniela.png",
+      "usa": "valdivia_transeuntes · Daniela (doctora)"
+    },
+    "transeunte_diego": {
+      "original": "transeunte_diego.png",
+      "fuente": "mcs:black-school-uniform-boy-82bd26",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_diego.png",
+      "usa": "valdivia_transeuntes · Diego (escolar)"
+    },
+    "transeunte_eduardo": {
+      "original": "transeunte_eduardo.png",
+      "fuente": "mcs:casual-black-suit-d2d0f2",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_eduardo.png",
+      "usa": "valdivia_transeuntes · Eduardo (oficinista)"
+    },
+    "transeunte_elias": {
+      "original": "transeunte_elias.png",
+      "fuente": "mcs:doctor-glasses-597b99",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_elias.png",
+      "usa": "valdivia_transeuntes · Elias (vecino)"
+    },
+    "transeunte_emilia": {
+      "original": "transeunte_emilia.png",
+      "fuente": "mcs:blonde-girl-casual-0f2629",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_emilia.png",
+      "usa": "valdivia_transeuntes · Emilia (vecina)"
+    },
+    "transeunte_felipe": {
+      "original": "transeunte_felipe.png",
+      "fuente": "mcs:blue-tracksuit-guy-76f345",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_felipe.png",
+      "usa": "valdivia_transeuntes · Felipe (deportista)"
+    },
+    "transeunte_fernanda": {
+      "original": "transeunte_fernanda.png",
+      "fuente": "mcs:pale-blue-nurse-outfit-5ea63d",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_fernanda.png",
+      "usa": "valdivia_transeuntes · Fernanda (enfermera)"
+    },
+    "transeunte_florencia": {
+      "original": "transeunte_florencia.png",
+      "fuente": "mcs:bill-the-baker-fc1f39",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_florencia.png",
+      "usa": "valdivia_transeuntes · Florencia (vecina)"
+    },
+    "transeunte_francisca": {
+      "original": "transeunte_francisca.png",
+      "fuente": "mcs:3-am-studying-girl-d9462f",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_francisca.png",
+      "usa": "valdivia_transeuntes · Francisca (estudiante)"
+    },
+    "transeunte_gabriel": {
+      "original": "transeunte_gabriel.png",
+      "fuente": "mcs:flannel-shirt-woodsman-16fc4b",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_gabriel.png",
+      "usa": "valdivia_transeuntes · Gabriel (pescador)"
+    },
+    "transeunte_gaspar": {
+      "original": "transeunte_gaspar.png",
+      "fuente": "mcs:dad-skin-a29da7",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_gaspar.png",
+      "usa": "valdivia_transeuntes · Gaspar (vecino)"
+    },
+    "transeunte_gonzalo": {
+      "original": "transeunte_gonzalo.png",
+      "fuente": "mcs:classic-gray-trenchcoat-suit-3fa124",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_gonzalo.png",
+      "usa": "valdivia_transeuntes · Gonzalo (oficinista)"
+    },
+    "transeunte_guillermo": {
+      "original": "transeunte_guillermo.png",
+      "fuente": "mcs:malak-dad-0b0e3b",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_guillermo.png",
+      "usa": "valdivia_transeuntes · Guillermo (jubilado)"
+    },
+    "transeunte_hernan": {
+      "original": "transeunte_hernan.png",
+      "fuente": "mcs:dadada-suit-3185d6",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_hernan.png",
+      "usa": "valdivia_transeuntes · Hernan (oficinista)"
+    },
+    "transeunte_hilda": {
+      "original": "transeunte_hilda.png",
+      "fuente": "mcs:farmer-outfit-7d300b",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_hilda.png",
+      "usa": "valdivia_transeuntes · Hilda (campesina)"
+    },
+    "transeunte_hugo": {
+      "original": "transeunte_hugo.png",
+      "fuente": "mcs:blue-jacket-teen-41e2af",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_hugo.png",
+      "usa": "valdivia_transeuntes · Hugo (estudiante)"
+    },
+    "transeunte_ignacia": {
+      "original": "transeunte_ignacia.png",
+      "fuente": "mcs:blonde-adventurer-outfit-bbc29c",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_ignacia.png",
+      "usa": "valdivia_transeuntes · Ignacia (turista)"
+    },
+    "transeunte_ignacio": {
+      "original": "transeunte_ignacio.png",
+      "fuente": "mcs:argentine-volunteer-firefighter-63d738",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_ignacio.png",
+      "usa": "valdivia_transeuntes · Ignacio (bombero)"
+    },
+    "transeunte_isidora": {
+      "original": "transeunte_isidora.png",
+      "fuente": "mcs:brown-vest-explorer-567e7e",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_isidora.png",
+      "usa": "valdivia_transeuntes · Isidora (turista)"
+    },
+    "transeunte_javiera": {
+      "original": "transeunte_javiera.png",
+      "fuente": "mcs:female-casual-outfit-9227b2",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_javiera.png",
+      "usa": "valdivia_transeuntes · Javiera (vecina)"
+    },
+    "transeunte_joaquin": {
+      "original": "transeunte_joaquin.png",
+      "fuente": "mcs:blue-tracksuit-boy-0745d6",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_joaquin.png",
+      "usa": "valdivia_transeuntes · Joaquin (vecino)"
+    },
+    "transeunte_josefa": {
+      "original": "transeunte_josefa.png",
+      "fuente": "mcs:blue-baker-c06772",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_josefa.png",
+      "usa": "valdivia_transeuntes · Josefa (vecina)"
+    },
+    "transeunte_lautaro": {
+      "original": "transeunte_lautaro.png",
+      "fuente": "mcs:firefighter-dazw-d9d4cd",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_lautaro.png",
+      "usa": "valdivia_transeuntes · Lautaro (guardaparques)"
+    },
+    "transeunte_lucho": {
+      "original": "transeunte_lucho.png",
+      "fuente": "mcs:comfy-farmer-skin-26a67f",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_lucho.png",
+      "usa": "valdivia_transeuntes · Lucho (campesino)"
+    },
+    "transeunte_manuel": {
+      "original": "transeunte_manuel.png",
+      "fuente": "mcs:blue-work-overalls-ac7dae",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_manuel.png",
+      "usa": "valdivia_transeuntes · Manuel (obrero)"
+    },
+    "transeunte_marcelo": {
+      "original": "transeunte_marcelo.png",
+      "fuente": "mcs:orange-safety-vest-3d8688",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_marcelo.png",
+      "usa": "valdivia_transeuntes · Marcelo (obrero)"
+    },
+    "transeunte_martin": {
+      "original": "transeunte_martin.png",
+      "fuente": "mcs:casual-denim-outfit-ac0a2b",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_martin.png",
+      "usa": "valdivia_transeuntes · Martin (vecino)"
+    },
+    "transeunte_matias": {
+      "original": "transeunte_matias.png",
+      "fuente": "mcs:gray-casual-outfit-9eb553",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_matias.png",
+      "usa": "valdivia_transeuntes · Matias (vecino)"
+    },
+    "transeunte_matilde": {
+      "original": "transeunte_matilde.png",
+      "fuente": "mcs:brown-leather-adventurer-370ef2",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_matilde.png",
+      "usa": "valdivia_transeuntes · Matilde (turista)"
+    },
+    "transeunte_mauricio": {
+      "original": "transeunte_mauricio.png",
+      "fuente": "mcs:construction-worker-remake-5bb050",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_mauricio.png",
+      "usa": "valdivia_transeuntes · Mauricio (obrero)"
+    },
+    "transeunte_milaray": {
+      "original": "transeunte_milaray.png",
+      "fuente": "mcs:street-boy-glasses-c0d173",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_milaray.png",
+      "usa": "valdivia_transeuntes · Milaray (vecina)"
+    },
+    "transeunte_nahuel": {
+      "original": "transeunte_nahuel.png",
+      "fuente": "mcs:crimson-vest-student-ae5d00",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_nahuel.png",
+      "usa": "valdivia_transeuntes · Nahuel (estudiante)"
+    },
+    "transeunte_olegario": {
+      "original": "transeunte_olegario.png",
+      "fuente": "mcs:brown-hat-farmer-001594",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_olegario.png",
+      "usa": "valdivia_transeuntes · Olegario (campesino)"
+    },
+    "transeunte_pablo": {
+      "original": "transeunte_pablo.png",
+      "fuente": "mcs:chefs-uniform-3c591e",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_pablo.png",
+      "usa": "valdivia_transeuntes · Pablo (cocinero)"
+    },
+    "transeunte_patricio": {
+      "original": "transeunte_patricio.png",
+      "fuente": "mcs:suit-with-glasses-c95c9d",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_patricio.png",
+      "usa": "valdivia_transeuntes · Patricio (oficinista)"
+    },
+    "transeunte_paz": {
+      "original": "transeunte_paz.png",
+      "fuente": "mcs:poncho-skin-11cd6b",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_paz.png",
+      "usa": "valdivia_transeuntes · Paz (vecina)"
+    },
+    "transeunte_ramon": {
+      "original": "transeunte_ramon.png",
+      "fuente": "mcs:blonde-farmer-outfit-3a8e6f",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_ramon.png",
+      "usa": "valdivia_transeuntes · Ramon (campesino)"
+    },
+    "transeunte_rayen": {
+      "original": "transeunte_rayen.png",
+      "fuente": "mcs:grungy-teen-fit-beanie-059d74",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_rayen.png",
+      "usa": "valdivia_transeuntes · Rayen (estudiante)"
+    },
+    "transeunte_renato": {
+      "original": "transeunte_renato.png",
+      "fuente": "mcs:dark-green-jacket-boy-5a0411",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_renato.png",
+      "usa": "valdivia_transeuntes · Renato (vecino)"
+    },
+    "transeunte_rodrigo": {
+      "original": "transeunte_rodrigo.png",
+      "fuente": "mcs:mark-bombero-firefighter-30a1e1",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_rodrigo.png",
+      "usa": "valdivia_transeuntes · Rodrigo (bombero)"
+    },
+    "transeunte_rosa": {
+      "original": "transeunte_rosa.png",
+      "fuente": "mcs:baker-elliot-skin-2150c7",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_rosa.png",
+      "usa": "valdivia_transeuntes · Rosa (panadera)"
+    },
+    "transeunte_sergio": {
+      "original": "transeunte_sergio.png",
+      "fuente": "mcs:dirty-denim-overalls-ed8d55",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_sergio.png",
+      "usa": "valdivia_transeuntes · Sergio (obrero)"
+    },
+    "transeunte_simon": {
+      "original": "transeunte_simon.png",
+      "fuente": "mcs:mark-pescador-18d772",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_simon.png",
+      "usa": "valdivia_transeuntes · Simon (pescador)"
+    },
+    "transeunte_sofia": {
+      "original": "transeunte_sofia.png",
+      "fuente": "mcs:blue-uniform-girl-185954",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_sofia.png",
+      "usa": "valdivia_transeuntes · Sofia (escolar)"
+    },
+    "transeunte_teresa": {
+      "original": "transeunte_teresa.png",
+      "fuente": "mcs:red-cardigan-73b271",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_teresa.png",
+      "usa": "valdivia_transeuntes · Teresa (jubilada)"
+    },
+    "transeunte_trinidad": {
+      "original": "transeunte_trinidad.png",
+      "fuente": "mcs:brown-hair-chef-outfit-85ae19",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_trinidad.png",
+      "usa": "valdivia_transeuntes · Trinidad (feriante)"
+    },
+    "transeunte_valentina": {
+      "original": "transeunte_valentina.png",
+      "fuente": "mcs:blue-hoodie-girl-039b1e",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_valentina.png",
+      "usa": "valdivia_transeuntes · Valentina (vecina)"
+    },
+    "transeunte_vicente": {
+      "original": "transeunte_vicente.png",
+      "fuente": "mcs:casual-blue-denim-outfit-07708c",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_vicente.png",
+      "usa": "valdivia_transeuntes · Vicente (vecino)"
+    },
+    "transeunte_victor": {
+      "original": "transeunte_victor.png",
+      "fuente": "mcs:miners-blue-overalls-4f7800",
+      "destino": "server/mods/valdivia_transeuntes/textures/valdivia_transeunte_victor.png",
+      "usa": "valdivia_transeuntes · Victor (obrero)"
+    },
+    "discoteca_bunny": {
+      "original": "discoteca_bunny.png",
+      "fuente": "skindex:h0g-b00n-rave-bunny-24094815",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_bunny.png",
+      "usa": "valdivia_discoteca · bailarin bunny"
+    },
+    "discoteca_firecracker": {
+      "original": "discoteca_firecracker.png",
+      "fuente": "skindex:--firecracker----barebones---24166823",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_firecracker.png",
+      "usa": "valdivia_discoteca · bailarin firecracker"
+    },
+    "discoteca_flourish": {
+      "original": "discoteca_flourish.png",
+      "fuente": "skindex:flourish---sf8-24162261",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_flourish.png",
+      "usa": "valdivia_discoteca · bailarin flourish"
+    },
+    "discoteca_hipster1": {
+      "original": "discoteca_hipster1.png",
+      "fuente": "skindex:hipster-lance-21291891",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_hipster1.png",
+      "usa": "valdivia_discoteca · bailarin hipster1"
+    },
+    "discoteca_hipster2": {
+      "original": "hipster.png",
+      "fuente": "skindex:hipster-24151100",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_hipster2.png",
+      "usa": "valdivia_discoteca · bailarin hipster2"
+    },
+    "discoteca_indie": {
+      "original": "indie_boy.png",
+      "fuente": "skindex:indie-boy-22622590",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_indie.png",
+      "usa": "valdivia_discoteca · bailarin indie"
+    },
+    "discoteca_pinkie": {
+      "original": "discoteca_pinkie.png",
+      "fuente": "skindex:pinkie-pie----24110364",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_pinkie.png",
+      "usa": "valdivia_discoteca · bailarin pinkie"
+    },
+    "discoteca_rave1": {
+      "original": "discoteca_rave1.png",
+      "fuente": "skindex:rave-2-0-23369634",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_rave1.png",
+      "usa": "valdivia_discoteca · bailarin rave1"
+    },
+    "discoteca_rave2": {
+      "original": "discoteca_rave2.png",
+      "fuente": "skindex:rave-24164935",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_rave2.png",
+      "usa": "valdivia_discoteca · bailarin rave2"
+    },
+    "discoteca_summer": {
+      "original": "summer_gala.png",
+      "fuente": "skindex:summer-gala-24161243",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_summer.png",
+      "usa": "valdivia_discoteca · bailarin summer"
+    },
+    "discoteca_yellow": {
+      "original": "discoteca_yellow.png",
+      "fuente": "skindex:hacker-nontesie-24144720",
+      "destino": "server/mods/valdivia_discoteca/textures/valdivia_discoteca_dancer_yellow.png",
+      "usa": "valdivia_discoteca · bailarin yellow"
+    },
+    "guia_skin": {
+      "original": "indie_boy.png",
+      "fuente": "skindex:indie-boy-22622590",
+      "destino": "server/mods/valdivia_spawn_npc/textures/valdivia_guia_skin.png",
+      "usa": "valdivia_spawn_npc · Guia del spawn"
+    },
+    "guia_parque_skin": {
+      "original": "summer_gala.png",
+      "fuente": "skindex:summer-gala-24161243",
+      "destino": "server/mods/valdivia_spawn_npc/textures/valdivia_guia_parque_skin.png",
+      "usa": "valdivia_spawn_npc · Guia del Parque Catrico"
+    },
+    "guia_santa_elena_skin": {
+      "original": "guia_santa_elena.png",
+      "fuente": "skindex:vegan--anonymous-for-the-voiceless--av--animalrights-activist-23342807",
+      "destino": "server/mods/valdivia_spawn_npc/textures/valdivia_guia_santa_elena_skin.png",
+      "usa": "valdivia_spawn_npc · Guia de Santa Elena"
+    },
+    "guia_huachocopihue_skin": {
+      "original": "hipster.png",
+      "fuente": "skindex:hipster-24151100",
+      "destino": "server/mods/valdivia_spawn_npc/textures/valdivia_guia_huachocopihue_skin.png",
+      "usa": "valdivia_spawn_npc · Guia de Huachocopihue / Plaza Londres"
+    },
+    "policia": {
+      "original": "policia.png",
+      "fuente": null,
+      "destino": "server/mods/valdivia_policia/textures/valdivia_policia_skin.png",
+      "usa": "valdivia_policia · Carabinero",
+      "nota": "fuente no registrada al crearlo (2026-10-30)"
+    }
+  }
+}

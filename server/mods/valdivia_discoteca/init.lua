@@ -47,8 +47,10 @@ local ZONE_Y_PAD_ABOVE = 3
 -- Skins validos para el modelo humano (UV 64x32 de player skin).
 -- Servidos por mcl_custom_world_skins/_world_folder_media desde server/skins/.
 local DJ_SKIN = "wetlands_npc_mandalorian.png"  -- casco = look de DJ
--- Skins convertidos a 64x32 (crop del top-half de los originales 64x64 de Minecraft).
--- Guardados en textures/ de este mod para evitar rutas con caracteres especiales.
+-- Skins 64x32 generados por scripts/rebuild-skins.py desde los originales 64x64
+-- de server/skins/raw/. Procedencia y mapeo: server/skins/skins.json (fuente
+-- unica). NO editarlos a mano: el 2026-10-30 estos once se regeneraron porque
+-- el crop del top-half con que se hicieron les habia borrado el overlay.
 local DANCER_SKINS = {
     -- Rave/fiesta
     "valdivia_discoteca_dancer_rave1.png",

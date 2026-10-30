@@ -26,6 +26,27 @@ Validate the file:
 magick identify [file-path]
 ```
 
+### Valdivia NPC skins: the manifest is the source of truth
+
+If the skin is for a **Valdivia NPC** (`valdivia_transeuntes`,
+`valdivia_discoteca`, `valdivia_spawn_npc`, `valdivia_policia`), it is governed
+by **`server/skins/skins.json`** — one row per skin: source site+slug, 64x64
+original in `server/skins/raw/`, and destination mod texture. Those mods have
+**no `raw_skins/` directory**; do not create one.
+
+```bash
+python scripts/rebuild-skins.py --check   # what's stale
+python scripts/rebuild-skins.py           # regenerate changed 64x32
+```
+
+Adding a skin there = download into `server/skins/raw/` + add the row + run
+the rebuild. **Skipping the row means the skin falls out of every future
+re-conversion and its provenance is lost** — that is exactly how the discoteca
+dancers and the guides silently lost their overlay layer.
+
+`wetlands_npcs` is NOT in the manifest yet (dual villager/humanoid model, own
+`tools/generate_textures.py`); it still uses its own `raw_skins/`.
+
 ### Option B: Download from a skin site
 
 **Use the one-liner — it downloads, validates, keeps the 64x64 original and
@@ -407,5 +428,6 @@ feat(npcs): Add [type] NPC to Wetlands
    galleries return 403 to any automated fetch, browser included. Ask the user
    to download the PNG by hand, or use a site from the table in "Option B".
 9. **Always keep the 64x64 original** next to the converted 64x32 (in
-   `raw_skins/` for mods, `server/skins/` for player skins). The 64x32 has
+   `server/skins/raw/` for Valdivia NPCs, `server/skins/` for player skins)
+   and add its row to `server/skins/skins.json`. The 64x32 has
    already lost the left-side and unbaked overlay data — it cannot be undone.

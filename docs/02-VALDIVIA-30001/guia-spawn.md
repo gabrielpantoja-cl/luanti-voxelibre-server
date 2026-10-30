@@ -52,20 +52,22 @@ Estado: **en producción** desde 2026-07-05.
   las Cabinas TP.
 
 ### Skins (uno distinto por lugar, a propósito)
-Cada guía usa un skin de jugador **64×32** sobre `mcl_armor_character.b3d`. Los
-fuentes en `server/skins/` son 64×64 (formato moderno de Minecraft) y se recortan
-a 64×32 con `tools/convert_skin.py` (lista `JOBS`). Los PNG resultantes están
-versionados; sólo re-generar si cambias el skin fuente.
+Cada guía usa un skin de jugador **64×32** sobre `mcl_armor_character.b3d`.
 
-| Guía | Fuente | Textura |
-|------|--------|---------|
-| Spawn (Plaza) | `2024_06_19_indie-boy-*.png` | `textures/valdivia_guia_skin.png` |
-| Parque Catrico | `2026_06_30_summer-gala-*.png` | `textures/valdivia_guia_parque_skin.png` |
-| Santa Elena | `2025_06_17_vegan-...-activist-*.png` | `textures/valdivia_guia_santa_elena_skin.png` |
-| Huachocopihue (Plaza Londres) | `2026_06_26_hipster-*.png` | `textures/valdivia_guia_huachocopihue_skin.png` |
+**La procedencia vive en [`server/skins/skins.json`](../../server/skins/skins.json)**,
+la fuente única de la verdad de todos los skins humanoides de Valdivia: los
+originales 64×64 están en `server/skins/raw/` y los 64×32 se regeneran con
+`python scripts/rebuild-skins.py`. El `tools/convert_skin.py` que vivía acá se
+eliminó el 2026-10-30: usaba el recorte con pérdida y los cuatro guías habían
+perdido su capa de overlay (chaqueta, manga, pantalón) sin que nadie lo notara.
 
-Para **agregar otro guía**: añade el skin a `JOBS` en `convert_skin.py` y córrelo,
-añade una entrada a la tabla `GUIAS` en `init.lua`, y (si es un destino nuevo) un
+Dos de los cuatro comparten skin con un bailarín de `valdivia_discoteca`
+(`indie_boy` y `summer_gala`) y un tercero con `hipster2` — por eso el
+manifiesto es global y no por mod.
+
+Para **agregar otro guía**: baja el skin con `./scripts/fetch-skin.sh` dejando
+el original en `server/skins/raw/`, anótalo en `server/skins/skins.json`, añade
+una entrada a la tabla `GUIAS` en `init.lua`, y (si es un destino nuevo) un
 lugar a `DEFAULT_LUGARES`. Luego plántalo con `/spawn_guia <tipo>`.
 
 ## Despliegue (ya aplicado)

@@ -88,4 +88,5 @@ Seguimiento en [`ROADMAP.md`](ROADMAP.md).
 Arquitectura, pitfalls y el porqué de cada filtro:
 [`server/mods/valdivia_transeuntes/README.md`](../../server/mods/valdivia_transeuntes/README.md).
 Origen y conversión de las skins:
-[`raw_skins/FUENTES.md`](../../server/mods/valdivia_transeuntes/raw_skins/FUENTES.md).
+[`SKINS.md`](../../server/mods/valdivia_transeuntes/SKINS.md) y la procedencia
+de cada skin en [`server/skins/skins.json`](../../server/skins/skins.json).
