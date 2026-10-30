@@ -636,6 +636,13 @@ local function registrar_mob()
         end,
 
         do_custom = function(self, dtime)
+            -- valdivia_halloween le toma el control a este transeunte mientras
+            -- pelea con un zombie o arranca de el: ahi la velocidad, el giro y
+            -- la animacion las maneja ese mod. Sin esta salida, su set_velocity
+            -- y el nuestro se pisarian y el NPC vibraria en el sitio. Con el
+            -- evento de Halloween apagado esta marca no existe nunca.
+            if self._halloween then return end
+
             if self.object:get_hp() < HP then
                 self.object:set_hp(HP)
                 self.object:set_armor_groups({immortal = 1, fleshy = 0})
