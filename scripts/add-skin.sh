@@ -116,15 +116,20 @@ convert_skin() {
 
     log_info "Convirtiendo skin de 64x64 a 64x32..."
 
-    # Usar ImageMagick para copiar solo la mitad superior
-    convert "$input_file" -crop 64x32+0+0 +repage "$output_file"
+    # convert-skin.py hornea la capa de overlay (chaqueta, manga, pantalon)
+    # sobre la base antes de recortar. El `convert -crop 64x32+0+0` que habia
+    # aca se quedaba solo con la base y borraba en silencio chaqueta, casco y
+    # capa: es lo que en GAELSIN le costo el casco al mandalorian.
+    local here; here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    local topath=cat
+    command -v cygpath >/dev/null 2>&1 && topath="cygpath -w"
 
-    if [ $? -eq 0 ]; then
-        log_success "Conversión exitosa"
-    else
+    if ! python "$($topath "$here/convert-skin.py")" \
+                "$($topath "$input_file")" "$($topath "$output_file")"; then
         log_error "Error al convertir el skin"
         exit 1
     fi
+    log_success "Conversión exitosa"
 }
 
 # Agregar entrada a skins.txt

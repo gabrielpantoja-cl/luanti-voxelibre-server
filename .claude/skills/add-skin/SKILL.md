@@ -26,18 +26,64 @@ Validate the file:
 magick identify [file-path]
 ```
 
-### Option B: Search for a skin online
+### Option B: Download from a skin site
 
-Search MinecraftSkins.com for appropriate skins:
+**Use the one-liner — it downloads, validates, keeps the 64x64 original and
+converts to 64x32 in one step:**
+
+```bash
+./scripts/fetch-skin.sh <fuente> <salida_64x32.png> [original_64x64.png]
 ```
-WebSearch: site:minecraftskins.com [search-term]
+
+| Prefix | Site | Example |
+|---|---|---|
+| `msn:<slug>` | www.minecraftskins.net | `./scripts/fetch-skin.sh msn:trendyguy out.png raw.png` |
+| `mcs:<slug>` | mc-skins.net | `./scripts/fetch-skin.sh mcs:yellow-raincoat-boy-6f72ef out.png raw.png` |
+| `player:<name>` | mc-heads.net (real account's skin) | `./scripts/fetch-skin.sh player:Dinnerbone out.png raw.png` |
+| `uuid:<uuid>` | crafatar.com | — |
+| `https://…` | direct PNG URL | — |
+
+**Always pass the third argument** (the 64x64 original). It is the only copy
+of the full overlay layer and lets you re-convert later without the site.
+
+#### Sites that CANNOT be automated
+
+`minecraftskins.com` (**the Skindex**), `namemc.com`, `planetminecraft.com`,
+`skinmc.net`, `novaskin.me` and `needcoolshoes.com` all answer **403** to
+programmatic access — Cloudflare's bot wall. It is not a user-agent problem
+and **a Playwright-controlled browser does not get through either** (verified
+2026-10-30). Do not burn turns retrying them.
+
+The Skindex is the biggest catalogue and the one that is blocked. When the
+user wants a skin from there: they open it in their own browser, download the
+PNG, and you convert it directly:
+
+```bash
+python scripts/convert-skin.py ~/Downloads/whatever.png destination_64x32.png
 ```
+
+#### Browsing the two catalogues that do respond
+
+Listing pages are plain HTML, no JS:
+
+```bash
+# categories: people, fantasy, games, mobs, movies, tv, other
+curl -s https://www.minecraftskins.net/category/people | grep -oE 'href="/[a-z0-9]+"' | sort -u
+```
+
+The slug is what goes after `msn:`. Previews live at
+`/static/front_preview/<slug>.png` and `/static/head/<slug>.png` — read those
+with the Read tool to see a skin before downloading it.
 
 Suggest search terms aligned with Wetlands values (children 7+):
 - **For NPCs**: farmer, librarian, teacher, explorer, veterinarian, scientist, gardener, chef
 - **For players**: panda, animal lover, nature, gardener, peaceful, creative
+- **For background pedestrians** (`valdivia_transeuntes`): ordinary clothes
+  only, and **no recognizable character** — no Spiderman, Ronaldo, Herobrine
+  or anime cameos. Half of `category/people` is licensed characters; filter by
+  slug name before downloading.
 
-Once a skin is found, the user downloads it. Minecraft skins from minecraftskins.com are always **64x64 PNG**.
+Full source matrix and rationale: `docs/00-SHARED/mods/SKIN_SOURCES.md`.
 
 ### Option C: Generate a texture programmatically (NPC only)
 
@@ -63,7 +109,40 @@ becomes invisible, helmets disappear, capes vanish.
 Real example from GAELSIN (2026-07-26): `mandalorian` lost its helmet and
 `diamond_armor` lost its chestplate after a simple `crop((0,0,64,32))`.
 
-#### Method 1 (Recommended for ANY skin with armor/helmet/cape/clothing overlay): godly via Playwright
+#### Method 1 (DEFAULT — use this): `scripts/convert-skin.py`, headless
+
+```bash
+python scripts/convert-skin.py source_64x64.png output_64x32.png
+```
+
+Does exactly what godly's Copy Jacket / Copy Sleeve / Copy Trouser buttons do
+at alpha 1.0 — bakes the three right-side overlay regions onto the base before
+cropping — with **no browser, no Playwright, and no state carried between
+files**. It prints what it found, which is also your check:
+
+```
+3/3 regiones de overlay horneadas    <- a plain crop would have broken this one
+0/3 regiones de overlay horneadas    <- no overlay; a crop would have been fine
+ya era 64x32                         <- legacy skin, copied through untouched
+```
+
+In the 2026-10-30 pilot, 5 of 6 skins had real overlay. **Assume there is
+overlay**; the script tells you when there isn't.
+
+`./scripts/fetch-skin.sh` already calls this for you — you only run the
+converter by hand for a PNG the user downloaded themselves.
+
+**Known limitation**: 64x32 has no separate left arm/leg — it mirrors the
+right side. A 64x64 with left/right asymmetry (a patch on one sleeve only)
+loses it. That is the format, not a bug.
+
+**Verify visually before committing:**
+```bash
+python scripts/render-skin-front.py <folder_of_64x32> sheet.png
+```
+Then Read `sheet.png` — it renders a front-facing figure per skin at 4x.
+
+#### Method 1b (fallback if the script output looks wrong): godly via Playwright
 
 **godly Minetest Skin Converter** (<https://godly.github.io/minetest-skin-converter/>,
 GPLv3, 18★ on GitHub, runs 100% in the browser) does the right thing: it
@@ -123,7 +202,7 @@ The Playwright session stores screenshots and console logs in
 `.playwright-mcp/` (gitignored). Comparison images (lossy-crop vs godly
 side-by-side) help the user see the improvement before deploying.
 
-#### Method 2 (Fallback, ONLY for skins without overlay): top-half crop
+#### Method 2 (last resort, ONLY for skins without overlay): top-half crop
 
 If the Minecraft skin has **no armor, no helmet, no cape, no jacket** (a
 plain character with only the base layer visible), a simple top-half crop
@@ -316,10 +395,17 @@ feat(npcs): Add [type] NPC to Wetlands
 6. **Top-half crop LOSES the overlay layer.** A `crop((0,0,64,32))` of a
    Minecraft 64x64 keeps only the base layer and discards the armor, helmet,
    cape, jacket, sleeves, and trousers that were painted on top with alpha.
-   Use godly (Method 1 in "Conversion from Minecraft" above) for any skin
-   with visible overlay detail. The crop is safe only for plain characters
-   where the bottom 32 rows of the 64x64 are entirely transparent.
-7. **When reprocessing a skin, ALWAYS refresh the godly page** between
-   files. The destination canvas accumulates overlays from prior sessions;
-   loading a new file via the chooser does NOT reset it. Use
-   `browser_navigate` to the converter URL again to get a clean state.
+   Use `scripts/convert-skin.py` (Method 1) for every skin — it bakes the
+   overlay and tells you how many regions it found. The crop is safe only for
+   plain characters where the bottom 32 rows of the 64x64 are transparent.
+7. **If you fall back to godly, ALWAYS refresh the page** between files. The
+   destination canvas accumulates overlays from prior sessions; loading a new
+   file via the chooser does NOT reset it. Use `browser_navigate` to the
+   converter URL again to get a clean state. (`scripts/convert-skin.py` has no
+   such state — another reason it is the default.)
+8. **Don't waste turns on the Skindex.** `minecraftskins.com` and five other
+   galleries return 403 to any automated fetch, browser included. Ask the user
+   to download the PNG by hand, or use a site from the table in "Option B".
+9. **Always keep the 64x64 original** next to the converted 64x32 (in
+   `raw_skins/` for mods, `server/skins/` for player skins). The 64x32 has
+   already lost the left-side and unbaked overlay data — it cannot be undone.

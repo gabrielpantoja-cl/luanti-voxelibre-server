@@ -19,7 +19,7 @@ Copy Trouser con alpha 1.0), sin navegador:
   filas 48-63  brazo/pierna izq.     ->   se descarta: en 64x32 los miembros
                                           izquierdos son el espejo del derecho
 
-Uso:  python convert_skin.py entrada_64x64.png salida_64x32.png
+Uso:  python scripts/convert-skin.py entrada_64x64.png salida_64x32.png
 """
 import sys
 from PIL import Image

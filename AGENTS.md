@@ -261,7 +261,7 @@ Recovery protocol for corrupted textures is maintained outside this public repos
 |--------|------|-------|---------|-----------|
 | Player skin | 64×32 | `mcl_armor_character.b3d` | `server/skins/`, Star Wars NPCs | Steve/Alex (head, torso, arms, legs) |
 | Villager texture | 64×64 | `mobs_mc_villager.b3d` | Classic NPCs (farmer, etc.) | Minecraft villager (robe, hat overlay, nose) |
-| Minecraft skin (downloaded) | 64×64 | N/A — must convert | Source from MinecraftSkins.com | Player skin format with **two layers** (base + overlay); both must be preserved in the 64×32 output |
+| Minecraft skin (downloaded) | 64×64 | N/A — must convert | Source: `./scripts/fetch-skin.sh` (ver `docs/00-SHARED/mods/SKIN_SOURCES.md`) | Player skin format with **two layers** (base + overlay); both must be preserved in the 64×32 output |
 
 **Converting a downloaded Minecraft skin to a 64×32 player skin** — the
 64×64 file has **two layers**: a base layer and an overlay layer painted on
@@ -271,20 +271,39 @@ discards every overlay pixel — armor becomes invisible, helmets disappear,
 capes vanish. The fix is to **bake the overlay onto the base** before
 cropping:
 
-- **Recommended for any skin with visible overlay detail**: drive
+- **Default, for every skin**: `python scripts/convert-skin.py <64x64.png>
+  <64x32.png>`. Bakes the three right-side overlay regions (jacket, sleeve,
+  trouser) onto the base before cropping — the same thing godly's Copy
+  buttons do at alpha 1.0 — headless, and it prints how many overlay regions
+  it actually found so you know whether a plain crop would have broken that
+  skin. Legacy 64×32 inputs pass through untouched.
+- **Fallback, if that output looks wrong**: drive
   <https://godly.github.io/minetest-skin-converter/> via the `playwright`
-  MCP server — it has Copy Cape / Copy Jacket / Copy Trouser / Copy Sleeve
-  buttons that composite the overlay regions onto a 64×32 output with
-  adjustable per-region alpha. Full step-by-step automation in the
-  [`add-skin` skill](.opencode/skills/add-skin/SKILL.md) — search for
-  "Method 1 (Recommended)".
-- **Only for overlay-free plain characters** (bottom 32 rows of the 64×64
-  are fully transparent): `img.crop((0, 0, 64, 32))` with PIL is enough.
+  MCP server (Copy Cape / Jacket / Trouser / Sleeve, with per-region alpha).
+  Step-by-step in the [`add-skin` skill](.opencode/skills/add-skin/SKILL.md).
+- **Never** `img.crop((0, 0, 64, 32))` by hand. It is only correct when the
+  bottom 32 rows are fully transparent, and the converter already tells you
+  when that's the case.
+
+**Downloading skins**: `./scripts/fetch-skin.sh <fuente> <salida_64x32.png>
+<original_64x64.png>` does fetch + validate + convert in one step. Prefixes:
+`msn:` (minecraftskins.net), `mcs:` (mc-skins.net), `player:`/`uuid:` (Mojang
+mirrors). **`minecraftskins.com` (the Skindex), namemc, planetminecraft,
+skinmc, novaskin and needcoolshoes all return 403 to automated access**
+(Cloudflare bot wall — a Playwright browser doesn't get through either,
+verified 2026-10-30); those need a manual browser download. Always keep the
+64×64 original — the 64×32 has already lost data. Full matrix:
+`docs/00-SHARED/mods/SKIN_SOURCES.md`.
 
 A documented case of the lossy crop biting us: GAELSIN `mandalorian` lost
 its helmet and `diamond_armor` lost its chestplate until re-processed with
 godly on 2026-07-26. The godlier version of the doc with full recipes lives
 at `docs/03-GAELSIN-30002/skins.md`.
+
+⚠️ `server/mods/valdivia_spawn_npc/tools/convert_skin.py` still uses the lossy
+crop (`JOBS` list, four Valdivia guides). Not fixed yet — if a guide looks like
+it's missing a jacket or hood, re-run those four through
+`scripts/convert-skin.py` instead.
 
 ### NPC dual model system (`wetlands_npcs`)
 | NPC type | Model | Texture | Pose |
@@ -474,6 +493,7 @@ Each world folder has a `ROADMAP.md` (single list of pending work, same checklis
 
 ### Mods
 - `docs/00-SHARED/mods/MODDING_GUIDE.md` — general modding guide
+- `docs/00-SHARED/mods/SKIN_SOURCES.md` — qué sitios de skins se pueden automatizar y cuáles bloquean (403), `fetch-skin.sh`, conversión 64×64 → 64×32
 - `docs/00-SHARED/mods/WORLDEDIT_GUIDE.md` — WorldEdit usage
 - `docs/00-SHARED/mods/CHESS_MOD.md` — chess
 - `docs/01-ORIGINAL-30000/pvp/PVP_ARENA_WORLDEDIT_GUIDE.md` — PvP arena + WorldEdit
