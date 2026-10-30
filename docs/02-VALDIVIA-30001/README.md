@@ -25,6 +25,7 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 - [`cabina-tp.md`](cabina-tp.md) — Cabina TP roja (diseño de Gaspi) y núcleo de viajes compartido (`valdivia_cabina`)
 - [`proteccion.md`](proteccion.md) — Protección de áreas: `protector` (bloque para jugadores) y qué pasó con `voxelibre_protection`
 - [`policia.md`](policia.md) — Carabinero anti-grief (`valdivia_policia`): persigue y dispara a quien agrede un área protegida ajena
+- [`transeuntes.md`](transeuntes.md) — Transeúntes (`valdivia_transeuntes`): gente que camina por las calles, sembrada sola alrededor de cada jugador
 - [`discoteca.md`](discoteca.md) — Discoteca del Hotel Dreams (`valdivia_discoteca`) y su convivencia con la música de VoxeLibre
 - [`no-zombie-piglin.md`](no-zombie-piglin.md) — Bloqueo del huevo de Zombie Piglin + limpieza
 - [`anti-explosivos.md`](anti-explosivos.md) — Anti-grief: sin explosiones ni incendios (`mcl_explosions_griefing=false` + `valdivia_no_explosions`)

@@ -54,6 +54,21 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
 
 ## 1. Verificar en el juego (cambios recientes sin prueba in-game)
 
+- [ ] **Transeúntes** (`valdivia_transeuntes`, desplegado el 2026-10-30) — lo
+      primero es **calibrar el filtro de calle** con `/transeunte_scan` parado
+      en cuatro sitios y comparando: (a) una calle del centro, (b) la Plaza,
+      (c) **dentro de una casa** y (d) **sobre un techo**. Lo que tiene que
+      pasar: la calle y la Plaza dan `es_calle: true`; la casa da `false` por
+      luz natural; el techo da `es_calle: true` pero `suelo macizo: false`. Si
+      un techo diera `suelo macizo: true`, los transeúntes pueden nacer
+      arriba de los edificios y hay que endurecer ese filtro.
+      Después, caminando por el centro: (e) que aparezca gente sola a los
+      pocos minutos y **nunca a la vista** (si aparecen de la nada delante,
+      subir `dist_min`); (f) que **no entren a las casas** ni se metan al río;
+      (g) que no se queden clavados contra un muro; (h) `/transeuntes` para
+      ver cuántos hay y si el cupo se respeta; (i) alejarse 100 nodos y
+      volver — no deben quedar acumulados.
+      → [`transeuntes.md`](transeuntes.md)
 - [ ] **Carabinero anti-grief** (`valdivia_policia`, desplegado el 2026-10-30) —
       con una cuenta **no-admin**: romper un bloque dentro del protector de otro
       → aparece el carabinero, persigue y dispara. Revisar en este orden:
@@ -229,6 +244,7 @@ _Nada de esta sección es prioridad hasta cerrar la sección 0._
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-30 | Transeúntes (`valdivia_transeuntes`): gente que camina por las calles, sembrada sola alrededor de cada jugador y borrada al alejarse; sigue la calle por sondeo (sin pathfinding) usando el cielo abierto para no entrar a las casas → [`transeuntes.md`](transeuntes.md) |
 | 2026-10-30 | Carabinero anti-grief (`valdivia_policia`): persigue y dispara con ballesta a quien agrede un área protegida ajena; no letal por defecto → [`policia.md`](policia.md) |
 | 2026-10-28 | Consola SNES decorativa con dos mini-juegos (Atrapa al Topo + Trivia de Valdivia), desplegada y activa en el `world.mt` |
 | 2026-10-12 | `voxelibre_protection` fuera del `world.mt` de Valdivia: queda solo Protector Redo |
