@@ -30,10 +30,11 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `wetlands_lastpos` | Jugadores vuelven a su última posición al reconectarse |
 | `server_rules` | Comando `/reglas` |
 | `voxelibre_tv` | Televisores decorativos interactivos para hogares y edificios; tres canales animados y luz al encenderse. |
-| `voxelibre_protection` | Protección de áreas para proteger el nuevo spawn y lugares comunitarios. |
+| `voxelibre_protection` | **Desactivado**: fuera del `.conf` (2026-09-21) y del `world.mt` (2026-10-12). El área `spawn_plaza_chile` ya no se aplica → ver [`proteccion.md`](proteccion.md) y el pendiente en [`ROADMAP.md`](ROADMAP.md). |
 | `valdivia_home` | Desde 2026-10-04: pestaña **Mi casa** en el inventario de supervivencia (icono cama) con *Ir a mi casa*, *Ir al spawn (Plaza Chile)* y *Fijar mi casa aquí*; también `/sethome`, `/home`, `/spawn`. Viajar exige 3 s quieto (moverse o recibir daño cancela) y 30 s entre viajes; el admin (`server`) no tiene espera. No deja fijar la casa dentro del área protegida de otro jugador. La casa vive en la metadata del jugador. |
 | `valdivia_aviso_entrada` | Desde 2026-09-16: cuando alguien entra, los jugadores conectados ven `<nombre> entrando...` arriba a la izquierda (bajo el chat) durante 6 s; se apilan hasta 5. Constantes `DURATION`, `MAX_LINES` y `POSITION` en `init.lua`. |
-| `protector` | Protector Redo (desde 2026-09-16): los jugadores protegen sus construcciones colocando el bloque protector (cubo de radio 20; clic derecho muestra el área y agrega miembros). Convive con `voxelibre_protection`; `protector_spawn = 0` porque la Plaza ya está cubierta por `spawn_plaza_chile`. |
+| `protector` | Protector Redo (desde 2026-09-16): los jugadores protegen sus construcciones colocando el bloque protector (cubo de radio 20; clic derecho muestra el área y agrega miembros). Único sistema de protección activo hoy; `protector_spawn = 0`. Ver [`proteccion.md`](proteccion.md). |
+| `valdivia_policia` | Desde 2026-10-30: al intentar romper un área protegida ajena aparece un **carabinero** que persigue al infractor y le dispara con ballesta 25 s (2 HP por dardo, **no letal** por defecto). Se engancha a `register_on_protection_violation` sin tocar `protector`. Admin: `/policia`, `/policia_limpiar`. Ver [`policia.md`](policia.md). |
 | `valdivia_cabina` | Desde 2026-10-07: **Cabinas TP** rojas de 1×2 (diseño de Gaspi) que abren el menú de destinos, más el **núcleo de viajes** compartido con guías y «Mi casa». Reemplaza a `valdivia_teleporter` (eliminado). Ver [`cabina-tp.md`](cabina-tp.md). |
 
 ### Aliases activos (`valdivia_aliases`)

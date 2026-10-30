@@ -54,6 +54,19 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
 
 ## 1. Verificar en el juego (cambios recientes sin prueba in-game)
 
+- [ ] **Carabinero anti-grief** (`valdivia_policia`, desplegado el 2026-10-30) —
+      con una cuenta **no-admin**: romper un bloque dentro del protector de otro
+      → aparece el carabinero, persigue y dispara. Revisar en este orden:
+      (a) que **se mueva de verdad** — si solo avanza a saltos cada 4 s es que el
+      FSM de `mcl_mobs` está pisando el `set_velocity` de `do_custom` y solo lo
+      empuja la reubicación anti-atasco; (b) que los dardos **acierten** a
+      distancia media y no atraviesen paredes (`line_of_sight`); (c) que a ≤ 2 HP
+      **deje de disparar** (no letal); (d) que un clic sostenido genere **un
+      solo** policía (debounce + cooldown); (e) que al desconectarse el
+      perseguido el carabinero desaparezca; (f) reiniciar el contenedor a mitad
+      de persecución y confirmar que **no queda ningún huérfano** en el mapa.
+      Probar primero con `/policia` (no requiere romper nada).
+      → [`policia.md`](policia.md)
 - [ ] **Consola SNES** (`wetlands_snes`, desplegada el 2026-10-28) — con una
       cuenta **no-admin**: clic derecho a la consola → menú → «Atrapa al Topo»
       (puntaje y cronómetro corren, el topo cambia de hueco) y «Trivia de
@@ -76,8 +89,17 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
       con dos cuentas que queden sincronizadas); segundo pedido antes de 30 s se
       rechaza. → [`discoteca.md`](discoteca.md)
 - [ ] **Protector con dos cuentas** — un jugador no-admin coloca un protector
-      fuera de la Plaza; otra cuenta no puede romper ahí; ninguno puede colocar
-      uno dentro de la Plaza. → [`proteccion.md`](proteccion.md)
+      fuera de la Plaza; otra cuenta no puede romper ahí.
+      → [`proteccion.md`](proteccion.md)
+- [ ] **Decidir qué protege la Plaza Chile.** `voxelibre_protection` salió del
+      `world.mt` el 2026-10-12 y `protector_spawn = 0`: el área
+      `spawn_plaza_chile` (Plaza + Hotel Dreams/Discoteca) **ya no se aplica**.
+      Opciones: (a) subir `protector_spawn` a ~110 — cubre el cubo pero
+      `protector` **no** tiene la excepción de «usar con la mano vacía», así que
+      podría trabar botones y puertas de la Plaza y la discoteca; (b) volver a
+      habilitar `voxelibre_protection` solo para esa área; (c) tapar la Plaza con
+      protectores propios del admin. Verificar primero in-game si de verdad se
+      puede romper algo ahí. → [`proteccion.md`](proteccion.md)
 - [ ] **Aviso de entrada** — con dos cuentas: al entrar la segunda, la primera ve
       `<nombre> entrando...` arriba a la izquierda sin tapar el chat; se va a los
       6 s. Si choca con el chat en celular o PC, ajustar `POSITION.y` en
@@ -207,6 +229,7 @@ _Nada de esta sección es prioridad hasta cerrar la sección 0._
 
 | Fecha | Qué |
 |-------|-----|
+| 2026-10-30 | Carabinero anti-grief (`valdivia_policia`): persigue y dispara con ballesta a quien agrede un área protegida ajena; no letal por defecto → [`policia.md`](policia.md) |
 | 2026-10-28 | Consola SNES decorativa con dos mini-juegos (Atrapa al Topo + Trivia de Valdivia), desplegada y activa en el `world.mt` |
 | 2026-10-12 | `voxelibre_protection` fuera del `world.mt` de Valdivia: queda solo Protector Redo |
 | 2026-10-07 | DJ del Dreams: repertorio con reloj común, Billie Jean (fuera de git) y pedidos de temas que suenan para toda la pista → [`discoteca.md`](discoteca.md) |

@@ -10,7 +10,7 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 | Spawn actual | `3669.5, -8.5, -3055.5` (Plaza Chile) |
 | Spawn histórico | `3766, -4, -3249` (Plaza de la República; destruido) |
 | Creativo | Modo supervivencia para jugadores normales; `creative` solo para admin `gabo` |
-| Protección | `voxelibre_protection` (Plaza, admin) + `protector` (jugadores) — ver [`proteccion.md`](proteccion.md) |
+| Protección | `protector` (bloque, jugadores) + carabinero anti-grief (`valdivia_policia`) — ver [`proteccion.md`](proteccion.md) y [`policia.md`](policia.md) |
 | Contacto con el admin | `/gabo <mensaje>` (Telegram, con respuesta) |
 | Modo juego | Modo supervivencia para jugadores normales; `creative` solo para admin `gabo`. Sin fly global. Inventario creativo via metadata `gamemode=creative` set por `valdivia_newplayer` mod. |
 | Vehículos | 10 mods automobiles |
@@ -23,7 +23,8 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 - [`current.md`](current.md) — Mundo nuevo (Arnis v2.9.0, baked lighting, remapeado)
 - [`guia-spawn.md`](guia-spawn.md) — NPC guía del spawn: bienvenida, reglas, aviso de `/gabo` y teletransporte (`valdivia_spawn_npc`)
 - [`cabina-tp.md`](cabina-tp.md) — Cabina TP roja (diseño de Gaspi) y núcleo de viajes compartido (`valdivia_cabina`)
-- [`proteccion.md`](proteccion.md) — Protección de áreas: `voxelibre_protection` (Plaza, admin) + `protector` (bloque para jugadores), cómo conviven
+- [`proteccion.md`](proteccion.md) — Protección de áreas: `protector` (bloque para jugadores) y qué pasó con `voxelibre_protection`
+- [`policia.md`](policia.md) — Carabinero anti-grief (`valdivia_policia`): persigue y dispara a quien agrede un área protegida ajena
 - [`discoteca.md`](discoteca.md) — Discoteca del Hotel Dreams (`valdivia_discoteca`) y su convivencia con la música de VoxeLibre
 - [`no-zombie-piglin.md`](no-zombie-piglin.md) — Bloqueo del huevo de Zombie Piglin + limpieza
 - [`anti-explosivos.md`](anti-explosivos.md) — Anti-grief: sin explosiones ni incendios (`mcl_explosions_griefing=false` + `valdivia_no_explosions`)

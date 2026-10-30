@@ -1,12 +1,23 @@
-# Protección de áreas en Valdivia — dos mods que conviven
+# Protección de áreas en Valdivia
 
-Valdivia (puerto 30001) usa **dos** sistemas de protección a la vez, cada uno con
-un rol distinto. Wetlands (30000) usa solo `protector`; Valdivia mantiene además
-`voxelibre_protection` a propósito.
+Valdivia (puerto 30001) protege las construcciones con **`protector`** (Protector
+Redo, el bloque que coloca cada jugador), igual que Wetlands, más el
+**carabinero** de [`policia.md`](policia.md) como consecuencia para quien
+intenta romper lo ajeno.
 
-Estado: **en producción** desde 2026-09-16.
+Estado: `protector` **en producción** desde 2026-09-16; carabinero desde
+2026-10-30.
 
-## Resumen
+> ⚠️ **`voxelibre_protection` ya NO está activo.** Se apagó en el `.conf` el
+> 2026-09-21 y salió del `world.mt` del VPS el 2026-10-12. La comparación de más
+> abajo describe cómo convivían **hasta esa fecha** y se conserva porque explica
+> por qué se eligió cada uno. Consecuencia práctica: el área
+> `spawn_plaza_chile` (Plaza Chile + Hotel Dreams/Discoteca) **dejó de
+> aplicarse**, y `protector_spawn = 0` tampoco la cubre. Sigue guardada en
+> `mod_storage`, pero nadie la lee. → anotado como pendiente en
+> [`ROADMAP.md`](ROADMAP.md).
+
+## Resumen (histórico: los dos mods hasta 2026-10-12)
 
 | | `voxelibre_protection` | `protector` (Protector Redo) |
 |---|---|---|
@@ -64,6 +75,13 @@ Ambos se activan en `server/config/luanti-valdivia.conf` **y** en
    `/protector_hide` vuelve invisibles los protectores propios cercanos y
    `/protector_show` los hace visibles otra vez.
 
+## Consecuencia: el carabinero (`valdivia_policia`)
+
+Desde 2026-10-30, bloquear la acción no es lo único que pasa: un **carabinero**
+aparece, persigue al infractor y le dispara con ballesta 25 s (no letal por
+defecto). Se engancha a `register_on_protection_violation` sin tocar
+`protector`. Detalle completo en [`policia.md`](policia.md).
+
 ## Comandos de admin
 
 | Comando | Mod | Uso |
@@ -101,3 +119,6 @@ Ambos se activan en `server/config/luanti-valdivia.conf` **y** en
 |-------|--------|
 | 2026-08 | `spawn_plaza_chile` creada con `voxelibre_protection` al mover el spawn a Plaza Chile |
 | 2026-09-16 | Protector Redo habilitado en Valdivia (commit `3a4b86a5`): mismos valores que Wetlands salvo `protector_spawn = 0`; `voxelibre_protection` se mantiene para la Plaza |
+| 2026-09-21 | `load_mod_voxelibre_protection = false` en el `.conf` (conflictos de registro y warnings) |
+| 2026-10-12 | `voxelibre_protection` también fuera del `world.mt` del VPS: queda solo Protector Redo. La Plaza pierde su protección de facto |
+| 2026-10-30 | Carabinero anti-grief (`valdivia_policia`): persigue y dispara a quien agrede un área ajena → [`policia.md`](policia.md) |
