@@ -67,7 +67,8 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
       subir `dist_min`); (f) que **no entren a las casas** ni se metan al río;
       (g) que no se queden clavados contra un muro; (h) `/transeuntes` para
       ver cuántos hay y si el cupo se respeta; (i) alejarse 100 nodos y
-      volver — no deben quedar acumulados.
+      volver — no deben quedar acumulados. (j) de noche, mirar si se les
+      pegan zombis encima: eso ya está diagnosticado como bug, ver sección 3.
       → [`transeuntes.md`](transeuntes.md)
 - [ ] **Carabinero anti-grief** (`valdivia_policia`, desplegado el 2026-10-30) —
       con una cuenta **no-admin**: romper un bloque dentro del protector de otro
@@ -169,6 +170,18 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
 
 ## 3. Deuda técnica y limpieza
 
+- [ ] **Los hostiles persiguen eternamente a un transeúnte inmortal**
+      (`valdivia_transeuntes`, detectado el 2026-10-30). `mobs_mc:zombie` trae
+      `attack_npcs = true` y el transeúnte es `type = "npc"`: el zombi lo elige
+      como blanco y nunca lo suelta, porque el ataque solo termina si el blanco
+      muere, sale de rango o se pierde de vista 15 s — y un inmortal que camina
+      por calle abierta no cumple ninguna. Consecuencias: el zombi **deja de
+      despawnear** (`spawning.lua:1252`, `state == "attack"` lo bloquea) y se
+      acumulan de noche; los transeúntes actúan de señuelo invencible y absorben
+      la agresión que iba al jugador; y el empujón los saca de su ruta. Arreglo
+      propuesto: poner `attack_npcs = false` en los hostiles al cargar el mundo
+      (en Valdivia no hay aldeanos ni golems que lo necesiten).
+      → [`transeuntes.md`](transeuntes.md)
 - [ ] **`valdivia_spawn_fix` no está en `luanti-valdivia.conf`.** Vive solo en el
       `world.mt` del VPS (línea 64), así que el `.conf` de git no refleja que el
       mod está activo y un mundo recreado desde el `.conf` nacería sin monstruos.

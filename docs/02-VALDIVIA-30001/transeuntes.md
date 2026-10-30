@@ -60,6 +60,70 @@ pueden llegar a un techo ni por una escalera.
 Para los techos al momento de **nacer** hay un filtro aparte: bajo una calle
 hay tierra, bajo un techo hay el hueco del edificio 2–4 nodos más abajo.
 
+## Problema conocido: los hostiles los persiguen para siempre
+
+**Estado:** pendiente, sin arreglar (anotado el 2026-10-30). Afecta solo a las
+noches de Valdivia; de día el sol quema a los zombis y el efecto desaparece.
+
+Un zombi que ve a un transeúnte se le pega y **no lo suelta nunca**. Son dos
+piezas de VoxeLibre que se juntan mal con un NPC inmortal:
+
+- `mobs_mc/zombie.lua:104` trae `attack_npcs = true`, y el transeúnte está
+  registrado como `type = "npc"` sin ningún filtro, así que el zombi lo elige
+  como blanco igual que a un aldeano (`mcl_mobs/combat.lua:342-344`).
+- El estado de ataque se suelta solo en tres casos
+  (`mcl_mobs/combat.lua`, `do_states_attack`): el blanco sale del rango de
+  tracking, queda con `hp <= 0`, o se pierde de vista por 15 s
+  (`TIME_TO_FORGET_TARGET`). El transeúnte nunca baja de HP —`do_custom` le
+  restituye los 10000 en cada tick— y camina por calle abierta, o sea con línea
+  de vista limpia. Ninguna de las tres se cumple nunca.
+
+Por qué importa, de lo más grave a lo menos:
+
+1. **El zombi deja de despawnear.** `mcl_mobs/spawning.lua:1252` lo dice
+   explícito: `despawn_allowed({can_despawn = true, state = "attack"}) == false`.
+   Un hostil enganchado queda inmune a la purga natural, así que en una noche de
+   juego los zombis se van **acumulando** en el centro en vez de rotar.
+2. **Los transeúntes funcionan de señuelo invencible.** `monster_attack` elige
+   el blanco más cercano entre jugador y NPC; con 5–15 transeúntes sembrados a
+   30–45 nodos del jugador, buena parte de los hostiles se queda pegada al
+   figurante y nunca llega al jugador. La noche deja de ser peligrosa sin que
+   nadie lo haya decidido.
+3. **Rompe la caminata.** El zombi corre a 1.8 y el transeúnte va a 1.5: lo
+   alcanza, lo golpea y lo empuja fuera de su ruta de sondeo — puede terminar
+   metido en una casa o en el río, justo lo que los filtros de calle buscan
+   evitar.
+
+Se auto-limita en dos casos y por eso no es un incendio: de día los zombis se
+queman, y si el jugador se aleja más de 70 nodos el transeúnte se borra y el
+zombi hace `clear_aggro`.
+
+### Arreglo propuesto
+
+Apagar `attack_npcs` en los hostiles del mundo, después de que cargue
+`mobs_mc` — una línea por mob, costo cero en runtime y sin estado de ataque que
+limpiar:
+
+```lua
+for _, nombre in ipairs({"zombie", "baby_zombie", "husk", "drowned"}) do
+    local def = minetest.registered_entities["mobs_mc:" .. nombre]
+    if def then def.attack_npcs = false end
+end
+```
+
+En Valdivia no hay aldeanos ni golems, así que no se pierde ninguna
+interacción legítima. La alternativa —barrer las entidades vecinas en cada paso
+buscando `.attack == self.object` y limpiarles el aggro— es más quirúrgica pero
+cuesta en cada tick y el zombi se vuelve a enganchar al instante.
+
+### Hallazgo vecino (no es el mismo bug)
+
+`count_mobs_all` (`mcl_mobs/spawning.lua:144`) cuenta los mobs por
+`spawn_class`, y los transeúntes son `passive`: los 15 ocupan el cupo
+`mcl_mob_cap_animal` (10 cerca del jugador). Hoy da igual porque
+`valdivia_spawn_fix` solo registra hostiles, pero si algún día se quieren
+animales en la ciudad, los transeúntes se los comen.
+
 ## Comandos de admin
 
 | Comando | Qué hace |
