@@ -52,7 +52,14 @@ deja al policía clavado contra una pared.
 internos de VoxeLibre y controlamos que solo dañe al infractor. Es
 `static_save = false`: jamás se guarda en el mapa.
 
-**3. Anti-huérfanos.** El policía guarda un timestamp `_vence`; en `on_activate`,
+**3. El daño se aplica a mano si el `punch` no surte efecto.** En Valdivia los
+jugadores no-admin están en **gamemode creativo** (`valdivia_newplayer`, para
+tener inventario completo en un mundo de supervivencia) y VoxeLibre les anula el
+daño del `punch` — verificado en producción el 2026-10-30: `hp=20` durante toda
+una persecución. Si tras el impacto el HP no bajó, el dardo lo descuenta con
+`set_hp`, con piso de 1 HP cuando el modo no letal está activo.
+
+**4. Anti-huérfanos.** El policía guarda un timestamp `_vence`; en `on_activate`,
 si no hay objetivo vivo o ya venció, **se borra solo**. Acá `docker stop` siempre
 termina en SIGKILL (ver `MEMORY`/`AGENTS.md`), así que un reinicio a mitad de
 persecución dejaría carabineros plantados por la ciudad sin este chequeo.

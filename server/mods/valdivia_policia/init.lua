@@ -166,10 +166,32 @@ minetest.register_entity(DARDO, {
             if obj:is_player() and obj:get_player_name() == self._objetivo then
                 local vel = self.object:get_velocity() or {x = 0, y = 0, z = 0}
                 local dir = vector.normalize(vel)
+                local nombre = self._objetivo
+                local antes = obj:get_hp()
+
                 obj:punch(self.object, 1.0, {
                     full_punch_interval = 1.0,
                     damage_groups = {fleshy = DANIO},
                 }, dir)
+
+                -- En Valdivia los jugadores no-admin estan en gamemode
+                -- creativo (valdivia_newplayer, para el inventario completo) y
+                -- VoxeLibre les anula el danio del punch: verificado en
+                -- produccion el 2026-10-30, hp=20 durante toda una
+                -- persecucion. Si el punch no bajo nada, se aplica el danio a
+                -- mano. El piso de 1 HP respeta el modo no letal.
+                minetest.after(0, function()
+                    local p = minetest.get_player_by_name(nombre)
+                    if not p then return end
+                    if p:get_hp() >= antes then
+                        local nuevo = antes - DANIO
+                        if not LETAL then nuevo = math.max(nuevo, 1) end
+                        p:set_hp(math.max(nuevo, 0), {type = "punch", from = "mod"})
+                    end
+                end)
+
+                minetest.log("action", "[" .. modname .. "] dardo impacta a " ..
+                    nombre .. " (hp " .. antes .. " -> ~" .. (antes - DANIO) .. ")")
                 destello(pos)
                 self.object:remove()
                 return
@@ -195,6 +217,9 @@ local function registrar_mob()
         initial_properties = {
             hp_min = HP,
             hp_max = HP,
+            -- Este VoxeLibre lo quiere aca: con el collisionbox solo en la raiz
+            -- loguea "Mob without collisionbox" al activarse (visto 2026-10-30).
+            collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
         },
         collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
         visual = "mesh",
@@ -322,9 +347,23 @@ local function registrar_mob()
                         decir(nombre, al_azar(PERDON))
                     end
                 else
-                    local origen = {x = pos.x, y = pos.y + 1.5, z = pos.z}
+                    -- Altura de tiro: en un tunel estrecho (la mina bajo la
+                    -- ciudad) la cabeza del policia puede quedar dentro de la
+                    -- roca y el dardo moriria al instante. Se prueban varias
+                    -- alturas y se usa la primera con linea de vision libre.
                     local blanco = {x = ppos.x, y = ppos.y + 1.2, z = ppos.z}
-                    if minetest.line_of_sight(origen, blanco) then
+                    local origen
+                    for _, dy in ipairs({1.5, 1.0, 0.6}) do
+                        local cand = {x = pos.x, y = pos.y + dy, z = pos.z}
+                        local def_n = minetest.registered_nodes[minetest.get_node(cand).name]
+                        if not (def_n and def_n.walkable)
+                        and minetest.line_of_sight(cand, blanco) then
+                            origen = cand
+                            break
+                        end
+                    end
+
+                    if origen then
                         local d = vector.normalize(vector.subtract(blanco, origen))
                         local obj = minetest.add_entity(
                             vector.add(origen, vector.multiply(d, 0.8)), DARDO)
@@ -334,6 +373,10 @@ local function registrar_mob()
                             obj:set_velocity(vector.multiply(d, VEL_DARDO))
                             obj:set_acceleration({x = 0, y = 0, z = 0})
                         end
+                    else
+                        -- Sin angulo: no dispara a ciegas contra la pared.
+                        minetest.log("action", "[" .. modname ..
+                            "] sin linea de tiro hacia " .. nombre)
                     end
                 end
             end
