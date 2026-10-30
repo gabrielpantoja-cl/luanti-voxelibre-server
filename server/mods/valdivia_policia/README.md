@@ -35,14 +35,19 @@ Filtros antes de enviar un policía:
 - **Anti-atasco sin pathfinding**: si queda a más de 25 nodos o deja de
   acercarse durante 4 s, reaparece cerca del jugador. Valdivia es una ciudad
   densa generada con Arnis y el A* de `mcl_mobs` se traba en patios y escaleras.
-- **Ballesta**: cada 2,5 s, si hay `line_of_sight` y está a ≤ 14 nodos, lanza un
-  dardo (`valdivia_policia:dardo`) a 22 nodos/s. 2 HP de daño por impacto.
-- **No letal por defecto**: si al jugador le queda ≤ 2 HP, deja de disparar y
-  avisa por chat. Con `valdivia_policia_letal = 1` sí remata.
+- **Ballesta** (más de 3 nodos): cada 1,2 s, si hay `line_of_sight` y está a
+  ≤ 18 nodos, **4 HP** por impacto. El dardo que se ve volar es solo visual: el
+  daño se resuelve al disparar, tras el tiempo de vuelo.
+- **Porra** (≤ 3 nodos): cada 1 s, **6 HP**. Acercarse no te salva.
+- **El daño se aplica sí o sí**: `punch` normal primero y, si no bajó el HP,
+  descuento directo con `set_hp` — los jugadores no-admin están en gamemode
+  creativo y VoxeLibre les anula el `punch`.
+- **No letal por defecto**: deja de atacar cuando el golpe mataría y avisa por
+  chat. Con `valdivia_policia_letal = 1` sí remata.
 - **Inmortal y no robable**: `armor_groups = {immortal = 1, fleshy = 0}`,
   `drops = {}`. Pegarle solo provoca una respuesta por chat.
-- **Fuego amigo imposible**: el dardo guarda el nombre del infractor y solo
-  impacta a ese jugador.
+- **Fuego amigo imposible**: el daño se aplica por nombre al infractor; el
+  dardo visual no colisiona con nadie.
 
 ## Ciclo de vida (lo que evita basura en el mapa)
 
@@ -66,13 +71,16 @@ Filtros antes de enviar un policía:
 
 | Setting | Default | Qué controla |
 |---|---|---|
-| `valdivia_policia_duracion` | 25 | Segundos de persecución |
-| `valdivia_policia_cooldown` | 60 | Segundos entre policías para el mismo jugador |
+| `valdivia_policia_duracion` | 40 | Segundos de persecución |
+| `valdivia_policia_cooldown` | 30 | Segundos entre policías para el mismo jugador |
 | `valdivia_policia_max` | 3 | Tope global simultáneo |
-| `valdivia_policia_velocidad` | 3.2 | Nodos/segundo (un jugador con `fast` corre más) |
-| `valdivia_policia_danio` | 2 | HP por dardo |
-| `valdivia_policia_cadencia` | 2.5 | Segundos entre disparos |
-| `valdivia_policia_alcance` | 14 | Distancia máxima de tiro |
+| `valdivia_policia_velocidad` | 4.2 | Nodos/segundo (un jugador normal corre 4.3) |
+| `valdivia_policia_danio` | 4 | HP por dardo |
+| `valdivia_policia_cadencia` | 1.2 | Segundos entre disparos |
+| `valdivia_policia_alcance` | 18 | Distancia máxima de tiro |
+| `valdivia_policia_danio_porra` | 6 | HP del golpe cuerpo a cuerpo |
+| `valdivia_policia_cadencia_porra` | 1.0 | Segundos entre porrazos |
+| `valdivia_policia_dist_porra` | 3 | A esta distancia cambia ballesta → porra |
 | `valdivia_policia_letal` | 0 | `1` = puede matar |
 
 Recordá que `world.mt` manda: activar el mod exige la línea

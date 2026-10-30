@@ -21,22 +21,25 @@ local function num(key, default)
     return tonumber(minetest.settings:get("valdivia_policia_" .. key)) or default
 end
 
-local DURACION      = num("duracion", 25)    -- segundos que dura la persecucion
-local COOLDOWN      = num("cooldown", 60)    -- segundos entre policias para el mismo jugador
+local DURACION      = num("duracion", 40)    -- segundos que dura la persecucion
+local COOLDOWN      = num("cooldown", 30)    -- segundos entre policias para el mismo jugador
 local MAX_POLICIAS  = num("max", 3)          -- tope global simultaneo
-local VELOCIDAD     = num("velocidad", 3.2)  -- nodos/segundo
-local DANIO         = num("danio", 2)        -- HP por dardo (2 = medio corazon x2)
-local CADENCIA      = num("cadencia", 2.5)   -- segundos entre disparos
-local ALCANCE       = num("alcance", 14)     -- distancia maxima de tiro
+local VELOCIDAD     = num("velocidad", 4.2)  -- nodos/segundo (jugador normal: 4.3)
+local DANIO         = num("danio", 4)        -- HP por dardo (4 = dos corazones)
+local CADENCIA      = num("cadencia", 1.2)   -- segundos entre disparos
+local ALCANCE       = num("alcance", 18)     -- distancia maxima de tiro
+local DANIO_PORRA   = num("danio_porra", 6)  -- HP del golpe cuerpo a cuerpo
+local CADENCIA_PORRA = num("cadencia_porra", 1.0)
+local DIST_PORRA    = num("dist_porra", 3)   -- a esta distancia usa la porra
 local LETAL         = num("letal", 0) == 1   -- 1 = puede matar
 
 local DIST_LEJOS    = 25                     -- si se aleja mas, reaparece cerca
-local DIST_CERCA    = 2.0                    -- a esta distancia deja de correr
-local T_ATASCO      = 4                      -- segundos sin acercarse antes de reubicarlo
+local DIST_CERCA    = 1.6                    -- a esta distancia deja de correr
+local T_ATASCO      = 2.5                    -- segundos sin acercarse antes de reubicarlo
 local T_RETO        = 6                      -- segundos entre retos por chat
 local DEBOUNCE      = 1                      -- segundos entre evaluaciones por jugador
 local HP            = 10000                  -- inmortal de facto
-local VEL_DARDO     = 22                     -- nodos/segundo del proyectil
+local VEL_DARDO     = 22                     -- nodos/segundo del dardo (solo visual)
 
 local ENTITY = "valdivia_policia:policia"
 local DARDO  = "valdivia_policia:dardo"
@@ -96,6 +99,39 @@ local function destello(pos)
     })
 end
 
+-- Aplica danio al infractor.
+--
+-- Dos capas a proposito: primero el punch normal (anima, suena y respeta la
+-- armadura) y, si no bajo nada, se descuenta a mano. En Valdivia los jugadores
+-- no-admin estan en gamemode creativo (valdivia_newplayer, para el inventario
+-- completo) y VoxeLibre les anula el danio del punch: verificado en produccion
+-- el 2026-10-30, hp = 20 durante dos persecuciones enteras.
+local function golpear(nombre, danio, fuente, dir)
+    local player = minetest.get_player_by_name(nombre)
+    if not player then return end
+
+    local antes = player:get_hp()
+    if antes <= 0 then return end
+
+    -- El policia puede haberse retirado entre el disparo y el impacto.
+    if fuente and fuente:get_pos() then
+        player:punch(fuente, 1.0, {
+            full_punch_interval = 1.0,
+            damage_groups = {fleshy = danio},
+        }, dir)
+    end
+
+    minetest.after(0, function()
+        local p = minetest.get_player_by_name(nombre)
+        if not p then return end
+        if p:get_hp() >= antes then
+            local nuevo = antes - danio
+            if not LETAL then nuevo = math.max(nuevo, 1) end
+            p:set_hp(math.max(nuevo, 0), {type = "punch", from = "mod"})
+        end
+    end)
+end
+
 -- ============================================================================
 -- 3. DONDE APARECE
 -- ============================================================================
@@ -128,9 +164,15 @@ end
 -- ============================================================================
 -- 4. EL DARDO DE BALLESTA
 -- ============================================================================
--- Proyectil propio en vez de mcl_bows:arrow_entity: no dependemos de los
--- internos de VoxeLibre (que no estan en este checkout) y controlamos que solo
--- danie al infractor, nunca a quien pase por ahi.
+-- El dardo es SOLO VISUAL. El impacto se resuelve al disparar (ver mas abajo),
+-- no por colision.
+--
+-- Por que: a 22 nodos/s y con el paso del servidor en ~0.09 s el proyectil
+-- avanza ~2 nodos por tick, asi que **se saltaba al jugador** justo cuando el
+-- policia lo tenia cerca, que es casi siempre. Verificado en produccion el
+-- 2026-10-30: dos persecuciones completas sin un solo impacto registrado.
+-- Resolver el tiro al disparar (con line_of_sight) evita ese tunelado y de
+-- paso garantiza que solo le llegue al infractor.
 minetest.register_entity(DARDO, {
     initial_properties = {
         physical = false,
@@ -145,7 +187,7 @@ minetest.register_entity(DARDO, {
     },
 
     _vida = 0,
-    _objetivo = nil,
+    _meta = nil,   -- posicion del blanco al disparar (solo para el destello)
 
     on_step = function(self, dtime)
         self._vida = self._vida + dtime
@@ -161,41 +203,10 @@ minetest.register_entity(DARDO, {
             return
         end
 
-        -- Solo impacta al infractor
-        for _, obj in ipairs(minetest.get_objects_inside_radius(pos, 1.1)) do
-            if obj:is_player() and obj:get_player_name() == self._objetivo then
-                local vel = self.object:get_velocity() or {x = 0, y = 0, z = 0}
-                local dir = vector.normalize(vel)
-                local nombre = self._objetivo
-                local antes = obj:get_hp()
-
-                obj:punch(self.object, 1.0, {
-                    full_punch_interval = 1.0,
-                    damage_groups = {fleshy = DANIO},
-                }, dir)
-
-                -- En Valdivia los jugadores no-admin estan en gamemode
-                -- creativo (valdivia_newplayer, para el inventario completo) y
-                -- VoxeLibre les anula el danio del punch: verificado en
-                -- produccion el 2026-10-30, hp=20 durante toda una
-                -- persecucion. Si el punch no bajo nada, se aplica el danio a
-                -- mano. El piso de 1 HP respeta el modo no letal.
-                minetest.after(0, function()
-                    local p = minetest.get_player_by_name(nombre)
-                    if not p then return end
-                    if p:get_hp() >= antes then
-                        local nuevo = antes - DANIO
-                        if not LETAL then nuevo = math.max(nuevo, 1) end
-                        p:set_hp(math.max(nuevo, 0), {type = "punch", from = "mod"})
-                    end
-                end)
-
-                minetest.log("action", "[" .. modname .. "] dardo impacta a " ..
-                    nombre .. " (hp " .. antes .. " -> ~" .. (antes - DANIO) .. ")")
-                destello(pos)
-                self.object:remove()
-                return
-            end
+        -- Llego al blanco: solo el destello, el danio ya se aplico al disparar.
+        if self._meta and vector.distance(pos, self._meta) < 1.2 then
+            destello(pos)
+            self.object:remove()
         end
     end,
 })
@@ -334,9 +345,28 @@ local function registrar_mob()
                 self.object:set_animation({x = 168, y = 187}, 30, 0, true)
             end
 
+            -- Porra: cuerpo a cuerpo, pega mas fuerte y mas seguido.
+            self._porra = (self._porra or 0) + dtime
+            if dist <= DIST_PORRA and self._porra >= CADENCIA_PORRA then
+                self._porra = 0
+                local hp = player:get_hp()
+                if not LETAL and hp <= DANIO_PORRA then
+                    if not self._perdono then
+                        self._perdono = true
+                        decir(nombre, al_azar(PERDON))
+                    end
+                else
+                    local d = vector.normalize(vector.subtract(ppos, pos))
+                    golpear(nombre, DANIO_PORRA, self.object, d)
+                    destello({x = ppos.x, y = ppos.y + 1, z = ppos.z})
+                    minetest.log("action", "[" .. modname .. "] porra a " ..
+                        nombre .. " (-" .. DANIO_PORRA .. " hp)")
+                end
+            end
+
             -- Ballesta: dispara si hay linea de vision y esta a tiro.
             self._tiro = (self._tiro or 0) + dtime
-            if self._tiro >= CADENCIA and dist <= ALCANCE then
+            if self._tiro >= CADENCIA and dist <= ALCANCE and dist > DIST_PORRA then
                 self._tiro = 0
 
                 local hp = player:get_hp()
@@ -365,14 +395,28 @@ local function registrar_mob()
 
                     if origen then
                         local d = vector.normalize(vector.subtract(blanco, origen))
+
+                        -- Dardo visual (no colisiona: ver el comentario del
+                        -- entity). El impacto va aparte, tras el tiempo de
+                        -- vuelo, para que se vea llegar la flecha.
                         local obj = minetest.add_entity(
                             vector.add(origen, vector.multiply(d, 0.8)), DARDO)
                         if obj then
                             local le = obj:get_luaentity()
-                            if le then le._objetivo = nombre end
+                            if le then le._meta = blanco end
                             obj:set_velocity(vector.multiply(d, VEL_DARDO))
                             obj:set_acceleration({x = 0, y = 0, z = 0})
                         end
+
+                        local vuelo = math.min(dist / VEL_DARDO, 1)
+                        local fuente = self.object
+                        minetest.after(vuelo, function()
+                            golpear(nombre, DANIO, fuente, d)
+                        end)
+
+                        minetest.log("action", "[" .. modname .. "] dardo a " ..
+                            nombre .. " (-" .. DANIO .. " hp, dist " ..
+                            string.format("%.1f", dist) .. ")")
                     else
                         -- Sin angulo: no dispara a ciegas contra la pared.
                         minetest.log("action", "[" .. modname ..
