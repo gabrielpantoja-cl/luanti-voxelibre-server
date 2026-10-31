@@ -32,9 +32,32 @@ Filtros antes de enviar un policía:
 - **Persecución**: movimiento propio con `set_velocity` + `set_yaw`, igual que el
   FSM de `wetlands_npcs`. `walk_chance = 0` para que el FSM de `mcl_mobs` no
   pelee con el nuestro.
+- **Caminata con cambios de marcha** (sección 4bis de `init.lua`): corre a
+  4,2 n/s a más de 12 nodos, trota al acercarse, baja a paso de calle
+  (~1,5 n/s) dentro de 4,5 nodos y **se detiene a 2 nodos** para encararte, con
+  histéresis en el freno (vuelve a andar recién a 3,2) para que no tiemble en el
+  borde. La velocidad se acelera y frena a 9 n/s² en vez de saltar de 0 al tope,
+  y cada carabinero lleva un factor de ritmo propio (0,94–1,08) para que dos no
+  caminen igual de parejos. `mcl_mobs` ya escala los fps del ciclo de pasos con
+  la velocidad real, así que la cadencia acompaña sola.
+- **Sin saltos de adorno**: `jump = false`. Con `walk_chance = 0` el `do_jump()`
+  de `mcl_mobs` salta en **cada paso** —incluso quieto al lado del jugador— y le
+  mete empujones de `set_acceleration` en el aire: eso era el carabinero
+  rebotando como en un trampolín. El salto lo da el mod, y sólo tras 0,45 s sin
+  avanzar de verdad (reja, cordón de 1,5 nodos, auto), con 0,8 s de pausa entre
+  saltos; los escalones de un nodo los sube `stepheight = 1.1` sin saltar.
+- **`do_custom` devuelve `false`**: eso corta el `on_step` de `mcl_mobs` justo
+  antes de `do_states` (`api.lua:398`). Sin eso, `do_states_stand()` le ponía la
+  velocidad en cero, reiniciaba la animación y le pateaba el yaw al azar **una
+  vez por segundo** (timer de `api.lua:312`) — los tirones al caminar. Todo lo
+  que sí se usa de `mcl_mobs` (gravedad en `falling()`, rotación suave, head
+  swivel) corre antes de `do_custom`.
 - **Anti-atasco sin pathfinding**: si queda a más de 25 nodos o deja de
-  acercarse durante 4 s, reaparece cerca del jugador. Valdivia es una ciudad
-  densa generada con Arnis y el A* de `mcl_mobs` se traba en patios y escaleras.
+  acercarse durante 2,5 s, reaparece cerca del jugador (ya frenado). Valdivia es
+  una ciudad densa generada con Arnis y el A* de `mcl_mobs` se traba en patios y
+  escaleras. Dentro de 4,5 nodos **no cuenta como atasco**: ahí frena a
+  propósito, y sin esa excepción se reubicaba solo cada 2,5 s mientras caminaba
+  al lado del infractor.
 - **Ballesta** (más de 3 nodos): cada 1,2 s, si hay `line_of_sight` y está a
   ≤ 18 nodos, **4 HP** por impacto. El dardo que se ve volar es solo visual: el
   daño se resuelve al disparar, tras el tiempo de vuelo.
@@ -74,7 +97,8 @@ Filtros antes de enviar un policía:
 | `valdivia_policia_duracion` | 40 | Segundos de persecución |
 | `valdivia_policia_cooldown` | 30 | Segundos entre policías para el mismo jugador |
 | `valdivia_policia_max` | 3 | Tope global simultáneo |
-| `valdivia_policia_velocidad` | 4.2 | Nodos/segundo (un jugador normal corre 4.3) |
+| `valdivia_policia_velocidad` | 4.2 | Nodos/segundo a fondo (un jugador normal corre 4.3). El trote es 0,60× y el paso de calle 0,36× de este valor |
+| `valdivia_policia_aceleracion` | 9 | Nodos/s² al cambiar de marcha (más bajo = arranca y frena más suave) |
 | `valdivia_policia_danio` | 4 | HP por dardo |
 | `valdivia_policia_cadencia` | 1.2 | Segundos entre disparos |
 | `valdivia_policia_alcance` | 18 | Distancia máxima de tiro |

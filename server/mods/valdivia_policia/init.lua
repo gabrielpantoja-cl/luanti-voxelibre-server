@@ -34,8 +34,23 @@ local DIST_PORRA    = num("dist_porra", 3)   -- a esta distancia usa la porra
 local LETAL         = num("letal", 0) == 1   -- 1 = puede matar
 
 local DIST_LEJOS    = 25                     -- si se aleja mas, reaparece cerca
-local DIST_CERCA    = 1.6                    -- a esta distancia deja de correr
 local T_ATASCO      = 2.5                    -- segundos sin acercarse antes de reubicarlo
+
+-- Marchas. El carabinero no anda siempre a fondo: corre de lejos, trota a media
+-- distancia y camina cuando ya te tiene al lado, con una rampa continua entre
+-- una marcha y la otra (seccion 4bis). VELOCIDAD es el tope, no la constante.
+local VEL_CORRER    = VELOCIDAD
+local VEL_TROTE     = VELOCIDAD * 0.60
+local VEL_CAMINAR   = VELOCIDAD * 0.36
+local ACELERACION   = num("aceleracion", 9)  -- nodos/s^2 al cambiar de marcha
+local DIST_CORRER   = 12                     -- mas lejos que esto: a fondo
+local DIST_CAMINAR  = 4.5                    -- mas cerca que esto: paso de calle
+local DIST_PARAR    = 2.0                    -- se detiene y te encara
+local DIST_RETOMAR  = 3.2                    -- histeresis: recien aca vuelve a andar
+local GIRO_DELAY    = 6                      -- ticks del giro suave de mcl_mobs
+local SALTO_VEL     = 6.2                    -- impulso del salto propio
+local SALTO_PAUSA   = 0.8                    -- segundos entre saltos
+local T_TRABA       = 0.45                   -- segundos sin avanzar antes de saltar
 local T_RETO        = 6                      -- segundos entre retos por chat
 local DEBOUNCE      = 1                      -- segundos entre evaluaciones por jugador
 local HP            = 10000                  -- inmortal de facto
@@ -228,6 +243,298 @@ minetest.register_entity(DARDO, {
 })
 
 -- ============================================================================
+-- 4bis. MOVIMIENTO: PASO SUAVE EN VEZ DE TRAMPOLIN
+-- ============================================================================
+-- Tres cosas de mcl_mobs hay que neutralizar para que el carabinero camine
+-- bonito. Las tres se veian como "el policia rebotando encima tuyo":
+--
+--  1. jump = true + walk_chance = 0 = SALTO PERPETUO. mcl_mobs llama a
+--     do_jump() en CADA paso (api.lua:385, antes de do_custom) y el guardia que
+--     deberia frenarlo es
+--         if self.walk_chance ~= 0 and not (ndef and ndef.walkable) ... return false
+--     (movement.lua:283). Con walk_chance = 0 ese `and` nunca se cumple, asi
+--     que salta con el camino libre y tambien quieto al lado del jugador.
+--     Encima do_jump() le mete set_acceleration hacia adelante tres veces por
+--     salto (minetest.after 0.1 / 0.2 / 0.3), de ahi el empujon en el aire.
+--     Solucion: jump = false corta do_jump en su primera linea, y el salto lo
+--     damos nosotros solo cuando de verdad esta trabado. Es el mismo motivo
+--     por el que valdivia_transeuntes lleva jump = false.
+--
+--  2. do_states() le pone la velocidad en CERO una vez por segundo.
+--     do_states_stand() hace set_velocity(0) + set_animation("stand") +
+--     turn_by(aleatorio), con un timer de 1 s (api.lua:312). Nuestro do_custom
+--     corre antes, asi que cada segundo habia un tick frenado, con la animacion
+--     reiniciada y el yaw pateado al azar: los tirones. Solucion: do_custom
+--     devuelve false, que en api.lua:398 corta el on_step justo antes de
+--     do_states. Lo que si necesitamos de mcl_mobs ya corrio (la gravedad en
+--     falling(), el giro suave, el head swivel).
+--
+--  3. set_animation en cada paso es trafico al vacio. Se memoriza el rango y
+--     solo se reenvia cuando cambia de verdad.
+local ANIM_PARADO = {x = 0,   y = 79}
+local ANIM_PASO   = {x = 168, y = 187}
+
+-- Solo cambia el RANGO de cuadros. Los fps NO se tocan: mcl_mobs corre
+-- set_animation_speed() en cada paso (effects.lua:408, con
+-- frame_speed_multiplier = 1 por defecto para todos los mobs, init.lua:275) y
+-- ahi ya escala el ciclo con la velocidad real -- justo el cambio de cadencia
+-- que buscamos: zancada larga corriendo, pasitos cortos al caminar. Fijarlos
+-- nosotros seria mandar dos actualizaciones por tick para el mismo resultado.
+local function animar(self, rango, fps)
+    if self._anim == rango.x then return end
+    self._anim = rango.x
+    self.object:set_animation(rango, fps, 0, true)
+end
+
+-- Acelera o frena hacia la velocidad pedida en vez de pasar de 0 a 4.2 en un
+-- tick: eso es lo que se lee como "camina" y no como "se teletransporta".
+-- Devuelve la velocidad horizontal resultante, que sirve para saber si de
+-- verdad esta avanzando (deteccion de traba, mas abajo).
+local function empujar(self, dirx, dirz, pedida, dtime)
+    local v = self.object:get_velocity() or {x = 0, y = 0, z = 0}
+    local dx, dz = dirx * pedida - v.x, dirz * pedida - v.z
+    local dif = math.sqrt(dx * dx + dz * dz)
+    local paso = ACELERACION * dtime
+    if dif > paso and dif > 0 then
+        dx, dz = dx * (paso / dif), dz * (paso / dif)
+    end
+    local nx, nz = v.x + dx, v.z + dz
+    self.object:set_velocity({x = nx, y = v.y, z = nz})
+    return math.sqrt(nx * nx + nz * nz)
+end
+
+-- Suelo firme bajo los pies (pos.y es la base del collisionbox).
+local function en_suelo(pos)
+    local def = minetest.registered_nodes[
+        minetest.get_node({x = pos.x, y = pos.y - 0.2, z = pos.z}).name]
+    return def and def.walkable
+end
+
+-- Velocidad, giro, animacion y el salto propio.
+local function caminar(self, pos, ppos, dist, dtime)
+    local dirx = ppos.x - pos.x
+    local dirz = ppos.z - pos.z
+    local largo = math.sqrt(dirx * dirx + dirz * dirz)
+
+    -- Histeresis en la parada: sin esto, justo en el borde alterna
+    -- frenar/arrancar varias veces por segundo y vuelve el tembleque.
+    if self._parado then
+        self._parado = dist < DIST_RETOMAR
+    else
+        self._parado = dist < DIST_PARAR
+    end
+
+    if largo > 0 then
+        -- Giro suave de mcl_mobs: check_smooth_rotation lo aplica en el paso
+        -- siguiente. Misma convencion de yaw que los otros NPC del modelo.
+        self:set_yaw(math.atan2(dirz, dirx) - math.pi / 2, GIRO_DELAY)
+    end
+
+    if self._parado or largo == 0 then
+        self._traba = 0
+        local real = empujar(self, 0, 0, 0, dtime)
+        if real < 0.5 then
+            animar(self, ANIM_PARADO, 30)
+        else
+            animar(self, ANIM_PASO, 25)   -- todavia frenando
+        end
+        return
+    end
+
+    -- Rampa de marchas: a fondo de lejos, paso de calle encima del infractor.
+    local pedida
+    if dist > DIST_CORRER then
+        pedida = VEL_CORRER
+    elseif dist > DIST_CAMINAR then
+        local t = (dist - DIST_CAMINAR) / (DIST_CORRER - DIST_CAMINAR)
+        pedida = VEL_TROTE + (VEL_CORRER - VEL_TROTE) * t
+    else
+        local t = math.max((dist - DIST_PARAR) / (DIST_CAMINAR - DIST_PARAR), 0)
+        pedida = VEL_CAMINAR + (VEL_TROTE - VEL_CAMINAR) * t
+    end
+    -- Ritmo propio: dos carabineros no caminan igual de parejo.
+    pedida = pedida * (self._ritmo or 1)
+
+    local real = empujar(self, dirx / largo, dirz / largo, pedida, dtime)
+    animar(self, ANIM_PASO, 25)
+
+    -- Salto propio: nada de rebotar sin motivo. Solo si quiere avanzar, esta en
+    -- el suelo y lleva T_TRABA sin moverse de verdad (una reja, un cordon de
+    -- 1.5 nodos, un auto). stepheight = 1.1 ya le resuelve los escalones de un
+    -- nodo sin saltar.
+    self._pausa_salto = math.max((self._pausa_salto or 0) - dtime, 0)
+    if real < pedida * 0.35 then
+        self._traba = (self._traba or 0) + dtime
+    else
+        self._traba = 0
+    end
+    if self._traba > T_TRABA and self._pausa_salto == 0 and en_suelo(pos) then
+        self._traba = 0
+        self._pausa_salto = SALTO_PAUSA
+        local v = self.object:get_velocity()
+        self.object:set_velocity({x = v.x, y = SALTO_VEL, z = v.z})
+    end
+end
+
+-- El ciclo completo de la persecucion. Vive afuera de la definicion del mob
+-- porque mcl_mobs solo copia un punado de campos conocidos sobre la entidad
+-- (do_punch entre ellos, cualquier campo inventado no), y porque asi el
+-- `return false` de do_custom queda en un solo lugar.
+local function perseguir(self, dtime)
+    if self.object:get_hp() < HP then
+        self.object:set_hp(HP)
+        self.object:set_armor_groups({immortal = 1, fleshy = 0})
+    end
+
+    local nombre = self._objetivo
+    if not nombre then self.object:remove() return end
+
+    local pos = self.object:get_pos()
+    if not pos then return end
+
+    local player = minetest.get_player_by_name(nombre)
+    if not player then  -- se desconecto
+        policias[nombre] = nil
+        self.object:remove()
+        return
+    end
+
+    -- Se acabo el tiempo: se rinde y se va.
+    self._vida = (self._vida or 0) + dtime
+    if self._vida > DURACION then
+        decir(nombre, al_azar(RENDIRSE))
+        destello(pos)
+        policias[nombre] = nil
+        self.object:remove()
+        return
+    end
+
+    local ppos = player:get_pos()
+    local dist = vector.distance(pos, ppos)
+
+    -- Anti-atasco SIN pathfinding: Valdivia es una ciudad densa de
+    -- Arnis y el A* de mcl_mobs se traba en patios y escaleras. Si se
+    -- quedo lejos o dejo de acercarse, reaparece cerca del jugador
+    -- (como si hubiera dado la vuelta a la manzana).
+    --
+    -- Adentro de DIST_CAMINAR el policia baja a paso de calle a proposito, asi
+    -- que "no se acerca" es lo esperado y NO es un atasco: sin esta excepcion
+    -- se reubicaba solo cada 2,5 s mientras caminaba al lado del infractor.
+    if dist <= DIST_CAMINAR then
+        self._mejor = dist
+        self._atasco = 0
+    else
+        self._mejor = math.min(self._mejor or dist, dist)
+        self._atasco = (dist <= self._mejor + 0.5) and 0 or ((self._atasco or 0) + dtime)
+    end
+    if dist > DIST_LEJOS or self._atasco > T_ATASCO then
+        local destino = buscar_pos(ppos)
+        if destino then
+            destello(pos)
+            self.object:set_pos(destino)
+            -- Llega frenado: si no, sigue viajando con la velocidad que traia
+            -- y se pasa de largo al aparecer.
+            self.object:set_velocity({x = 0, y = 0, z = 0})
+            self._parado = false
+            destello(destino)
+        end
+        self._mejor = nil
+        self._atasco = 0
+        return
+    end
+
+    -- Movimiento, giro, animacion y salto: seccion 4bis.
+    caminar(self, pos, ppos, dist, dtime)
+
+    -- Porra: cuerpo a cuerpo, pega mas fuerte y mas seguido.
+    self._porra = (self._porra or 0) + dtime
+    if dist <= DIST_PORRA and self._porra >= CADENCIA_PORRA then
+        self._porra = 0
+        local hp = player:get_hp()
+        if not LETAL and hp <= DANIO_PORRA then
+            if not self._perdono then
+                self._perdono = true
+                decir(nombre, al_azar(PERDON))
+            end
+        else
+            local d = vector.normalize(vector.subtract(ppos, pos))
+            golpear(nombre, DANIO_PORRA, self.object, d)
+            destello({x = ppos.x, y = ppos.y + 1, z = ppos.z})
+            minetest.log("action", "[" .. modname .. "] porra a " ..
+                nombre .. " (-" .. DANIO_PORRA .. " hp)")
+        end
+    end
+
+    -- Ballesta: dispara si hay linea de vision y esta a tiro.
+    self._tiro = (self._tiro or 0) + dtime
+    if self._tiro >= CADENCIA and dist <= ALCANCE and dist > DIST_PORRA then
+        self._tiro = 0
+
+        local hp = player:get_hp()
+        if not LETAL and hp <= DANIO then
+            -- No remata: avisa una vez y sigue acompaniando.
+            if not self._perdono then
+                self._perdono = true
+                decir(nombre, al_azar(PERDON))
+            end
+        else
+            -- Altura de tiro: en un tunel estrecho (la mina bajo la
+            -- ciudad) la cabeza del policia puede quedar dentro de la
+            -- roca y el dardo moriria al instante. Se prueban varias
+            -- alturas y se usa la primera con linea de vision libre.
+            local blanco = {x = ppos.x, y = ppos.y + 1.2, z = ppos.z}
+            local origen
+            for _, dy in ipairs({1.5, 1.0, 0.6}) do
+                local cand = {x = pos.x, y = pos.y + dy, z = pos.z}
+                local def_n = minetest.registered_nodes[minetest.get_node(cand).name]
+                if not (def_n and def_n.walkable)
+                and minetest.line_of_sight(cand, blanco) then
+                    origen = cand
+                    break
+                end
+            end
+
+            if origen then
+                local d = vector.normalize(vector.subtract(blanco, origen))
+
+                -- Dardo visual (no colisiona: ver el comentario del
+                -- entity). El impacto va aparte, tras el tiempo de
+                -- vuelo, para que se vea llegar la flecha.
+                local obj = minetest.add_entity(
+                    vector.add(origen, vector.multiply(d, 0.8)), DARDO)
+                if obj then
+                    local le = obj:get_luaentity()
+                    if le then le._meta = blanco end
+                    obj:set_velocity(vector.multiply(d, VEL_DARDO))
+                    obj:set_acceleration({x = 0, y = 0, z = 0})
+                end
+
+                local vuelo = math.min(dist / VEL_DARDO, 1)
+                local fuente = self.object
+                minetest.after(vuelo, function()
+                    golpear(nombre, DANIO, fuente, d)
+                end)
+
+                minetest.log("action", "[" .. modname .. "] dardo a " ..
+                    nombre .. " (-" .. DANIO .. " hp, dist " ..
+                    string.format("%.1f", dist) .. ")")
+            else
+                -- Sin angulo: no dispara a ciegas contra la pared.
+                minetest.log("action", "[" .. modname ..
+                    "] sin linea de tiro hacia " .. nombre)
+            end
+        end
+    end
+
+    -- Reto periodico por chat.
+    self._reto = (self._reto or 0) + dtime
+    if self._reto > T_RETO then
+        self._reto = 0
+        decir(nombre, al_azar(RETOS))
+    end
+end
+
+-- ============================================================================
 -- 5. EL MOB
 -- ============================================================================
 -- Mismo patron probado en valdivia_spawn_npc / wetlands_npcs: mcl_mobs solo
@@ -257,8 +564,10 @@ local function registrar_mob()
         walk_velocity = VELOCIDAD,
         run_velocity = VELOCIDAD,
         walk_chance = 0,
-        jump = true,
-        jump_height = 5,
+        -- Sin el salto de mcl_mobs: con walk_chance = 0 su do_jump() salta en
+        -- cada paso, incluso quieto (seccion 4bis). El salto, cuando de verdad
+        -- hace falta, lo da caminar().
+        jump = false,
         stepheight = 1.1,
         fear_height = 0,
         fall_damage = 0,
@@ -286,167 +595,21 @@ local function registrar_mob()
                 return
             end
             policias[self._objetivo] = self.object
+            -- Un poco de variacion para que dos carabineros no se muevan
+            -- exactamente igual.
+            self._ritmo = self._ritmo or (0.94 + math.random() * 0.14)
         end,
 
         do_custom = function(self, dtime)
-            if self.object:get_hp() < HP then
-                self.object:set_hp(HP)
-                self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            end
-
-            local nombre = self._objetivo
-            if not nombre then self.object:remove() return end
-
-            local pos = self.object:get_pos()
-            if not pos then return end
-
-            local player = minetest.get_player_by_name(nombre)
-            if not player then  -- se desconecto
-                policias[nombre] = nil
-                self.object:remove()
-                return
-            end
-
-            -- Se acabo el tiempo: se rinde y se va.
-            self._vida = (self._vida or 0) + dtime
-            if self._vida > DURACION then
-                decir(nombre, al_azar(RENDIRSE))
-                destello(pos)
-                policias[nombre] = nil
-                self.object:remove()
-                return
-            end
-
-            local ppos = player:get_pos()
-            local dist = vector.distance(pos, ppos)
-
-            -- Anti-atasco SIN pathfinding: Valdivia es una ciudad densa de
-            -- Arnis y el A* de mcl_mobs se traba en patios y escaleras. Si se
-            -- quedo lejos o dejo de acercarse, reaparece cerca del jugador
-            -- (como si hubiera dado la vuelta a la manzana).
-            self._mejor = math.min(self._mejor or dist, dist)
-            self._atasco = (dist <= self._mejor + 0.5) and 0 or ((self._atasco or 0) + dtime)
-            if dist > DIST_LEJOS or self._atasco > T_ATASCO then
-                local destino = buscar_pos(ppos)
-                if destino then
-                    destello(pos)
-                    self.object:set_pos(destino)
-                    destello(destino)
-                end
-                self._mejor = nil
-                self._atasco = 0
-                return
-            end
-
-            -- Movimiento
-            local dir = vector.subtract(ppos, pos)
-            dir.y = 0
-            local largo = math.sqrt(dir.x * dir.x + dir.z * dir.z)
-            if dist < DIST_CERCA or largo == 0 then
-                local vel = self.object:get_velocity()
-                self.object:set_velocity({x = 0, y = vel and vel.y or 0, z = 0})
-                self.object:set_animation({x = 0, y = 79}, 30, 0, true)
-                if largo > 0 then
-                    self.object:set_yaw(math.atan2(dir.z, dir.x) - math.pi / 2)
-                end
-            else
-                local vel = self.object:get_velocity()
-                self.object:set_velocity({
-                    x = (dir.x / largo) * VELOCIDAD,
-                    y = vel and vel.y or 0,
-                    z = (dir.z / largo) * VELOCIDAD,
-                })
-                -- Misma convencion de yaw que los otros NPC de este modelo.
-                self.object:set_yaw(math.atan2(dir.z, dir.x) - math.pi / 2)
-                self.object:set_animation({x = 168, y = 187}, 30, 0, true)
-            end
-
-            -- Porra: cuerpo a cuerpo, pega mas fuerte y mas seguido.
-            self._porra = (self._porra or 0) + dtime
-            if dist <= DIST_PORRA and self._porra >= CADENCIA_PORRA then
-                self._porra = 0
-                local hp = player:get_hp()
-                if not LETAL and hp <= DANIO_PORRA then
-                    if not self._perdono then
-                        self._perdono = true
-                        decir(nombre, al_azar(PERDON))
-                    end
-                else
-                    local d = vector.normalize(vector.subtract(ppos, pos))
-                    golpear(nombre, DANIO_PORRA, self.object, d)
-                    destello({x = ppos.x, y = ppos.y + 1, z = ppos.z})
-                    minetest.log("action", "[" .. modname .. "] porra a " ..
-                        nombre .. " (-" .. DANIO_PORRA .. " hp)")
-                end
-            end
-
-            -- Ballesta: dispara si hay linea de vision y esta a tiro.
-            self._tiro = (self._tiro or 0) + dtime
-            if self._tiro >= CADENCIA and dist <= ALCANCE and dist > DIST_PORRA then
-                self._tiro = 0
-
-                local hp = player:get_hp()
-                if not LETAL and hp <= DANIO then
-                    -- No remata: avisa una vez y sigue acompaniando.
-                    if not self._perdono then
-                        self._perdono = true
-                        decir(nombre, al_azar(PERDON))
-                    end
-                else
-                    -- Altura de tiro: en un tunel estrecho (la mina bajo la
-                    -- ciudad) la cabeza del policia puede quedar dentro de la
-                    -- roca y el dardo moriria al instante. Se prueban varias
-                    -- alturas y se usa la primera con linea de vision libre.
-                    local blanco = {x = ppos.x, y = ppos.y + 1.2, z = ppos.z}
-                    local origen
-                    for _, dy in ipairs({1.5, 1.0, 0.6}) do
-                        local cand = {x = pos.x, y = pos.y + dy, z = pos.z}
-                        local def_n = minetest.registered_nodes[minetest.get_node(cand).name]
-                        if not (def_n and def_n.walkable)
-                        and minetest.line_of_sight(cand, blanco) then
-                            origen = cand
-                            break
-                        end
-                    end
-
-                    if origen then
-                        local d = vector.normalize(vector.subtract(blanco, origen))
-
-                        -- Dardo visual (no colisiona: ver el comentario del
-                        -- entity). El impacto va aparte, tras el tiempo de
-                        -- vuelo, para que se vea llegar la flecha.
-                        local obj = minetest.add_entity(
-                            vector.add(origen, vector.multiply(d, 0.8)), DARDO)
-                        if obj then
-                            local le = obj:get_luaentity()
-                            if le then le._meta = blanco end
-                            obj:set_velocity(vector.multiply(d, VEL_DARDO))
-                            obj:set_acceleration({x = 0, y = 0, z = 0})
-                        end
-
-                        local vuelo = math.min(dist / VEL_DARDO, 1)
-                        local fuente = self.object
-                        minetest.after(vuelo, function()
-                            golpear(nombre, DANIO, fuente, d)
-                        end)
-
-                        minetest.log("action", "[" .. modname .. "] dardo a " ..
-                            nombre .. " (-" .. DANIO .. " hp, dist " ..
-                            string.format("%.1f", dist) .. ")")
-                    else
-                        -- Sin angulo: no dispara a ciegas contra la pared.
-                        minetest.log("action", "[" .. modname ..
-                            "] sin linea de tiro hacia " .. nombre)
-                    end
-                end
-            end
-
-            -- Reto periodico por chat.
-            self._reto = (self._reto or 0) + dtime
-            if self._reto > T_RETO then
-                self._reto = 0
-                decir(nombre, al_azar(RETOS))
-            end
+            -- perseguir() tiene varias salidas tempranas, asi que el
+            -- return va aca afuera para que todas pasen por el.
+            perseguir(self, dtime)
+            -- false corta el on_step de mcl_mobs justo antes de do_states
+            -- (api.lua:398). Sin esto, do_states_stand() nos pisa la velocidad
+            -- y la animacion una vez por segundo: eso eran los tirones. Lo que
+            -- si usamos de mcl_mobs (gravedad en falling(), giro suave, head
+            -- swivel) ya corrio antes de llegar aca.
+            return false
         end,
 
         -- Inmortal: si le pegan, no pasa nada.

@@ -207,6 +207,34 @@ Applying damage from a mod with `player:set_hp(hp, {type = "punch", ...})` and n
 
 Use `{type = "set_hp", from = "<mod>"}` instead — `from_mt` falls through to its `generic` branch and indexes nothing. Related: a plain `object:punch(...)` often delivers **far less** than the `damage_groups` you ask for (armor soaks it, and players in gamemode `creative` take none at all), so a mod that needs a guaranteed amount must punch first and then top up with a `set_hp` carrying a safe reason.
 
+### Custom-movement mobs: `walk_chance = 0` turns `jump = true` into a trampoline
+Any mob that drives its own movement from `do_custom` sets `walk_chance = 0` so
+`mcl_mobs`' FSM stops fighting the `set_velocity`. Two side effects of that combo bite:
+
+1. **Perpetual jumping.** `mcl_mobs` calls `do_jump()` on *every* step (`api.lua:385`,
+   before `do_custom`), and its bail-out is
+   `if self.walk_chance ~= 0 and not (ndef and ndef.walkable) ... then return false`
+   (`movement.lua:283`). With `walk_chance = 0` that `and` never holds, so the mob jumps
+   with a clear path ahead and even standing still next to a player — and `do_jump()` also
+   fires `set_acceleration` forward three times per jump (`minetest.after` 0.1/0.2/0.3),
+   overriding gravity. It reads as the mob bouncing on a trampoline. Fix: **`jump = false`**
+   (that's the first line of `do_jump`, so it's a hard off switch) and implement the jump in
+   `do_custom`, only when the mob is actually stuck. `stepheight = 1.1` already climbs
+   one-node steps without any jump. Found 2026-10-31 on `valdivia_policia`;
+   `valdivia_transeuntes` had `jump = false` from the start for the same reason.
+2. **Velocity zeroed once per second.** `do_states_stand()` does `set_velocity(0)` +
+   `set_animation("stand")` + `turn_by(random)` on a 1 s timer (`api.lua:312`). `do_custom`
+   runs *before* it, so every second there is one frozen tick with the animation restarted
+   and the yaw kicked at random — visible as jerky walking. Fix: **`return false` from
+   `do_custom`**, which cuts `on_step` right before `do_states` (`api.lua:398`). Everything
+   still needed from `mcl_mobs` (gravity in `falling()`, `check_smooth_rotation`,
+   head swivel, `set_animation_speed`) already ran by then.
+
+Two freebies worth using instead of reinventing: `self:set_yaw(yaw, delay_en_ticks)` gives
+eased turning via `check_smooth_rotation`, and `set_animation_speed()` already scales the
+frame speed with real velocity for every mob (`frame_speed_multiplier = 1` default,
+`init.lua:275`) — so only switch the frame *range*, never fight over the fps.
+
 ### `diggable = false` is silently ignored in VoxeLibre
 VoxeLibre's `_mcl_autogroup` rewrites **every** node on load and sets `diggable = true` unless the node is in group `unbreakable` or `indestructible` (or is a liquid). A node with only `diggable = false` **can be dug by any player** — found 2026-10-07 when players broke `valdivia_cabina` cabins. For a truly indestructible node use:
 ```lua
@@ -365,7 +393,7 @@ All containers share the same `server/games/` and `server/mods/` directories. Va
 
 **Valdivia-only mod — `valdivia_cabina`** (2026-10-07): red 1×2 "Cabina TP" designed by the admin's nephew Gaspi (two nodes, 16×16 textures from `tools/generate_textures.py`), placed only by the admin (`/cabina`, `/cabina nombre`, `/cabina quitar`); each placed cabin auto-registers as a destination, and **cabins are the only destinations** (no fixed places, no `/lugar_guardar`; the menu lists the other cabins by plain name). It is also the travel core (global `valdivia_cabina`: `get_lugares`/`set_lugar`/`remove_lugar`, `show_menu`, `request` with 3 s stand-still + 30 s cooldown), reused by `valdivia_home` for go-home. Destinations persist in `worldpath/valdivia_lugares.json`. `/lugares` lists the cabins. Replaces the deleted `valdivia_teleporter` (alias `valdivia_teleporter:pad → air`). See `docs/02-VALDIVIA-30001/cabina-tp.md`.
 
-**Valdivia-only mod — `valdivia_policia`** (2026-10-30, `load_mod_valdivia_policia = true` in `luanti-valdivia.conf` only): anti-grief consequence layered on top of `protector`. Hooks `minetest.register_on_protection_violation` (the same hook `protector` uses for the unused `protector_hurt`/`protector_flip`, so the upstream mod stays untouched) and spawns a "Carabinero" that chases the offender and shoots crossbow bolts at them for 25 s, then gives up. Non-lethal by default (stops firing at ≤ 2 HP; `valdivia_policia_letal = 1` to allow kills), immortal, drops nothing, one cop per offender with a 60 s cooldown and a global cap of 3. Movement is custom `set_velocity` with `walk_chance = 0` (same pattern as `wetlands_npcs`), and the anti-stuck rule **relocates** the cop near the player instead of pathfinding — `mcl_mobs`' A* gets stuck in Arnis' dense city blocks. The cop stores a `_vence` timestamp and deletes itself in `on_activate` if it has no live target, so a SIGKILL mid-chase can't leave orphans in the map. Admin: `/policia [player]`, `/policia_limpiar`. See `server/mods/valdivia_policia/README.md`.
+**Valdivia-only mod — `valdivia_policia`** (2026-10-30, `load_mod_valdivia_policia = true` in `luanti-valdivia.conf` only): anti-grief consequence layered on top of `protector`. Hooks `minetest.register_on_protection_violation` (the same hook `protector` uses for the unused `protector_hurt`/`protector_flip`, so the upstream mod stays untouched) and spawns a "Carabinero" that chases the offender and shoots crossbow bolts at them for 25 s, then gives up. Non-lethal by default (stops firing at ≤ 2 HP; `valdivia_policia_letal = 1` to allow kills), immortal, drops nothing, one cop per offender with a 60 s cooldown and a global cap of 3. Movement is custom `set_velocity` with `walk_chance = 0` (same pattern as `wetlands_npcs`), and the anti-stuck rule **relocates** the cop near the player instead of pathfinding — `mcl_mobs`' A* gets stuck in Arnis' dense city blocks. Since 2026-10-31 the gait is smoothed (section `4bis` of its `init.lua`): `jump = false` + own stuck-only jump, `do_custom` returns `false`, acceleration ramp of 9 n/s², and speed gears run → trot → walk → stop at 2 nodes with hysteresis (see the `walk_chance = 0` pitfall above). The cop stores a `_vence` timestamp and deletes itself in `on_activate` if it has no live target, so a SIGKILL mid-chase can't leave orphans in the map. Admin: `/policia [player]`, `/policia_limpiar`. See `server/mods/valdivia_policia/README.md`.
 
 **Valdivia-only mod — `valdivia_transeuntes`** (2026-10-30, `load_mod_valdivia_transeuntes = true` in `luanti-valdivia.conf` only): background pedestrians walking the city streets — six types (`vecino`, `escolar`, `estudiante`, `feriante`, `pescador`, `turista`), two skins each, a random Chilean first name, and one chat line per type on right-click. Immortal, ephemeral (`static_save = false`), no quests, no formspec. **They are seeded automatically**, not hand-placed: a single 5 s `globalstep` spawns up to 5 per player (half at night, global cap 15) at 30–45 nodes, only where `line_of_sight` from the player is false, and deletes them past 70 nodes from everyone. Nothing persists, so a SIGKILL leaves no orphans and there is no roster to reconcile. **Navigation is probe-based, not A\*** (same reason as `valdivia_policia`): each walker sondea 1.6 nodes ahead and takes the smallest valid turn, where "valid" means walkable non-liquid floor + 2 air + `minetest.get_natural_light(p, 0.5) >= 14`. That light test with a **fixed noon timeofday** is what keeps them out of buildings at any hour — it asks "is there sky above?", not "what time is it?". Seeding adds two more filters: solid ground 2–4 nodes below (a flat roof passes the street test but is hollow underneath) and ≥3 of 4 orthogonal neighbours also being street (kills one-node patios and the riverbank). `jump = false` so they can never climb onto a roof. Admin: `/transeunte [tipo]`, `/transeuntes [info|limpiar]`, `/transeunte_scan` (calibration — prints why a spot is or isn't street). See `server/mods/valdivia_transeuntes/README.md` and `docs/02-VALDIVIA-30001/transeuntes.md`.
 
