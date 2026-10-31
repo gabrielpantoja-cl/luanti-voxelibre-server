@@ -80,6 +80,9 @@ function celevator.car.register(name,defs,size)
 		def.groups = {
 			not_in_creative_inventory = 1,
 			_celevator_car = 1,
+			unbreakable = 1,
+			indestructible = 1,
+			unmovable_by_piston = 1,
 		}
 		local xp = tonumber(string.sub(def._position,1,1))
 		local yp = tonumber(string.sub(def._position,2,2))
@@ -108,6 +111,9 @@ function celevator.car.register(name,defs,size)
 		def.description = "Car "..def._position.." (you hacker you!)"
 		def.light_source = 9
 		def.drop = ""
+		def.diggable = false
+		def.can_dig = function() return false end
+		def.on_blast = function() end
 		if def._cop then
 			def.on_receive_fields = function(pos,_,fields,player)
 				local meta = minetest.get_meta(pos)
@@ -310,8 +316,14 @@ minetest.register_abm({
 minetest.register_node("celevator:car_top_box_off",{
 	description = "Car-top Inspection Box, Off State (you hacker you!)",
 	drop = "",
+	diggable = false,
+	can_dig = function() return false end,
+	on_blast = function() end,
 	groups = {
 		not_in_creative_inventory = 1,
+		unbreakable = 1,
+		indestructible = 1,
+		unmovable_by_piston = 1,
 	},
 	paramtype = "light",
 	drawtype = "nodebox",
@@ -330,8 +342,14 @@ minetest.register_node("celevator:car_top_box_off",{
 minetest.register_node("celevator:car_top_box_on",{
 	description = "Car-top Inspection Box, On State (you hacker you!)",
 	drop = "",
+	diggable = false,
+	can_dig = function() return false end,
+	on_blast = function() end,
 	groups = {
 		not_in_creative_inventory = 1,
+		unbreakable = 1,
+		indestructible = 1,
+		unmovable_by_piston = 1,
 	},
 	paramtype = "light",
 	drawtype = "nodebox",
