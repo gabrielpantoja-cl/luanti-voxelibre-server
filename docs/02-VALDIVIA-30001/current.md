@@ -36,6 +36,7 @@ incluyendo toda el área urbana: Isla Teja, Las Ánimas, Santa Elena, Centro, Mi
 | `protector` | Protector Redo (desde 2026-09-16): los jugadores protegen sus construcciones colocando el bloque protector (cubo de radio 20; clic derecho muestra el área y agrega miembros). Único sistema de protección activo hoy; `protector_spawn = 0`. Ver [`proteccion.md`](proteccion.md). |
 | `valdivia_policia` | Desde 2026-10-30: al intentar romper un área protegida ajena aparece un **carabinero** que persigue al infractor y le dispara con ballesta 25 s (2 HP por dardo, **no letal** por defecto). Se engancha a `register_on_protection_violation` sin tocar `protector`. Admin: `/policia`, `/policia_limpiar`. Ver [`policia.md`](policia.md). |
 | `valdivia_cabina` | Desde 2026-10-07: **Cabinas TP** rojas de 1×2 (diseño de Gaspi) que abren el menú de destinos, más el **núcleo de viajes** compartido con guías y «Mi casa». Reemplaza a `valdivia_teleporter` (eliminado). Ver [`cabina-tp.md`](cabina-tp.md). |
+| `celevator` | Desde 2026-10-31: ascensor realista en el **Hotel Dreams** (cerca del spawn). Car ID 4, 15 pisos (y=-8 a y=62, espaciado 5 bloques), puertas automáticas, sonidos y display digital de piso. Mod de cheapie (The Unlicense), compatible con VoxeLibre nativamente. Nodos del carro son indestructibles (grupos `unbreakable`/`indestructible` — parche propio en `server/mods/celevator/car.lua`). |
 
 ### Aliases activos (`valdivia_aliases`)
 
