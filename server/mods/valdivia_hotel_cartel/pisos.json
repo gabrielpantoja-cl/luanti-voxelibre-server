@@ -2,10 +2,10 @@
   "_comentario": "Fuente unica de verdad del cartel del Hotel Dreams (Valdivia 30001). La leen tools/generate_cartel.py (para dibujar las texturas) e init.lua (para el formspec). Tras editar: python tools/generate_cartel.py y commitear las texturas.",
   "titulo": "HOTEL DREAMS",
   "subtitulo": "D I R E C T O R I O   D E   P I S O S",
-  "pie": "Ascensor: 15 pisos  -  aprieta el boton de tu piso",
+  "pie": "Ascensor: 15 pisos  -  aprieta el botón de tu piso",
   "grid": { "cols": 6, "filas": 4, "tile": 256 },
   "pisos": [
-    { "n": 1,  "estado": "fiesta",    "nombre": "Rave Dreams + Sala Gamer", "detalle": "luciano80" },
+    { "n": 1,  "estado": "fiesta",    "nombre": "Rave Dreams, Sala Gamer y más", "detalle": "planta baja: zona común del hotel" },
     { "n": 2,  "estado": "libre",     "nombre": "Disponible" },
     { "n": 3,  "estado": "libre",     "nombre": "Disponible" },
     { "n": 4,  "estado": "libre",     "nombre": "Disponible" },
@@ -19,6 +19,6 @@
     { "n": 12, "estado": "libre",     "nombre": "Disponible" },
     { "n": 13, "estado": "reservado", "nombre": "Reservado",  "detalle": "loxos" },
     { "n": 14, "estado": "libre",     "nombre": "Disponible" },
-    { "n": 15, "estado": "libre",     "nombre": "Disponible" }
+    { "n": 15, "estado": "reservado", "nombre": "Reservado",  "detalle": "luciano80" }
   ]
 }

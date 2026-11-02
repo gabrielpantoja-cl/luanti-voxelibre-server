@@ -13,12 +13,13 @@ cartel te dice adónde.
 
 | Piso | Qué hay | Estado |
 |---|---|---|
-| 1 | Rave Dreams + Sala Gamer (`luciano80`) | fiesta |
+| 1 | Rave Dreams, Sala Gamer y más — planta baja, zona común | fiesta |
 | 2–10 | Disponible | libre |
 | 11 | Reservado (`gael`) | reservado |
 | 12 | Disponible | libre |
 | 13 | Reservado (`loxos`) | reservado |
-| 14–15 | Disponible | libre |
+| 14 | Disponible | libre |
+| 15 | Reservado (`luciano80`) | reservado |
 
 La tabla **no se edita en Lua**: vive en
 `server/mods/valdivia_hotel_cartel/pisos.json`, que es la fuente única que leen
