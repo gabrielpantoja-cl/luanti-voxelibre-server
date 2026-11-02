@@ -27,6 +27,7 @@ Recreación fiel de la ciudad de Valdivia, Chile desde OpenStreetMap con Arnis.
 - [`policia.md`](policia.md) — Carabinero anti-grief (`valdivia_policia`): persigue y dispara a quien agrede un área protegida ajena
 - [`transeuntes.md`](transeuntes.md) — Transeúntes (`valdivia_transeuntes`): gente que camina por las calles, sembrada sola alrededor de cada jugador
 - [`discoteca.md`](discoteca.md) — Discoteca del Hotel Dreams (`valdivia_discoteca`) y su convivencia con la música de VoxeLibre
+- [`hotel-dreams-cartel.md`](hotel-dreams-cartel.md) — Mega cartel directorio del Hotel Dreams (`valdivia_hotel_cartel`): mural de 6×4 nodos con los 15 pisos, `/cartel` y `/pisos`
 - [`no-zombie-piglin.md`](no-zombie-piglin.md) — Bloqueo del huevo de Zombie Piglin + limpieza
 - [`anti-explosivos.md`](anti-explosivos.md) — Anti-grief: sin explosiones ni incendios (`mcl_explosions_griefing=false` + `valdivia_no_explosions`)
 - [`respaldos-y-restauracion.md`](respaldos-y-restauracion.md) — Backups a R2, **cuántos días se guardan** (~6), y procedimiento de restauración verificado
