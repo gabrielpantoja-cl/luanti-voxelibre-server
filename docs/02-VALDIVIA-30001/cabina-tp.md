@@ -26,6 +26,46 @@ Estado: **implementado 2026-10-07**.
 | `/cabina quitar` | Quita la cabina más cercana (5 bloques) y la saca del menú. |
 | `/lugares` | Lista las cabinas con su posición (cualquiera puede usarlo). |
 
+## Planificar la red en Google Earth
+
+[`cabinas-valdivia.kml`](cabinas-valdivia.kml) es la red actual sobre el mapa
+real: un pin por cabina (con sus coordenadas de juego y su vecina más cercana)
+y una carpeta de círculos de cobertura para ver los huecos. Se abre con doble
+clic en Google Earth.
+
+Lo genera `scripts/cabinas-to-kml.py` desde el JSON de destinos del VPS:
+
+```bash
+scp <VPS_USER>@<VPS_HOST>:<PROJECT_PATH>/server/worlds/valdivia/valdivia_lugares.json /tmp/
+python scripts/cabinas-to-kml.py /tmp/valdivia_lugares.json docs/02-VALDIVIA-30001/cabinas-valdivia.kml
+```
+
+Y el camino inverso, para elegir un punto en Google Earth y saber adónde volar
+a poner la cabina:
+
+```bash
+python scripts/cabinas-to-kml.py --donde=-39.8140,-73.2470
+# -> x=3671  z=-3225   /teleport 3671,-10,-3225
+```
+
+> El `=` es obligatorio en `--donde`: sin él, argparse lee la latitud negativa
+> como si fuera una opción.
+
+**Conversión** (escala Arnis 1 nodo = 1 metro, `+X` este, `+Z` norte), anclada
+en Plaza de la República — las coordenadas con que se generó el mundo:
+
+```text
+lat = -39.81422 + (z + 3249) / 111320
+lng = -73.24589 + (x - 3766) / 85508
+```
+
+Verificada 2026-11-04 contra dos mediciones GPS reales: **2 m** de error en la
+cabina del spawn y **6,5 m** en Santa Elena.
+
+> ⚠️ **No calibrar con la tabla «Coordenadas públicas» de [`current.md`](current.md)**:
+> sus lat/lng marcadas con `~` están estimadas a ojo y erran ~2,8 km en latitud.
+> Hacen creer que la conversión está rota. El ancla de arriba es la buena.
+
 ## Arquitectura: núcleo compartido
 
 `valdivia_cabina` es también el **núcleo de viajes** de Valdivia (API global
