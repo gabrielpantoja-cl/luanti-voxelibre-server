@@ -5,7 +5,7 @@ describen cómo funciona cada pieza; lo que falta hacer se anota **aquí** (y se
 enlaza desde el documento de origen, no se duplica). Las prioridades transversales
 viven en el [`ROADMAP.md`](../../ROADMAP.md) de la raíz.
 
-Última revisión: **2026-10-28**.
+Última revisión: **2026-11-04**.
 
 Convención: `[ ]` pendiente · `[~]` en curso · `[x]` hecho (se mueve a
 «Hecho recientemente» y luego se borra; el detalle queda en git y en el
@@ -212,11 +212,25 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
 - [ ] **Mod `valdivia_borders`** (P2, ver sección 0): los bordes del área generada
       son vacío y los jugadores pueden caer. Detectar la cercanía al límite y
       devolverlos con un mensaje. → [`current.md`](current.md) (Fase 4.1)
-- [ ] **Colocar la red de cabinas TP** en los puntos clave: Plaza (hecho),
-      Catrico, Santa Elena, Huachocopihue, Costanera, Mercado Fluvial, Los
-      Fundadores, Feria Fluvial, Universidad Austral, Puente Pedro de Valdivia.
-      Sin red colocada, las cabinas no sirven de nada: un recién llegado no tiene
-      cómo moverse. → [`cabina-tp.md`](cabina-tp.md)
+- [~] **Revisar las ubicaciones de las cabinas TP y rellenar los huecos.** Hay
+      **8 cabinas** puestas, pero mal repartidas: medido sobre el mapa real
+      (2026-11-04) la distancia al vecino más cercano va de **80 m a 2452 m**.
+      Dos problemas concretos:
+      - **Racimo en el sureste**: Luciano y Santa Elena están a **80 m** (son
+        prácticamente la misma parada) y Cultivos luciano80 a 205 m de Luciano
+        — 3 cabinas dentro de un radio de 200 m.
+      - **Zonas sin nada**: Isla Teja, Las Ánimas, la Costanera y todo el norte.
+        El Spawn (Plaza Chile) queda aislado a **2,4 km** de lo más cercano, que
+        es justo el recorrido que hace un recién llegado.
+
+      Del listado original siguen faltando: Costanera, Mercado Fluvial, Los
+      Fundadores, Feria Fluvial, Universidad Austral y Puente Pedro de Valdivia.
+
+      Para decidir dónde: abrir [`cabinas-valdivia.kml`](cabinas-valdivia.kml) en
+      Google Earth (pines + círculos de cobertura de 400 m), elegir el punto y
+      sacar las coordenadas de juego con
+      `python scripts/cabinas-to-kml.py --donde=<lat>,<lng>`. Regenerar el KML
+      después de mover cabinas. → [`cabina-tp.md`](cabina-tp.md)
 - [ ] **Señalética de calles** (nombres OSM) y mapa con puntos de interés.
 
 ## 5. Contenido y experiencia
