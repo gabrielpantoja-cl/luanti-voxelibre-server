@@ -235,6 +235,49 @@ eased turning via `check_smooth_rotation`, and `set_animation_speed()` already s
 frame speed with real velocity for every mob (`frame_speed_multiplier = 1` default,
 `init.lua:275`) — so only switch the frame *range*, never fight over the fps.
 
+### `minetest.get_content_id()` on an unregistered node takes the server down
+`get_content_id("mcl_core:ironbars")` doesn't return nil for an unknown name — it **raises**,
+and from inside a chatcommand that surfaces as `ServerError: AsyncErr: Lua: Runtime error from
+mod '' in callback on_chat_message(): "Unknown node: <name>"` and a **full shutdown**. Found
+2026-11-04: `valdivia_juegos_muerte` crashed Valdivia twice in a row because the mod had
+invented four node/entity names, and fixing them one crash at a time just moved the crash to
+the next `get_content_id` line. The names it guessed wrong, as a reminder that VoxeLibre
+spellings are not guessable:
+
+| Guessed (wrong) | Real in VoxeLibre 0.90.1 |
+|---|---|
+| `mcl_core:stone_bricks` | `mcl_core:stonebrick` (no underscore, singular) |
+| `mcl_core:ironbars` | `xpanes:bar_flat` (a different mod entirely) |
+| `mcl_signs:sign_wall_oak` | `mcl_signs:wall_sign_oak` |
+| `mcl_mobs:zombie` | `mobs_mc:zombie` (`mcl_mobs` is the API, `mobs_mc` has the mobs) |
+
+Two rules: **verify every name against `server/games/mineclone2/` before writing it**
+(`grep -rhoE 'register_node\("[a-z_]+:<thing>[a-z_]*"' mods/`), and **never call
+`get_content_id` on an unvalidated name** — resolve names once in
+`minetest.register_on_mods_loaded` against `minetest.registered_nodes`, keep a per-node
+fallback, and disable the feature with a chat message if something is missing. Wrap the build
+in a `pcall` on top. Note `minetest.add_entity` with an unknown entity is the opposite failure:
+it logs a warning and returns nil, so a wrong mob name fails **silently**.
+
+### VoxelManip skips `on_construct` — chests, signs and anything stateful break
+`mcl_chests:chest` is a dummy node that swaps itself to `mcl_chests:chest_small` in
+`on_construct` (that's where the 9×3 inventory and the model entity are created). Written via
+`vm:set_data()` the callback never runs, so the chest stays a dead placeholder. Place such
+nodes with `minetest.set_node` **after** `vm:write_to_map()`, and don't impose your own
+formspec on a `mcl_chests` node — read the real inventory with `meta:get_inventory()` and
+`inv:add_item()`. Same trap for `mcl_signs` (text lives on an entity spawned in `on_construct`).
+
+### Restoring a VoxelManip region: snapshot node *names*, never content IDs
+A mod that bulldozes an area must back it up first, and `limpiar`-style cleanup must restore
+that backup rather than fill with air — in Valdivia (an OSM recreation of a real city) an
+air-fill leaves a permanent crater where buildings were. Two gotchas: **content IDs are not
+stable across restarts** (they depend on mod load order), so a backup persisted to disk has to
+store node names + `param2`, not cids; and the backup has to live in the world dir
+(`worldpath/<mod>_state.json`), because the built nodes survive a restart while in-RAM state
+doesn't — otherwise a restart orphans the structure with no way to remove it. RLE over
+(name, param2) keeps it small: a 65×9×65 region of city terrain compressed to ~1500 runs.
+See `server/mods/valdivia_juegos_muerte/`.
+
 ### `diggable = false` is silently ignored in VoxeLibre
 VoxeLibre's `_mcl_autogroup` rewrites **every** node on load and sets `diggable = true` unless the node is in group `unbreakable` or `indestructible` (or is a liquid). A node with only `diggable = false` **can be dug by any player** — found 2026-10-07 when players broke `valdivia_cabina` cabins. For a truly indestructible node use:
 ```lua
