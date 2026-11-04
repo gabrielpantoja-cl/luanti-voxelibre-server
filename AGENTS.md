@@ -235,6 +235,32 @@ eased turning via `check_smooth_rotation`, and `set_animation_speed()` already s
 frame speed with real velocity for every mob (`frame_speed_multiplier = 1` default,
 `init.lua:275`) — so only switch the frame *range*, never fight over the fps.
 
+Two more traps in the same family, both found 2026-11-04 on `valdivia_transeuntes` (which
+had `walk_chance = 0` and `jump = false` but *not* the `return false`, so it still walked
+badly next to the already-fixed `valdivia_policia`):
+
+3. **Re-sending the same frame range restarts the walk cycle.** `self.object:set_animation()`
+   with an unchanged range makes the client's `setFrameLoop` jump back to the first frame, so
+   calling it once per decision tick resets the stride several times a second — it reads as
+   shuffling. `mcl_mobs`' own `mob_class:set_animation(name)` dedupes via `_current_animation`
+   (`effects.lua:274`), but a raw `object:set_animation` bypasses that: memoize the range
+   yourself and only send it on a real change. If another mod ever drives the same entity
+   (e.g. `valdivia_halloween` taking over a pedestrian) it will send its own ranges, so clear
+   your memo when you hand control over and when you get it back.
+4. **`set_animation_speed()` normalizes by `run_velocity`, so a slow mob skates.** The formula
+   is `(v / max(1, run_velocity)) * animation.walk_speed * frame_speed_multiplier`
+   (`effects.lua:417`). A pedestrian at `run_velocity = 1.5` therefore gets the *full*
+   `walk_speed` fps at 1.5 n/s, while the player uses the same `mcl_armor_character.b3d` at
+   30 fps moving ~4.3 n/s (`mcl_player/init.lua:224`) — about 7 fps per node/second. Feet end
+   up ~2.4× faster than the body. Fix with `frame_speed_multiplier = 7 * max(1, vel) /
+   walk_speed`, and note it **cannot be set from the mob def**: `register_mob` hardcodes
+   `frame_speed_multiplier = 1` (`init.lua:275`) instead of reading `def`, so assign it on the
+   instance in `on_activate`.
+
+Related, not an engine quirk: a mob that re-aims by picking a random one of 8 compass
+directions looks drunk. Weight the "turn for no reason" roll heavily toward ±45° and keep its
+probability low; reserve the big turns for when the probe says the path is actually blocked.
+
 ### `minetest.get_content_id()` on an unregistered node takes the server down
 `get_content_id("mcl_core:ironbars")` doesn't return nil for an unknown name — it **raises**,
 and from inside a chatcommand that surfaces as `ServerError: AsyncErr: Lua: Runtime error from

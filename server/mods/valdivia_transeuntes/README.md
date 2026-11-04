@@ -103,8 +103,58 @@ cambio en el mapa se nota a más tardar en dos ciclos. Para peatones de fondo
 ese retardo es invisible y la memoria queda acotada sola.
 
 **LOD por distancia.** Si nadie tiene al NPC a menos de 36 nodos, decide rumbo
-cada 2 s en vez de cada 0.4 s. Sigue caminando a la misma velocidad: solo
-piensa cinco veces menos seguido, y nadie lo está viendo doblar.
+cada 1 s en vez de cada 0.4 s. Sigue caminando a la misma velocidad: solo
+piensa menos seguido, y nadie lo está viendo doblar. Ese 1 s es el techo: a
+1.5 nodos/s avanzaría 1.5 nodos entre decisiones y el sondeo llega a 1.6, así
+que subirlo lo haría caminar más de lo que alcanza a mirar.
+
+## Paso suave (sección 4bis del `init.lua`)
+
+Hasta 2026-11-04 los transeúntes caminaban a tirones mientras el carabinero de
+`valdivia_policia` —mismo modelo, mismo `walk_chance = 0`— caminaba bien. Eran
+**cuatro cosas distintas sumadas**, las mismas que ya se le habían corregido al
+policía:
+
+1. **`do_custom` devolvía `nil`, no `false`.** `api.lua:399` es
+   `if self.do_custom and self.do_custom(self, dtime) == false then return end`,
+   así que `do_states()` **sí corría**: con `state == "stand"` y el timer de 1 s
+   (`api.lua:311`), `do_states_stand()` hacía `set_velocity(0)` +
+   `set_animation("stand")` y con 25 % de probabilidad `turn_by(aleatorio)`
+   (`movement.lua:653-683`). Un frenazo por segundo y un volantazo cada cuatro.
+   Esto solo explica la mayor parte del problema.
+2. **La velocidad se fijaba solo al decidir**, cada 0.4 s, de golpe de 0 a 1.5.
+   Ahora la decisión sigue siendo cada 0.4 s pero la velocidad se aplica **en
+   cada tick** con una rampa de `aceleracion` (6 nodos/s²): el arranque y el
+   frenado se ven.
+3. **El giro era `object:set_yaw()`**, un salto instantáneo de 45° o más. Ahora
+   va por `self:set_yaw(yaw, delay)`, el giro suave de `mcl_mobs`
+   (`check_smooth_rotation`, `physics.lua:350`), con `delay` más largo cuando el
+   giro pasa de 60°.
+4. **`set_animation()` se reenviaba en cada decisión**, y volver a mandar el
+   mismo rango **reinicia el ciclo al primer cuadro**: las piernas empezaban la
+   zancada de nuevo 2.5 veces por segundo. Ahora el rango se memoriza y solo se
+   manda cuando cambia.
+
+Y un quinto arreglo que no venía del policía: **`frame_speed_multiplier`**.
+`set_animation_speed()` calcula los fps como
+`(v / max(1, run_velocity)) * animation.walk_speed * frame_speed_multiplier`
+(`effects.lua:417`). Esa normalización por `run_velocity` dejaba el ciclo a
+25 fps andando a 1.5 nodos/s, cuando el jugador usa **este mismo modelo** a
+30 fps a ~4.3 nodos/s (`mcl_player/init.lua:224`) — o sea ~7 fps por nodo/s.
+Los pies iban 2.4 veces más rápido que el cuerpo: patinaje sobre hielo.
+`mcl_mobs` lo tiene **hardcodeado en 1** (`init.lua:275`, no lo lee del `def`),
+así que se corrige por instancia en `on_activate`.
+
+Dos cosas más del mismo pasada:
+
+- **Los giros por gusto favorecen los 45°** (`P_SUAVE = 0.80`). Antes se
+  sorteaba plano entre 45/90/135/180 con `P_GIRO = 0.10`, y eso era el zigzag
+  errático: una persona que dobla sin motivo dobla poco. `P_GIRO` bajó a 0.045.
+- **Anti-traba sin salto.** Si lleva 0.5 s queriendo avanzar y sin avanzar, se
+  replantea el rumbo **antes** del próximo ciclo y el rumbo *cambia* sin
+  sortear: contra lo que choca puede no ser un nodo (otro transeúnte, un auto),
+  y ahí `rumbo_libre` dice "libre" y lo dejaría empujando la pared para siempre.
+  Sigue **sin salto** a propósito (ver pitfalls).
 
 ## Comandos (admin, priv `server`)
 
@@ -152,7 +202,11 @@ regeneran con `python scripts/rebuild-skins.py`. Reglas del elenco en
 Todos en `luanti-valdivia.conf` con prefijo `valdivia_transeuntes_`:
 `max` (40), `por_jugador` (12), `dist_min` (22), `dist_max` (45),
 `dist_borrar` (70), `velocidad` (1.5), `intervalo` (3), `luz_min` (14),
-`dist_cerca` (36, umbral del LOD).
+`dist_cerca` (36, umbral del LOD), `aceleracion` (6, nodos/s² de la rampa).
+
+Si cambias `velocidad`, **no toques `FPS_PASO` ni `animation.walk_speed`**:
+`MULT_CUADROS` se recalcula solo a partir de `velocidad` y mantiene la cadencia
+de los pasos a ~7 fps por nodo/segundo (ver "Paso suave").
 
 `max` no puede pasar del tamaño del elenco (60): más allá de eso no quedaría
 nadie libre que sembrar.
@@ -160,7 +214,9 @@ nadie libre que sembrar.
 ## Pitfalls que ya están resueltos acá
 
 - **`walk_chance = 0`** es obligatorio, o el FSM de `mcl_mobs` pisa nuestro
-  `set_velocity` y el NPC avanza a tirones.
+  `set_velocity` y el NPC avanza a tirones. **No alcanza por sí solo**:
+  `do_custom` tiene que devolver `false` o `do_states_stand()` frena igual una
+  vez por segundo (ver "Paso suave").
 - **`collisionbox` va en `initial_properties` Y en la raíz**, o VoxeLibre
   loguea `Mob without collisionbox` al activarse.
 - **`jump = false`**: con salto se treparían a los techos y a los autos.

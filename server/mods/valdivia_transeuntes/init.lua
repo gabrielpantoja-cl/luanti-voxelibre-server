@@ -48,13 +48,22 @@ local LUZ_MIN     = num("luz_min", 14)      -- luz natural a mediodia para conta
 local DIST_CERCA  = num("dist_cerca", 36)   -- mas alla de esto piensan mas lento (ver LOD)
 
 local PASO       = 0.4    -- segundos entre decisiones de rumbo (de cerca)
-local PASO_LEJOS = 2.0    -- idem, cuando nadie lo esta mirando
+local PASO_LEJOS = 1.0    -- idem, cuando nadie lo esta mirando
 local SONDEO     = 1.6    -- nodos por delante que mira antes de avanzar
-local P_GIRO     = 0.10   -- probabilidad de doblar aunque el frente este libre
+local P_GIRO     = 0.045  -- probabilidad de doblar aunque el frente este libre
+local P_SUAVE    = 0.80   -- de esos giros, cuantos son de 45 grados (ver 4bis)
 local P_PAUSA    = 0.04   -- probabilidad de quedarse mirando
 local PAUSA_MIN  = 2
 local PAUSA_MAX  = 6
 local HP         = 10000  -- inmortal de facto
+
+-- Paso suave (seccion 4bis). La decision de rumbo sigue siendo cada PASO, pero
+-- la velocidad, el giro y la animacion se aplican en CADA tick: eso es lo que
+-- separa "camina" de "se teletransporta cada 0,4 s".
+local ACELERACION = num("aceleracion", 6)  -- nodos/s^2 al arrancar y al frenar
+local GIRO_DELAY  = 7                      -- ticks del giro suave para 45 grados
+local GIRO_LARGO  = 13                     -- idem para un giro de 90 grados o mas
+local T_TRABA     = 0.5                    -- segundos sin avanzar antes de replantear
 
 local ENTITY = modname .. ":transeunte"
 local C_NPC  = "#9FE09F"
@@ -532,6 +541,137 @@ local function rumbos_validos(pos, actual)
 end
 
 -- ============================================================================
+-- 4bis. MOVIMIENTO: PASO SUAVE EN VEZ DE TIRONES
+-- ============================================================================
+-- Lo que se veia como "camina medio raro" eran cuatro cosas distintas sumadas,
+-- todas corregidas aca. Es el mismo trabajo que ya se le hizo a
+-- valdivia_policia (su seccion 4bis), que es la razon por la que el carabinero
+-- camina mejor que los transeuntes aunque use el mismo modelo y el mismo
+-- walk_chance = 0.
+--
+--  1. do_states() le pone la VELOCIDAD EN CERO una vez por segundo.
+--     do_custom tiene que devolver `false` para que api.lua:399
+--         if self.do_custom and self.do_custom(self, dtime) == false then return end
+--     corte el on_step justo antes de do_states (api.lua:400). Este mod
+--     devolvia `nil` en todas sus salidas, asi que do_states SI corria: con
+--     state == "stand" y el timer de 1 s de check_dtime_timer (api.lua:311),
+--     do_states_stand() hacia set_velocity(0) + set_animation("stand") y, con
+--     25 % de probabilidad, turn_by(aleatorio) (movement.lua:653-683). O sea:
+--     un frenazo por segundo y, de yapa, un volantazo cada cuatro segundos.
+--     Eso solo ya explica la mayor parte del andar a tirones. Lo que si
+--     necesitamos de mcl_mobs (gravedad en falling(), check_smooth_rotation,
+--     head swivel, set_animation_speed) corre ANTES de do_custom, asi que no
+--     se pierde nada al cortar ahi.
+--
+--  2. La velocidad se fijaba solo al decidir el rumbo, cada PASO segundos, de
+--     golpe de 0 a VELOCIDAD. Ahora la decision sigue siendo cada PASO pero la
+--     velocidad se aplica en cada tick con una rampa de ACELERACION, y el
+--     arranque y el frenado se ven.
+--
+--  3. El giro era object:set_yaw(), un salto instantaneo de 45 grados o mas.
+--     Ahora va por self:set_yaw(yaw, delay), que es el giro suave de mcl_mobs
+--     (check_smooth_rotation lo reparte en `delay` ticks, physics.lua:350).
+--
+--  4. set_animation() se reenviaba en cada decision, y volver a mandar el mismo
+--     rango REINICIA el ciclo al primer cuadro: las piernas empezaban la
+--     zancada de nuevo dos veces y media por segundo. Se memoriza el rango y
+--     solo se manda cuando cambia de verdad.
+local ANIM_PARADO = {x = 0,   y = 79}
+local ANIM_PASO   = {x = 168, y = 187}
+
+-- Cadencia del ciclo de pasos. mcl_mobs escala los fps con la velocidad real en
+-- set_animation_speed() (effects.lua:417):
+--     (v / max(1, run_velocity)) * animation.walk_speed * frame_speed_multiplier
+-- Esa normalizacion por run_velocity deja el ciclo a 25 fps a 1,5 nodos/s, y el
+-- jugador usa ESTE MISMO modelo a 30 fps andando a ~4,3 nodos/s (mcl_player
+-- init.lua:224), o sea ~7 fps por nodo/segundo. Sin corregir, los pies van 2,4
+-- veces mas rapido que el cuerpo: patinaje sobre hielo. frame_speed_multiplier
+-- esta hardcodeado en 1 en mcl_mobs (init.lua:275, NO se lee del def), asi que
+-- se corrige por instancia en on_activate.
+local FPS_PASO     = 25
+local FPS_POR_NODO = 7
+local MULT_CUADROS = (FPS_POR_NODO * math.max(1, VELOCIDAD)) / FPS_PASO
+
+-- Solo cambia el RANGO de cuadros. Los fps no se tocan aca: ya los maneja
+-- set_animation_speed() en cada paso con la velocidad real, que es justo el
+-- cambio de cadencia que queremos (pasitos cortos al arrancar).
+local function animar(self, rango)
+    if self._anim == rango.x then return end
+    self._anim = rango.x
+    self.object:set_animation(rango, FPS_PASO, 0, true)
+end
+
+-- Acelera o frena hacia la velocidad pedida en vez de pasar de 0 a VELOCIDAD en
+-- un tick. Devuelve la velocidad horizontal resultante, que sirve para saber si
+-- de verdad esta avanzando (deteccion de traba).
+local function empujar(self, dirx, dirz, pedida, dtime)
+    local v = self.object:get_velocity()
+    if not v then return 0 end
+    local dx, dz = dirx * pedida - v.x, dirz * pedida - v.z
+    local dif = math.sqrt(dx * dx + dz * dz)
+    local paso = ACELERACION * dtime
+    if dif > paso and dif > 0 then
+        dx, dz = dx * (paso / dif), dz * (paso / dif)
+    end
+    local nx, nz = v.x + dx, v.z + dz
+    self.object:set_velocity({x = nx, y = v.y, z = nz})
+    return math.sqrt(nx * nx + nz * nz)
+end
+
+-- Apunta al rumbo nuevo con el giro suave de mcl_mobs, repartido en mas ticks
+-- cuanto mas grande sea el giro: doblar en una esquina no es lo mismo que
+-- corregir 45 grados. Solo se llama al CAMBIAR de rumbo; volver a fijar el
+-- mismo target_yaw en cada tick reiniciaria el reparto.
+local function encarar(self, idx)
+    if self._rumbo_yaw == idx then return end
+    self._rumbo_yaw = idx
+    local objetivo = DIRS[idx].yaw
+    local actual = self.object:get_yaw() or objetivo
+    local dif = math.abs((objetivo - actual + math.pi) % (2 * math.pi) - math.pi)
+    self:set_yaw(objetivo, dif > math.pi / 3 and GIRO_LARGO or GIRO_DELAY)
+end
+
+-- Elige el rumbo nuevo. Se separo de do_custom porque son dos casos muy
+-- distintos:
+--  * `recto == true`: dobla por gusto, en una esquina. Se favorecen los giros
+--    de 45 grados (P_SUAVE) porque sortear plano entre 45/90/135/180 daba el
+--    zigzag erratico que se veia; una persona que dobla sin motivo dobla poco.
+--  * `recto == false`: se acabo la calle. El giro mas suave que si sirva, y
+--    entre izquierda y derecha se sortea.
+local function elegir_rumbo(opciones, recto, forzar)
+    -- `forzar`: el rumbo actual no sirve aunque el sondeo lo apruebe (esta
+    -- trabado contra algo que no es un nodo). Seguir recto no es opcion.
+    if forzar then
+        local otros = {}
+        for _, o in ipairs(opciones) do
+            if o.giro > 0 then table.insert(otros, o) end
+        end
+        if #otros == 0 then return nil end
+        opciones = otros
+    end
+
+    if recto then
+        local suaves, otros = {}, {}
+        for _, o in ipairs(opciones) do
+            if o.giro == 1 then table.insert(suaves, o)
+            elseif o.giro > 1 then table.insert(otros, o) end
+        end
+        if #suaves > 0 and (#otros == 0 or math.random() < P_SUAVE) then
+            return al_azar(suaves).idx
+        end
+        if #otros > 0 then return al_azar(otros).idx end
+        return nil
+    end
+
+    local mejor = opciones[1].giro
+    local empatados = {}
+    for _, o in ipairs(opciones) do
+        if o.giro == mejor then table.insert(empatados, o) end
+    end
+    return al_azar(empatados).idx
+end
+
+-- ============================================================================
 -- 5. EL TRANSEUNTE
 -- ============================================================================
 -- Igual que los guias y el carabinero: mcl_mobs solo registra, dibuja y aporta
@@ -616,10 +756,13 @@ local function registrar_mob()
         drops = {},
         can_despawn = true,
         armor_groups = {immortal = 1, fleshy = 0},
+        -- walk_speed tiene que ser FPS_PASO: set_animation_speed() lo usa como
+        -- base y MULT_CUADROS se calculo contra ese mismo numero (seccion
+        -- 4bis). Si se cambian por separado, vuelve el patinaje.
         animation = {
             stand_start = 0, stand_end = 79, stand_speed = 30,
-            walk_start = 168, walk_end = 187, walk_speed = 25,
-            run_start = 168, run_end = 187, run_speed = 25,
+            walk_start = 168, walk_end = 187, walk_speed = FPS_PASO,
+            run_start = 168, run_end = 187, run_speed = FPS_PASO,
         },
 
         on_activate = function(self, staticdata, dtime_s)
@@ -631,7 +774,13 @@ local function registrar_mob()
             self._edad = 0
             self._pausa = 0
             self._acum = 0
+            self._traba = 0
             self._rumbo = self._rumbo or math.random(8)
+            -- Ritmo propio: dos transeuntes no caminan igual de parejo.
+            self._ritmo = self._ritmo or (0.86 + math.random() * 0.28)
+            -- Ver MULT_CUADROS (seccion 4bis): mcl_mobs lo deja en 1 duro y no
+            -- lo lee del def, asi que se corrige por instancia.
+            self.frame_speed_multiplier = MULT_CUADROS
             if self._pid then aplicar_aspecto(self) end
         end,
 
@@ -641,7 +790,23 @@ local function registrar_mob()
             -- la animacion las maneja ese mod. Sin esta salida, su set_velocity
             -- y el nuestro se pisarian y el NPC vibraria en el sitio. Con el
             -- evento de Halloween apagado esta marca no existe nunca.
-            if self._halloween then return end
+            --
+            -- El `return false` tambien va aca: mientras el otro mod lo maneja,
+            -- do_states() tampoco debe pisarle la velocidad (ese mod empuja
+            -- desde un globalstep cada 0,5 s, asi que lo afectaba igual).
+            if self._halloween then
+                -- Ese mod manda set_animation directo, asi que nuestro memo de
+                -- animacion queda invalido: se olvida para que al soltarlo
+                -- volvamos a mandar el rango que corresponda.
+                self._anim = nil
+                self._tomado = true
+                return false
+            end
+            if self._tomado then
+                self._tomado = nil
+                self._anim = nil
+                self._rumbo_yaw = nil
+            end
 
             if self.object:get_hp() < HP then
                 self.object:set_hp(HP)
@@ -657,76 +822,98 @@ local function registrar_mob()
                     soltar(self.object)
                     self.object:remove()
                 end
-                return
+                return false
             end
             if not self._aspecto then aplicar_aspecto(self) end
 
             local pos = self.object:get_pos()
-            if not pos then return end
+            if not pos then return false end
 
-            -- Decide rumbo cada PASO segundos, no cada tick: ocho sondeos por
-            -- decision serian demasiados a veinte pasos por segundo.
+            -- --------------------------------------------------------------
+            -- Pausa: se queda mirando. Se frena con la misma rampa, no de
+            -- golpe, y la animacion pasa a parado cuando de verdad ya casi no
+            -- se mueve (si no, se queda quieto moviendo las piernas).
+            -- --------------------------------------------------------------
+            if (self._pausa or 0) > 0 then
+                self._pausa = self._pausa - dtime
+                self._traba = 0
+                local real = empujar(self, 0, 0, 0, dtime)
+                animar(self, real < 0.35 and ANIM_PARADO or ANIM_PASO)
+                return false
+            end
+
+            -- --------------------------------------------------------------
+            -- DECISION de rumbo: cada PASO segundos, no cada tick (ocho
+            -- sondeos por decision serian demasiados a veinte ticks/s).
             --
-            -- LOD: si nadie lo tiene cerca, piensa cada PASO_LEJOS en vez de
-            -- cada PASO. Sigue caminando igual (la velocidad no cambia), solo
-            -- decide el rumbo cinco veces menos seguido. Nadie lo esta viendo
-            -- doblar, y es lo que permite tener decenas vivos a la vez.
+            -- LOD: si nadie lo tiene cerca piensa cada PASO_LEJOS en vez de
+            -- cada PASO. Camina igual, solo decide el rumbo menos seguido;
+            -- nadie lo esta viendo doblar. PASO_LEJOS no puede pasarse de
+            -- SONDEO/VELOCIDAD segundos o avanzaria mas de lo que alcanzo a
+            -- sondear y se metaria de frente en un muro.
+            --
+            -- Antes de tiempo se replantea igual si lleva T_TRABA sin avanzar
+            -- de verdad: eso es haberse apoyado contra una pared, un auto o
+            -- otro transeunte, y esperar el PASO completo ahi se ve como que
+            -- empuja el muro.
+            -- --------------------------------------------------------------
             local cerca = dist_jugador_mas_cercano(pos)
             local paso = (cerca and cerca <= DIST_CERCA) and PASO or PASO_LEJOS
 
             self._acum = (self._acum or 0) + dtime
-            if self._acum < paso then return end
-            self._acum = 0
+            local trabado = (self._traba or 0) > T_TRABA
+            local replantear = self._acum >= paso or trabado
 
-            local vel = self.object:get_velocity()
-            local vy = vel and vel.y or 0
+            if replantear then
+                self._acum = 0
+                self._traba = 0
 
-            -- Pausa: se queda mirando.
-            if (self._pausa or 0) > 0 then
-                self._pausa = self._pausa - paso
-                self.object:set_velocity({x = 0, y = vy, z = 0})
-                self.object:set_animation({x = 0, y = 79}, 30, 0, true)
-                return
-            end
-
-            local recto = rumbo_libre(pos, self._rumbo)
-            if not recto or math.random() < P_GIRO then
-                local opciones = rumbos_validos(pos, self._rumbo)
-                if #opciones == 0 then
-                    -- Encerrado (lo taparon, o la calle se cerro). Mejor
-                    -- desaparecer que quedar vibrando contra un muro.
-                    soltar(self.object)
-                    self.object:remove()
-                    return
+                -- Si lo que lo despierta es la traba, el rumbo CAMBIA sin
+                -- sortear: contra lo que choca puede no ser un nodo (otro
+                -- transeunte, un auto, una entidad), y entonces rumbo_libre
+                -- dice "libre" y lo dejaria empujando para siempre.
+                local recto = not trabado and rumbo_libre(pos, self._rumbo)
+                if not recto or math.random() < P_GIRO then
+                    local opciones = rumbos_validos(pos, self._rumbo)
+                    if #opciones == 0 then
+                        -- Encerrado (lo taparon, o la calle se cerro). Mejor
+                        -- desaparecer que quedar vibrando contra un muro.
+                        soltar(self.object)
+                        self.object:remove()
+                        return false
+                    end
+                    self._rumbo = elegir_rumbo(opciones, recto, trabado) or self._rumbo
                 end
-                if recto then
-                    -- Dobla en la esquina: cualquiera menos seguir recto.
-                    local giros = {}
-                    for _, o in ipairs(opciones) do
-                        if o.giro > 0 then table.insert(giros, o) end
-                    end
-                    if #giros > 0 then self._rumbo = al_azar(giros).idx end
-                else
-                    -- Se acabo la calle: el giro mas suave que si sirva. Entre
-                    -- los empatados (izquierda y derecha) se sortea.
-                    local mejor = opciones[1].giro
-                    local empatados = {}
-                    for _, o in ipairs(opciones) do
-                        if o.giro == mejor then table.insert(empatados, o) end
-                    end
-                    self._rumbo = al_azar(empatados).idx
+
+                if math.random() < P_PAUSA then
+                    self._pausa = PAUSA_MIN + math.random() * (PAUSA_MAX - PAUSA_MIN)
+                    return false
                 end
             end
 
-            if math.random() < P_PAUSA then
-                self._pausa = PAUSA_MIN + math.random() * (PAUSA_MAX - PAUSA_MIN)
-                return
-            end
-
+            -- --------------------------------------------------------------
+            -- ACTUACION: en cada tick. Aca esta la diferencia con la version
+            -- anterior, que solo tocaba la velocidad al decidir.
+            -- --------------------------------------------------------------
             local d = DIRS[self._rumbo]
-            self.object:set_velocity({x = d.x * VELOCIDAD, y = vy, z = d.z * VELOCIDAD})
-            self.object:set_yaw(d.yaw)
-            self.object:set_animation({x = 168, y = 187}, 25, 0, true)
+            local pedida = VELOCIDAD * (self._ritmo or 1)
+            local real = empujar(self, d.x, d.z, pedida, dtime)
+            encarar(self, self._rumbo)
+            animar(self, ANIM_PASO)
+
+            -- Quiere avanzar y no avanza: va contra algo. No hay salto (asi no
+            -- se trepan a los techos ni a los autos), solo replantear antes.
+            if real < pedida * 0.35 then
+                self._traba = (self._traba or 0) + dtime
+            else
+                self._traba = 0
+            end
+
+            -- Corta el on_step de mcl_mobs justo antes de do_states
+            -- (api.lua:399). Sin esto, do_states_stand() nos pisa la velocidad
+            -- y la animacion una vez por segundo: eso eran los tirones. Ver la
+            -- seccion 4bis.
+            return false
         end,
 
         -- Anti-grief: no se les puede hacer nada. El reclamo tiene cooldown
@@ -779,7 +966,11 @@ local function registrar_mob()
             local cpos = clicker:get_pos()
             if pos and cpos then
                 local dir = vector.subtract(cpos, pos)
-                self.object:set_yaw(math.atan2(dir.z, dir.x) - math.pi / 2)
+                -- Giro suave de mcl_mobs, no un salto de yaw. Y se olvida el
+                -- rumbo encarado para que al retomar la caminata encarar()
+                -- vuelva a apuntar al rumbo (si no, se iria de costado).
+                self:set_yaw(math.atan2(dir.z, dir.x) - math.pi / 2, GIRO_DELAY)
+                self._rumbo_yaw = nil
             end
         end,
     })
