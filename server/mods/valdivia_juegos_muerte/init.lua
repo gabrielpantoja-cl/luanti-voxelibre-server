@@ -12,11 +12,11 @@ local MAZE_SIZE       = 21        -- Impar: 21x21 celdas
 local CELL_SIZE       = 3         -- Nodos por celda (pasillo 3x3)
 local WALL_HEIGHT     = 4         -- Altura paredes
 local WALL_NODE       = "mcl_core:stonebrick"
-local FLOOR_NODE      = "mcl_core:stone_bricks"
+local FLOOR_NODE      = "mcl_core:stonebrick"
 local CEILING_NODE    = "mcl_core:stonebrick"
 local BEDROCK_NODE    = "mcl_core:bedrock"      -- Capa anti-grief suelo/techo
-local ENTRANCE_NODE   = "mcl_core:iron_bars"
-local EXIT_NODE       = "mcl_core:gold_block"
+local ENTRANCE_NODE   = "mcl_core:ironbars"
+local EXIT_NODE       = "mcl_core:goldblock"
 local PRIZE_CHEST     = "mcl_chests:chest"
 local ZOMBIE_ENTITY   = "mcl_mobs:zombie"       -- VoxeLibre 0.90.1: entidad zombie nativa
 local ZOMBIE_COUNT    = 8
@@ -127,7 +127,7 @@ local function build_maze_vmanip(maze_grid, base_pos)
     local cid_bedrock   = minetest.get_content_id(BEDROCK_NODE)
     local cid_entrance  = minetest.get_content_id(ENTRANCE_NODE)
     local cid_gold      = minetest.get_content_id(EXIT_NODE)
-    local cid_goldblk   = minetest.get_content_id("mcl_core:gold_block")
+    local cid_goldblk   = minetest.get_content_id("mcl_core:goldblock")
     local cid_chest     = minetest.get_content_id(PRIZE_CHEST)
     local cid_sign      = minetest.get_content_id("mcl_signs:sign_wall_oak")
 
