@@ -1,6 +1,6 @@
 # Bug: Servidor Duplicado en la Lista Pública de Luanti
 
-**Última actualización**: 2026-06-30
+**Última actualización**: 2026-11-08
 **Severidad**: Media (cosmético, no afecta conectividad)
 **Estado**: ✅ Resuelto — override elimina la duplicación activa; entrada fantasma del VPS anterior expiró sola a los 5 minutos de que ese servidor dejó de anunciar
 
@@ -485,3 +485,4 @@ El fantasma se crea cuando el contenedor Valdivia anuncia en :30000 además de :
 | 2026-07-03 | El fantasma reaparece (v5.13.0 en :30000). Diagnóstico: `servers.luanti.org` tiene un background pinger UDP desde 93.190.143.88 que usa el dominio `address` field. Wetlands responde → ghost se refresca indefinidamente. |
 | 2026-07-03 | Error: regla iptables puesta en cadena `INPUT` (inefectiva — tráfico Docker va por `FORWARD`/`DOCKER-USER`). |
 | 2026-07-03 | Fix definitivo: regla `DROP` en `DOCKER-USER` para UDP de 93.190.143.88 a :30000. Guardada en `/etc/iptables/rules.v4`. Ghost expiró inmediatamente. Resultado final: 1 sola entrada (Valdivia :30001 v5.16.1). |
+| 2026-11-08 | Se detectó nuevamente la entrada fantasma en el puerto 30000. Se re-aplicó y verificó la regla DROP en iptables (cadena DOCKER-USER) para bloquear el pinger de servers.luanti.org (93.190.143.88). La entrada duplicada expiró exitosamente de la lista pública tras 5 minutos. Bug confirmado como resuelto. |
