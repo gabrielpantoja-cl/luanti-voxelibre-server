@@ -15,8 +15,8 @@ See the per-world docs for what each world offers:
 | 30000 | Wetlands | VoxeLibre | Hard survival, compassionate and plant-based | No |
 | 30001 | Valdivia | VoxeLibre + OSM | Exploration/survival | See world rules |
 | 30002 | GAELSIN | VoxeLibre | Survival | Yes |
-| 30003 | CTF | Capture the Flag | Team combat | Core gameplay |
-| 30004 | Mineclonia | Mineclonia | Creative, no damage | No |
+| 30003 | Plano | Mineclonia | Flat world, creative, no damage | No |
+| 30004 | Mineclonia | Mineclonia | Survival, damage on, PvP off | No |
 
 World-specific content should be confirmed in the corresponding configuration under `server/config/` and in the documentation under `docs/`.
 
@@ -35,7 +35,7 @@ The main world (port 30000) is **hard survival** with no PvP. Its design is comp
 1. **Install Luanti** for [PC](https://www.luanti.org) or mobile ([Android](https://play.google.com/store/apps/details?id=net.minetest.minetest) / [iOS](https://apps.apple.com/app/minetest/id1190647064)).
 2. **Add our server:**
    - **Address:** `luanti.gabrielpantoja.cl`
-   - **Port:** `30000` (Wetlands), `30001` (Valdivia), `30002` (GAELSIN), `30003` (CTF), `30004` (Mineclonia)
+   - **Port:** `30000` (Wetlands), `30001` (Valdivia), `30002` (GAELSIN), `30003` (Plano), `30004` (Mineclonia)
 3. **That's it.** Jump in, explore, and create.
 
 ## What you can do here (in the Wetlands world, port 30000)
@@ -68,9 +68,9 @@ A real-world recreation of Valdivia, Chile, generated from OpenStreetMap data vi
 
 Pure VoxeLibre survival world. No creative mode, no area protection, PvP on. Hostile mobs spawn at night (Creepers excluded). Generated from seed `GAELSIN` with mapgen v7. **NO plant-based — PvP y mobs hostiles forman parte del desafio.**
 
-### CTF — port `30003`
+### Plano — port `30003`
 
-Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF/capturetheflag) game by rubenwardy (not VoxeLibre). Swords, guns, grenades; rounds start automatically when both teams have players. **NO plant-based — armas y combate son el core.**
+Flat Mineclonia world. One single biome (Plains: grass, dirt, stone to bedrock), no caves, no trees, mapgen `flat`. Creative mode, no damage, no combat — replaced the retired CTF world on 2026-09-13.
 
 ### Mineclonia — port `30004`
 
@@ -83,7 +83,7 @@ Capture-the-flag using the official [`capturetheflag`](https://github.com/MT-CTF
 ## Tech stack
 
 - **Engine**: [Luanti](https://www.luanti.org) 5.16+
-- **Base games**: VoxeLibre (MineClone2) v0.90.1, Mineclonia 0.123.0, capturetheflag (rubenwardy)
+- **Base games**: VoxeLibre (MineClone2) v0.90.1, Mineclonia 0.123.0
 - **Mod language**: Lua
 - **Infrastructure**: Docker Compose on a VPS (Oracle Cloud, ARM aarch64)
 
