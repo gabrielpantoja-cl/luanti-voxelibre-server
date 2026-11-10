@@ -79,3 +79,4 @@ load_mod_valdivia_halloween = true
 load_mod_celevator = true
 load_mod_valdivia_hotel_cartel = true
 load_mod_valdivia_juegos_muerte = true
+load_mod_valdivia_scp096 = true
