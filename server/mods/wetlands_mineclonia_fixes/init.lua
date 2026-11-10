@@ -47,4 +47,4 @@ for name, def in pairs(minetest.registered_nodes) do
 	end
 end
 
-minetest.log("action", "[" .. modname .. "] Loaded successfully (" .. patched .. " fogatas parchadas)")
+minetest.log("warning", "[" .. modname .. "] Loaded successfully (" .. patched .. " fogatas parchadas)")
