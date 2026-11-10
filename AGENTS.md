@@ -34,7 +34,8 @@ server/config/luanti-original.conf            # Wetlands authoritative config (s
 server/config/luanti-valdivia.conf   # Valdivia config (singlenode mapgen, no mobs)
 server/games/mineclone2/             # VoxeLibre game files, shared by both worlds
 server/mods/                         # Custom + third-party mods
-server/worlds/original/                 # LOCAL REFERENCE ONLY (gitignored, real copy is on VPS)
+server/worlds/original/              # LOCAL REFERENCE ONLY (gitignored, real copy is on VPS)
+server/config/world-mt/              # Read-only mirror of each world's live world.mt (scripts/sync-world-mt.sh)
 server/worlds/valdivia/              # Valdivia world (map.sqlite is ~480 MB, not in git)
 server/skins/                        # Player skins (64x32 PNG)
 server/landing-page/                 # HTML/CSS/JS for luanti.gabrielpantoja.cl
@@ -50,29 +51,35 @@ There are two files that both list `load_mod_*` entries. Confusing which wins is
 
 | File | Role | Lives in git? | Edit where |
 |------|------|---------------|------------|
-| `server/worlds/<world>/world.mt` | **Authoritative gate** — `world.mt` **wins** whenever it has an explicit `load_mod_X` entry | No (gitignored) | On the VPS via SSH |
-| `server/config/luanti-<world>.conf` | **Default only** — governs a mod **only if `world.mt` has no entry for it** | Yes | This repo |
+| `server/worlds/<world>/world.mt` | **The gate.** To load, a mod needs `load_mod_X = true` here. An explicit line here always wins over the `.conf` | No, the live file is gitignored. There is a read-only mirror in `server/config/world-mt/<world>.world.mt` | On the VPS via SSH (sudo) |
+| `server/config/luanti-<world>.conf` | Documents intent. **Not enough to enable a mod on its own** | Yes | This repo |
 
-Rules (corrected empirically 2026-06-27 when disabling `mcl_potions_hotfix`; supersedes the older 2026-04-19 `mypark` note):
-- A mod loads **only if it ends up `= true`**. If `world.mt` has an explicit `load_mod_X` line, **that value wins** and the `.conf` is ignored for that mod.
-- The `.conf` only acts as the default/fallback when `world.mt` has **no** `load_mod_X` entry at all. ⚠️ This means **`.conf = false` is NOT a reliable kill-switch**: if `world.mt` says `= true`, the mod loads anyway.
-  - Verified: Wetlands' `original/world.mt` has no `mcl_potions_hotfix` line → `.conf = false` disabled it. GAELSIN's `gaelsin/world.mt` had `load_mod_mcl_potions_hotfix = true` → the mod loaded despite `.conf = false`; we had to flip the line in `world.mt` too.
-  - **Why GAELSIN differs:** newer worlds were created by dumping every `load_mod_*` from their `.conf` into `world.mt`, so almost every mod has an explicit entry there and the `.conf` stops being a kill-switch. Wetlands is older and its `world.mt` is sparse.
-- **To disable a mod with certainty, set `= false` in BOTH** the `.conf` (git) and the world's `world.mt` on the VPS (sudo; keep owner `1000:1000`, never chown `server/worlds` to the SSH user). Then restart the container.
-- `luanti-<world>.conf` still pins several mods to `= false` (motorboat, biofuel, etc.) as a default, but treat that as a default, not a guarantee — confirm `world.mt` doesn't re-enable them.
+Rules (verified empirically, latest correction 2026-11-10):
+- **To enable a mod, `world.mt` must contain `load_mod_X = true`.** The `.conf` alone does **not** turn a mod on, even when `world.mt` has no line for that mod.
+  - Verified 2026-11-10 on Plano (30003): `load_mod_wetlands_mineclonia_fixes = true` existed only in `luanti-plano.conf`, Plano's `world.mt` had no `load_mod_*` lines at all, and the mod **did not load** (the TNT + campfire crash it patches happened again). It loaded only after the line was added to `worlds/plano/world.mt`. This disproves the old "the `.conf` is the default when `world.mt` is silent" rule, at least for enabling.
+- **An explicit `load_mod_X` line in `world.mt` wins**, so `.conf = false` is **not** a kill-switch either.
+  - Verified 2026-06-27: GAELSIN's `world.mt` had `load_mod_mcl_potions_hotfix = true` and the mod loaded despite `.conf = false`; the line in `world.mt` had to be flipped. (In Wetlands, whose `world.mt` had no line for it, `.conf = false` appeared to be enough. Don't rely on that.)
+- **Rule of thumb: always edit both.** Use the `.conf` (git) so the intent is reviewable, and `world.mt` on the VPS (sudo; keep owner `1000:1000`, never chown `server/worlds` to the SSH user) because that is what actually takes effect. Then restart the container and **confirm the load in the logs**.
+- **Confirming a load:** worlds run with `debug_log_level = warning`, so a mod's `minetest.log("action", ...)` **does not show up** in `docker logs`. To see "Loaded successfully", log it at `"warning"` level (as `wetlands_mineclonia_fixes` does), or test the feature in-game.
 
-To enable a NEW mod (both files must be updated):
-1. Add `load_mod_<name> = true` to `server/config/luanti-original.conf` and push via git.
+To enable a NEW mod (both files):
+1. Add `load_mod_<name> = true` to `server/config/luanti-<world>.conf` and push via git.
 2. Pull on the VPS.
-3. Add `load_mod_<name> = true` to the world's `world.mt` on the VPS. Since `docker-compose.yml` bind-mounts `./server/worlds` into the container, the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/original/world.mt` **is** the container file at `/config/.minetest/worlds/original/world.mt` — one edit is enough:
+3. Add `load_mod_<name> = true` to the world's `world.mt` on the VPS. Since `docker-compose.yml` bind-mounts `./server/worlds` into the container, the host file at `/home/<VPS_USER>/luanti-voxelibre-server/server/worlds/<world>/world.mt` **is** the container's file. One edit is enough:
    ```bash
-   ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_<name> = true' | sudo tee -a /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/original/world.mt"
+   ssh <VPS_USER>@<VPS_IP> "echo 'load_mod_<name> = true' | sudo tee -a /home/<VPS_USER>/luanti-voxelibre-server/server/worlds/<world>/world.mt"
    ```
-4. Restart the container.
+4. Restart the container and verify the load in the logs.
+5. Refresh the mirror: `./scripts/sync-world-mt.sh <world>` and commit `server/config/world-mt/`.
 
-To disable a mod **reliably**: set `load_mod_<name> = false` in `luanti-original.conf` (git) **and** in the world's `world.mt` on the VPS (sudo). The `.conf` alone is **not** enough if `world.mt` has an explicit `load_mod_<name> = true` — `world.mt` wins (see the corrected hierarchy note above). Only when `world.mt` has no entry for the mod does the `.conf = false` suffice on its own.
+To disable a mod: `load_mod_<name> = false` in the `.conf` (git) **and** in the world's `world.mt` on the VPS, restart, then refresh the mirror.
 
-Reference copy: `server/worlds/original/world.mt` in this repo is a local snapshot for convenience; it is gitignored and is not the file the running server reads. See `docs/00-SHARED/config/01-CONFIGURATION_HIERARCHY.md`.
+### `world.mt` mirror in the repo (`server/config/world-mt/`)
+
+- `server/config/world-mt/<world>.world.mt` is a **read-only snapshot** of each live `world.mt` (original, valdivia, gaelsin, plano, mineclonia), refreshed with `./scripts/sync-world-mt.sh [world ...]` (requires `source .env`). Use it to see from the repo which mods each world actually loads and to diff against the `.conf`.
+- **It never flows back to the VPS.** Edit the real `world.mt` over SSH, then sync the mirror. If the mirror and the `.conf` disagree, the mirror (= `world.mt`) is what the server does.
+- **Why not version `server/worlds/<world>/world.mt` directly:** that path is the live, bind-mounted file. If it were tracked, every `git pull` on the VPS would overwrite it, or would get blocked because the VPS copy differs. Until 2026-11-10, `.gitignore` tracked `original/` and `valdivia/` that way, and both were stale relative to the VPS. They were untracked (`git rm --cached`, no files deleted) and the line `!server/worlds/*/world.mt` was removed from `.gitignore`.
+- `server/config/world.mt` (old, from the 2025 config backup) is **not** the mirror and is not read by any server.
 
 ## Essential Commands
 
@@ -117,7 +124,7 @@ ssh <VPS_USER>@<VPS_IP> "sudo chown -R 1000:1000 \
 
 **Before pulling on the VPS (prevention — this is what avoids the half-applied-pull mess):**
 
-A `git pull` that has to update any file under `server/mods/` will **abort mid-checkout** if those dirs are container-owned (`opc`), because git can't unlink/overwrite them. An aborted checkout leaves a **half-applied pull**: the new file contents are already written to disk but HEAD never advanced, so git now reports them as "local modifications" + "untracked files would be overwritten" and **every subsequent pull is blocked** until you recover by hand. The container routinely (re)creates mod dirs as `opc:opc` — sometimes `0700` — so after the server has been running a while this is the *default* failure mode, not an edge case. Pre-empt it:
+A `git pull` that has to update any file under `server/mods/` will **abort mid-checkout** if those dirs are container-owned (`opc`), because git can't unlink/overwrite them. An aborted checkout leaves a **half-applied pull**: the new file contents are already written to disk but HEAD never advanced, so git now reports them as "local modifications" + "untracked files would be overwritten" and **every subsequent pull is blocked** until you recover by hand. The container routinely (re)creates mod dirs as `opc:opc` — sometimes `0700` — so after the server has been running a while this is the *default* failure mode, not an edge case. **Even a single container restart is enough**: verified 2026-11-10, `server/mods` was chowned to the SSH user, Plano was restarted, and the next `git pull` (minutes later) failed with `unable to unlink old` because the tree was back to `opc`. Treat the pre-chown as mandatory before **every** pull that touches `server/mods`, not as a one-time fix. Pre-empt it:
 
 ```bash
 # 1. See how far behind the VPS is and whether the working tree is dirty.
@@ -154,10 +161,11 @@ For Valdivia-specific ops (map.sqlite upload, generation, remap), see `docs/02-V
 
 ### Adding a new mod
 1. Create `server/mods/<mod_name>/mod.conf` + `init.lua`. In `mod.conf` use `optional_depends`, not `depends` (see pitfalls below).
-2. Add `load_mod_<mod_name> = true` to `server/config/luanti-original.conf`.
+2. Add `load_mod_<mod_name> = true` to `server/config/luanti-<world>.conf`.
 3. Test locally with `./scripts/start.sh` and monitor logs.
 4. Commit + push.
-5. On VPS: `git pull`, then `echo 'load_mod_<mod_name> = true' | sudo tee -a server/worlds/original/world.mt`, then restart. **Skipping the world.mt step is the #1 cause of "mod files exist but items are unknown"** — `luanti-original.conf = true` alone does not register a new mod.
+5. On VPS: `git pull`, then `echo 'load_mod_<mod_name> = true' | sudo tee -a server/worlds/<world>/world.mt`, then restart and confirm the load in the logs. **Skipping the world.mt step is the #1 cause of "mod files exist but items are unknown"**: `luanti-<world>.conf = true` alone does not load a mod, even if `world.mt` has no line for it (verified on Plano 2026-11-10).
+6. `./scripts/sync-world-mt.sh <world>` and commit the updated mirror.
 
 ### Modifying server config
 Edit `server/config/luanti-original.conf` in this repo. Push, pull on VPS, restart. Do **not** edit the `.conf` directly on the VPS — it will be overwritten on the next pull.

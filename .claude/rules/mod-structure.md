@@ -16,7 +16,7 @@ Every mod in `server/mods/<name>/` must have:
 3. Restart server
 
 ## Disabling a Mod
-Set `load_mod_<name> = false` in `luanti-original.conf` — overrides `world.mt` regardless.
+Set `load_mod_<name> = false` in BOTH `luanti-<world>.conf` and the world's `world.mt` on the VPS — an explicit `world.mt` line wins over the `.conf`, and the `.conf` alone can't enable a mod either. See AGENTS.md → Configuration Hierarchy.
 
 ## Texture Rules
 - NEVER name textures with VoxeLibre base names (e.g., `mobs_mc_villager_farmer.png`)

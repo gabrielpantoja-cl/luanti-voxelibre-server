@@ -22,3 +22,7 @@ load_mod_wetlands_contact = true
 load_mod_wetlands_teleporter = true
 load_mod_wetlands_motd = true
 load_mod_protector = true
+load_mod_wetlands_christmas = true
+load_mod_valdivia_aviso_entrada = true
+load_mod_mcl_decor = true
+load_mod_3dforniture = true

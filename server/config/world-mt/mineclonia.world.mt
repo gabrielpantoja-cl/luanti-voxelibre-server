@@ -1,0 +1,9 @@
+gameid = mineclonia
+world_name = mineclonia
+backend = sqlite3
+player_backend = files
+auth_backend = files
+load_mod_wetlands_mineclonia_trampas = true
+load_mod_wetlands_mundos = true
+load_mod_wetlands_contact = true
+load_mod_valdivia_aviso_entrada = true

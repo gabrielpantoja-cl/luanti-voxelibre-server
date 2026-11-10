@@ -7,7 +7,9 @@ server/worlds/*
 # tengan las negaciones de abajo. El orden importa: ultima regla que matchea, gana.
 server/worlds/*/*
 !server/worlds/*/auth.txt
-!server/worlds/*/world.mt
+# world.mt NO se versiona en la ruta viva: un commit lo pisaria en el VPS con el
+# proximo git pull. Espejo de solo lectura en server/config/world-mt/
+# (scripts/sync-world-mt.sh).
 !server/worlds/*/skins.txt
 # Esquemas WorldEdit validos (versionados, ~7KB). Los *.bak de edicion NO.
 !server/worlds/*/schematics/

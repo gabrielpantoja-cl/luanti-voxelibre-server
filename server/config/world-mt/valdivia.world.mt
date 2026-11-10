@@ -65,3 +65,17 @@ load_mod_valdivia_spawn_fix = true
 
 # Utilidades subterraneas
 load_mod_valdivia_utils = true
+load_mod_valdivia_home = true
+load_mod_valdivia_cabina = true
+load_mod_wetlands_snes = true
+load_mod_valdivia_brujula = true
+load_mod_3dforniture = true
+
+# Carabinero anti-grief (persigue a quien rompe areas protegidas ajenas)
+load_mod_valdivia_policia = true
+load_mod_valdivia_transeuntes = true
+
+load_mod_valdivia_halloween = true
+load_mod_celevator = true
+load_mod_valdivia_hotel_cartel = true
+load_mod_valdivia_juegos_muerte = true
