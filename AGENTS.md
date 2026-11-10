@@ -74,6 +74,9 @@ To enable a NEW mod (both files):
 
 To disable a mod: `load_mod_<name> = false` in the `.conf` (git) **and** in the world's `world.mt` on the VPS, restart, then refresh the mirror.
 
+### No inline comments in `.conf` / `world.mt`
+Luanti only treats a line as a comment when it **starts** with `#` (`Settings::parseConfigObject`). In `key = 15   # note` the value is the whole string `15   # note`, so a mod's `tonumber(minetest.settings:get(...))` returns nil and **silently falls back to its default**. Found 2026-11-10: `valdivia_transeuntes_max = 15  # ...` was really running at the mod default of 40 (and `por_jugador` at 12 instead of 5). Always put the comment on its own line above the setting.
+
 ### `world.mt` mirror in the repo (`server/config/world-mt/`)
 
 - `server/config/world-mt/<world>.world.mt` is a **read-only snapshot** of each live `world.mt` (original, valdivia, gaelsin, plano, mineclonia), refreshed with `./scripts/sync-world-mt.sh [world ...]` (requires `source .env`). Use it to see from the repo which mods each world actually loads and to diff against the `.conf`.
