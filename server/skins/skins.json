@@ -458,6 +458,12 @@
       "destino": "server/mods/valdivia_policia/textures/valdivia_policia_skin.png",
       "usa": "valdivia_policia · Carabinero",
       "nota": "fuente no registrada al crearlo (2026-10-30)"
+    },
+    "scp096": {
+      "original": "scp096.png",
+      "fuente": "mcs:scp-096-crying-6559da",
+      "destino": "server/mods/valdivia_scp096/textures/valdivia_scp096_skin.png",
+      "usa": "valdivia_scp096 · SCP-096 (el Timido)"
     }
   }
 }
