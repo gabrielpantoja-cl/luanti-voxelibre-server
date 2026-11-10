@@ -37,22 +37,45 @@ local COOLDOWN     = num("cooldown", 600)     -- segundos sin aparecerle de nuev
 local VISTA_MAX    = 48       -- mas lejos que esto no cuenta como "verle la cara"
 local COS_MIRADA   = 0.94     -- ~20 grados entre la mirada y su cabeza
 local COS_CARA     = 0.30     -- el tiene que estar mas o menos de frente al jugador
-local DIST_LEJOS   = 30       -- si la victima se aleja mas, reaparece cerca
-local T_ATASCO     = 1.5      -- segundos sin acercarse antes de reubicarlo
-local DIST_ATRAPA  = 1.7
-local ESCALA       = 1.3      -- mas alto que un jugador
-local ALTO         = 1.94 * ESCALA
-local ACELERACION  = 14
+local DIST_ATRAPA  = 1.6
+-- Silueta de 096: no se agranda el modelo entero, se estiran los huesos
+-- (set_bone_override, Luanti >= 5.9) sobre mcl_armor_character.b3d. Medido en
+-- el .b3d: la cadera (Body_Control) esta a 6,75 unidades = 0,675 nodos, y las
+-- piernas y brazos estan girados 180 grados en X, asi que su +y apunta hacia
+-- abajo: escalar y alarga la extremidad desde la cadera / el hombro.
+local PIERNA       = 1.45     -- largo de piernas
+local BRAZO        = 1.8      -- largo de brazos: le llegan a media canilla
+local GROSOR_BRAZO = 0.7
+local TORSO_ANCHO  = 0.8      -- torso (y con el, todo lo que cuelga) mas flaco
+local CABEZA_LARGA = 1.15
+local CADERA       = 6.75     -- unidades del modelo (1 unidad = 0,1 nodo)
+local ESCALA       = 1.1      -- visual_size en y, encima de lo anterior
+-- Altura total aprox.: 1,8 + subida de cadera (0,30) + cabeza (0,05) = 2,15 x 1,1
+local ALTO         = 2.37
+local ALTO_COLISION = 1.9     -- choca como un jugador, para pasar por puertas de 2
+local ACELERACION  = 10       -- n/s^2: tarda ~0,6 s en llegar a tope
 local SALTO_VEL    = 6.5
-local T_TRABA      = 0.4
+local T_TRABA      = 0.35     -- segundos casi sin avanzar antes de saltar
 local HP           = 10000
+
+-- Ruta. Con vista directa corre en linea recta; si hay un edificio de por
+-- medio usa minetest.find_path (el A* del motor, no el de mcl_mobs) y sigue los
+-- puntos. Se recalcula cada RUTA_CADA s porque la victima se mueve.
+local RUTA_CADA     = 1.0
+local RUTA_BUSQUEDA = 40      -- radio de busqueda del A* (nodos)
+-- Ultimo recurso, no metodo de persecucion: solo si lleva T_PERDIDO s sin
+-- acortar distancia Y la victima no lo esta viendo, reaparece escondido a
+-- 12-20 nodos (nunca al lado). Asi nadie lo ve teletransportarse.
+local T_PERDIDO     = 8
+local DIST_PERDIDO  = 60      -- tan lejos y fuera de vista: tambien reaparece
 
 local ENTITY = "valdivia_scp096:scp096"
 local COLOR  = "#B03030"
 
 local ANIM_SENTADO = {x = 81,  y = 160}
+local ANIM_PARADO  = {x = 0,   y = 79}
 local ANIM_PASO    = {x = 168, y = 187}
-local ANIM_FURIA   = {x = 189, y = 198}  -- "minar": brazos agitandose
+local ANIM_ZARPAZO = {x = 189, y = 198}  -- "minar": solo al alcanzar a la victima
 
 local S_LLANTO = "mobs_mc_enderman_random"
 local S_GRITO  = "mobs_mc_enderman_death"
@@ -121,10 +144,11 @@ local function libre(p)
     return minetest.get_node(p).name == "air"
 end
 
--- Suelo firme + 3 de aire. Con `calle`, ademas cielo abierto (luz natural a
+-- Suelo firme + 3 de aire. modo "calle": ademas cielo abierto (luz natural a
 -- mediodia >= 14: el mismo truco de valdivia_transeuntes para no aparecer
 -- dentro de un edificio ni en la mina) y fuera de la vista del jugador.
-local function buscar_pos(ppos, rmin, rmax, calle)
+-- modo "oculto": solo fuera de la vista del jugador.
+local function buscar_pos(ppos, rmin, rmax, modo)
     local ojo = {x = ppos.x, y = ppos.y + 1.5, z = ppos.z}
     for _ = 1, 40 do
         local ang = math.random() * math.pi * 2
@@ -140,10 +164,12 @@ local function buscar_pos(ppos, rmin, rmax, calle)
             and libre(pies) and libre({x = bx, y = pies.y + 1, z = bz})
             and libre({x = bx, y = pies.y + 2, z = bz}) then
                 local ok = true
-                if calle then
+                if modo then
+                    ok = not minetest.line_of_sight(ojo, {x = bx, y = pies.y + 1.5, z = bz})
+                end
+                if ok and modo == "calle" then
                     local luz = minetest.get_natural_light(pies, 0.5)
                     ok = luz and luz >= 14
-                        and not minetest.line_of_sight(ojo, {x = bx + 0.5, y = pies.y + 1.5, z = bz + 0.5})
                 end
                 if ok then
                     return {x = bx + 0.5, y = pies.y, z = bz + 0.5}
@@ -156,7 +182,7 @@ local function buscar_pos(ppos, rmin, rmax, calle)
 end
 
 -- ============================================================================
--- 4. MOVIMIENTO (igual que valdivia_policia, seccion 4bis)
+-- 4. MOVIMIENTO
 -- ============================================================================
 local function animar(self, rango, fps)
     if self._anim == rango.x then return end
@@ -164,17 +190,70 @@ local function animar(self, rango, fps)
     self.object:set_animation(rango, fps, 0, true)
 end
 
+-- Aplica la silueta. Overrides relativos (absolute = false por defecto): se
+-- suman / multiplican a la animacion, asi que caminar y sentarse siguen
+-- funcionando. De pie la cadera sube lo que se alargaron las piernas para que
+-- no se entierren; sentado vuelve al suelo (las piernas quedan estiradas
+-- hacia adelante) para que no flote.
+local function cuerpo(self, sentado)
+    local o = self.object
+    if not o.set_bone_override then return end   -- motor < 5.9: silueta normal
+    local clave = sentado and "s" or "p"
+    if self._cuerpo == clave then return end
+    local primera = self._cuerpo == nil
+    self._cuerpo = clave
+    if primera then
+        local pierna = {scale = {vec = {x = 0.85, y = PIERNA, z = 0.85}}}
+        local brazo  = {scale = {vec = {x = GROSOR_BRAZO, y = BRAZO, z = GROSOR_BRAZO}}}
+        o:set_bone_override("Leg_Right", pierna)
+        o:set_bone_override("Leg_Left", pierna)
+        o:set_bone_override("Arm_Right", brazo)
+        o:set_bone_override("Arm_Left", brazo)
+        o:set_bone_override("Body", {scale = {vec = {x = TORSO_ANCHO, y = 1, z = 0.85}}})
+        o:set_bone_override("Head", {scale = {vec = {x = 1, y = CABEZA_LARGA, z = 1}}})
+    end
+    o:set_bone_override("Body_Control", {position = {
+        vec = {x = 0, y = sentado and 0 or CADERA * (PIERNA - 1), z = 0},
+        interpolation = 0.3,
+    }})
+end
+
+-- La velocidad horizontal se lleva en el propio mob (_vx/_vz) y NO se lee de
+-- get_velocity(). Motivo: mcl_mobs multiplica la velocidad horizontal por 0.7
+-- en CADA paso, antes de do_custom (check_death_and_slow_mob, physics.lua:247).
+-- Acelerando desde ese valor ya frenado, el tope real quedaba en ~4,2 n/s en
+-- vez de 6,5: mas lento que un jugador corriendo, y el anti-atasco lo
+-- teletransportaba cada 1,5 s (lo que se veia en produccion el 2026-11-10).
+-- Como el motor mueve la entidad con lo que fijamos al final del paso, llevar
+-- la cuenta aparte esquiva el freno por completo.
 local function empujar(self, dirx, dirz, pedida, dtime)
-    local v = self.object:get_velocity() or {x = 0, y = 0, z = 0}
-    local dx, dz = dirx * pedida - v.x, dirz * pedida - v.z
+    local vx, vz = self._vx or 0, self._vz or 0
+    local dx, dz = dirx * pedida - vx, dirz * pedida - vz
     local dif = math.sqrt(dx * dx + dz * dz)
     local paso = ACELERACION * dtime
     if dif > paso and dif > 0 then
         dx, dz = dx * (paso / dif), dz * (paso / dif)
     end
-    local nx, nz = v.x + dx, v.z + dz
-    self.object:set_velocity({x = nx, y = v.y, z = nz})
-    return math.sqrt(nx * nx + nz * nz)
+    vx, vz = vx + dx, vz + dz
+    self._vx, self._vz = vx, vz
+    local v = self.object:get_velocity() or {x = 0, y = 0, z = 0}
+    self.object:set_velocity({x = vx, y = v.y, z = vz})
+end
+
+local function frenar(self)
+    self._vx, self._vz = 0, 0
+    local v = self.object:get_velocity() or {x = 0, y = 0, z = 0}
+    self.object:set_velocity({x = 0, y = v.y, z = 0})
+end
+
+-- Cuanto avanzo de verdad desde el paso anterior (n/s). Es lo que delata un
+-- choque contra una pared, aunque la velocidad pedida siga alta.
+local function avance_real(self, pos, dtime)
+    local prev = self._prev
+    self._prev = {x = pos.x, y = pos.y, z = pos.z}
+    if not prev or dtime <= 0 then return 0 end
+    local dx, dz = pos.x - prev.x, pos.z - prev.z
+    return math.sqrt(dx * dx + dz * dz) / dtime
 end
 
 local function en_suelo(pos)
@@ -230,8 +309,8 @@ local function enfurecer(self, pos, nombre)
     self._t = 0
     self._objetivo = nombre
     cooldown[nombre] = os.time()
-    self.object:set_velocity({x = 0, y = 0, z = 0})
-    animar(self, ANIM_FURIA, 30)
+    frenar(self)
+    animar(self, ANIM_PARADO, 30)   -- se levanta
     sonar(S_GRITO, pos, 2.0, 80, 0.55)
     decir(nombre, "Le viste la cara.")
     avisar_cerca(pos, 64, "Un grito horrible retumba en la calle...", nombre)
@@ -250,12 +329,23 @@ local function atrapar(self, pos, player, nombre)
     end
     minetest.log("action", "[" .. modname .. "] alcanzo a " .. nombre)
     particulas({x = pos.x, y = pos.y + 1, z = pos.z}, "valdivia_scp096_furia.png", 60, 1)
-    esfumar(self, pos)
+    -- Zarpazo, y despues se vuelve a sentar a llorar un rato antes de irse.
+    frenar(self)
+    animar(self, ANIM_ZARPAZO, 30)
+    self._estado = "fin"
+    self._t = 0
+end
+
+local function fin(self, pos, dtime)
+    self._t = self._t + dtime
+    frenar(self)
+    if self._t > 0.8 then animar(self, ANIM_SENTADO, 30) end
+    if self._t > 6 then esfumar(self, pos) end
 end
 
 local function calma(self, pos, dtime)
     self._vida = (self._vida or 0) + dtime
-    empujar(self, 0, 0, 0, dtime)
+    frenar(self)
     animar(self, ANIM_SENTADO, 30)
 
     -- Nadie cerca o se aburrio: se esfuma sin hacer ruido.
@@ -301,9 +391,12 @@ local function furia(self, pos, dtime)
     self._t = self._t + dtime
     local player = minetest.get_player_by_name(self._objetivo or "")
     if not player then esfumar(self, pos) return end
-    empujar(self, 0, 0, 0, dtime)
-    animar(self, ANIM_FURIA, 30)
-    mirar_hacia(self, pos, player:get_pos(), 4)
+    frenar(self)
+    animar(self, ANIM_PARADO, 30)
+    -- De pie, sacudiendo la cabeza y el torso de lado a lado mientras grita.
+    local ppos = player:get_pos()
+    local base = math.atan2(ppos.z - pos.z, ppos.x - pos.x) - math.pi / 2
+    self:set_yaw(base + math.sin(self._t * 22) * 0.35, 0)
 
     self._gota = (self._gota or 0) + dtime
     if self._gota > 0.3 then
@@ -313,7 +406,8 @@ local function furia(self, pos, dtime)
     if self._t >= FURIA then
         self._estado = "caza"
         self._t = 0
-        self._mejor, self._atasco = nil, 0
+        self._mejor, self._sin_acortar = nil, 0
+        self._ruta, self._t_ruta, self._prev = nil, 0, nil
         sonar(S_GRITO, pos, 2.0, 80, 0.45)
         decir(self._objetivo, "CORRE.")
     end
@@ -338,34 +432,85 @@ local function caza(self, pos, dtime)
         return
     end
 
-    -- Nada lo detiene: si se traba o se queda atras, reaparece al lado.
-    self._mejor = math.min(self._mejor or dist, dist)
-    self._atasco = (dist <= self._mejor + 0.5) and 0 or (self._atasco + dtime)
-    if dist > DIST_LEJOS or self._atasco > T_ATASCO then
-        local destino = buscar_pos(ppos, 4, 7, false)
-        if destino then
-            sonar(S_SALTO, pos, 1.0, 32, 0.6)
-            self.object:set_pos(destino)
-            self.object:set_velocity({x = 0, y = 0, z = 0})
-            sonar(S_SALTO, destino, 1.0, 32, 0.6)
+    -- Ultimo recurso: lleva mucho sin acortar distancia (o la victima se fue
+    -- lejisimos) y NADIE lo esta mirando -> reaparece escondido, a media
+    -- distancia, y sigue corriendo desde ahi. Nunca al lado ni a la vista.
+    if not self._mejor or dist < self._mejor - 0.5 then
+        self._mejor, self._sin_acortar = dist, 0
+    else
+        self._sin_acortar = (self._sin_acortar or 0) + dtime
+    end
+    if (self._sin_acortar > T_PERDIDO or dist > DIST_PERDIDO) then
+        local ojo = {x = ppos.x, y = ppos.y + 1.5, z = ppos.z}
+        if not minetest.line_of_sight(ojo, cabeza(pos)) then
+            local destino = buscar_pos(ppos, 12, 20, "oculto")
+            if destino then
+                self.object:set_pos(destino)
+                frenar(self)
+                self._ruta, self._t_ruta, self._prev = nil, 0, nil
+                minetest.log("action", "[" .. modname .. "] reubicado tras " .. nombre)
+            end
+            self._mejor, self._sin_acortar = nil, 0
+            return
         end
-        self._mejor, self._atasco = nil, 0
-        return
     end
 
-    local dx, dz = ppos.x - pos.x, ppos.z - pos.z
-    local largo = math.sqrt(dx * dx + dz * dz)
-    mirar_hacia(self, pos, ppos, 2)
-    animar(self, ANIM_PASO, 30)
-    if largo > 0 then
-        local real = empujar(self, dx / largo, dz / largo, VELOCIDAD, dtime)
-        self._pausa_salto = math.max((self._pausa_salto or 0) - dtime, 0)
-        self._traba = (real < VELOCIDAD * 0.35) and ((self._traba or 0) + dtime) or 0
-        if self._traba > T_TRABA and self._pausa_salto == 0 and en_suelo(pos) then
-            self._traba, self._pausa_salto = 0, 0.6
-            local v = self.object:get_velocity()
-            self.object:set_velocity({x = v.x, y = SALTO_VEL, z = v.z})
+    -- Hacia donde correr: directo si lo ve (a la altura de las piernas y de
+    -- la cabeza, para no embestir un muro bajo), si no por la ruta del A*.
+    local meta = ppos
+    local pies_a  = {x = pos.x,  y = pos.y + 0.6,  z = pos.z}
+    local pies_b  = {x = ppos.x, y = ppos.y + 0.6, z = ppos.z}
+    local directo = math.abs(ppos.y - pos.y) < 1.5
+        and minetest.line_of_sight(pies_a, pies_b)
+        and minetest.line_of_sight(vector.add(pies_a, {x = 0, y = 1.2, z = 0}),
+                                   vector.add(pies_b, {x = 0, y = 1.2, z = 0}))
+    if directo then
+        self._ruta = nil
+    else
+        self._t_ruta = (self._t_ruta or 0) - dtime
+        if not self._ruta or self._t_ruta <= 0 then
+            self._t_ruta = RUTA_CADA
+            self._ruta = minetest.find_path(vector.round({x = pos.x, y = pos.y + 0.1, z = pos.z}),
+                vector.round({x = ppos.x, y = ppos.y + 0.1, z = ppos.z}),
+                RUTA_BUSQUEDA, 1, 4, "A*_noprefetch")
+            self._i_ruta = 2
         end
+        if self._ruta then
+            local w = self._ruta[self._i_ruta]
+            while w and math.abs(w.x - pos.x) < 0.6 and math.abs(w.z - pos.z) < 0.6 do
+                self._i_ruta = self._i_ruta + 1
+                w = self._ruta[self._i_ruta]
+            end
+            if w then meta = w else self._ruta = nil end
+        end
+    end
+
+    local dx, dz = meta.x - pos.x, meta.z - pos.z
+    local largo = math.sqrt(dx * dx + dz * dz)
+    mirar_hacia(self, pos, meta, 3)
+    animar(self, ANIM_PASO, 30)
+    local real = avance_real(self, pos, dtime)
+    if largo > 0.05 then
+        empujar(self, dx / largo, dz / largo, VELOCIDAD, dtime)
+    end
+
+    -- Salto: solo si el siguiente punto esta mas arriba, o si quiere correr y
+    -- casi no avanza (choco con algo de 1-1,5 nodos). stepheight resuelve los
+    -- escalones simples sin saltar.
+    self._pausa_salto = math.max((self._pausa_salto or 0) - dtime, 0)
+    local quiere = math.sqrt((self._vx or 0) ^ 2 + (self._vz or 0) ^ 2)
+    if quiere > 2 and real < quiere * 0.3 then
+        self._traba = (self._traba or 0) + dtime
+    else
+        self._traba = 0
+    end
+    local sube = meta.y > pos.y + 0.6 and largo < 1.6
+    if (sube or self._traba > T_TRABA) and self._pausa_salto == 0 and en_suelo(pos) then
+        self._traba, self._pausa_salto = 0, 0.6
+        local v = self.object:get_velocity() or {x = 0, y = 0, z = 0}
+        self.object:set_velocity({x = self._vx or v.x, y = SALTO_VEL, z = self._vz or v.z})
+        -- Si sigue trabado tras saltar, que el A* busque otro camino ya.
+        self._t_ruta = 0
     end
 
     self._grito = (self._grito or 0) + dtime
@@ -389,13 +534,13 @@ local function registrar_mob()
         initial_properties = {
             hp_min = HP,
             hp_max = HP,
-            collisionbox = {-0.3, -0.01, -0.3, 0.3, ALTO, 0.3},
+            collisionbox = {-0.3, -0.01, -0.3, 0.3, ALTO_COLISION, 0.3},
             static_save = false,
         },
-        collisionbox = {-0.3, -0.01, -0.3, 0.3, ALTO, 0.3},
+        collisionbox = {-0.3, -0.01, -0.3, 0.3, ALTO_COLISION, 0.3},
         visual = "mesh",
         mesh = "mcl_armor_character.b3d",
-        visual_size = {x = 0.9, y = ESCALA},
+        visual_size = {x = 1, y = ESCALA},
         textures = {{"valdivia_scp096_skin.png", "blank.png", "blank.png"}},
         makes_footstep_sound = true,
         walk_velocity = VELOCIDAD,
@@ -429,10 +574,16 @@ local function registrar_mob()
             local pos = self.object:get_pos()
             if not pos then return false end
 
+            -- Sentado en calma y al final; de pie al gritar y al correr.
+            local est = self._estado or "calma"
+            cuerpo(self, est == "calma" or (est == "fin" and (self._t or 0) > 0.8))
+
             if self._estado == "furia" then
                 furia(self, pos, dtime)
             elseif self._estado == "caza" then
                 caza(self, pos, dtime)
+            elseif self._estado == "fin" then
+                fin(self, pos, dtime)
             else
                 calma(self, pos, dtime)
             end
@@ -466,6 +617,10 @@ local function spawnear(pos, de_espaldas_a)
     le._vida = 0
     le._llanto = 1
     le._giro = 10 + math.random() * 10
+    -- Cadencia de piernas: mcl_mobs da walk_speed fps a run_velocity (6,5 n/s);
+    -- un jugador anda a ~7 fps por n/s, asi que a 6,5 n/s tocan ~45 fps.
+    -- No se puede poner en la definicion (register_mob lo fija en 1).
+    le.frame_speed_multiplier = 1.5
     local yaw = math.random() * math.pi * 2
     if de_espaldas_a then
         local dx, dz = pos.x - de_espaldas_a.x, pos.z - de_espaldas_a.z
@@ -499,7 +654,7 @@ minetest.register_globalstep(function(dtime)
     end
     if #candidatos == 0 then return end
     local p = candidatos[math.random(#candidatos)]
-    local pos = buscar_pos(p:get_pos(), 20, 34, true)
+    local pos = buscar_pos(p:get_pos(), 20, 34, "calle")
     if pos then
         cooldown[p:get_player_name()] = os.time()
         spawnear(pos, nil)
@@ -548,7 +703,7 @@ minetest.register_chatcommand("scp096", {
         local player = minetest.get_player_by_name(objetivo)
         if not player then return false, "Ese jugador no esta conectado." end
         local ppos = player:get_pos()
-        local pos = buscar_pos(ppos, 8, 14, false)
+        local pos = buscar_pos(ppos, 8, 14, nil)
         if not pos then return false, "No hay espacio libre alrededor de " .. objetivo .. "." end
         -- De espaldas, para que no se enfurezca apenas aparece.
         if spawnear(pos, ppos) then
