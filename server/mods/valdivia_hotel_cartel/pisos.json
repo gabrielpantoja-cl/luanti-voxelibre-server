@@ -9,7 +9,7 @@
     { "n": 2,  "estado": "libre",     "nombre": "Disponible" },
     { "n": 3,  "estado": "libre",     "nombre": "Disponible" },
     { "n": 4,  "estado": "libre",     "nombre": "Disponible" },
-    { "n": 5,  "estado": "libre",     "nombre": "Disponible" },
+    { "n": 5,  "estado": "reservado", "nombre": "Reservado",  "detalle": "SLENDERMAN" },
     { "n": 6,  "estado": "libre",     "nombre": "Disponible" },
     { "n": 7,  "estado": "libre",     "nombre": "Disponible" },
     { "n": 8,  "estado": "libre",     "nombre": "Disponible" },
