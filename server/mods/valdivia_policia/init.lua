@@ -3,9 +3,15 @@
 -- aparece un carabinero que lo persigue, lo reta por chat y le dispara con la
 -- ballesta hasta que se acaba el tiempo de persecucion.
 --
--- Por defecto NO es letal: nunca dispara el tiro que te mataria (deja al
--- infractor con al menos un corazon). Se puede volver letal con
--- valdivia_policia_letal = 1 en luanti-valdivia.conf.
+-- Castigo acotado: cada persecucion quita UN corazon en total (2 HP, ajustable
+-- con valdivia_policia_castigo) y el carabinero se retira. Antes disparaba
+-- 4-6 HP cada ~1 s durante 40 s y solo paraba cuando el siguiente golpe te
+-- mataba, asi que siempre dejaba al infractor con medio o un corazon.
+-- No letal por defecto: si te queda un corazon o menos, no te lo quita
+-- (valdivia_policia_letal = 1 para permitirlo).
+--
+-- Se puede matar: tiene valdivia_policia_vida HP (20 por defecto, como un
+-- jugador). Si muere, la persecucion termina.
 --
 -- Gancho: minetest.register_on_protection_violation, que el motor dispara
 -- cuando minetest.is_protected niega una accion. El mod protector (Redo) usa
@@ -25,10 +31,12 @@ local DURACION      = num("duracion", 40)    -- segundos que dura la persecucion
 local COOLDOWN      = num("cooldown", 30)    -- segundos entre policias para el mismo jugador
 local MAX_POLICIAS  = num("max", 3)          -- tope global simultaneo
 local VELOCIDAD     = num("velocidad", 4.2)  -- nodos/segundo (jugador normal: 4.3)
-local DANIO         = num("danio", 4)        -- HP por dardo (4 = dos corazones)
+local DANIO         = num("danio", 2)        -- HP por dardo (2 = un corazon)
 local CADENCIA      = num("cadencia", 1.2)   -- segundos entre disparos
 local ALCANCE       = num("alcance", 18)     -- distancia maxima de tiro
-local DANIO_PORRA   = num("danio_porra", 6)  -- HP del golpe cuerpo a cuerpo
+local DANIO_PORRA   = num("danio_porra", 2)  -- HP del golpe cuerpo a cuerpo
+local CASTIGO       = num("castigo", 2)      -- HP TOTALES por persecucion (2 = un corazon)
+local VIDA          = num("vida", 20)        -- HP del carabinero (se puede matar)
 local CADENCIA_PORRA = num("cadencia_porra", 1.0)
 local DIST_PORRA    = num("dist_porra", 3)   -- a esta distancia usa la porra
 local LETAL         = num("letal", 0) == 1   -- 1 = puede matar
@@ -52,8 +60,8 @@ local SALTO_VEL     = 6.2                    -- impulso del salto propio
 local SALTO_PAUSA   = 0.8                    -- segundos entre saltos
 local T_TRABA       = 0.45                   -- segundos sin avanzar antes de saltar
 local T_RETO        = 6                      -- segundos entre retos por chat
+local T_RETIRO      = 2                      -- segundos que se queda tras cobrar la multa
 local DEBOUNCE      = 1                      -- segundos entre evaluaciones por jugador
-local HP            = 10000                  -- inmortal de facto
 local VEL_DARDO     = 22                     -- nodos/segundo del dardo (solo visual)
 
 local ENTITY = "valdivia_policia:policia"
@@ -72,6 +80,11 @@ local RENDIRSE = {
     "Me cansé de perseguirte. ¡Pórtate bien!",
     "Me vuelvo a la comisaría. No lo intentes de nuevo.",
 }
+local MULTA = {
+    "Ahí tienes tu multa. ¡Que no se repita!",
+    "Multa cursada. Respeta lo ajeno.",
+}
+local CAIDO = "El carabinero cayó. Se acabó la persecución... por ahora."
 local PERDON = {
     "Estás muy herido, te dejo ir. ¡Que no se repita!",
     "No te voy a rematar. Aprende la lección.",
@@ -119,11 +132,10 @@ end
 -- Dos capas a proposito:
 --  1. El punch normal: anima, suena, empuja y gasta durabilidad de armadura.
 --  2. El complemento a mano, porque el punch solo casi nunca entrega el danio
---     pedido. Dos razones comprobadas en produccion el 2026-10-30:
---     los jugadores no-admin estan en gamemode creativo (valdivia_newplayer,
---     para el inventario completo) y VoxeLibre les anula el punch; y con
---     armadura puesta el golpe de 6 llegaba como 1-2. Se completa hasta el
---     danio pedido con set_hp.
+--     pedido: con armadura puesta el golpe de 6 llegaba como 1-2 (visto en
+--     produccion el 2026-10-30). Se completa hasta el danio pedido con set_hp.
+--     (En gamemode creativo VoxeLibre anula el punch del todo; hoy solo el
+--     admin lo esta -- valdivia_newplayer fuerza survival a los demas.)
 --
 -- ⚠️ El motivo del set_hp NO puede ser `punch`: mcl_damage.from_punch hace
 -- `mcl_reason.direct = object` y enseguida `direct:get_luaentity()`, asi que un
@@ -376,15 +388,35 @@ local function caminar(self, pos, ppos, dist, dtime)
     end
 end
 
+-- Cuanto le queda por cobrar en esta persecucion. El total es CASTIGO, no
+-- CASTIGO por golpe: asi un encuentro quita un corazon y no la barra entera.
+local function dosis(self, danio)
+    if self._restante == nil then self._restante = CASTIGO end
+    return math.max(0, math.min(danio, self._restante))
+end
+
+-- Descuenta al disparar (no al impactar), para que un dardo en vuelo no deje
+-- disparar otro mientras tanto. Cobrado todo, se retira.
+local function cobrar(self, nombre, dmg)
+    self._restante = (self._restante or CASTIGO) - dmg
+    if self._restante <= 0 then
+        decir(nombre, al_azar(MULTA))
+        self._retiro = T_RETIRO
+    end
+end
+
+-- No remata: avisa y se va (antes se quedaba acompaniando hasta el final).
+local function perdonar(self, nombre)
+    decir(nombre, al_azar(PERDON))
+    self._retiro = T_RETIRO
+end
+
 -- El ciclo completo de la persecucion. Vive afuera de la definicion del mob
 -- porque mcl_mobs solo copia un punado de campos conocidos sobre la entidad
 -- (do_punch entre ellos, cualquier campo inventado no), y porque asi el
 -- `return false` de do_custom queda en un solo lugar.
 local function perseguir(self, dtime)
-    if self.object:get_hp() < HP then
-        self.object:set_hp(HP)
-        self.object:set_armor_groups({immortal = 1, fleshy = 0})
-    end
+    if self.state == "die" or (self.health or 1) <= 0 then return end
 
     local nombre = self._objetivo
     if not nombre then self.object:remove() return end
@@ -406,6 +438,19 @@ local function perseguir(self, dtime)
         destello(pos)
         policias[nombre] = nil
         self.object:remove()
+        return
+    end
+
+    -- Ya cobro la multa (o perdono): se queda un momento y se va.
+    if self._retiro then
+        self._retiro = self._retiro - dtime
+        local v = self.object:get_velocity() or {y = 0}
+        self.object:set_velocity({x = 0, y = v.y, z = 0})
+        if self._retiro <= 0 then
+            destello(pos)
+            policias[nombre] = nil
+            self.object:remove()
+        end
         return
     end
 
@@ -450,19 +495,18 @@ local function perseguir(self, dtime)
     self._porra = (self._porra or 0) + dtime
     if dist <= DIST_PORRA and self._porra >= CADENCIA_PORRA then
         self._porra = 0
-        local hp = player:get_hp()
-        if not LETAL and hp <= DANIO_PORRA then
-            if not self._perdono then
-                self._perdono = true
-                decir(nombre, al_azar(PERDON))
-            end
+        local dmg = dosis(self, DANIO_PORRA)
+        if not LETAL and player:get_hp() <= dmg then
+            perdonar(self, nombre)
         else
             local d = vector.normalize(vector.subtract(ppos, pos))
-            golpear(nombre, DANIO_PORRA, self.object, d)
+            golpear(nombre, dmg, self.object, d)
             destello({x = ppos.x, y = ppos.y + 1, z = ppos.z})
+            cobrar(self, nombre, dmg)
             minetest.log("action", "[" .. modname .. "] porra a " ..
-                nombre .. " (-" .. DANIO_PORRA .. " hp)")
+                nombre .. " (-" .. dmg .. " hp)")
         end
+        if self._retiro then return end
     end
 
     -- Ballesta: dispara si hay linea de vision y esta a tiro.
@@ -470,13 +514,9 @@ local function perseguir(self, dtime)
     if self._tiro >= CADENCIA and dist <= ALCANCE and dist > DIST_PORRA then
         self._tiro = 0
 
-        local hp = player:get_hp()
-        if not LETAL and hp <= DANIO then
-            -- No remata: avisa una vez y sigue acompaniando.
-            if not self._perdono then
-                self._perdono = true
-                decir(nombre, al_azar(PERDON))
-            end
+        local dmg = dosis(self, DANIO)
+        if not LETAL and player:get_hp() <= dmg then
+            perdonar(self, nombre)
         else
             -- Altura de tiro: en un tunel estrecho (la mina bajo la
             -- ciudad) la cabeza del policia puede quedar dentro de la
@@ -512,11 +552,12 @@ local function perseguir(self, dtime)
                 local vuelo = math.min(dist / VEL_DARDO, 1)
                 local fuente = self.object
                 minetest.after(vuelo, function()
-                    golpear(nombre, DANIO, fuente, d)
+                    golpear(nombre, dmg, fuente, d)
                 end)
+                cobrar(self, nombre, dmg)
 
                 minetest.log("action", "[" .. modname .. "] dardo a " ..
-                    nombre .. " (-" .. DANIO .. " hp, dist " ..
+                    nombre .. " (-" .. dmg .. " hp, dist " ..
                     string.format("%.1f", dist) .. ")")
             else
                 -- Sin angulo: no dispara a ciegas contra la pared.
@@ -549,8 +590,8 @@ local function registrar_mob()
         xp_min = 0,
         xp_max = 0,
         initial_properties = {
-            hp_min = HP,
-            hp_max = HP,
+            hp_min = VIDA,
+            hp_max = VIDA,
             -- Este VoxeLibre lo quiere aca: con el collisionbox solo en la raiz
             -- loguea "Mob without collisionbox" al activarse (visto 2026-10-30).
             collisionbox = {-0.3, -0.01, -0.3, 0.3, 1.94, 0.3},
@@ -574,7 +615,9 @@ local function registrar_mob()
         view_range = 32,
         drops = {},
         can_despawn = true,
-        armor_groups = {immortal = 1, fleshy = 0},
+        -- Se puede matar: armadura normal de mob (mcl_mobs pone immortal=1 en
+        -- los armor groups del motor y lleva la vida en self.health).
+        armor = 100,
         animation = {
             stand_start = 0, stand_end = 79, stand_speed = 30,
             walk_start = 168, walk_end = 187, walk_speed = 30,
@@ -582,10 +625,6 @@ local function registrar_mob()
         },
 
         on_activate = function(self, staticdata, dtime_s)
-            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            self.object:set_hp(HP)
-            self.health = HP
-
             -- Anti-huerfanos: si el contenedor se reinicio a mitad de
             -- persecucion (aca docker stop siempre termina en SIGKILL), el
             -- policia revive sin objetivo valido. Que se borre solo en vez de
@@ -612,15 +651,52 @@ local function registrar_mob()
             return false
         end,
 
-        -- Inmortal: si le pegan, no pasa nada.
-        do_punch = function(self, puncher)
-            self.object:set_armor_groups({immortal = 1, fleshy = 0})
-            self.object:set_hp(HP)
-            self.health = HP
-            if puncher and puncher:is_player() then
-                decir(puncher:get_player_name(), "¡Resistirse a la autoridad! Peor para ti.")
+        -- Se puede matar. Los jugadores normales estan en survival
+        -- (valdivia_newplayer) y pasan por el on_punch normal de mcl_mobs.
+        -- Solo quien este en gamemode creativo (hoy, el admin) se desvia:
+        -- mcl_mobs mata de UN golpe a cualquier mob en ese caso (combat.lua:
+        -- "Instant kill mobs in creative"), asi que el danio se calcula aca con
+        -- la misma formula, sin el instakill, y se corta el resto del on_punch.
+        do_punch = function(self, puncher, tflp, caps, dir)
+            if not (puncher and puncher:is_player()) then return true end
+            local pname = puncher:get_player_name()
+            if self._objetivo == pname and not self._dijo_resistir then
+                self._dijo_resistir = true
+                decir(pname, "¡Resistirse a la autoridad! Peor para ti.")
             end
+            if not minetest.is_creative_enabled(pname) then return true end
+            if not caps then return false end
+
+            local fpi = caps.full_punch_interval or 1.4
+            if fpi <= 0 then fpi = 0.001 end
+            local f = math.max(0, math.min(1, (tflp or fpi) / fpi))
+            local danio = 0
+            for grupo, v in pairs(caps.damage_groups or {}) do
+                if grupo == "fleshy" then danio = danio + v * f end
+            end
+            if danio < 0.1 then return false end
+
+            self:damage_effect(danio)
+            minetest.sound_play("default_punch",
+                {object = self.object, max_hear_distance = 5}, true)
+            self.health = self.health - danio
+            self.invul_timestamp = minetest.get_us_time()
+            if dir then
+                self.object:add_velocity({x = dir.x * 3, y = 2, z = dir.z * 3})
+            end
+            self:check_for_death("hit", {type = "punch", puncher = puncher},
+                {attacker_name = pname})
             return false
+        end,
+
+        on_die = function(self, pos)
+            local nombre = self._objetivo
+            if nombre then
+                policias[nombre] = nil
+                decir(nombre, CAIDO)
+            end
+            minetest.log("action", "[" .. modname .. "] carabinero derribado" ..
+                (nombre and (" (perseguia a " .. nombre .. ")") or ""))
         end,
 
         on_rightclick = function(self, clicker)

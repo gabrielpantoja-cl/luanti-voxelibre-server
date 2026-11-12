@@ -59,16 +59,23 @@ Filtros antes de enviar un policía:
   propósito, y sin esa excepción se reubicaba solo cada 2,5 s mientras caminaba
   al lado del infractor.
 - **Ballesta** (más de 3 nodos): cada 1,2 s, si hay `line_of_sight` y está a
-  ≤ 18 nodos, **4 HP** por impacto. El dardo que se ve volar es solo visual: el
+  ≤ 18 nodos, **2 HP** por impacto. El dardo que se ve volar es solo visual: el
   daño se resuelve al disparar, tras el tiempo de vuelo.
-- **Porra** (≤ 3 nodos): cada 1 s, **6 HP**. Acercarse no te salva.
+- **Porra** (≤ 3 nodos): cada 1 s, **2 HP**.
+- **Castigo total: un corazón por persecución** (`castigo = 2` HP). En cuanto lo
+  cobra, avisa "multa cursada" por chat y se retira. Hasta 2026-11-12 pegaba
+  4–6 HP cada ~1 s durante 40 s y solo paraba cuando el golpe siguiente te
+  mataba: en la práctica siempre dejaba al infractor con medio o un corazón.
 - **El daño se aplica sí o sí**: `punch` normal primero y, si no bajó el HP,
-  descuento directo con `set_hp` — los jugadores no-admin están en gamemode
-  creativo y VoxeLibre les anula el `punch`.
-- **No letal por defecto**: deja de atacar cuando el golpe mataría y avisa por
-  chat. Con `valdivia_policia_letal = 1` sí remata.
-- **Inmortal y no robable**: `armor_groups = {immortal = 1, fleshy = 0}`,
-  `drops = {}`. Pegarle solo provoca una respuesta por chat.
+  descuento directo con `set_hp` — la armadura se come buena parte del golpe
+  (y en gamemode creativo VoxeLibre lo anula del todo).
+- **No letal por defecto**: si te queda un corazón o menos, no te lo quita;
+  avisa por chat y se va. Con `valdivia_policia_letal = 1` sí remata.
+- **Se puede matar** (desde 2026-11-12): `vida = 20` HP, armadura normal de mob,
+  `drops = {}` y sin XP. Si muere, la persecución termina. Los jugadores
+  normales están en survival y le pegan por la vía normal de `mcl_mobs`. Para
+  quien esté en creativo (hoy solo el admin), `mcl_mobs` mataría de un golpe,
+  así que `do_punch` calcula el daño a mano con la misma fórmula.
 - **Fuego amigo imposible**: el daño se aplica por nombre al infractor; el
   dardo visual no colisiona con nadie.
 
@@ -99,13 +106,15 @@ Filtros antes de enviar un policía:
 | `valdivia_policia_max` | 3 | Tope global simultáneo |
 | `valdivia_policia_velocidad` | 4.2 | Nodos/segundo a fondo (un jugador normal corre 4.3). El trote es 0,60× y el paso de calle 0,36× de este valor |
 | `valdivia_policia_aceleracion` | 9 | Nodos/s² al cambiar de marcha (más bajo = arranca y frena más suave) |
-| `valdivia_policia_danio` | 4 | HP por dardo |
+| `valdivia_policia_danio` | 2 | HP por dardo |
 | `valdivia_policia_cadencia` | 1.2 | Segundos entre disparos |
 | `valdivia_policia_alcance` | 18 | Distancia máxima de tiro |
-| `valdivia_policia_danio_porra` | 6 | HP del golpe cuerpo a cuerpo |
+| `valdivia_policia_danio_porra` | 2 | HP del golpe cuerpo a cuerpo |
 | `valdivia_policia_cadencia_porra` | 1.0 | Segundos entre porrazos |
 | `valdivia_policia_dist_porra` | 3 | A esta distancia cambia ballesta → porra |
 | `valdivia_policia_letal` | 0 | `1` = puede matar |
+| `valdivia_policia_castigo` | 2 | HP **totales** que quita por persecución (2 = un corazón) |
+| `valdivia_policia_vida` | 20 | HP del carabinero |
 
 Recordá que `world.mt` manda: activar el mod exige la línea
 `load_mod_valdivia_policia = true` también en
