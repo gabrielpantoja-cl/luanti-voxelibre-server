@@ -15,6 +15,17 @@ local PRIVS = {
 	teleport  = true,
 }
 
+-- Admins "menores" (familia del admin): modo creativo con inventario completo
+-- (/give incluido) y vuelo, pero SIN privilegios de servidor (server, privs,
+-- ban, password, protection_bypass, worldedit, settime...).
+local CREATIVE_ADMINS = {
+	luciano80 = true,
+}
+local CREATIVE_ADMIN_PRIVS = {
+	interact = true, shout = true, fast = true, fly = true, spawn = true,
+	teleport = true, creative = true, give = true, home = true,
+}
+
 -- El admin recibe TODOS los privilegios registrados (motor + mods). Una lista
 -- fija no sirve: set_player_privs REEMPLAZA el set completo, asi que cualquier
 -- priv fuera de la lista (server, privs, protect, protection_bypass, worldedit,
@@ -54,6 +65,15 @@ local function enforce_state(name)
 		for _ in pairs(privs) do count = count + 1 end
 		minetest.log("action", "[" .. modname .. "] Admin " .. name ..
 			": todos los privilegios registrados (" .. count .. ")")
+		return
+	end
+
+	if CREATIVE_ADMINS[name] then
+		meta:set_string("gamemode", "creative")
+		meta:set_int("mcl_privs:fly_changed", 1)
+		minetest.set_player_privs(name, CREATIVE_ADMIN_PRIVS)
+		minetest.log("action", "[" .. modname .. "] " .. name ..
+			": creativo + privilegios limitados")
 		return
 	end
 
