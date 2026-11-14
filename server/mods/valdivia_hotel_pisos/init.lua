@@ -1,57 +1,120 @@
 -- Un piso del Hotel Dreams por jugador (Valdivia, puerto 30001).
 --
 -- Problema: el bloque de `protector` protege un cubo de 41x41x41 (radio 20,
--- global). Los pisos del hotel miden 4 de alto, asi que un protector toma ~10
--- pisos y choca con el del admin que ya cubre el edificio.
+-- global). Los pisos del hotel miden 4 de alto, asi que un protector toma ~8
+-- pisos y choca con los del admin que ya cubren el edificio.
 --
 -- Solucion: este mod envuelve core.is_protected DESPUES de protector (por eso
 -- optional_depends = protector) y decide primero dentro del hotel:
 --   * Interior de un piso CON dueno -> solo el dueno, sus amigos y quien tenga
 --     protection_bypass/server pueden construir. El resto queda bloqueado (y el
 --     carabinero de valdivia_policia actua igual que con un protector).
---   * Todo lo demas (piso 1, losas entre pisos, zonas excluidas como ascensor
---     y escaleras, pisos sin dueno) -> se delega a la proteccion de siempre.
---   * Dentro del hotel no se pueden colocar bloques protector (su cubo volveria
---     a pisar los pisos vecinos), salvo el admin.
+--   * Todo lo demas (piso 1, losas entre pisos, fachada, ascensor, pisos sin
+--     dueno) -> se delega a la proteccion de siempre.
+--   * En el hotel no se pueden colocar bloques protector (su cubo volveria a
+--     pisar los pisos vecinos), salvo el admin.
 --
--- El interior de un piso son solo las capas de aire: losa+1 .. siguiente losa-1.
--- El dueno no puede romper el piso ni el techo, asi que no abre hoyos al vecino.
+-- El interior de un piso son solo las capas de aire entre dos losas. El dueno
+-- no puede romper el suelo, el techo ni la fachada: no abre hoyos al vecino.
 --
--- Todo se configura en el juego con /hotel (ver README.md) y se guarda en el
--- mod_storage del mundo.
+-- Asignaciones en el mod_storage del mundo; se manejan con /hotel (README.md).
 
 local modname = minetest.get_current_modname()
 local storage = minetest.get_mod_storage()
 
 local NUM_PISOS = 15
 local PISO_COMUN = 1          -- planta baja: zona comun, nunca se asigna
-local ALTURA_DEFECTO = 4
 
 -- ---------------------------------------------------------------------------
--- Estado persistente
+-- Geometria: huella.json (medida desde map.sqlite, no a ojo)
 -- ---------------------------------------------------------------------------
--- cfg = {
---   hotel = {x1, z1, x2, z2},          -- interior del hotel (inclusive)
---   base = y,                          -- y de la losa del piso 1
---   altura = 4,
---   losas = { ["7"] = y },             -- ajustes manuales de la losa del piso n
---   excluidas = { nombre = {x1,z1,x2,z2} },   -- columnas solo-admin (todas las y)
---   pisos = { ["15"] = { dueno = "luciano80", amigos = { pepe = true } } },
--- }
+-- El hotel NO es una caja: la planta es un paralelogramo de bordes curvos, y
+-- el paso entre pisos es 5 (losa + 4 de aire), tomado de las 15 paradas del
+-- ascensor. huella.json trae, por piso, los intervalos [x1,x2] de cada fila z
+-- del interior (losa erosionada 1 nodo: la fachada queda fuera).
+local HUELLA
+do
+    local fh = io.open(minetest.get_modpath(modname) .. "/huella.json", "r")
+    if fh then
+        local parsed = minetest.parse_json(fh:read("*all"))
+        fh:close()
+        if parsed and parsed.pisos and parsed.base and parsed.paso then
+            HUELLA = { base = parsed.base, paso = parsed.paso, techo = parsed.techo,
+                ascensor = parsed.ascensor, pisos = {} }
+            for n, filas in pairs(parsed.pisos) do
+                local t = {}
+                for z, iv in pairs(filas) do t[tonumber(z)] = iv end
+                HUELLA.pisos[tonumber(n)] = t
+            end
+        end
+    end
+    if not HUELLA then
+        minetest.log("error", "[" .. modname .. "] huella.json falta o es ilegible: el mod no protege nada")
+    end
+end
+
+-- Caja holgada del edificio, solo para vetar bloques protector.
+local CAJA = { x1 = 3682, x2 = 3728, z1 = -2970, z2 = -2917, y1 = -12, y2 = 72 }
+
+local function en_hotel(pos)
+    return pos.x >= CAJA.x1 and pos.x <= CAJA.x2 and pos.z >= CAJA.z1 and pos.z <= CAJA.z2
+        and pos.y >= CAJA.y1 and pos.y <= CAJA.y2
+end
+
+local function en_ascensor(pos)
+    local a = HUELLA.ascensor
+    return a and pos.x >= a[1] and pos.x <= a[3] and pos.z >= a[2] and pos.z <= a[4]
+end
+
+local function losa(n)
+    return HUELLA.base + (n - 1) * HUELLA.paso
+end
+
+-- Rango y (inclusive) del interior del piso n. El ultimo llega hasta el techo.
+local function interior(n)
+    local hi = losa(n + 1) - 1
+    if n == NUM_PISOS and HUELLA.techo then hi = HUELLA.techo - 1 end
+    return losa(n) + 1, hi
+end
+
+-- Numero de piso cuyo INTERIOR contiene pos, o nil (losa, fachada, ascensor, fuera).
+local function piso_en(pos)
+    if not HUELLA then return nil end
+    local n = math.floor((pos.y - HUELLA.base) / HUELLA.paso) + 1
+    if n == NUM_PISOS + 1 and HUELLA.techo and pos.y < HUELLA.techo then n = NUM_PISOS end
+    if n < 1 or n > NUM_PISOS then return nil end
+    local lo, hi = interior(n)
+    if pos.y < lo or pos.y > hi then return nil end
+    local fila = HUELLA.pisos[n] and HUELLA.pisos[n][pos.z]
+    if not fila then return nil end
+    for _, iv in ipairs(fila) do
+        if pos.x >= iv[1] and pos.x <= iv[2] then
+            if en_ascensor(pos) then return nil end
+            return n
+        end
+    end
+    return nil
+end
+
+-- ---------------------------------------------------------------------------
+-- Estado persistente: cfg.pisos = { ["15"] = { dueno = "x", amigos = { y = true } } }
+-- ---------------------------------------------------------------------------
 local cfg
 
 local function cargar()
     local crudo = storage:get_string("cfg")
     cfg = (crudo ~= "" and minetest.parse_json(crudo)) or {}
     if type(cfg) ~= "table" then cfg = {} end
-    cfg.altura = tonumber(cfg.altura) or ALTURA_DEFECTO
-    cfg.losas = cfg.losas or {}
-    cfg.excluidas = cfg.excluidas or {}
-    cfg.pisos = cfg.pisos or {}
-    -- parse_json convierte {} vacio en un array; normalizar sub-tablas
-    for _, p in pairs(cfg.pisos) do
-        if type(p.amigos) ~= "table" then p.amigos = {} end
+    if type(cfg.pisos) ~= "table" then cfg.pisos = {} end
+    -- Claves siempre string ("15") y amigos siempre tabla, venga como venga el JSON.
+    local pisos = {}
+    for k, p in pairs(cfg.pisos) do
+        if type(p) == "table" and p.dueno then
+            if type(p.amigos) ~= "table" then p.amigos = {} end
+            pisos[tostring(k)] = p
+        end
     end
+    cfg.pisos = pisos
 end
 
 local function guardar()
@@ -59,45 +122,6 @@ local function guardar()
 end
 
 cargar()
-
--- ---------------------------------------------------------------------------
--- Geometria
--- ---------------------------------------------------------------------------
-local function losa(n)
-    return tonumber(cfg.losas[tostring(n)]) or (cfg.base + (n - 1) * cfg.altura)
-end
-
-local function en_caja(c, x, z)
-    return x >= math.min(c[1], c[3]) and x <= math.max(c[1], c[3])
-       and z >= math.min(c[2], c[4]) and z <= math.max(c[2], c[4])
-end
-
-local function configurado()
-    return cfg.hotel ~= nil and cfg.base ~= nil
-end
-
-local function en_hotel(pos)
-    if not configurado() then return false end
-    return en_caja(cfg.hotel, pos.x, pos.z)
-        and pos.y >= cfg.base and pos.y <= losa(NUM_PISOS + 1)
-end
-
-local function excluida(pos)
-    for nombre, c in pairs(cfg.excluidas) do
-        if en_caja(c, pos.x, pos.z) then return nombre end
-    end
-    return nil
-end
-
--- Numero de piso cuyo INTERIOR contiene pos, o nil (losa, fuera, excluida).
-local function piso_en(pos)
-    if not en_hotel(pos) or excluida(pos) then return nil end
-    for n = 1, NUM_PISOS do
-        local lo, hi = losa(n) + 1, losa(n + 1) - 1
-        if pos.y >= lo and pos.y <= hi then return n end
-    end
-    return nil
-end
 
 local function es_admin(name)
     if not name or name == "" then return false end
@@ -132,7 +156,7 @@ function minetest.is_protected(pos, name)
     return old_is_protected(pos, name)
 end
 
--- Bloques protector prohibidos dentro del hotel (salvo admin).
+-- Bloques protector prohibidos en el hotel (salvo admin).
 minetest.register_on_mods_loaded(function()
     for _, item in ipairs({ "protector:protect", "protector:protect2", "protector:protect_hidden" }) do
         local def = minetest.registered_items[item]
@@ -145,7 +169,7 @@ minetest.register_on_mods_loaded(function()
                     and (en_hotel(pointed_thing.above) or en_hotel(pointed_thing.under)) then
                         minetest.chat_send_player(name,
                             "En el Hotel Dreams no se usan bloques protectores: "
-                            .. "tu piso ya esta protegido. Mira /hotel")
+                            .. "cada piso ya esta protegido para su dueno. Mira /hotel")
                         return itemstack
                     end
                     return orig(itemstack, placer, pointed_thing)
@@ -158,36 +182,7 @@ end)
 -- ---------------------------------------------------------------------------
 -- Comandos
 -- ---------------------------------------------------------------------------
-local marcas = {}   -- [admin] = { [1] = pos, [2] = pos }
-
-local function pies(name)
-    local player = minetest.get_player_by_name(name)
-    if not player then return nil end
-    return vector.round(player:get_pos())
-end
-
-local function caja_de_marcas(name)
-    local m = marcas[name]
-    if not (m and m[1] and m[2]) then return nil end
-    return { m[1].x, m[1].z, m[2].x, m[2].z }
-end
-
-local function fmt_caja(c)
-    return ("x %d..%d, z %d..%d"):format(math.min(c[1], c[3]), math.max(c[1], c[3]),
-        math.min(c[2], c[4]), math.max(c[2], c[4]))
-end
-
-local AYUDA_ADMIN = table.concat({
-    "Calibrar (una vez):",
-    "  /hotel marcar 1 | /hotel marcar 2  -> parate en dos esquinas opuestas del interior",
-    "  /hotel limites                     -> guarda el interior del hotel con esas marcas",
-    "  /hotel base [altura]               -> parado en el piso 1: losa del piso 1 (+ altura, se mide sola)",
-    "  /hotel losa <n>                    -> parado en el piso n: corrige su losa si no es regular",
-    "  /hotel excluir <nombre>            -> columna solo-admin (ascensor, escalera) con las marcas",
-    "  /hotel incluir <nombre>            -> borra una exclusion",
-    "Pisos:",
-    "  /hotel asignar <n> <jugador> | /hotel liberar <n> | /hotel lista | /hotel info",
-}, "\n")
+local AYUDA_ADMIN = "Admin: /hotel asignar <n> <jugador> | /hotel liberar <n> | /hotel lista"
 
 local AYUDA_JUGADOR = table.concat({
     "/hotel mio                    -> tu piso y tus amigos",
@@ -197,87 +192,34 @@ local AYUDA_JUGADOR = table.concat({
 }, "\n")
 
 local function cmd_info(name)
-    local pos = pies(name)
-    if not pos then return false, "No te encuentro." end
-    local lineas = {}
-    if not configurado() then
-        lineas[#lineas + 1] = "El hotel aun no esta calibrado."
-    else
-        lineas[#lineas + 1] = ("Hotel: %s, losa piso 1 y=%d, altura %d.")
-            :format(fmt_caja(cfg.hotel), cfg.base, cfg.altura)
-        local ex = excluida(pos)
-        local n = piso_en(pos)
-        if not en_hotel(pos) then
-            lineas[#lineas + 1] = "Estas fuera del hotel."
-        elseif ex then
-            lineas[#lineas + 1] = "Estas en la zona excluida '" .. ex .. "' (solo admin)."
-        elseif not n then
-            lineas[#lineas + 1] = ("Estas sobre una losa (y=%d)."):format(pos.y)
-        else
-            local p = cfg.pisos[tostring(n)]
-            lineas[#lineas + 1] = ("Piso %d (interior y=%d..%d): %s"):format(n,
-                losa(n) + 1, losa(n + 1) - 1,
-                n == PISO_COMUN and "zona comun"
-                or (p and p.dueno and ("de " .. p.dueno) or "sin dueno"))
-        end
+    local player = minetest.get_player_by_name(name)
+    if not player then return false, "No te encuentro." end
+    if not HUELLA then return false, "El hotel no esta configurado (falta huella.json)." end
+    local n = piso_en(vector.round(player:get_pos()))
+    if not n then
+        return true, "No estas en el interior de un piso del Hotel Dreams "
+            .. "(fuera, losa, fachada o ascensor)."
     end
-    return true, table.concat(lineas, "\n")
+    local p = cfg.pisos[tostring(n)]
+    local lo, hi = interior(n)
+    return true, ("Piso %d (interior y=%d..%d): %s"):format(n, lo, hi,
+        n == PISO_COMUN and "zona comun"
+        or (p and p.dueno and ("de " .. p.dueno) or "sin dueno"))
 end
 
-local function cmd_admin(name, args)
+local function nombres_amigos(p)
+    local amigos = {}
+    for a in pairs(p.amigos) do amigos[#amigos + 1] = a end
+    table.sort(amigos)
+    return amigos
+end
+
+local function cmd_admin(args)
     local sub = args[1]
-    if sub == "marcar" then
-        local i = tonumber(args[2])
-        if i ~= 1 and i ~= 2 then return false, "Uso: /hotel marcar 1|2" end
-        marcas[name] = marcas[name] or {}
-        marcas[name][i] = pies(name)
-        return true, ("Marca %d en %s"):format(i, minetest.pos_to_string(marcas[name][i]))
-    elseif sub == "limites" then
-        local c = caja_de_marcas(name)
-        if not c then return false, "Primero /hotel marcar 1 y /hotel marcar 2" end
-        cfg.hotel = c
-        guardar()
-        return true, "Interior del hotel: " .. fmt_caja(c)
-    elseif sub == "base" then
-        local pos = pies(name)
-        if not pos then return false, "No te encuentro." end
-        local altura = tonumber(args[2])
-        local medido
-        for y = pos.y, pos.y + 12 do
-            local nd = minetest.registered_nodes[minetest.get_node({ x = pos.x, y = y, z = pos.z }).name]
-            if nd and nd.walkable then medido = y - (pos.y - 1); break end
-        end
-        cfg.base = pos.y - 1
-        cfg.altura = altura or medido or ALTURA_DEFECTO
-        guardar()
-        return true, ("Losa del piso 1 en y=%d. Altura de piso %d (medida: %s). "
-            .. "Piso 15: interior y=%d..%d.")
-            :format(cfg.base, cfg.altura, medido and tostring(medido) or "sin techo encima",
-                losa(15) + 1, losa(16) - 1)
-    elseif sub == "losa" then
-        local n = tonumber(args[2])
-        local pos = pies(name)
-        if not n or n < 1 or n > NUM_PISOS + 1 or not pos then
-            return false, "Uso: /hotel losa <n> (parado sobre el suelo del piso n)"
-        end
-        cfg.losas[tostring(n)] = pos.y - 1
-        guardar()
-        return true, ("Losa del piso %d fijada en y=%d"):format(n, pos.y - 1)
-    elseif sub == "excluir" then
-        local c = caja_de_marcas(name)
-        if not c or not args[2] then return false, "Uso: /hotel excluir <nombre> (con las 2 marcas puestas)" end
-        cfg.excluidas[args[2]] = c
-        guardar()
-        return true, ("Zona excluida '%s': %s (todas las alturas)"):format(args[2], fmt_caja(c))
-    elseif sub == "incluir" then
-        if not args[2] or not cfg.excluidas[args[2]] then return false, "No existe esa exclusion." end
-        cfg.excluidas[args[2]] = nil
-        guardar()
-        return true, "Exclusion '" .. args[2] .. "' borrada."
-    elseif sub == "asignar" then
+    if sub == "asignar" then
         local n, jugador = tonumber(args[2]), args[3]
         if not n or not jugador then return false, "Uso: /hotel asignar <n> <jugador>" end
-        if n == PISO_COMUN or n < 1 or n > NUM_PISOS then
+        if n ~= math.floor(n) or n == PISO_COMUN or n < 1 or n > NUM_PISOS then
             return false, ("El piso debe ser entre 2 y %d (el 1 es zona comun)."):format(NUM_PISOS)
         end
         local actual = piso_de_jugador(jugador)
@@ -301,15 +243,11 @@ local function cmd_admin(name, args)
         for n = 2, NUM_PISOS do
             local p = cfg.pisos[tostring(n)]
             if p then
-                local amigos = {}
-                for a in pairs(p.amigos) do amigos[#amigos + 1] = a end
+                local amigos = nombres_amigos(p)
                 l[#l + 1] = ("Piso %d: %s%s"):format(n, p.dueno,
                     #amigos > 0 and (" (amigos: " .. table.concat(amigos, ", ") .. ")") or "")
             end
         end
-        local ex = {}
-        for nombre, c in pairs(cfg.excluidas) do ex[#ex + 1] = nombre .. " " .. fmt_caja(c) end
-        if #ex > 0 then l[#l + 1] = "Excluidas: " .. table.concat(ex, "; ") end
         return true, #l > 0 and table.concat(l, "\n") or "Ningun piso asignado."
     end
     return nil
@@ -320,8 +258,7 @@ local function cmd_jugador(name, args)
     if sub == "mio" then
         local n, p = piso_de_jugador(name)
         if not n then return true, "No tienes piso en el Hotel Dreams. Pidelo con /gabo." end
-        local amigos = {}
-        for a in pairs(p.amigos) do amigos[#amigos + 1] = a end
+        local amigos = nombres_amigos(p)
         return true, ("Tu piso: %d. Amigos: %s"):format(n,
             #amigos > 0 and table.concat(amigos, ", ") or "ninguno")
     elseif sub == "amigo" then
@@ -345,14 +282,14 @@ local function cmd_jugador(name, args)
 end
 
 minetest.register_chatcommand("hotel", {
-    params = "mio | amigo [quitar] <jugador> | info | (admin) marcar/limites/base/losa/excluir/asignar/liberar/lista",
+    params = "mio | amigo [quitar] <jugador> | info | (admin) asignar/liberar/lista",
     description = "Pisos del Hotel Dreams: un piso por jugador",
     func = function(name, param)
         local args = (param or ""):split(" ")
         local ok, msg = cmd_jugador(name, args)
         if ok ~= nil then return ok, msg end
         if es_admin(name) then
-            ok, msg = cmd_admin(name, args)
+            ok, msg = cmd_admin(args)
             if ok ~= nil then return ok, msg end
             return true, AYUDA_JUGADOR .. "\n" .. AYUDA_ADMIN
         end
@@ -368,4 +305,5 @@ valdivia_hotel_pisos = {
     end,
 }
 
-minetest.log("warning", "[" .. modname .. "] Loaded successfully")
+minetest.log("warning", "[" .. modname .. "] Loaded successfully"
+    .. (HUELLA and "" or " (SIN huella: inactivo)"))
