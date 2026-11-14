@@ -61,9 +61,22 @@ local function en_hotel(pos)
         and pos.y >= CAJA.y1 and pos.y <= CAJA.y2
 end
 
+-- Zona del ascensor: SOLO admin, en toda la altura, haya o no protectores.
+-- Medido en map.sqlite el 2026-11-13:
+--   * nodos celevator (cabina, puertas, botones, linternas, PI, maquina,
+--     controlador, drive): x 3709..3711, z -2943..-2937, y -8..69
+--   * pozo de vidrio: x 3708..3711, z -2940..-2936
+--   => huella real x 3708..3711, z -2943..-2936; + margen de 2 por lado.
+--   y: desde bajo la losa del piso 1 (-9) hasta 2 sobre el drive (69).
+-- No delega en los protectores de gabo: si alguno se pica o se mueve, el
+-- ascensor sigue blindado. Picar el drive o la maquina lo desconfigura y
+-- arreglarlo cuesta horas (ver historial del ascensor), por eso va aparte.
+local ASCENSOR = { x1 = 3706, x2 = 3713, z1 = -2945, z2 = -2934, y1 = -11, y2 = 71 }
+
 local function en_ascensor(pos)
-    local a = HUELLA.ascensor
-    return a and pos.x >= a[1] and pos.x <= a[3] and pos.z >= a[2] and pos.z <= a[4]
+    local a = ASCENSOR
+    return pos.x >= a.x1 and pos.x <= a.x2 and pos.z >= a.z1 and pos.z <= a.z2
+        and pos.y >= a.y1 and pos.y <= a.y2
 end
 
 local function losa(n)
@@ -142,6 +155,9 @@ end
 local old_is_protected = minetest.is_protected
 
 function minetest.is_protected(pos, name)
+    if en_ascensor(pos) then
+        return not es_admin(name)
+    end
     local n = piso_en(pos)
     if n then
         local p = cfg.pisos[tostring(n)]
@@ -340,11 +356,16 @@ minetest.register_globalstep(function()
     for _, player in ipairs(minetest.get_connected_players()) do
         local name = player:get_player_name()
         local pos = vector.round(player:get_pos())
-        local n = en_hotel(pos) and piso_en(pos) or nil
-        if n then
+        local texto
+        if en_ascensor(pos) then
+            texto = "Ascensor · Zona comun protegida (gabo)"
+        elseif en_hotel(pos) then
+            local n = piso_en(pos)
+            if n then texto = texto_piso(n) end
+        end
+        if texto then
             local id, def = hud_protector(player, name)
             if id then
-                local texto = texto_piso(n)
                 if def.text ~= texto then player:hud_change(id, "text", texto) end
                 hud_dentro[name] = true
             end
