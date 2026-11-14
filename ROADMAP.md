@@ -48,6 +48,37 @@ Formato común: `Última revisión`, convención `[ ]`/`[~]`/`[x]` y secciones *
 - [ ] Publicar una guía corta por mundo: objetivo, reglas, spawn, comandos disponibles y cómo reportar problemas.
 - [ ] Mejorar la landing page cuando el volumen de imágenes, visitas o jugadores justifique cada iniciativa de su roadmap específico.
 
+## Idea futura: mod de idiomas "di el nombre del ítem"
+
+Investigado el 2026-11-14. **No aprobado ni iniciado**; mundo e idiomas objetivo sin decidir.
+
+**Referencia:** [LanguageCraft](https://www.curseforge.com/minecraft/mc-mods/languagecraft) (Minecraft/Fabric 1.21.1, MIT). Al recoger, craftear o sacar un ítem de un cofre, el jugador debe decir su nombre en el idioma elegido; si acierta se lo queda, si falla el ítem desaparece. Usa reconocimiento de voz offline (Vosk), toma los nombres de las traducciones oficiales del juego y tiene modo aprendizaje (no se pierde nada), modo velocidad y modo hardcore. Además recuerda qué ítems ya se dominaron en cada idioma.
+
+**En Luanti no existe un equivalente.** Lo más cercano es [What Did You Say??](https://content.luanti.org/packages/AmericanHuston/what_did_you_say/) (LGPL, enero 2026), que dispara acciones con palabras clave, necesita un servidor Python local en el PC del jugador y depende de Minetest Game, no de VoxeLibre.
+
+**Restricción de fondo:** un mod de servidor no tiene acceso al micrófono del jugador. Luanti no tiene API de voz (tampoco en CSM), y un mod solo puede hacer HTTP saliente (`secure.http_mods`), no recibir peticiones.
+
+Caminos evaluados:
+
+1. **Escribir en vez de hablar (recomendado para empezar, puro Lua).**
+   - Al recoger un ítem se abre un formspec con su ícono: "¿Cómo se dice esto en inglés?".
+   - Las respuestas salen de las traducciones que el juego ya trae (`locale/*.tr`) vía `minetest.get_translated_string(lang, desc)`, sin diccionarios propios.
+   - Tolerancia a tildes, mayúsculas y errores chicos de tipeo (distancia de edición).
+   - Modo aprendizaje activado por defecto; registro de ítems dominados por jugador e idioma en `mod_storage`.
+   - Funciona en cualquier cliente, incluido Android.
+2. **Voz desde el celular (fase 2).**
+   - El jugador escanea un QR (patrón ya usado en `valdivia_spawn_npc`) y se abre una página web que usa la Web Speech API del navegador.
+   - Un relay chico en el VPS (sidecar en `docker-compose.yml`) recibe el resultado, y el mod le consulta el resultado.
+   - Requiere emparejar cada celular con su jugador (código de un solo uso).
+3. **App local en el PC del jugador** (estilo What Did You Say??). Descartado: inviable para un servidor público con niños.
+
+Pendiente para arrancar:
+
+- [ ] Decidir en qué mundo se activa y qué idiomas se ofrecen.
+- [ ] Prototipo de la opción 1 (nombre tentativo `wetlands_idiomas`), con un motor de desafíos preparado para enchufar la voz después.
+- [ ] Confirmar qué idiomas tienen traducciones completas de nombres de ítems en VoxeLibre/Mineclonia.
+- [ ] Decidir si un fallo borra el ítem (fiel al original) o solo lo devuelve al suelo (más amable para niños 7+).
+
 ## Decisión pendiente: Wetlands 3.0
 
 La propuesta histórica de fusión (eliminada del repo en el commit `0ab79a14`; consultable con `git show 0ab79a14^:docs/projects/index.md`) proponía fusionar Wetlands y Valdivia mediante una operación SQLite con offset. **No es un proyecto aprobado ni debe ejecutarse en producción**. Mantener los mundos separados es la estrategia actual porque reduce el riesgo sobre mapas, inventarios, permisos y backups.
