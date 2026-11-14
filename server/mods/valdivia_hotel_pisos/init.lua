@@ -297,6 +297,71 @@ minetest.register_chatcommand("hotel", {
     end,
 })
 
+-- ---------------------------------------------------------------------------
+-- HUD: "Piso 15 · Propietario: luciano80" abajo a la izquierda
+-- ---------------------------------------------------------------------------
+-- No se agrega un elemento propio: quedaria encima del de protector, que ahi
+-- dice "Propietario: gabo" (su bloque cubre el hotel). Se reutiliza el elemento
+-- de protector ("Protector Area") y se le corrige el texto. Protector lo
+-- reescribe cada protector_hud_interval; este globalstep se registra despues
+-- (optional_depends), asi que corre despues en el mismo paso y gana siempre.
+-- Al salir del piso se deja en blanco y protector lo repone en su proximo tick.
+local hud_ids = {}      -- [name] = id del elemento de protector
+local hud_dentro = {}   -- [name] = true si le estamos imponiendo el texto
+
+local function hud_protector(player, name)
+    local id = hud_ids[name]
+    if id then
+        local def = player:hud_get(id)
+        if def and def.name == "Protector Area" then return id, def end
+        hud_ids[name] = nil
+    end
+    if not player.hud_get_all then return nil end
+    for i, def in pairs(player:hud_get_all()) do
+        if def.name == "Protector Area" then
+            hud_ids[name] = i
+            return i, def
+        end
+    end
+    return nil
+end
+
+local function texto_piso(n)
+    if n == PISO_COMUN then return "Hotel Dreams · Piso 1 (zona comun)" end
+    local p = cfg.pisos[tostring(n)]
+    if p and p.dueno then
+        return ("Piso %d · Propietario: %s"):format(n, p.dueno)
+    end
+    return ("Piso %d · Disponible"):format(n)
+end
+
+minetest.register_globalstep(function()
+    if not HUELLA then return end
+    for _, player in ipairs(minetest.get_connected_players()) do
+        local name = player:get_player_name()
+        local pos = vector.round(player:get_pos())
+        local n = en_hotel(pos) and piso_en(pos) or nil
+        if n then
+            local id, def = hud_protector(player, name)
+            if id then
+                local texto = texto_piso(n)
+                if def.text ~= texto then player:hud_change(id, "text", texto) end
+                hud_dentro[name] = true
+            end
+        elseif hud_dentro[name] then
+            hud_dentro[name] = nil
+            local id = hud_protector(player, name)
+            if id then player:hud_change(id, "text", "") end
+        end
+    end
+end)
+
+minetest.register_on_leaveplayer(function(player)
+    local name = player:get_player_name()
+    hud_ids[name] = nil
+    hud_dentro[name] = nil
+end)
+
 -- API para otros mods (p.ej. el cartel).
 valdivia_hotel_pisos = {
     dueno = function(n)
