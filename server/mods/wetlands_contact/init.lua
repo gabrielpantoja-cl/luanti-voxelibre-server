@@ -617,7 +617,8 @@ local function show_announcement(name)
 		position = {x = 1, y = 1},
 		alignment = {x = -1, y = -1},
 		-- 1.5 en clientes >= 5.16; los anteriores redondean hacia abajo (1).
-		size = {x = 1.5},
+		-- y es obligatorio desde Luanti 5.18 (antes solo warning); no se usa en texto.
+		size = {x = 1.5, y = 0},
 		style = 1,
 		text = text,
 	}
