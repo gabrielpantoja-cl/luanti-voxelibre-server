@@ -30,7 +30,9 @@ services:
       - luanti-network
 
   luanti-server:
-    image: linuxserver/luanti:latest
+    # Version FIJADA (no :latest) en los 5 servicios luanti-*. Upgrade y
+    # rollback: docs/00-SHARED/operations/LUANTI_VERSION_UPGRADE.md
+    image: linuxserver/luanti:5.18.0-ls52
     container_name: luanti-voxelibre-server
     restart: unless-stopped
     ports:
@@ -139,7 +141,7 @@ services:
   # y se anuncie duplicado en servers.luanti.org. Ver server/container-overrides/svc-luanti/run
   # para el override que elimina ese --port hardcodeado.
   luanti-valdivia:
-    image: linuxserver/luanti:latest
+    image: linuxserver/luanti:5.18.0-ls52
     container_name: luanti-valdivia-server
     restart: unless-stopped
     ports:
@@ -171,7 +173,7 @@ services:
   # de areas. NO clona ningun mundo. Setup/reset via scripts/setup-gaelsin-world.sh
   # y scripts/reset-gaelsin.sh.
   luanti-gaelsin:
-    image: linuxserver/luanti:latest
+    image: linuxserver/luanti:5.18.0-ls52
     container_name: luanti-gaelsin-server
     restart: unless-stopped
     ports:
@@ -231,7 +233,7 @@ services:
   # NOTA: los mods server/mods/wetlands_ctf/ y server/mods/wetlands_flatworld/
   # son vestigiales de la version CTF basada en VoxeLibre y NO se cargan.
   luanti-plano:
-    image: linuxserver/luanti:latest
+    image: linuxserver/luanti:5.18.0-ls52
     container_name: luanti-plano-server
     restart: unless-stopped
     ports:
@@ -293,7 +295,7 @@ services:
   # Mapeo: 30004 host -> 30000 container (mismo patron que GAELSIN/Plano).
   # Ver docs/05-MINECLONIA-30004/index.md.
   luanti-mineclonia:
-    image: linuxserver/luanti:latest
+    image: linuxserver/luanti:5.18.0-ls52
     container_name: luanti-mineclonia-server
     restart: unless-stopped
     ports:
