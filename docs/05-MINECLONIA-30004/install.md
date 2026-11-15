@@ -204,8 +204,8 @@ docker compose stop luanti-mineclonia
 # 2. Borrar TODO el contenido del directorio de mundo (mantener dir)
 sudo rm -rf server/worlds/mineclonia/*
 
-# 3. Restaurar permisos para que gabriel pueda escribir el world.mt
-sudo chown -R gabriel:gabriel server/worlds/mineclonia
+# 3. Restaurar permisos para que el usuario SSH pueda escribir el world.mt
+sudo chown -R <VPS_USER>:<VPS_USER> server/worlds/mineclonia
 
 # 4. Re-crear el world.mt con el gameid correcto
 cat > server/worlds/mineclonia/world.mt <<'EOF'

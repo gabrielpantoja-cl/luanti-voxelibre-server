@@ -6,7 +6,7 @@
 # NO clona ningun mundo: VoxeLibre genera el mapa al primer arranque usando
 # fixed_map_seed = GAELSIN (mapgen v7) definido en luanti-gaelsin.conf.
 #
-# Uso (ejecutar EN EL VPS, como gabriel con sudo):
+# Uso (ejecutar EN EL VPS, como <VPS_USER> con sudo):
 #   sudo ./scripts/setup-gaelsin-world.sh
 #
 # Idempotente: si gaelsin/ ya existe, aborta para no sobreescribir.
@@ -81,7 +81,7 @@ echo "GAELSIN listo en ${DST_WORLD}"
 echo "=============================================="
 echo "El mapa se generara desde seed=GAELSIN (v7) al primer arranque."
 echo ""
-echo "Siguiente paso (en el VPS, usuario gabriel):"
+echo "Siguiente paso (en el VPS, usuario <VPS_USER>):"
 echo "  cd ${REPO_ROOT}"
 echo "  docker compose up -d luanti-gaelsin discord-notifier-gaelsin"
 echo ""

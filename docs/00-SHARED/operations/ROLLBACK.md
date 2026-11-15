@@ -73,7 +73,7 @@ No basta con que exista el archivo. En el juego, con el admin conectado:
 Y en el VPS:
 
 ```bash
-DB=/home/gabriel/luanti-voxelibre-server/server/worlds/gaelsin/rollback.sqlite
+DB=~/luanti-voxelibre-server/server/worlds/gaelsin/rollback.sqlite
 sudo sqlite3 "$DB" "SELECT COUNT(*) FROM action;"
 sudo sqlite3 "$DB" "
   SELECT datetime(a.timestamp,'unixepoch','localtime') t, ac.name, a.type,
@@ -156,7 +156,7 @@ Cron mensual sugerido en el **host** (no en el sidecar `backup-cron`, que no
 tiene el socket de Docker):
 
 ```cron
-0 5 1 * * /home/gabriel/luanti-voxelibre-server/scripts/prune-rollback.sh gaelsin 90 >> /home/gabriel/rollback-prune.log 2>&1
+0 5 1 * * ~/luanti-voxelibre-server/scripts/prune-rollback.sh gaelsin 90 >> ~/rollback-prune.log 2>&1
 ```
 
 ## Lo que rollback NO resuelve

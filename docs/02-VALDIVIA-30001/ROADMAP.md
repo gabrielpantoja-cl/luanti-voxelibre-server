@@ -216,9 +216,8 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
       **8 cabinas** puestas, pero mal repartidas: medido sobre el mapa real
       (2026-11-04) la distancia al vecino más cercano va de **80 m a 2452 m**.
       Dos problemas concretos:
-      - **Racimo en el sureste**: Luciano y Santa Elena están a **80 m** (son
-        prácticamente la misma parada) y Cultivos luciano80 a 205 m de Luciano
-        — 3 cabinas dentro de un radio de 200 m.
+      - **Racimo en el sureste**: 3 cabinas dentro de un radio de 200 m (dos de
+        ellas a 80 m, prácticamente la misma parada).
       - **Zonas sin nada**: Isla Teja, Las Ánimas, la Costanera y todo el norte.
         El Spawn (Plaza Chile) queda aislado a **2,4 km** de lo más cercano, que
         es justo el recorrido que hace un recién llegado.
@@ -226,7 +225,7 @@ le falta es documentarlo y probarlo con una segunda cuenta, no agregarle juegos.
       Del listado original siguen faltando: Costanera, Mercado Fluvial, Los
       Fundadores, Feria Fluvial, Universidad Austral y Puente Pedro de Valdivia.
 
-      Para decidir dónde: abrir [`cabinas-valdivia.kml`](cabinas-valdivia.kml) en
+      Para decidir dónde: generar el KML (ver [`cabina-tp.md`](cabina-tp.md)), abrirlo en
       Google Earth (pines + círculos de cobertura de 400 m), elegir el punto y
       sacar las coordenadas de juego con
       `python scripts/cabinas-to-kml.py --donde=<lat>,<lng>`. Regenerar el KML

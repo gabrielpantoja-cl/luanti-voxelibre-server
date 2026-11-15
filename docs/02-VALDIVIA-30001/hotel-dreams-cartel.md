@@ -19,7 +19,7 @@ cartel te dice adónde.
 | 12 | Disponible | libre |
 | 13 | Reservado (`loxos`) | reservado |
 | 14 | Disponible | libre |
-| 15 | Reservado (`luciano80`) | reservado |
+| 15 | Reservado (jugador) | reservado |
 
 La tabla **no se edita en Lua**: vive en
 `server/mods/valdivia_hotel_cartel/pisos.json`, que es la fuente única que leen

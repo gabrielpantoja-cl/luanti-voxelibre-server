@@ -268,7 +268,7 @@ python -m yt_dlp -x --audio-format vorbis --audio-quality 5 "https://www.youtube
 
 ```bash
 # Convertir WebM a OGG Vorbis con calidad 5 (~160 kbps)
-cd C:\Users\gabri\Developer\luanti-voxelibre-server
+cd <ruta-local>\luanti-voxelibre-server
 ffmpeg -i temp_juegazos.webm -c:a libvorbis -q:a 5 server/mods/wetlands-music/sounds/wetlands_music_juegazos.ogg
 ```
 

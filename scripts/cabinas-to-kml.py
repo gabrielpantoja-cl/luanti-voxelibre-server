@@ -19,7 +19,7 @@ El formato de salida lo decide la extension (.kml o .kmz).
 Camino inverso, para elegir un punto en Google Earth y saber adonde volar en el
 juego a poner la cabina (imprime el /teleport listo para pegar):
 
-    python scripts/cabinas-to-kml.py --donde=-39.850453,-73.216045
+    python scripts/cabinas-to-kml.py --donde=-39.8140,-73.2470
 
 El `=` es obligatorio ahi: sin el, argparse lee la latitud negativa como opcion.
 

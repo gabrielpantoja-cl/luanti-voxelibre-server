@@ -8,7 +8,7 @@
 #   3) Recrea el mundo fresco con setup-gaelsin-world.sh (mapa nuevo desde seed)
 #   4) Re-arranca los containers
 #
-# Uso (en VPS, como gabriel con sudo):
+# Uso (en VPS, como <VPS_USER> con sudo):
 #   sudo ./scripts/reset-gaelsin.sh
 
 set -euo pipefail

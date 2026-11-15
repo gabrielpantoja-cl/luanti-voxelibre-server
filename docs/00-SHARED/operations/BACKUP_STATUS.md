@@ -23,13 +23,13 @@ sobre **Cloudflare R2** en vez de Drive. La sección histórica está al final.
 │    │     · rotación local inline: conserva los últimos 8 (≈4 días)
 │    └─ Cron 03:00 -> rotate-backups-container.sh
 │
-└─ Cron del host (usuario gabriel, 08:00 UTC diario)
+└─ Cron del host (usuario SSH, una vez al dia)
      <HOST_BACKUP_SCRIPT>   (administrado fuera de este repositorio)
        · toma el tar.gz más reciente de server/backups/
-       · rclone copy -> r2-backup:vps-backups-oracle/luanti/
+       · rclone copy -> <REMOTO_R2>:<BUCKET>/luanti/
        · retención R2: borra objetos > 6 días
        · notifica a Telegram ([OK] / ERROR con tail del log)
-       · logs en ~/backups/luanti/  (cron.log + offsite-<fecha>.log)
+       · logs en el host, fuera del repo
 ```
 
 **Mundos incluidos:** `original` (Wetlands), `valdivia`, `gaelsin` y `mineclonia`
@@ -51,13 +51,13 @@ sobre **Cloudflare R2** en vez de Drive. La sección histórica está al final.
 
 | Elemento | Valor |
 |----------|-------|
-| Remoto rclone | `r2-backup:` (también existe `r2:`) |
-| Bucket | `vps-backups-oracle` |
+| Remoto rclone | ver documentacion privada |
+| Bucket | ver documentacion privada |
 | Prefijo | `luanti/{daily,weekly,monthly}/` (GFS) |
 | Retención | **GFS**: 5 diarios + 3 semanales + 2 mensuales (`DAILY_KEEP`/`WEEKLY_KEEP`/`MONTHLY_KEEP`) |
 | Tamaño por objeto | ~830 MB (post-limpieza 2026-07-05) |
 | Uso del bucket | ~2.7 GB tras migración a GFS (≈10 objetos en régimen ≈ 8.3 GB) |
-| Credenciales | `~/.backup-credentials` (tokens R2 + Telegram) — **no** en git |
+| Credenciales | archivo en el host (tokens R2 + Telegram) — **no** en git |
 | Config rclone | `~/.config/rclone/rclone.conf` |
 | Script | `<HOST_BACKUP_SCRIPT>` (administrado fuera de este repositorio) |
 

@@ -164,3 +164,6 @@ scripts/deploy-nginx-fix.sh
 # (ver docs/02-VALDIVIA-30001/discoteca.md, seccion Repertorio del DJ).
 /*.mp3
 server/mods/valdivia_discoteca/sounds/discoteca_billie_jean.ogg
+
+# Mapa de cabinas con coordenadas reales: vive en el repo privado, no aqui
+docs/02-VALDIVIA-30001/cabinas-valdivia.km[lz]

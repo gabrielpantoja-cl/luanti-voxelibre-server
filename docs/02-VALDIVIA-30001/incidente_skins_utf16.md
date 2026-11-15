@@ -17,7 +17,7 @@ La migración de las skins custom de Wetlands a Valdivia (commit `7b5d4a35`) int
 La copia inicial del archivo se hizo en la terminal Windows del operador con la sintaxis de redirección de PowerShell:
 
 ```powershell
-ssh gabriel@luanti.gabrielpantoja.cl "sudo cat /home/.../worlds/original/skins.txt" > server\worlds\valdivia\skins.txt
+ssh <VPS_USER>@<VPS_HOST> "sudo cat /home/.../worlds/original/skins.txt" > server\worlds\valdivia\skins.txt
 ```
 
 En **Windows PowerShell 5.1**, el operador `>` es azúcar sintáctico para `Out-File`, y `Out-File` sin parámetro `-Encoding` usa por defecto **`Unicode` = UTF-16LE con BOM** (no UTF-8). El contenido de texto llega correcto, pero el *encoding de escritura* lo decide PowerShell:
@@ -86,7 +86,7 @@ El archivo dañado se creó localmente con la redirección de PowerShell, y la v
 Se propuso ejecutar en el VPS:
 
 ```bash
-sudo chown -R gabriel:gabriel . && git fetch && git reset --hard origin/main && git clean -fd && docker compose restart
+sudo chown -R <VPS_USER>:<VPS_USER> . && git fetch && git reset --hard origin/main && git clean -fd && docker compose restart
 ```
 
 **Rechazado** por cuatro razones verificadas:
@@ -131,11 +131,11 @@ git status --short                      # limpia: 4 modificados + 3 agregados
 
 ## Complicación en el deploy: dos pulls abortados por permisos (half-applied)
 
-El entrypoint de `linuxserver/luanti` **re-chownea el worldpath a `opc:opc` en cada arranque**, así que los directorios de mundo quedan inmutables para `gabriel` (UID 1002). El pull falló dos veces, cada vez dejando un **half-applied pull** (HEAD sin avanzar pero archivos ya escritos):
+El entrypoint de `linuxserver/luanti` **re-chownea el worldpath a `opc:opc` en cada arranque**, así que los directorios de mundo quedan inmutables para el usuario SSH. El pull falló dos veces, cada vez dejando un **half-applied pull** (HEAD sin avanzar pero archivos ya escritos):
 
 | # | Error | Causa |
 |---|-------|-------|
-| 1 | `cannot create directory at 'server/worlds/original/schematics': Permission denied` | `original/` es `opc:opc 755` → gabriel sin write |
+| 1 | `cannot create directory at 'server/worlds/original/schematics': Permission denied` | `original/` es `opc:opc 755` → el usuario SSH sin write |
 | 2 | `unable to unlink old 'server/worlds/valdivia/skins.txt': Permission denied` | `valdivia/` es `opc:opc 775`; **unlink exige escritura en el directorio**, no en el archivo |
 
 **Recuperación (patrón AGENTS.md, verificado antes de descartar):** para cada artefacto del pull abortado, `diff -q <(git show origin/main:"$f") "$f"` → si es IDÉNTICO: `git restore` (rastreados) + `find -delete` (untracked) → corregir permisos → re-pull. Nunca `git reset --hard` ni `git clean`.
@@ -145,13 +145,13 @@ El entrypoint de `linuxserver/luanti` **re-chownea el worldpath a `opc:opc` en c
 ```bash
 # 1) subdirectorio NUEVO y vacío (artefacto de git, no data de mundo):
 sudo mkdir -p server/worlds/original/schematics
-sudo chown gabriel:gabriel server/worlds/original/schematics
+sudo chown <VPS_USER>:<VPS_USER> server/worlds/original/schematics
 
 # 2) solo bit de escritura para others, ownership intacto (contenedor = owner sigue con rwx):
 sudo chmod o+w server/worlds/valdivia    # queda 777
 ```
 
-**Trade-off aceptado:** `valdivia/` queda `777` — en la VPS solo existen `root`/`opc`/`gabriel`, así que el riesgo es mínimo y permite pulls futuros que toquen archivos del mundo Valdivia. Alternativa más fina (follow-up): `setfacl -m u:gabriel:rwx`.
+**Trade-off aceptado:** `valdivia/` queda `777` — en la VPS solo existen `root`, `opc` y el usuario SSH, así que el riesgo es mínimo y permite pulls futuros que toquen archivos del mundo Valdivia. Alternativa más fina (follow-up): `setfacl -m u:<VPS_USER>:rwx`.
 
 **Lección para deploys futuros:** AGENTS.md ya exige pre-chown de `server/mods` cuando el incoming toca mods — **el mismo patrón aplica a `server/worlds/valdivia/`** cuando el incoming toque archivos ahí (verificar con `git diff --name-only HEAD..origin/main` antes de pull).
 
@@ -180,7 +180,7 @@ sudo chmod o+w server/worlds/valdivia    # queda 777
 
 ### 2026-09-26 — DEPLOY
 - Push `7b5d4a35..0e861cf2` (3 commits: `fix(skins)` 863c3a8d, `chore(gitignore)` 45ae9aee, `docs` 0e861cf2)
-- Pre-check VPS: incoming toca `server/mods/` → pre-chown `server/mods` a gabriel ✓
+- Pre-check VPS: incoming toca `server/mods/` → pre-chown `server/mods` al usuario SSH ✓
 - **Pull intento 1**: abort en `original/schematics` (dir `opc:opc 755`) → half-applied #1 → recuperado (restore + rm verificado + mkdir/chown del subdir)
 - **Pull intento 2**: abort en unlink de `valdivia/skins.txt` (dir `775 opc`) → half-applied #2 → recuperado (restore + rm + `chmod o+w valdivia/`)
 - **Pull OK**: fast-forward → `0e861cf2`; `skins.txt` en VPS = `2d 2d 20 57` (UTF-8 ✓, 591 B LF)

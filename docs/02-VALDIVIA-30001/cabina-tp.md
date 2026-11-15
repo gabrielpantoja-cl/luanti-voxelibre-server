@@ -28,16 +28,17 @@ Estado: **implementado 2026-10-07**.
 
 ## Planificar la red en Google Earth
 
-[`cabinas-valdivia.kml`](cabinas-valdivia.kml) es la red actual sobre el mapa
+El KML de cabinas es la red actual sobre el mapa
 real: un pin por cabina (con sus coordenadas de juego y su vecina más cercana)
 y una carpeta de círculos de cobertura para ver los huecos. Se abre con doble
-clic en Google Earth.
+clic en Google Earth. **No se commitea** (`.gitignore`): une nombres de cabinas
+puestos por jugadores con coordenadas reales, asi que se genera localmente.
 
 Lo genera `scripts/cabinas-to-kml.py` desde el JSON de destinos del VPS:
 
 ```bash
 scp <VPS_USER>@<VPS_HOST>:<PROJECT_PATH>/server/worlds/valdivia/valdivia_lugares.json /tmp/
-python scripts/cabinas-to-kml.py /tmp/valdivia_lugares.json docs/02-VALDIVIA-30001/cabinas-valdivia.kml
+python scripts/cabinas-to-kml.py /tmp/valdivia_lugares.json /tmp/cabinas-valdivia.kml
 ```
 
 Y el camino inverso, para elegir un punto en Google Earth y saber adónde volar

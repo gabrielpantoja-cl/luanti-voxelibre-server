@@ -22,8 +22,8 @@
 #   ./scripts/prune-rollback.sh gaelsin 90 --dry-run
 #
 # CRON MENSUAL EN EL VPS (host, no el sidecar: necesita el socket de docker)
-#   0 5 1 * * /home/gabriel/luanti-voxelibre-server/scripts/prune-rollback.sh \
-#     gaelsin 90 >> /home/gabriel/rollback-prune.log 2>&1
+#   0 5 1 * * ~/luanti-voxelibre-server/scripts/prune-rollback.sh \
+#     gaelsin 90 >> ~/rollback-prune.log 2>&1
 
 set -euo pipefail
 

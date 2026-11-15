@@ -17,7 +17,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 ## Key Technologies
 
 - **Runtime**: Docker Compose v2 (`docker compose`) on the VPS. Docker Compose v1 (`docker-compose`) may still be available locally; they are interchangeable here.
-- **Container image**: `linuxserver/luanti:5.18.0-ls52` (Luanti 5.18.0), **pinned by tag** in all 5 `luanti-*` services — never `:latest`. Upgrade/rollback procedure: `docs/00-SHARED/operations/LUANTI_VERSION_UPGRADE.md`. Inside the container, the server user is `abc`. The image's default UID is 911, but `docker-compose.yml` overrides it via `PUID=1000 PGID=1000`, so files written by the container land on the host as UID 1000. On the Oracle VPS, UID 1000 is the `opc` account; the human SSH user `gabriel` is UID 1002, so files created by the container are **not readable** by `gabriel` unless permissions allow group/other access — and the container often creates dirs as `0700`, blocking `git pull`.
+- **Container image**: `linuxserver/luanti:5.18.0-ls52` (Luanti 5.18.0), **pinned by tag** in all 5 `luanti-*` services — never `:latest`. Upgrade/rollback procedure: `docs/00-SHARED/operations/LUANTI_VERSION_UPGRADE.md`. Inside the container, the server user is `abc`. The image's default UID is 911, but `docker-compose.yml` overrides it via `PUID=1000 PGID=1000`, so files written by the container land on the host as UID 1000. On the Oracle VPS, UID 1000 is the `opc` account; the human SSH user (`<VPS_USER>`) has a different UID, so files created by the container are **not readable** by it unless permissions allow group/other access — and the container often creates dirs as `0700`, blocking `git pull`.
 - **Base game**: VoxeLibre (MineClone2) v0.90.1 at `server/games/mineclone2/`.
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
@@ -136,7 +136,7 @@ ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && \
   echo '--- incoming files under server/mods ---' && \
   git diff --name-only HEAD..origin/main | grep '^server/mods/'"
 
-# 2. If the incoming range touches server/mods, pre-chown the WHOLE mods tree to gabriel
+# 2. If the incoming range touches server/mods, pre-chown the WHOLE mods tree to the SSH user
 #    BEFORE pulling (not after the pull fails):
 ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> \
   /home/<VPS_USER>/luanti-voxelibre-server/server/mods"
@@ -145,10 +145,10 @@ ssh <VPS_USER>@<VPS_IP> "sudo chown -R <VPS_USER>:<VPS_USER> \
 ssh <VPS_USER>@<VPS_IP> "cd /home/<VPS_USER>/luanti-voxelibre-server && git pull origin main"
 ```
 
-`chown -R server/mods` to gabriel is **safe**: the container reads mods as "other" (`r-x`) and never writes inside a mod dir at runtime (per-mod state lives in the world's `mod_storage`, not the mod dir). Still **never** chown `server/worlds`. Also note the VPS is often **many commits behind**, not one — a single pull may replay several feature commits at once (e.g. a whole new world), so the touched-file set is much larger than your latest commit; don't size the chown to just your diff.
+`chown -R server/mods` to the SSH user is **safe**: the container reads mods as "other" (`r-x`) and never writes inside a mod dir at runtime (per-mod state lives in the world's `mod_storage`, not the mod dir). Still **never** chown `server/worlds`. Also note the VPS is often **many commits behind**, not one — a single pull may replay several feature commits at once (e.g. a whole new world), so the touched-file set is much larger than your latest commit; don't size the chown to just your diff.
 
 **Failed `git pull` recovery patterns:**
-- *"unable to unlink old <file>: Permission denied"* — file/dir is owned by container UID 1000 (`opc`) and gabriel (UID 1002) can't write. Chown just that subdir as above (or pre-chown `server/mods` per the prevention block).
+- *"unable to unlink old <file>: Permission denied"* — file/dir is owned by container UID 1000 (`opc`) and the SSH user can't write. Chown just that subdir as above (or pre-chown `server/mods` per the prevention block).
 - *"Your local changes to <file> would be overwritten by merge"* / *"untracked working tree files would be overwritten"* — two flavors:
   1. **Genuine local edit on VPS**: `sudo git diff <file>` to inspect, then commit, stash, or `git checkout -- <file>` — don't force.
   2. **Half-applied prior pull**: a previous `git pull` aborted mid-merge after writing files to disk but before advancing HEAD, so git now sees the new content as "local modifications" and the new files as untracked conflicts. **Verify before discarding**: for every flagged file, confirm the on-disk content already equals the pull target —

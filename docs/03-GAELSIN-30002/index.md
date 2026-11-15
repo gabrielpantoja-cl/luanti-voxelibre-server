@@ -129,7 +129,7 @@ logout con xray prendido, etc.) y los parámetros de tuning.
 
 ## Operaciones
 
-Ambos scripts se ejecutan **en el VPS, como `gabriel` con `sudo`**.
+Ambos scripts se ejecutan **en el VPS, como el usuario SSH (`<VPS_USER>`) con `sudo`**.
 
 ### Crear el mundo (primera vez)
 
