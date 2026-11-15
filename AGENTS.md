@@ -17,7 +17,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 ## Key Technologies
 
 - **Runtime**: Docker Compose v2 (`docker compose`) on the VPS. Docker Compose v1 (`docker-compose`) may still be available locally; they are interchangeable here.
-- **Container image**: `linuxserver/luanti:latest` — inside the container, the server user is `abc`. The image's default UID is 911, but `docker-compose.yml` overrides it via `PUID=1000 PGID=1000`, so files written by the container land on the host as UID 1000. On the Oracle VPS, UID 1000 is the `opc` account; the human SSH user `gabriel` is UID 1002, so files created by the container are **not readable** by `gabriel` unless permissions allow group/other access — and the container often creates dirs as `0700`, blocking `git pull`.
+- **Container image**: `linuxserver/luanti:5.18.0-ls52` (Luanti 5.18.0), **pinned by tag** in all 5 `luanti-*` services — never `:latest`. Upgrade/rollback procedure: `docs/00-SHARED/operations/LUANTI_VERSION_UPGRADE.md`. Inside the container, the server user is `abc`. The image's default UID is 911, but `docker-compose.yml` overrides it via `PUID=1000 PGID=1000`, so files written by the container land on the host as UID 1000. On the Oracle VPS, UID 1000 is the `opc` account; the human SSH user `gabriel` is UID 1002, so files created by the container are **not readable** by `gabriel` unless permissions allow group/other access — and the container often creates dirs as `0700`, blocking `git pull`.
 - **Base game**: VoxeLibre (MineClone2) v0.90.1 at `server/games/mineclone2/`.
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
@@ -212,6 +212,9 @@ In `mod.conf`, use `optional_depends = mcl_core, mcl_farming`. Never depend on `
       self.object:set_armor_groups({immortal = 1})
   end,
   ```
+
+### Incomplete vectors crash the server since Luanti 5.18
+A vector missing a coordinate passed to an engine API (e.g. `hud_add{size = {x = 1.5}}`) was only a `WARNING` on 5.16; on 5.18 it raises `Invalid vector coordinate y (value is nil)` and, inside a callback, `ServerError: AsyncErr` → full shutdown. Found 2026-11-15: `wetlands_contact` crashed Mineclonia on every player join right after the upgrade. Always give `x` and `y` (and `z` for 3D). See `docs/00-SHARED/operations/LUANTI_VERSION_UPGRADE.md`.
 
 ### `player:set_hp()` with a faked `punch` reason crashes the whole server
 Applying damage from a mod with `player:set_hp(hp, {type = "punch", ...})` and no `object` field **takes the server down**. VoxeLibre's `mcl_damage.from_mt` routes `type == "punch"` into `from_punch(reason, mt_reason.object)`, which does `mcl_reason.direct = object` and immediately `mcl_reason.direct:get_luaentity()` — with `object` nil that's `attempt to index field 'direct' (a nil value)` at `mcl_damage/init.lua:101`, raised inside `on_player_hpchange`, surfacing as `ServerError: AsyncErr` and a full shutdown. Found 2026-10-30: it killed Valdivia the first time armor fully absorbed a `valdivia_policia` hit, because the mod's top-up path then fired.
@@ -623,6 +626,7 @@ Each world folder has a `ROADMAP.md` (single list of pending work, same checklis
 
 ### Operations
 - `docs/00-SHARED/operations/BACKUP_STATUS.md` — public backup architecture and safety notes. Host-specific credentials, paths, remotes, retention details, and recovery commands are maintained outside this repository. **Golden rule:** never leave manual `.sqlite` copies inside `server/worlds/` — `backup.sh`'s `rsync` sweeps them into every tarball and inflates each upload. Put one-off snapshots in `server/backups/` or outside the repo.
+- `docs/00-SHARED/operations/LUANTI_VERSION_UPGRADE.md` — Luanti version pinned in compose, upgrade log (5.16.1 → 5.18.0 on 2026-11-15), what broke, rollback
 - `docs/00-SHARED/operations/clonar-mundo-produccion-local.md` — pull a prod backup and run it locally
 - `docs/02-VALDIVIA-30001/operations/SERVER_LIST_DUPLICATE_BUG.md` — bug del image `linuxserver/luanti` que hardcodea `--port 30000` y duplica servidores en `servers.luanti.org` cuando se usa otro puerto; fix via bind mount del script override en `server/container-overrides/svc-luanti/run`. El bug afecta directamente al mundo Valdivia (puerto 30001) por eso vive en su carpeta de operaciones. Cualquier servidor futuro con puerto ≠ 30000 también se verá afectado.
 
