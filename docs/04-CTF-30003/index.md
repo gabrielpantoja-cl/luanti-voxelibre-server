@@ -118,6 +118,16 @@ ssh <VPS_USER>@<VPS_IP> "docker logs --since=2m luanti-ctf-server 2>&1 | \
 
 Conectarse a `luanti.gabrielpantoja.cl:30003`. Debería empezar una ronda automáticamente.
 
+## Bots para jugar solo (`wetlands_ctf_bots`, 2026-11-15)
+
+Con uno o dos jugadores el CTF queda vacío, así que hay bots: al entrar aparece un
+menú para elegir rivales (0–6), compañeros (0–3) y dificultad; `/bots` lo reabre y
+`/bots off` los apaga. Con más de 2 jugadores se retiran solos. Con bots activos la
+rotación usa solo mapas abiertos. Detalle en `server/mods/wetlands_ctf_bots/README.md`.
+
+Activación: `load_mod_wetlands_ctf_bots = true` en `luanti-ctf.conf` **y** en
+`server/worlds/ctf/world.mt` del VPS.
+
 ## Archivos del proyecto
 
 | Archivo | Rol |
@@ -126,3 +136,4 @@ Conectarse a `luanti.gabrielpantoja.cl:30003`. Debería empezar una ronda autom�
 | `server/config/luanti-ctf.conf` | Config del mundo |
 | `docker-compose.yml` | Servicios `luanti-ctf` + `discord-notifier-ctf` |
 | `server/worlds/ctf/world.mt` | Compuerta del mundo (se crea en el VPS) |
+| `server/mods/wetlands_ctf_bots/` | Bots rivales/compañeros (menú al entrar, `/bots`) |
