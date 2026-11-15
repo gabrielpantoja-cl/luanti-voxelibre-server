@@ -1,8 +1,12 @@
+enable_damage = true
+creative_mode = false
+mod_storage_backend = sqlite3
+auth_backend = sqlite3
+backend = sqlite3
+player_backend = sqlite3
 gameid = mineclonia
 world_name = mineclonia
-backend = sqlite3
-player_backend = files
-auth_backend = files
+server_announce = false
 load_mod_wetlands_mineclonia_trampas = true
 load_mod_wetlands_mundos = true
 load_mod_wetlands_contact = true
