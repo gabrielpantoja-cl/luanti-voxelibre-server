@@ -1,5 +1,10 @@
 # Proyecto Plano — Mundo Mineclonia totalmente plano
 
+> **RETIRADO 2026-11-15.** El puerto 30003 volvió a servir CTF (`docs/04-CTF-30003/`).
+> El mundo quedó guardado en el VPS como `server/worlds/plano_OLD-20261115` y su config
+> (`luanti-plano.conf`) sigue en el historial de git (commit anterior a la vuelta del CTF).
+> Se conserva este documento por la receta de mapgen flat, que costó encontrar.
+
 Cuarto mundo del servidor Wetlands: un mundo **perfectamente plano** sobre el juego
 **Mineclonia** (fork de VoxeLibre fiel a Minecraft — **no** es VoxeLibre). Pensado como
 lienzo de construcción: superficie infinita de pasto, sin terreno irregular que estorbe.

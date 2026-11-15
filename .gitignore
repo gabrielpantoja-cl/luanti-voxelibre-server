@@ -28,6 +28,11 @@ server/worlds/mineclonia/
 server/worlds/plano/
 server/worlds/infierno_OLD/
 server/worlds/ctf_OLD-*/
+server/worlds/ctf/
+server/worlds/plano_OLD-*/
+server/worlds/*.bak-*/
+# Juego CTF (rubenwardy): clonado con submodulos solo en el VPS, no se versiona
+server/games/capturetheflag/
 # Excluir datos pesados de mundo (sqlite, mapas, etc.)
 server/worlds/*/*.sqlite
 server/worlds/*/*.sqlite-*

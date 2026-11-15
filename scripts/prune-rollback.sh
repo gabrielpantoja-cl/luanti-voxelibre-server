@@ -51,7 +51,7 @@ case "$WORLD" in
     original)   CONTAINER="luanti-voxelibre-server" ;;
     valdivia)   CONTAINER="luanti-valdivia-server" ;;
     gaelsin)    CONTAINER="luanti-gaelsin-server" ;;
-    plano)      CONTAINER="luanti-plano-server" ;;
+    ctf)        CONTAINER="luanti-ctf-server" ;;
     mineclonia) CONTAINER="luanti-mineclonia-server" ;;
     *) echo "ERROR: mundo desconocido '$WORLD'" >&2; exit 1 ;;
 esac

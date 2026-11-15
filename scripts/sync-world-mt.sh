@@ -14,7 +14,7 @@ set -euo pipefail
 : "${VPS_HOST:?falta VPS_HOST (source .env)}"
 
 WORLDS=("$@")
-[ ${#WORLDS[@]} -eq 0 ] && WORLDS=(original valdivia gaelsin plano mineclonia)
+[ ${#WORLDS[@]} -eq 0 ] && WORLDS=(original valdivia gaelsin ctf mineclonia)
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DEST="$ROOT/server/config/world-mt"

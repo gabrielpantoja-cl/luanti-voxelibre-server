@@ -224,32 +224,32 @@ services:
       - luanti-network
 
   # =============================================
-  # PLANO - Mundo Mineclonia totalmente plano
+  # CTF - Capture The Flag (rubenwardy)
   # =============================================
-  # Cuarto mundo (2026-09-13): reemplaza al antiguo CTF (capturetheflag de
-  # rubenwardy, retirado). Mineclonia con mapgen "flat" + bioma unico de
-  # pasto: pasto arriba, tierra, y roca hasta el bedrock. Sin cuevas ni
-  # arboles. Ver docs/04-PLANO-30003/index.md.
-  # NOTA: los mods server/mods/wetlands_ctf/ y server/mods/wetlands_flatworld/
-  # son vestigiales de la version CTF basada en VoxeLibre y NO se cargan.
-  luanti-plano:
+  # Cuarto mundo. Historia del puerto 30003: CTF (hasta 2026-09-13) -> Plano
+  # (Mineclonia flat, 2026-09-13..2026-11-15) -> CTF otra vez (2026-11-15).
+  # Juego `capturetheflag` de MT-CTF/rubenwardy (NO VoxeLibre), clonado SOLO en
+  # el VPS en server/games/capturetheflag (gitignored, ~164 MB con submodulos).
+  # Mapa singlenode + backend=dummy: el juego carga sus mapas por ronda y no
+  # guarda terreno. Ver docs/04-CTF-30003/index.md.
+  # NOTA: server/mods/wetlands_ctf/, ctf_guns/ y wetlands_flatworld/ son
+  # vestigiales (version CTF vieja basada en VoxeLibre) y NO se cargan.
+  luanti-ctf:
     image: linuxserver/luanti:5.18.0-ls52
-    container_name: luanti-plano-server
+    container_name: luanti-ctf-server
     restart: unless-stopped
     ports:
       - "30003:30000/udp"
     volumes:
-      - ./server/config/luanti-plano.conf:/config/.minetest/main-config/minetest.conf
+      - ./server/config/luanti-ctf.conf:/config/.minetest/main-config/minetest.conf
       - ./server/mods:/config/.minetest/mods
-      - ./server/worlds/plano:/config/.minetest/worlds/plano
+      - ./server/worlds/ctf:/config/.minetest/worlds/ctf
       - ./server/games:/config/.minetest/games
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Santiago
-      # --gameid explicito: Luanti 5.16 NO lee default_game del conf cuando
-      # el world.mt todavia no existe (mismo caso que Mineclonia 30004).
-      - CLI_ARGS=--worldname plano --gameid mineclonia
+      - CLI_ARGS=--worldname ctf --gameid capturetheflag
     healthcheck:
       test: ["CMD", "sh", "-c", "netstat -tulpn | grep :30000"]
       interval: 30s
@@ -261,18 +261,18 @@ services:
     networks:
       - luanti-network
 
-  # Discord notifier para Plano
-  discord-notifier-plano:
+  # Discord notifier para CTF
+  discord-notifier-ctf:
     image: alpine:latest
-    container_name: luanti-discord-notifier-plano
+    container_name: luanti-discord-notifier-ctf
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./scripts:/scripts:ro
     environment:
       - TZ=America/Santiago
-      - CONTAINER_NAME=luanti-plano-server
-      - SERVER_LABEL=Plano 🟩
+      - CONTAINER_NAME=luanti-ctf-server
+      - SERVER_LABEL=CTF ⚔️
       - SERVER_PORT=30003
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
     command: >
@@ -281,7 +281,7 @@ services:
         bash /scripts/discord-notifier.sh
       "
     depends_on:
-      - luanti-plano
+      - luanti-ctf
     networks:
       - luanti-network
 

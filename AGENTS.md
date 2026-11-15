@@ -22,7 +22,7 @@ This repo (`luanti-voxelibre-server`) owns **all** Luanti code, config, mods, la
 - **Mod language**: Lua. No build system, no package manager, no tests — changes are validated by running the server and playing.
 - **VPS**: Oracle Cloud Free Tier, ARM aarch64. SSH as `<VPS_USER>@<VPS_IP>` (a working SSH config / default key is assumed).
 - **Deployment**: manual `git pull` on the VPS. There are **no GitHub Actions workflows** in this repo.
-- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia), 30002/UDP (GAELSIN), 30003/UDP (Plano), 30004/UDP (Mineclonia), 80/443 (landing page via nginx on the VPS).
+- **Ports**: 30000/UDP (Wetlands), 30001/UDP (Valdivia), 30002/UDP (GAELSIN), 30003/UDP (CTF), 30004/UDP (Mineclonia), 80/443 (landing page via nginx on the VPS).
 - **UI language**: Spanish.
 
 ## File Structure
@@ -79,7 +79,7 @@ Luanti only treats a line as a comment when it **starts** with `#` (`Settings::p
 
 ### `world.mt` mirror in the repo (`server/config/world-mt/`)
 
-- `server/config/world-mt/<world>.world.mt` is a **read-only snapshot** of each live `world.mt` (original, valdivia, gaelsin, plano, mineclonia), refreshed with `./scripts/sync-world-mt.sh [world ...]` (requires `source .env`). Use it to see from the repo which mods each world actually loads and to diff against the `.conf`.
+- `server/config/world-mt/<world>.world.mt` is a **read-only snapshot** of each live `world.mt` (original, valdivia, gaelsin, ctf, mineclonia), refreshed with `./scripts/sync-world-mt.sh [world ...]` (requires `source .env`). Use it to see from the repo which mods each world actually loads and to diff against the `.conf`.
 - **It never flows back to the VPS.** Edit the real `world.mt` over SSH, then sync the mirror. If the mirror and the `.conf` disagree, the mirror (= `world.mt`) is what the server does.
 - **Why not version `server/worlds/<world>/world.mt` directly:** that path is the live, bind-mounted file. If it were tracked, every `git pull` on the VPS would overwrite it, or would get blocked because the VPS copy differs. Until 2026-11-10, `.gitignore` tracked `original/` and `valdivia/` that way, and both were stale relative to the VPS. They were untracked (`git rm --cached`, no files deleted) and the line `!server/worlds/*/world.mt` was removed from `.gitignore`.
 - `server/config/world.mt` (old, from the 2025 config backup) is **not** the mirror and is not read by any server.
@@ -458,14 +458,14 @@ Never use `mobs_mc_zombie.b3d` for humanoid NPCs — its bind pose has arms stre
 | Wetlands | `luanti-voxelibre-server` | 30000/UDP | `luanti-original.conf` | Main world — hard survival, no PvP, compassionate / plant-based identity |
 | Valdivia | `luanti-valdivia-server` | 30001/UDP | `luanti-valdivia.conf` | Real-world recreation of Valdivia, Chile from OpenStreetMap (Arnis PR #808) |
 | GAELSIN | `luanti-gaelsin-server` | 30002/UDP | `luanti-gaelsin.conf` | Pure VoxeLibre survival world generated from seed `GAELSIN` (mapgen v7) — PvP on, hostile mobs at night, creepers blocked, no area protection; minimal mod set |
-| Plano | `luanti-plano-server` | 30003/UDP | `luanti-plano.conf` | Mundo Mineclonia **totalmente plano** — mapgen `flat` + bioma unico `Plains` (pasto / tierra / roca hasta bedrock), sin cuevas ni arboles, creativo sin dano. Reemplazo del retirado CTF (2026-09-13) |
+| CTF | `luanti-ctf-server` | 30003/UDP | `luanti-ctf.conf` | Capture The Flag de rubenwardy (`MT-CTF/capturetheflag`, **no es VoxeLibre**): dos equipos, rondas automáticas, mapas rotativos; `singlenode` + `backend = dummy`. El juego se clona **solo en el VPS** (`server/games/capturetheflag`, gitignored). Volvió el 2026-11-15 reemplazando a "Plano". Ver `docs/04-CTF-30003/index.md`. |
 | Mineclonia | `luanti-mineclonia-server` | 30004/UDP | `luanti-mineclonia.conf` | Mineclonia 0.123.0 (fork de VoxeLibre, no es VoxeLibre) — **modo supervivencia**, dano activo, mobs agresivos de noche, sin PvP ni fire/TNT (anti-grief). Desde 2026-11-15 corre `world16` (mapgen v7, seed `7572839058019404764`, creado en local); el mundo singlenode anterior quedó en el VPS como `server/worlds/mineclonia.bak-20261115`. Mods custom: `wetlands_mineclonia_trampas` (bloque "stone-like" que al pisarlo muestra un mensaje amistoso en chat + corazones), `wetlands_contact` (`/gabo`, con respuestas desde Telegram) y `valdivia_aviso_entrada` (aviso "X joining..."). Ver `docs/05-MINECLONIA-30004/README.md`. |
 
 All containers share the same `server/games/` and `server/mods/` directories. Valdivia uses `singlenode` mapgen with a pre-generated `map.sqlite` (~420 MB / 1.15M mapblocks as of 2026-06-29, not in git). See `docs/02-VALDIVIA-30001/current.md`. Mineclonia se sirve desde `server/games/mineclonia/` (clonado de Codeberg, ~50 MB, committeado igual que `server/games/mineclone2/`). Ver `docs/05-MINECLONIA-30004/install.md`.
 
-**Port 30003 runs Mineclonia on a flat world, not CTF.** The `capturetheflag` game by rubenwardy was retired on 2026-09-13. The mods `server/mods/wetlands_flatworld/`, `server/mods/wetlands_ctf/` and `server/mods/ctf_guns/` are vestigial and **NOT loaded** — decide whether to delete them or add a `DEPRECATED` notice at the top of each `init.lua`.
+**Port 30003 runs CTF again (since 2026-11-15).** History: rubenwardy's `capturetheflag` until 2026-09-13 → "Plano" (flat Mineclonia, world kept on the VPS as `server/worlds/plano_OLD-20261115`) → CTF again. The game is **not in git**: it is cloned with submodules into `server/games/capturetheflag` on the VPS (`server/games` is UID 1000 there — clone in `/tmp`, `sudo mv`). The mods `server/mods/wetlands_flatworld/`, `server/mods/wetlands_ctf/` and `server/mods/ctf_guns/` are vestigial and **NOT loaded** — decide whether to delete them or add a `DEPRECATED` notice at the top of each `init.lua`.
 
-**Flat-world mapgen (CRITICAL — `luanti-plano.conf`)**: no seed produces a flat world; it is a mapgen matter. Recipe, verified end-to-end locally on 2026-09-13: `mg_name = flat` + `mgflat_ground_level = 8` + `mgflat_spflags = nolakes,nohills` + `mg_flags = nocaves,nodungeons,nodecorations,noores,biomes,light` + `mcl_levelgen_enable_ersatz = false`, plus constant heat/humidity noise (`scale = 0`, `_blend` noises zeroed too) pinned at `(58, 39)` so the `Plains` biome wins everywhere. Measured result: grass y=8, dirt y=7..6, stone y=5..-62, deepslate y=-63..-123, bedrock y=-124..-128; ground exactly at y=8 at every sampled point out to (-3000,3000). Three traps, each hit for real:
+**Flat-world mapgen (recipe kept from the retired Plano world; its `luanti-plano.conf` lives in git history)**: no seed produces a flat world; it is a mapgen matter. Recipe, verified end-to-end locally on 2026-09-13: `mg_name = flat` + `mgflat_ground_level = 8` + `mgflat_spflags = nolakes,nohills` + `mg_flags = nocaves,nodungeons,nodecorations,noores,biomes,light` + `mcl_levelgen_enable_ersatz = false`, plus constant heat/humidity noise (`scale = 0`, `_blend` noises zeroed too) pinned at `(58, 39)` so the `Plains` biome wins everywhere. Measured result: grass y=8, dirt y=7..6, stone y=5..-62, deepslate y=-63..-123, bedrock y=-124..-128; ground exactly at y=8 at every sampled point out to (-3000,3000). Three traps, each hit for real:
 1. `mg_flags` is applied **on top of** the defaults (`caves,dungeons,light,decorations,biomes,ores`) — anything not named keeps its default (**on**), so a flag must be killed with the `no` prefix (`noores`), not by omission.
 2. Mineclonia's Lua generator **ersatz** turns itself on in any non-singlenode mapgen (`mcl_levelgen/register.lua:180`) and plants vegetation/structures through `core.register_on_generated`, **ignoring `nodecorations`** — it must be disabled explicitly or the flat world comes up carpeted in tall grass and flowers.
 3. A world directory without a `world.mt` is **not** a world: Luanti 5.17 logs `World '<name>' not available` and silently boots its own internal `world`, even with `--worldname X --gameid Y` in `CLI_ARGS`. Write `world.mt` (`gameid`, `backend`, `player_backend`, `auth_backend`, `world_name`) before the first start.
@@ -610,7 +610,8 @@ Each world folder has a `ROADMAP.md` (single list of pending work, same checklis
 - `docs/01-ORIGINAL-30000/` — Wetlands main world, hard survival without PvP (port 30000)
 - `docs/02-VALDIVIA-30001/current.md` — Valdivia OSM recreation (port 30001); pending work lives in `docs/02-VALDIVIA-30001/ROADMAP.md`, area protection (two coexisting mods) in `proteccion.md`
 - `docs/03-GAELSIN-30002/` — GAELSIN survival world (port 30002)
-- `docs/04-PLANO-30003/` — Plano, mundo Mineclonia plano (port 30003) — antes CTF, retirado 2026-09-13
+- `docs/04-CTF-30003/` — CTF, Capture The Flag de rubenwardy (port 30003), de vuelta desde 2026-11-15
+- `docs/04-PLANO-30003/` — Plano (retirado 2026-11-15), se conserva por la receta de mapgen flat
 - `docs/05-MINECLONIA-30004/` — Mineclonia supervivencia (port 30004) — antes planeado como `05-FUTBOL/`, redefinido 2026-08-01 a Mineclonia (fork de VoxeLibre).
 
 ### Shared Configuration

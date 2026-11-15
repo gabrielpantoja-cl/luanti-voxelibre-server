@@ -1,6 +1,6 @@
 #!/bin/bash
 # Backup de 4 mundos Luanti: original (Wetlands, ex "world"), valdivia, gaelsin, mineclonia.
-# "plano" (30003) queda fuera a proposito: poco visitado, no justifica el espacio offsite (2026-10-08).
+# "ctf" (30003) queda fuera a proposito: backend=dummy, no guarda terreno (antes "plano", excluido 2026-10-08).
 # Hace snapshot consistente de SQLite con `sqlite3 .backup`, copia el resto
 # con rsync excluyendo basura, y comprime el staging a tar.gz.
 # Corre dentro del contenedor luanti-voxelibre-backup (Alpine + dcron).
