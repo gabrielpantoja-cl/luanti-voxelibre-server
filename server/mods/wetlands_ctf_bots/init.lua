@@ -8,8 +8,9 @@
 -- hitter no sea jugador (ctf_modebase/features.lua, on_punchplayer) y la toma de
 -- bandera exige un jugador (flags/taking.lua). Asi que:
 --   * el bot hiere al jugador con set_hp + reason {type = "set_hp"} (seguro);
---   * el jugador hiere al bot con sus armas normales (espada/rifle golpean
---     entidades: ctf_ranged hace hitpoint.ref:punch);
+--   * el jugador hiere al bot con espada (punch directo) y con armas de fuego
+--     (ctf_ranged solo deja pegar a jugadores; ver el wrapper de rawf.bulletcast
+--     al final del archivo);
 --   * la bandera que lleva un bot es solo el nodo flag_captured_top; si el bot
 --     llega a su base, el modulo termina la partida con start_new_match().
 --
@@ -33,8 +34,12 @@ local FORM = modname .. ":menu"
 -- CONFIGURACION
 -- ============================================================
 local MAX_HUMANOS = 2        -- con mas jugadores conectados, los bots se retiran
-local OPCIONES_RIVALES = {0, 1, 2, 3, 4, 6}
-local OPCIONES_ALIADOS = {0, 1, 2, 3}
+local MAX_BOTS_EQUIPO = 10   -- tope por equipo (rivales y companeros por igual)
+local OPCIONES_RIVALES, OPCIONES_ALIADOS = {}, {}
+for n = 0, MAX_BOTS_EQUIPO do
+	OPCIONES_RIVALES[#OPCIONES_RIVALES + 1] = n
+	OPCIONES_ALIADOS[#OPCIONES_ALIADOS + 1] = n
+end
 local RESPAWN_BOT = 8        -- segundos hasta que reaparece un bot eliminado
 local VIDA_BASE = 200        -- hp_max de un jugador CTF (fallback)
 local PENSAR_CADA = 0.25
@@ -58,6 +63,7 @@ local MAPAS_BOTS = {
 local NOMBRES = {
 	"Pudú", "Huemul", "Cóndor", "Puma", "Zorro", "Chucao", "Monito", "Coipo",
 	"Guanaco", "Chingue", "Ñandú", "Pingüino", "Queltehue", "Loica", "Tiuque", "Chungungo",
+	"Colocolo", "Degú", "Cachaña", "Carpintero", "Pidén", "Bandurria",
 }
 
 local NOMBRE_EQUIPO = {
@@ -78,8 +84,8 @@ local ANIM = {
 local function cargar_cfg()
 	local c = minetest.deserialize(storage:get_string("cfg")) or {}
 	return {
-		rivales = tonumber(c.rivales) or 0,
-		aliados = tonumber(c.aliados) or 0,
+		rivales = math.min(tonumber(c.rivales) or 0, MAX_BOTS_EQUIPO),
+		aliados = math.min(tonumber(c.aliados) or 0, MAX_BOTS_EQUIPO),
 		dif = DIFICULTADES[c.dif] and c.dif or "normal",
 	}
 end
@@ -935,22 +941,23 @@ local function mostrar_menu(pname)
 	local s = seleccion[pname]
 	if not s then
 		s = {rivales = cfg.rivales, aliados = cfg.aliados, dif = cfg.dif}
-		if s.rivales + s.aliados == 0 then s.rivales, s.aliados = 3, 1 end
+		if s.rivales + s.aliados == 0 then s.rivales, s.aliados = 3, 2 end
 		seleccion[pname] = s
 	end
 	local fs = {
 		"formspec_version[4]",
 		"size[11,8.8]",
 		"hypertext[0.4,0.3;10.2,1.5;titulo;<global halign=center><big><b>¿Jugar con bots?</b></big>\n" ..
-			"Agrega rivales y compañeros que juegan contigo.]",
+			"Agrega rivales y compañeros que juegan contigo. Tú cuentas en tu equipo: " ..
+			"para que sea parejo, elige un compañero menos que rivales.]",
 		"label[0.5,2.1;Rivales (equipo contrario):]",
 	}
 	for i, n in ipairs(OPCIONES_RIVALES) do
-		fs[#fs + 1] = boton(0.5 + (i - 1) * 1.65, 2.4, 1.45, "r_" .. n, tostring(n), s.rivales == n)
+		fs[#fs + 1] = boton(0.5 + (i - 1) * 0.92, 2.4, 0.85, "r_" .. n, tostring(n), s.rivales == n)
 	end
 	fs[#fs + 1] = "label[0.5,3.8;Compañeros (en tu equipo):]"
 	for i, n in ipairs(OPCIONES_ALIADOS) do
-		fs[#fs + 1] = boton(0.5 + (i - 1) * 1.65, 4.1, 1.45, "a_" .. n, tostring(n), s.aliados == n)
+		fs[#fs + 1] = boton(0.5 + (i - 1) * 0.92, 4.1, 0.85, "a_" .. n, tostring(n), s.aliados == n)
 	end
 	fs[#fs + 1] = "label[0.5,5.5;Dificultad:]"
 	for i, k in ipairs(ORDEN_DIF) do
@@ -1008,9 +1015,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	for campo in pairs(fields) do
 		local tipo, valor = campo:match("^([rad])_(.+)$")
 		if tipo == "r" then
-			s.rivales = tonumber(valor) or s.rivales
+			s.rivales = math.min(tonumber(valor) or s.rivales, MAX_BOTS_EQUIPO)
 		elseif tipo == "a" then
-			s.aliados = tonumber(valor) or s.aliados
+			s.aliados = math.min(tonumber(valor) or s.aliados, MAX_BOTS_EQUIPO)
 		elseif tipo == "d" and DIFICULTADES[valor] then
 			s.dif = valor
 		end
@@ -1048,5 +1055,38 @@ end)
 minetest.register_on_leaveplayer(function(player)
 	seleccion[player:get_player_name()] = nil
 end)
+
+-- Balas que pegan a los bots. ctf_ranged (process_ray) filtra los impactos con
+-- `object = function(obj) return obj:is_player() and obj ~= user end`, asi que el
+-- rayo atraviesa cualquier entidad y el bot nunca recibe el punch. Envolvemos
+-- rawf.bulletcast (ctf_ranged lo busca en cada disparo, no lo cachea, y
+-- spread_bulletcast de la escopeta pasa por el mismo campo) para que el filtro
+-- tambien acepte nuestros bots. El dano llega por el punch normal -> on_punch.
+local function es_bot(obj)
+	local ent = obj and obj:get_luaentity()
+	return ent ~= nil and ent.name == ENTIDAD and not ent._muerto
+end
+
+if minetest.global_exists("rawf") and type(rawf.bulletcast) == "function" then
+	local bulletcast_orig = rawf.bulletcast
+	rawf.bulletcast = function(...)
+		local bc = bulletcast_orig(...)
+		local hit_orig = type(bc) == "table" and rawget(bc, "hit_object_or_node")
+		if hit_orig then
+			rawset(bc, "hit_object_or_node", function(self, options)
+				if options and options.object then
+					local filtro = options.object
+					options.object = function(obj)
+						return es_bot(obj) or filtro(obj)
+					end
+				end
+				return hit_orig(self, options)
+			end)
+		end
+		return bc
+	end
+else
+	minetest.log("warning", "[" .. modname .. "] rawf no encontrado: las balas no pegaran a los bots")
+end
 
 minetest.log("warning", "[" .. modname .. "] Loaded successfully")

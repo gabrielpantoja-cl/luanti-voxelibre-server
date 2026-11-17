@@ -6,7 +6,7 @@ tenga con quién jugar. Solo se carga en `luanti-ctf.conf` + `worlds/ctf/world.m
 ## Uso
 
 - Al entrar (con ≤ 2 jugadores conectados) aparece el menú **¿Jugar con bots?**:
-  rivales (0–6), compañeros (0–3) y dificultad (Fácil / Normal / Difícil).
+  rivales (0–10), compañeros (0–10) y dificultad (Fácil / Normal / Difícil).
 - `/bots` vuelve a abrir el menú; `/bots off` los apaga.
 - La elección se guarda (mod_storage) y se reaplica en cada partida nueva.
 - Si se conectan más de 2 jugadores, los bots se retiran solos.
