@@ -21,6 +21,20 @@ tenga con quién jugar. Solo se carga en `luanti-ctf.conf` + `worlds/ctf/world.m
 
 Todos persiguen a quien lleve la bandera de su equipo. Pelean cuerpo a cuerpo.
 
+## Mensajes (menos ruido en el chat)
+
+- Muertes humano↔bot: van al **kill feed** del CTF (abajo a la izquierda), no al chat.
+  Las de bot contra bot no se anuncian.
+- Aviso de bots activos (cada partida) y "Bots desactivados": aviso en pantalla, no en el chat.
+- En el chat quedan solo eventos de bandera (un bot la toma, la bandera vuelve, ganan
+  los bots) y el cambio de mapa.
+
+## Botón "Cerrar" del resumen
+
+`cerrar_resumen.lua` agrega un botón **Cerrar** a la pantalla de puntaje
+(`ctf_modebase:summary`), que en celular no se podía cerrar (no hay Esc). Envuelve
+`ctf_gui.show_formspec` en vez de parchear el juego, que está en `.gitignore`.
+
 - **Daño a jugadores**: `set_hp` con `reason = {type = "set_hp"}`, un % del `hp_max`
   según la dificultad (5 / 8 / 12 %). Respetan la inmunidad de respawn del CTF.
 - **Daño a bots**: con las armas normales del CTF (espada, rifle). Vida = 60 / 80 / 100 %

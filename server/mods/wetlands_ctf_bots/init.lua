@@ -128,6 +128,20 @@ local function avisar(texto)
 	minetest.chat_send_all(minetest.colorize("#ffcc33", "[Bots] ") .. texto)
 end
 
+-- Muertes al kill feed del CTF (abajo a la izquierda, como las de jugadores),
+-- no al chat: asi el chat queda para lo que escriben los jugadores.
+local function kill_feed(asesino, victima, imagen)
+	if minetest.global_exists("ctf_kill_list") then
+		ctf_kill_list.add(asesino, victima, imagen)
+	end
+end
+
+local function imagen_arma(player)
+	local def = player and player:is_player() and player:get_wielded_item():get_definition()
+	local img = def and def.inventory_image
+	if img and img ~= "" then return img end
+end
+
 local function aviso_hud(player, texto)
 	if minetest.global_exists("hud_events") then
 		hud_events.new(player, {quick = true, text = texto, color = "warning"})
@@ -330,9 +344,7 @@ local function herir_jugador(b, bot_obj, player)
 	local hp = player:get_hp()
 	if hp <= 0 then return end
 	if hp - dano <= 0 then
-		local pname = player:get_player_name()
-		minetest.chat_send_all(col(b.team, "[Bot] " .. b.nombre) .. " eliminó a " ..
-			col(ctf_teams.get(player) or "", pname))
+		kill_feed("Bot " .. b.nombre, player:get_player_name())
 	end
 	-- reason "set_hp": nunca un "punch" falso (ver AGENTS.md, pitfall set_hp)
 	player:set_hp(hp - dano, {type = "set_hp", from = modname})
@@ -343,11 +355,14 @@ local function herir_jugador(b, bot_obj, player)
 	end
 end
 
-local function matar_bot(ent, autor)
+local function matar_bot(ent, agresor)
 	local b = bots[ent._id]
 	local pos = ent.object:get_pos()
 	if b then
-		minetest.chat_send_all((autor or "Alguien") .. " eliminó a " .. col(b.team, "[Bot] " .. b.nombre))
+		-- solo las muertes que involucran a un humano; bot contra bot no se anuncia
+		if agresor and agresor:is_player() then
+			kill_feed(agresor:get_player_name(), "Bot " .. b.nombre, imagen_arma(agresor))
+		end
 		b.muerto_hasta = ahora() + RESPAWN_BOT
 	end
 	if pos then particulas(pos) end
@@ -355,7 +370,7 @@ local function matar_bot(ent, autor)
 	ent.object:remove()   -- on_deactivate devuelve la bandera y libera el forceload
 end
 
-local function herir_bot(ent, dano, autor, agresor)
+local function herir_bot(ent, dano, agresor)
 	if ent._muerto then return end
 	ent._hp = (ent._hp or 1) - dano
 	ent.object:set_texture_mod("^[colorize:#ff0000:110")
@@ -367,7 +382,7 @@ local function herir_bot(ent, dano, autor, agresor)
 		ent._agresor = agresor
 		ent._agresor_hasta = ahora() + 6
 	end
-	if ent._hp <= 0 then matar_bot(ent, autor) end
+	if ent._hp <= 0 then matar_bot(ent, agresor) end
 end
 
 local function golpear(ent, b, objetivo)
@@ -376,8 +391,7 @@ local function golpear(ent, b, objetivo)
 	else
 		local otro = objetivo:get_luaentity()
 		if otro and otro.name == ENTIDAD then
-			herir_bot(otro, vida_max_bot() * DIFICULTADES[cfg.dif].dano * 1.5,
-				col(b.team, "[Bot] " .. b.nombre), ent.object)
+			herir_bot(otro, vida_max_bot() * DIFICULTADES[cfg.dif].dano * 1.5, ent.object)
 		end
 	end
 end
@@ -731,7 +745,7 @@ minetest.register_entity(ENTIDAD, {
 		if dir then
 			self.object:add_velocity({x = dir.x * 3, y = 2, z = dir.z * 3})
 		end
-		herir_bot(self, d, col(pteam, pname), puncher)
+		herir_bot(self, d, puncher)
 		return true
 	end,
 
@@ -850,7 +864,12 @@ local function desplegar()
 	if cfg.aliados > 0 then
 		partes[#partes + 1] = cfg.aliados .. " compañero(s) en el equipo " .. col(equipo_aliado, nombre_equipo(equipo_aliado))
 	end
-	avisar(table.concat(partes, " y ") .. " (" .. DIFICULTADES[cfg.dif].label .. "). Escribe /bots para cambiar.")
+	-- aviso en pantalla (se va solo), no en el chat: se repite en cada partida
+	local texto = table.concat(partes, " y ") .. " (" .. DIFICULTADES[cfg.dif].label .. ")"
+	texto = minetest.strip_colors and minetest.strip_colors(texto) or texto
+	for _, p in ipairs(minetest.get_connected_players()) do
+		aviso_hud(p, "Bots: " .. texto)
+	end
 end
 
 local function bots_deseados()
@@ -984,7 +1003,8 @@ local function aplicar(pname, s)
 	dueno = pname
 	despejar()   -- el globalstep los vuelve a desplegar con la nueva config
 	if cfg.rivales + cfg.aliados == 0 then
-		avisar(pname .. " juega sin bots.")
+		local p = minetest.get_player_by_name(pname)
+		if p then aviso_hud(p, "Bots desactivados") end
 	else
 		cambiar_a_mapa_bots()
 	end
@@ -1082,5 +1102,7 @@ if minetest.global_exists("rawf") and type(rawf.bulletcast) == "function" then
 else
 	minetest.log("warning", "[" .. modname .. "] rawf no encontrado: las balas no pegaran a los bots")
 end
+
+dofile(minetest.get_modpath(modname) .. "/cerrar_resumen.lua")
 
 minetest.log("warning", "[" .. modname .. "] Loaded successfully")
