@@ -33,7 +33,7 @@ local FORM = modname .. ":menu"
 -- ============================================================
 -- CONFIGURACION
 -- ============================================================
-local MAX_HUMANOS = 2        -- con mas jugadores conectados, los bots se retiran
+local MAX_HUMANOS_MENU = 2   -- el menu de bots solo salta solo al entrar con <= N jugadores (/bots siempre funciona)
 local MAX_BOTS_EQUIPO = 10   -- tope por equipo (rivales y companeros por igual)
 local OPCIONES_RIVALES, OPCIONES_ALIADOS = {}, {}
 for n = 0, MAX_BOTS_EQUIPO do
@@ -855,7 +855,7 @@ end
 
 local function bots_deseados()
 	local n = #minetest.get_connected_players()
-	return cfg.rivales + cfg.aliados > 0 and n > 0 and n <= MAX_HUMANOS
+	return cfg.rivales + cfg.aliados > 0 and n > 0
 end
 
 local acumulado = 0
@@ -866,9 +866,6 @@ minetest.register_globalstep(function(dtime)
 
 	local quiere = bots_deseados() and ctf_modebase.in_game and mapa() ~= nil and not terminando
 	if activos and not quiere then
-		if #minetest.get_connected_players() > MAX_HUMANOS then
-			avisar("Llegaron más jugadores: los bots se retiran. ¡A jugar entre humanos!")
-		end
 		despejar()
 	elseif quiere and not activos then
 		desplegar()
@@ -1034,9 +1031,6 @@ minetest.register_chatcommand("bots", {
 			aplicar(pname, {rivales = 0, aliados = 0, dif = cfg.dif})
 			return true, "Bots desactivados."
 		end
-		if #minetest.get_connected_players() > MAX_HUMANOS then
-			return false, "Hay más de " .. MAX_HUMANOS .. " jugadores: los bots solo se usan con pocos jugadores."
-		end
 		mostrar_menu(pname)
 		return true
 	end,
@@ -1046,7 +1040,7 @@ minetest.register_on_joinplayer(function(player)
 	local pname = player:get_player_name()
 	minetest.after(5, function()
 		if not minetest.get_player_by_name(pname) then return end
-		if #minetest.get_connected_players() <= MAX_HUMANOS then
+		if #minetest.get_connected_players() <= MAX_HUMANOS_MENU then
 			mostrar_menu(pname)
 		end
 	end)
